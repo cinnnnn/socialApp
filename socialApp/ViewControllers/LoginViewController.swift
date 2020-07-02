@@ -1,0 +1,131 @@
+//
+//  LoginViewController.swift
+//  socialApp
+//
+//  Created by Денис Щиголев on 02.07.2020.
+//  Copyright © 2020 Денис Щиголев. All rights reserved.
+//
+
+import UIKit
+import SwiftUI
+
+class LoginViewController: UIViewController {
+    
+    let signInLogo = UIImageView(image: #imageLiteral(resourceName: "SignInLogo"),
+                                 contentMode: .scaleAspectFit)
+    
+    let appleButton = UIButton(image: #imageLiteral(resourceName: "SignInApple"))
+    
+    let loginButton = UIButton(newBackgroundColor: .systemBackground,
+                               newBorderColor: .label,
+                               title: "Login",
+                               titleColor: .label,
+                               isShadow: false)
+    
+    let signUpButton = UIButton(newBackgroundColor: .systemBackground,
+                               newBorderColor: .label,
+                               title: "Sign Up",
+                               titleColor: .label,
+                               isShadow: false)
+    
+    let emailTextField = OneLineTextField(isSecureText: false)
+    let passwordTextField = OneLineTextField(isSecureText: true)
+    
+    let emailLabel = UILabel(labelText: "Email")
+    let passwordLabel = UILabel(labelText: "Password")
+    let needAccountLabel = UILabel(labelText: "Need account?")
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .systemBackground
+        setupConstraints()
+    }
+}
+
+//MARK: - setupConstraints
+
+extension LoginViewController {
+    private func setupConstraints() {
+        
+        signInLogo.translatesAutoresizingMaskIntoConstraints = false
+        appleButton.translatesAutoresizingMaskIntoConstraints = false
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
+        signUpButton.translatesAutoresizingMaskIntoConstraints = false
+        emailLabel.translatesAutoresizingMaskIntoConstraints = false
+        passwordLabel.translatesAutoresizingMaskIntoConstraints = false
+        needAccountLabel.translatesAutoresizingMaskIntoConstraints = false
+        emailTextField.translatesAutoresizingMaskIntoConstraints = false
+        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(signInLogo)
+        view.addSubview(appleButton)
+        view.addSubview(loginButton)
+        view.addSubview(signUpButton)
+        view.addSubview(emailLabel)
+        view.addSubview(passwordLabel)
+        view.addSubview(needAccountLabel)
+        view.addSubview(emailTextField)
+        view.addSubview(passwordTextField)
+        
+        NSLayoutConstraint.activate([
+        signInLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
+        signInLogo.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        signInLogo.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        appleButton.topAnchor.constraint(equalTo: signInLogo.bottomAnchor, constant: 28),
+        appleButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        appleButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        appleButton.heightAnchor.constraint(equalTo: appleButton.widthAnchor, multiplier: 1.0/7.28),
+        
+        emailTextField.topAnchor.constraint(equalTo: appleButton.bottomAnchor, constant: 58),
+        emailTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        emailTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        emailLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -5),
+        emailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        emailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 58),
+        passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        passwordLabel.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -5),
+        passwordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        passwordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 25),
+        loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 1.0/7.28),
+        
+        signUpButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25),
+        signUpButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        signUpButton.heightAnchor.constraint(equalTo: signUpButton.widthAnchor, multiplier: 1.0/7.28),
+        
+        needAccountLabel.bottomAnchor.constraint(equalTo: signUpButton.topAnchor, constant: -5),
+        needAccountLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25)
+        
+        ])
+    }
+}
+//MARK: - SwiftUI
+struct LoginViewControllerProvider: PreviewProvider {
+   
+    static var previews: some View {
+        ContenerView().edgesIgnoringSafeArea(.all)
+    }
+    
+    struct ContenerView: UIViewControllerRepresentable {
+        
+        func makeUIViewController(context: Context) -> LoginViewController {
+            LoginViewController()
+        }
+        
+        func updateUIViewController(_ uiViewController: LoginViewController, context: Context) {
+            
+        }
+    }
+}

@@ -15,7 +15,7 @@ class SignUpViewController: UIViewController {
     let signUpLogo = UIImageView(image: #imageLiteral(resourceName: "SignUpLogo"),
                                  contentMode: .scaleAspectFit)
     
-    let loginLabel = UILabel(labelText: "Login")
+    let loginLabel = UILabel(labelText: "Email")
     let passwordLabel = UILabel(labelText: "Password")
     let confirmPasswordLabel = UILabel(labelText: "Confirm password")
     let onboardLabel = UILabel(labelText: "Already onboard?")
@@ -73,10 +73,10 @@ extension SignUpViewController {
         view.addSubview(onboardLabel)
         
         NSLayoutConstraint.activate([
-            signUpLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
-            signUpLogo.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            signUpLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
+            signUpLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            loginTextField.topAnchor.constraint(equalTo: signUpLogo.bottomAnchor, constant: 18),
+            loginTextField.topAnchor.constraint(equalTo: signUpLogo.bottomAnchor, constant: 28),
             loginTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             loginTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
           

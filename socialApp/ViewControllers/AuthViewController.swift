@@ -24,7 +24,7 @@ class AuthViewController: UIViewController {
                                titleColor: .label,
                                isShadow: false)
     
-    let appleButton = UIButton(image: #imageLiteral(resourceName: "signInApple"))
+    let appleButton = UIButton(image: #imageLiteral(resourceName: "SignUpApple"))
     
     let loginLabel = UILabel(labelText: "Already onboard?")
     
