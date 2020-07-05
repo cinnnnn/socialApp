@@ -15,6 +15,7 @@
 		FB18217724B21F5100FFFC87 /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217624B21F5100FFFC87 /* ListViewController.swift */; };
 		FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217A24B2261F00FFFC87 /* MainTabBarController.swift */; };
 		FB18217D24B2268E00FFFC87 /* PeopleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217C24B2268E00FFFC87 /* PeopleViewController.swift */; };
+		FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217E24B2442800FFFC87 /* UIColorExtension.swift */; };
 		FB66288124A93ADC00650820 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* SignUpViewController.swift */; };
 		FBEF607824A602070005F947 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607724A602070005F947 /* AppDelegate.swift */; };
 		FBEF607A24A602070005F947 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607924A602070005F947 /* SceneDelegate.swift */; };
@@ -36,6 +37,7 @@
 		FB18217624B21F5100FFFC87 /* ListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewController.swift; sourceTree = "<group>"; };
 		FB18217A24B2261F00FFFC87 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		FB18217C24B2268E00FFFC87 /* PeopleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleViewController.swift; sourceTree = "<group>"; };
+		FB18217E24B2442800FFFC87 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		FB66288024A93ADC00650820 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		FBEF607424A602070005F947 /* socialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = socialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBEF607724A602070005F947 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				FBEF608D24A9073E0005F947 /* UIFontExtension.swift */,
 				FBEF609024A90AEC0005F947 /* UILabelExtension.swift */,
 				FBEF609224A90C840005F947 /* UIImageViewExtension.swift */,
+				FB18217E24B2442800FFFC87 /* UIColorExtension.swift */,
 				FB1062DF24B20CE60012C4D4 /* UISegmentedControlExtension.swift */,
 			);
 			path = Extension;
@@ -205,6 +208,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */,
 				FB1062DE24B0C8DF0012C4D4 /* ProfileImageView.swift in Sources */,
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,

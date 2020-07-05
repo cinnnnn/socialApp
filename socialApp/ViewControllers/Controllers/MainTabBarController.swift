@@ -28,8 +28,9 @@ class MainTabBarController: UITabBarController {
         tabBar.tintColor = .label
         
         viewControllers = [
-            generateNavigationController(rootViewController: peopleVC, image: peopleImage),
-            generateNavigationController(rootViewController: listVC, image: listImage)
+            generateNavigationController(rootViewController: listVC, image: listImage),
+            generateNavigationController(rootViewController: peopleVC, image: peopleImage)
+            
         ]
     }
     
