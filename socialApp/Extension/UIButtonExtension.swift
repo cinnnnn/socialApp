@@ -17,7 +17,7 @@ extension UIButton {
                      titleColor: UIColor,
                      font: UIFont? = .boldSystemFont(ofSize: 18),
                      cornerRadius: CGFloat = 4,
-                     isShadow: Bool) {
+                     isShadow: Bool = false) {
         self.init(type: .system)
         
         setTitle(title, for: .normal)

@@ -24,17 +24,15 @@ class SignUpViewController: UIViewController {
     let passwordTextField = OneLineTextField(isSecureText: true)
     let confirmPasswordTextField = OneLineTextField(isSecureText: true)
     
-    let signUpButton = UIButton(newBackgroundColor: .systemBackground,
+    let signUpButton = UIButton(newBackgroundColor: .label,
                                 newBorderColor: .label,
                                 title: "Sign Up",
-                                titleColor: .label,
-                                isShadow: false)
+                                titleColor: .systemBackground)
     
     let loginButton = UIButton(newBackgroundColor: .systemBackground,
                                newBorderColor: .label,
                                title: "Login",
-                               titleColor: .label,
-                               isShadow: false)
+                               titleColor: .label)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,7 +90,7 @@ extension SignUpViewController {
             passwordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             passwordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            confirmPasswordTextField.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 58),
+            confirmPasswordTextField.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 38),
             confirmPasswordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             confirmPasswordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
     

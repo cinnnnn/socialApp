@@ -16,17 +16,15 @@ class LoginViewController: UIViewController {
     
     let appleButton = UIButton(image: #imageLiteral(resourceName: "SignInApple"))
     
-    let loginButton = UIButton(newBackgroundColor: .systemBackground,
+    let loginButton = UIButton(newBackgroundColor: .label,
                                newBorderColor: .label,
                                title: "Login",
-                               titleColor: .label,
-                               isShadow: false)
+                               titleColor: .systemBackground)
     
     let signUpButton = UIButton(newBackgroundColor: .systemBackground,
                                newBorderColor: .label,
                                title: "Sign Up",
-                               titleColor: .label,
-                               isShadow: false)
+                               titleColor: .label)
     
     let emailTextField = OneLineTextField(isSecureText: false)
     let passwordTextField = OneLineTextField(isSecureText: true)
@@ -87,7 +85,7 @@ extension LoginViewController {
         emailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
         emailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
         
-        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 58),
+        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 38),
         passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
         passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
         
