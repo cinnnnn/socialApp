@@ -1,0 +1,32 @@
+[
+    {
+        "userName": "Kate",
+        "userImageString": "image6",
+        "lastMessage": "Hi",
+        "id": 6
+    },
+    {
+        "userName": "Nastya",
+        "userImageString": "image7",
+        "lastMessage": "whatsup!",
+        "id": 7
+    },
+    {
+        "userName": "Masha",
+        "userImageString": "image8",
+        "lastMessage": "Hello!!!",
+        "id": 8
+    },
+    {
+        "userName": "Marina",
+        "userImageString": "image9",
+        "lastMessage": "who a u?",
+        "id": 9
+    },
+    {
+        "userName": "Sveta",
+        "userImageString": "image10",
+        "lastMessage": "Go to chat!!!",
+        "id": 10
+    },
+]

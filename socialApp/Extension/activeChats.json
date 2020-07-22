@@ -1,0 +1,20 @@
+[
+    {
+        "userName": "Denis",
+        "userImageString": "image1",
+        "lastMessage": "Hello world",
+        "id": 1
+    },
+    {
+        "userName": "Alex",
+        "userImageString": "image2",
+        "lastMessage": "how are u",
+        "id": 2
+    },
+    {
+        "userName": "Oleg",
+        "userImageString": "image3",
+        "lastMessage": "my name Oleg",
+        "id": 3
+    }
+]
