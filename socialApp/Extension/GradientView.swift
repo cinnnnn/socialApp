@@ -63,7 +63,6 @@ class GradientView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = bounds
-        print(gradientLayer.frame.width, gradientLayer.frame.height)
     }
     
     private func setupGradient(from: Point, to: Point, startColor: UIColor?, endColor: UIColor?) {

@@ -16,5 +16,23 @@
         "userImageString": "avatar3",
         "lastMessage": "my name Oleg",
         "id": 3
+    },
+    {
+        "userName": "Denis",
+        "userImageString": "avatar1",
+        "lastMessage": "Hello world",
+        "id": 4
+    },
+    {
+        "userName": "Alex",
+        "userImageString": "avatar2",
+        "lastMessage": "how are u",
+        "id": 5
+    },
+    {
+        "userName": "Oleg",
+        "userImageString": "avatar3",
+        "lastMessage": "my name Oleg",
+        "id": 6
     }
 ]

@@ -43,7 +43,7 @@ class ListViewController: UIViewController {
         
         view.addSubview(collectionView)
         collectionView.register(ActiveChatsCell.self, forCellWithReuseIdentifier: ActiveChatsCell.reuseID)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "CellID2")
+        collectionView.register(WaitingChatsCell.self, forCellWithReuseIdentifier: WaitingChatsCell.reuseID)
     }
     
 
@@ -90,6 +90,7 @@ extension ListViewController {
         return layout
     }
     
+    //MARK: - createActiveChatsLayout
     private func createActiveChatsLayout() -> NSCollectionLayoutSection {
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -122,6 +123,7 @@ extension ListViewController {
         return section
     }
     
+    //MARK: - createWaitingChatsLayout
     private func createWaitingChatsLayout() -> NSCollectionLayoutSection {
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -146,8 +148,8 @@ extension ListViewController {
                                                       trailing: 0)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .groupPaging
         
+        section.orthogonalScrollingBehavior = .groupPaging
         section.interGroupSpacing = 25
         section.contentInsets = NSDirectionalEdgeInsets(top: 16,
                                                         leading: 25,
@@ -182,10 +184,8 @@ extension ListViewController {
                     return self.configure(cellType: ActiveChatsCell.self, value: chat, indexPath: indexPath)
                     
                 case .waitingChats:
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellID2", for: indexPath)
-                    cell.backgroundColor = .systemRed
-                    cell.layer.borderWidth = 1
-                    return cell
+                    
+                    return self.configure(cellType: WaitingChatsCell.self, value: chat, indexPath: indexPath)
                 }
         })
     }

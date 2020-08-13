@@ -1,31 +1,31 @@
 [
     {
         "userName": "Kate",
-        "userImageString": "image6",
+        "userImageString": "avatar1",
         "lastMessage": "Hi",
         "id": 6
     },
     {
         "userName": "Nastya",
-        "userImageString": "image7",
+        "userImageString": "avatar2",
         "lastMessage": "whatsup!",
         "id": 7
     },
     {
         "userName": "Masha",
-        "userImageString": "image8",
+        "userImageString": "avatar3",
         "lastMessage": "Hello!!!",
         "id": 8
     },
     {
         "userName": "Marina",
-        "userImageString": "image9",
+        "userImageString": "avatar4",
         "lastMessage": "who a u?",
         "id": 9
     },
     {
         "userName": "Sveta",
-        "userImageString": "image10",
+        "userImageString": "avatar5",
         "lastMessage": "Go to chat!!!",
         "id": 10
     },
