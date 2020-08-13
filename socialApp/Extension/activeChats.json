@@ -1,19 +1,19 @@
 [
     {
         "userName": "Denis",
-        "userImageString": "image1",
+        "userImageString": "avatar1",
         "lastMessage": "Hello world",
         "id": 1
     },
     {
         "userName": "Alex",
-        "userImageString": "image2",
+        "userImageString": "avatar2",
         "lastMessage": "how are u",
         "id": 2
     },
     {
         "userName": "Oleg",
-        "userImageString": "image3",
+        "userImageString": "avatar3",
         "lastMessage": "my name Oleg",
         "id": 3
     }
