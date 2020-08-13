@@ -28,18 +28,20 @@ class MainTabBarController: UITabBarController {
         tabBar.tintColor = .label
         
         viewControllers = [
-            generateNavigationController(rootViewController: listVC, image: listImage),
-            generateNavigationController(rootViewController: peopleVC, image: peopleImage)
+            generateNavigationController(rootViewController: listVC, image: listImage, title: "Chats"),
+            generateNavigationController(rootViewController: peopleVC, image: peopleImage, title: "People")
             
         ]
     }
     
     
     private func generateNavigationController(rootViewController: UIViewController,
-                                              image: UIImage) -> UIViewController {
+                                              image: UIImage,
+                                              title: String) -> UIViewController {
         
         let navController = UINavigationController(rootViewController: rootViewController)
         navController.tabBarItem.image = image
+        navController.tabBarItem.title = title
         
         return navController
     }

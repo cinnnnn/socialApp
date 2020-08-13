@@ -9,18 +9,13 @@
 import UIKit
 import SwiftUI
 
-protocol SelfConfiguringCell {
-    static var reuseID: String { get }
-    func configure(with value: MChat)
-}
-
 class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     static var reuseID: String = "ActiveChatCell"
     
     let frendImage = UIImageView()
     let frendName = UILabel(labelText: "user1")
     let lastMessage = UILabel(labelText: "Whats ap!")
-    let gradientView = UIView()
+    let gradientView = GradientView(from: .topTrailing, to: .bottomLeading, startColor: #colorLiteral(red: 1, green: 0.6655073762, blue: 0.9930477738, alpha: 1), endColor: #colorLiteral(red: 0.5750052333, green: 0.5949758887, blue: 0.9911155105, alpha: 1))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,6 +25,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         clipsToBounds = true
     }
     
+    //MARK: - configure
     func configure(with value: MChat) {
         
         frendImage.image = UIImage(named: value.userImageString)
@@ -38,6 +34,14 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         
     }
     
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+//MARK: -  setupConstraints
+extension ActiveChatsCell {
     private func setupConstraints() {
         
         frendImage.translatesAutoresizingMaskIntoConstraints = false
@@ -45,8 +49,8 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         lastMessage.translatesAutoresizingMaskIntoConstraints = false
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         
-        gradientView.backgroundColor = .orange
         self.backgroundColor = .systemBackground
+        gradientView.backgroundColor = .orange
         
         addSubview(frendImage)
         addSubview(frendName)
@@ -72,28 +76,6 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         ])
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
 }
 
-//MARK: - SwiftUI
-//struct ActiveCellControllerProvider: PreviewProvider {
-//   
-//    static var previews: some View {
-//        ContenerView().edgesIgnoringSafeArea(.all)
-//    }
-//    
-//    struct ContenerView: UIViewControllerRepresentable {
-//        
-//        func makeUIViewController(context: Context) -> ActiveChatsCell {
-//            ActiveChatsCell()
-//        }
-//        
-//        func updateUIViewController(_ uiViewController: ActiveChatsCell, context: Context) {
-//            
-//        }
-//    }
-//}
+
