@@ -25,6 +25,7 @@
 		FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BC24E59A31000A2E91 /* GradientView.swift */; };
 		FB21A1BF24E5ADE5000A2E91 /* WaitingChatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BE24E5ADE5000A2E91 /* WaitingChatsCell.swift */; };
 		FB66288124A93ADC00650820 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* SignUpViewController.swift */; };
+		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBEF607824A602070005F947 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607724A602070005F947 /* AppDelegate.swift */; };
 		FBEF607A24A602070005F947 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607924A602070005F947 /* SceneDelegate.swift */; };
 		FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607B24A602070005F947 /* AuthViewController.swift */; };
@@ -55,6 +56,7 @@
 		FB21A1BC24E59A31000A2E91 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		FB21A1BE24E5ADE5000A2E91 /* WaitingChatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingChatsCell.swift; sourceTree = "<group>"; };
 		FB66288024A93ADC00650820 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBEF607424A602070005F947 /* socialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = socialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBEF607724A602070005F947 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBEF607924A602070005F947 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -79,7 +81,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		FB18217824B225BD00FFFC87 /* Auth */ = {
+		FB18217824B225BD00FFFC87 /* AuthControllers */ = {
 			isa = PBXGroup;
 			children = (
 				FBEF607B24A602070005F947 /* AuthViewController.swift */,
@@ -87,18 +89,17 @@
 				FB1062D924AE69240012C4D4 /* LoginViewController.swift */,
 				FB1062DB24B09F6C0012C4D4 /* SetProfileViewController.swift */,
 			);
-			path = Auth;
+			path = AuthControllers;
 			sourceTree = "<group>";
 		};
-		FB18217924B225C500FFFC87 /* Controllers */ = {
+		FB18217924B225C500FFFC87 /* mainControllers */ = {
 			isa = PBXGroup;
 			children = (
-				FB21A1B424E55F53000A2E91 /* Cell */,
 				FB18217A24B2261F00FFFC87 /* MainTabBarController.swift */,
-				FB18217624B21F5100FFFC87 /* ListViewController.swift */,
+				FBA94D1F24F55D54000DA5D5 /* ListViewController */,
 				FB18217C24B2268E00FFFC87 /* PeopleViewController.swift */,
 			);
-			path = Controllers;
+			path = mainControllers;
 			sourceTree = "<group>";
 		};
 		FB21A1B424E55F53000A2E91 /* Cell */ = {
@@ -116,6 +117,24 @@
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		FBA94D1C24F55AC2000DA5D5 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FB21A1AC24C89F68000A2E91 /* BundleDecode.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FBA94D1F24F55D54000DA5D5 /* ListViewController */ = {
+			isa = PBXGroup;
+			children = (
+				FB18217624B21F5100FFFC87 /* ListViewController.swift */,
+				FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */,
+				FB21A1B424E55F53000A2E91 /* Cell */,
+			);
+			path = ListViewController;
 			sourceTree = "<group>";
 		};
 		FBEF606B24A602070005F947 = {
@@ -141,6 +160,7 @@
 				FBEF607924A602070005F947 /* SceneDelegate.swift */,
 				FB21A1B924E596E3000A2E91 /* Models */,
 				FBEF609424A90DD60005F947 /* ViewControllers */,
+				FBA94D1C24F55AC2000DA5D5 /* Controllers */,
 				FBEF608F24A908100005F947 /* Extension */,
 				FBEF608024A6020A0005F947 /* Assets.xcassets */,
 				FBEF608224A6020A0005F947 /* LaunchScreen.storyboard */,
@@ -161,7 +181,6 @@
 				FBEF609224A90C840005F947 /* UIImageViewExtension.swift */,
 				FB18217E24B2442800FFFC87 /* UIColorExtension.swift */,
 				FB1062DF24B20CE60012C4D4 /* UISegmentedControlExtension.swift */,
-				FB21A1AC24C89F68000A2E91 /* BundleDecode.swift */,
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FB21A1AE24C8A152000A2E91 /* activeChats.json */,
 				FB21A1B224C8A2D1000A2E91 /* waitingChats.json */,
@@ -172,8 +191,8 @@
 		FBEF609424A90DD60005F947 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				FB18217824B225BD00FFFC87 /* Auth */,
-				FB18217924B225C500FFFC87 /* Controllers */,
+				FB18217824B225BD00FFFC87 /* AuthControllers */,
+				FB18217924B225C500FFFC87 /* mainControllers */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -254,6 +273,7 @@
 				FB1062DE24B0C8DF0012C4D4 /* ProfileImageView.swift in Sources */,
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
+				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,
 				FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */,
 				FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */,

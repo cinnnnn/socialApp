@@ -11,7 +11,8 @@ import UIKit
 
 extension UIFont {
     
-    static func avenir(size: CGFloat) -> UIFont? {
-        UIFont.init(name: "avenirBold", size: size)
+    static func avenir(size: CGFloat) -> UIFont {
+        guard let font = UIFont.init(name: "avenirBold", size: size) else { fatalError("Unknown Font")}
+        return font
     }
 }
