@@ -15,3 +15,8 @@ protocol SelfConfiguringCell {
     func configure(with value: MChat)
 }
 
+protocol PeopleConfigurationCell {
+    static var reuseID: String { get }
+    func configure(with value: MPeople)
+}
+

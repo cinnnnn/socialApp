@@ -3,30 +3,30 @@
         "userName": "Kate",
         "userImageString": "avatar1",
         "lastMessage": "Hi",
-        "id": 6
+        "id": 7
     },
     {
         "userName": "Nastya",
         "userImageString": "avatar2",
         "lastMessage": "whatsup!",
-        "id": 7
+        "id": 8
     },
     {
         "userName": "Masha",
         "userImageString": "avatar3",
         "lastMessage": "Hello!!!",
-        "id": 8
+        "id": 9
     },
     {
         "userName": "Marina",
         "userImageString": "avatar4",
         "lastMessage": "who a u?",
-        "id": 9
+        "id": 10
     },
     {
         "userName": "Sveta",
         "userImageString": "avatar5",
         "lastMessage": "Go to chat!!!",
-        "id": 10
+        "id": 11
     },
 ]
