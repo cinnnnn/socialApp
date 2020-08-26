@@ -115,10 +115,10 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
             likeButton.widthAnchor.constraint(equalToConstant: 50),
             likeButton.heightAnchor.constraint(equalToConstant: 50),
             
-            photo.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 25),
-            photo.bottomAnchor.constraint(equalTo: backView.topAnchor, constant: 25),
-            photo.widthAnchor.constraint(equalToConstant: 50),
-            photo.heightAnchor.constraint(equalToConstant: 50),
+            photo.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 6),
+            photo.bottomAnchor.constraint(equalTo: backView.topAnchor, constant: 35),
+            photo.widthAnchor.constraint(equalToConstant: 70),
+            photo.heightAnchor.constraint(equalToConstant: 70),
             
             distance.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6),
             distance.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -6)
