@@ -58,9 +58,10 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         let textView = UITextView()
         textView.isEditable = false
         textView.isSelectable = false
-        textView.font = .boldSystemFont(ofSize: 18)
+        textView.isScrollEnabled = false //for autosize height
+        textView.backgroundColor = .systemBackground
+        textView.font = .systemFont(ofSize: 18, weight: .regular)
         textView.textColor = .label
-        textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
     
@@ -86,7 +87,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     }
     
     private func setupConstraints(){
-        
+    
         backView.translatesAutoresizingMaskIntoConstraints = false
         photo.translatesAutoresizingMaskIntoConstraints = false
         messageBox.translatesAutoresizingMaskIntoConstraints = false
@@ -95,20 +96,22 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         
         addSubview(backView)
         addSubview(photo)
-        addSubview(messageBox)
         addSubview(likeButton)
         addSubview(distance)
+        addSubview(messageBox)
         
         NSLayoutConstraint.activate([
+            bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: 25),
+            
             backView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backView.trailingAnchor.constraint(equalTo: trailingAnchor),
             backView.topAnchor.constraint(equalTo: topAnchor, constant: 25),
-            backView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25),
+            backView.bottomAnchor.constraint(equalTo: messageBox.bottomAnchor, constant: 25),
             
             messageBox.leadingAnchor.constraint(equalTo: photo.trailingAnchor, constant: 5),
-            messageBox.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -25),
+            messageBox.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25),
             messageBox.topAnchor.constraint(equalTo: backView.topAnchor, constant: 25),
-            messageBox.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -25),
+    
             
             likeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -25),
             likeButton.topAnchor.constraint(equalTo: backView.bottomAnchor, constant: -25),

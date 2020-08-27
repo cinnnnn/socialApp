@@ -178,6 +178,7 @@ extension ListViewController {
 //MARK: - DiffableDataSource
 extension ListViewController {
     
+       //MARK: - configure  cell
     private func configure<T: SelfConfiguringCell>(cellType: T.Type, value: MChat, indexPath: IndexPath) -> T {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)") }
         
@@ -185,7 +186,7 @@ extension ListViewController {
         return cell
     }
     
-    
+    //MARK: - setupDataSource
     private func setupDataSource(){
         dataSource = UICollectionViewDiffableDataSource<SectionsChats, MChat>(collectionView: collectionView,
             cellProvider: { [weak self] (collectionView, indexPath, chat) -> UICollectionViewCell? in
@@ -205,13 +206,16 @@ extension ListViewController {
                 }
         })
         
+            //MARK: - supplementaryViewProvider
         dataSource?.supplementaryViewProvider = {
             collectionView, kind, indexPath in
             guard let reuseSectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeader.reuseId, for: indexPath) as? SectionHeader else { fatalError("Can't create new sectionHeader") }
             
             guard let section = SectionsChats(rawValue: indexPath.section) else { fatalError("Unknown section")}
             
-            reuseSectionHeader.configure(text: section.description(),
+            guard let itemsCount = self.dataSource?.snapshot().numberOfItems(inSection: section) else { fatalError("Unknow items count in section")}
+            
+            reuseSectionHeader.configure(text: section.description(count: itemsCount),
                                          font: UIFont.boldSystemFont(ofSize: 11),
                                          textColor: UIColor.myHeaderColor())
            
