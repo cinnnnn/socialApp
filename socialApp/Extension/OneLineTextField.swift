@@ -11,12 +11,16 @@ import UIKit
 class OneLineTextField: UITextField {
     
     
-    convenience init(isSecureText: Bool ){
+    
+    convenience init(isSecureText: Bool, withButton: Bool = false, buttonText: String = "", placeHoledText: String = ""){
         self.init()
         
         borderStyle = .none
         translatesAutoresizingMaskIntoConstraints = false
         isSecureTextEntry = isSecureText
+        placeholder = placeHoledText
+        
+        
         
         let bottomView =  UIView.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         bottomView.backgroundColor = .label
@@ -31,9 +35,22 @@ class OneLineTextField: UITextField {
             bottomView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
         ])
         
-        
+        if withButton {
+            
+            let textFieldButton = UIButton()
+            textFieldButton.setTitle(buttonText, for: .normal)
+            textFieldButton.setTitleColor(.label, for: .normal)
+            
+            rightView = textFieldButton
+            rightViewMode = .always
+            rightView?.frame = CGRect(x: 0, y: 0, width: 8 , height: 8)
+            
+        }
     }
+    
 }
+
+
 
 
 

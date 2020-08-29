@@ -15,18 +15,34 @@ class UserViewController: UIViewController {
     let container = UIView()
     let nameLabel = UILabel(labelText: "Зельда", textFont: .boldSystemFont(ofSize: 22))
     let messageTextView = UITextView(text: "Легенды Зельды", isEditableText: false, delegate: nil)
-    let messageTextField = UITextField()
+    let unswerTextField = OneLineTextField(isSecureText: false, withButton: true, buttonText: "Отправить", placeHoledText: "Сообщение")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configure()
         setupConstraints()
-        view.backgroundColor = .red
-        container.backgroundColor = .orange
-        messageTextField.backgroundColor = .blue
+        setupAction()
+
+    }
+    
+    private func setupAction() {
+        
+        if let sendButton = unswerTextField.rightView as? UIButton {
+            sendButton.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
+        }
         
     }
     
+    @objc func sendMessage() {
+        print("Olololo")
+    }
+    
+    private func configure(){
+        
+        container.backgroundColor = .myBackgroundColor()
+        container.layer.cornerRadius = 30
+    }
     
     private func setupConstraints() {
         
@@ -34,14 +50,14 @@ class UserViewController: UIViewController {
         container.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         messageTextView.translatesAutoresizingMaskIntoConstraints = false
-        messageTextField.translatesAutoresizingMaskIntoConstraints = false
+        unswerTextField.translatesAutoresizingMaskIntoConstraints = false
+    
         
         view.addSubview(photo)
         view.addSubview(container)
         container.addSubview(nameLabel)
         container.addSubview(messageTextView)
-        container.addSubview(messageTextField)
-        
+        container.addSubview(unswerTextField)
       
         NSLayoutConstraint.activate([
             
@@ -65,17 +81,11 @@ class UserViewController: UIViewController {
             messageTextView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 30),
             messageTextView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -30),
             
-            messageTextField.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 30),
-            messageTextField.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -30),
-            messageTextField.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -60)
-            
-            
+            unswerTextField.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 30),
+            unswerTextField.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -30),
+            unswerTextField.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -60),
+            unswerTextField.heightAnchor.constraint(equalToConstant: 40)
         ])
-        
-
-        
-       
-        
     }
 }
 

@@ -17,7 +17,7 @@ extension UITextView {
         isEditable = isEditableText
         isSelectable = isEditableText
         isScrollEnabled = false //for autosize height
-        backgroundColor = .systemBackground
+        backgroundColor = nil
         font = .systemFont(ofSize: 18, weight: .regular)
         textColor = .label
         
