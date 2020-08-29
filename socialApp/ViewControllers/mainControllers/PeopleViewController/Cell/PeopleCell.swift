@@ -17,7 +17,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         photoImage.clipsToBounds = true
         photoImage.layer.cornerRadius = 4
 
-        photoImage.contentMode = .scaleAspectFit
+        photoImage.contentMode = .scaleAspectFill
         photoImage.translatesAutoresizingMaskIntoConstraints = false
         return photoImage
     }()

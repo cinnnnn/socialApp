@@ -14,6 +14,7 @@ extension UISegmentedControl {
         self.init()
         translatesAutoresizingMaskIntoConstraints = false
         
+        backgroundColor = .systemBackground
         insertSegment(withTitle: first, at: 0, animated: true)
         insertSegment(withTitle: second, at: 1, animated: true)
         

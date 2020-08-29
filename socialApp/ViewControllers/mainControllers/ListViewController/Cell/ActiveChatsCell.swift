@@ -12,7 +12,7 @@ import SwiftUI
 class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     static var reuseID: String = "ActiveChatCell"
     
-    let frendImage = UIImageView()
+    let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
     let frendName = UILabel(labelText: "user1")
     let lastMessage = UILabel(labelText: "Whats ap!")
     let gradientView = GradientView(from: .topTrailing, to: .bottomLeading, startColor: #colorLiteral(red: 1, green: 0.6655073762, blue: 0.9930477738, alpha: 1), endColor: #colorLiteral(red: 0.5750052333, green: 0.5949758887, blue: 0.9911155105, alpha: 1))

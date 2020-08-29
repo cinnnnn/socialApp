@@ -13,5 +13,12 @@ extension UILabel {
     convenience init(labelText: String) {
         self.init()
         text = labelText
+
+    }
+    
+    convenience init(labelText: String, textFont: UIFont?) {
+        self.init()
+        text = labelText
+        font = textFont
     }
 }

@@ -12,21 +12,21 @@ import SwiftUI
 class SetProfileViewController: UIViewController {
     
     let profileImage = ProfileImageView()
-    let nameLabel = UILabel(labelText: "Name")
-    let aboutLabel = UILabel(labelText: "About")
-    let sexLabel = UILabel(labelText: "Sex")
-    let wantLabel = UILabel(labelText: "I want")
+    let nameLabel = UILabel(labelText: "Сегодня я:")
+    let aboutLabel = UILabel(labelText: "Мои желания:")
+    let sexLabel = UILabel(labelText: "Мой пол:")
+    let wantLabel = UILabel(labelText: "Ищу:")
     let nameTextField = OneLineTextField(isSecureText: false)
     let aboutTextField = OneLineTextField(isSecureText: false)
-    let sexSegmentedControl = UISegmentedControl(first: "Male",
-                                                 second: "Female",
+    let sexSegmentedControl = UISegmentedControl(first: "Парень",
+                                                 second: "Девушка",
                                                  selectedIndex: 0)
-    let wantSegmentedControl = UISegmentedControl(first: "Male",
-                                                  second: "Female",
+    let wantSegmentedControl = UISegmentedControl(first: "Парня",
+                                                  second: "Девушку",
                                                   selectedIndex: 1)
     let goButton = UIButton(newBackgroundColor: .label,
                             newBorderColor: .label,
-                            title: "Go",
+                            title: "Начнем!",
                             titleColor: .systemBackground)
     
     

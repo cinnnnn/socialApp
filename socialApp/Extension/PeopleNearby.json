@@ -2,56 +2,56 @@
     {
         "userName": "Kate",
         "message": "Ищу пьющего",
-        "userImageString": "avatar1",
+        "userImageString": "Photo7",
         "like": false,
         "id": 1
     },
     {
         "userName": "Nastya",
         "message": "Одиноко и грустно <3",
-        "userImageString": "avatar2",
+        "userImageString": "Photo4",
         "like": true,
         "id": 2
     },
     {
         "userName": "Masha",
         "message": "Ум еще не разум, а разум не интелект, удивите меня. Ум еще не разум, а разум не интелект, удивите меня",
-        "userImageString": "avatar3",
+        "userImageString": "Photo2",
         "like": false,
         "id": 3
     },
     {
         "userName": "Marina",
         "message": "Давай поможем друг другу кончить?",
-        "userImageString": "avatar4",
+        "userImageString": "Photo8",
         "like": true,
         "id": 4
     },
     {
         "userName": "Sveta",
         "message": "Общение и контак, а потом посмотрим ;D",
-        "userImageString": "avatar5",
+        "userImageString": "Photo1",
         "like": false,
         "id": 5
     },
     {
          "userName": "Kate",
          "message": "Надо что бы огонь!!!",
-         "userImageString": "avatar5",
+         "userImageString": "Photo3",
          "like": false,
          "id": 6
      },
     {
          "userName": "Lio",
          "message": "FWB",
-         "userImageString": "avatar5",
+         "userImageString": "Photo2",
          "like": true,
          "id": 7
      },
     {
          "userName": "Heop",
          "message": "Гоу приятное общение",
-         "userImageString": "avatar5",
+         "userImageString": "Photo10",
          "like": false,
          "id": 8
      },

@@ -18,20 +18,20 @@ class LoginViewController: UIViewController {
     
     let loginButton = UIButton(newBackgroundColor: .label,
                                newBorderColor: .label,
-                               title: "Login",
+                               title: "Вход",
                                titleColor: .systemBackground)
     
     let signUpButton = UIButton(newBackgroundColor: .systemBackground,
                                newBorderColor: .label,
-                               title: "Sign Up",
+                               title: "Зарегистрироваться",
                                titleColor: .label)
     
     let emailTextField = OneLineTextField(isSecureText: false)
     let passwordTextField = OneLineTextField(isSecureText: true)
     
     let emailLabel = UILabel(labelText: "Email")
-    let passwordLabel = UILabel(labelText: "Password")
-    let needAccountLabel = UILabel(labelText: "Need account?")
+    let passwordLabel = UILabel(labelText: "Пароль")
+    let needAccountLabel = UILabel(labelText: "Еще не с нами?")
     
     
     override func viewDidLoad() {
@@ -104,7 +104,7 @@ extension LoginViewController {
         signUpButton.heightAnchor.constraint(equalTo: signUpButton.widthAnchor, multiplier: 1.0/7.28),
         
         needAccountLabel.bottomAnchor.constraint(equalTo: signUpButton.topAnchor, constant: -5),
-        needAccountLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25)
+        needAccountLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
         
         ])
     }

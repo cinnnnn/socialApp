@@ -14,19 +14,19 @@ class AuthViewController: UIViewController {
 
     let emailButton = UIButton(newBackgroundColor: .systemBackground,
                                newBorderColor: .label,
-                               title: "Email",
+                               title: "Регистрация по Email",
                                titleColor: .label,
                                isShadow: false)
     
     let loginButton = UIButton(newBackgroundColor: .systemBackground,
                                newBorderColor: .label,
-                               title: "Login",
+                               title: "Вход",
                                titleColor: .label,
                                isShadow: false)
     
     let appleButton = UIButton(image: #imageLiteral(resourceName: "SignUpApple"))
     
-    let loginLabel = UILabel(labelText: "Already onboard?")
+    let loginLabel = UILabel(labelText: "Уже с нами?")
     
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
     

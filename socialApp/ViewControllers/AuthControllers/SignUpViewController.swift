@@ -16,9 +16,9 @@ class SignUpViewController: UIViewController {
                                  contentMode: .scaleAspectFit)
     
     let loginLabel = UILabel(labelText: "Email")
-    let passwordLabel = UILabel(labelText: "Password")
-    let confirmPasswordLabel = UILabel(labelText: "Confirm password")
-    let onboardLabel = UILabel(labelText: "Already onboard?")
+    let passwordLabel = UILabel(labelText: "Пароль")
+    let confirmPasswordLabel = UILabel(labelText: "Повтори пароль")
+    let onboardLabel = UILabel(labelText: "Уже с нами?")
     
     let loginTextField = OneLineTextField(isSecureText: false)
     let passwordTextField = OneLineTextField(isSecureText: true)
@@ -26,12 +26,12 @@ class SignUpViewController: UIViewController {
     
     let signUpButton = UIButton(newBackgroundColor: .label,
                                 newBorderColor: .label,
-                                title: "Sign Up",
+                                title: "Зарегистрироваться",
                                 titleColor: .systemBackground)
     
     let loginButton = UIButton(newBackgroundColor: .systemBackground,
                                newBorderColor: .label,
-                               title: "Login",
+                               title: "Вход",
                                titleColor: .label)
     
     override func viewDidLoad() {
@@ -90,7 +90,7 @@ extension SignUpViewController {
             passwordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             passwordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            confirmPasswordTextField.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 38),
+            confirmPasswordTextField.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 68),
             confirmPasswordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             confirmPasswordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
     

@@ -1,32 +1,32 @@
 [
     {
-        "userName": "Kate",
-        "userImageString": "avatar1",
+        "userName": "Стася",
+        "userImageString": "Photo7",
         "lastMessage": "Hi",
         "id": 7
     },
     {
-        "userName": "Nastya",
-        "userImageString": "avatar2",
-        "lastMessage": "whatsup!",
+        "userName": "Дарья",
+        "userImageString": "Photo8",
+        "lastMessage": "Погнали?",
         "id": 8
     },
     {
-        "userName": "Masha",
-        "userImageString": "avatar3",
-        "lastMessage": "Hello!!!",
+        "userName": "Маша",
+        "userImageString": "Photo9",
+        "lastMessage": "Пойдем пить кофе",
         "id": 9
     },
     {
-        "userName": "Marina",
-        "userImageString": "avatar4",
+        "userName": "Айгуль",
+        "userImageString": "Photo10",
         "lastMessage": "who a u?",
         "id": 10
     },
     {
-        "userName": "Sveta",
-        "userImageString": "avatar5",
-        "lastMessage": "Go to chat!!!",
+        "userName": "Юлия",
+        "userImageString": "Photo11",
+        "lastMessage": "Напиши мне!!!",
         "id": 11
     },
 ]
