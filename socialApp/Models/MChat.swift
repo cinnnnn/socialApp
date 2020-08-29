@@ -21,4 +21,13 @@ struct MChat: Hashable, Decodable {
     static func == (lhs: MChat, rhs: MChat) -> Bool {
         return lhs.id == rhs.id
     }
+    
+    func contains(element: String?) -> Bool {
+        guard let element = element else { return true }
+        if element.isEmpty { return true }
+        
+        let lowercasedElement = element.lowercased()
+        
+        return userName.lowercased().contains(lowercasedElement)
+    }
 }

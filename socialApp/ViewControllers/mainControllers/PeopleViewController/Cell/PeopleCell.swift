@@ -41,16 +41,31 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     let likeButton: UIButton = {
         let button = UIButton()
-        button.setImage(#imageLiteral(resourceName: "LikeButton"), for: .normal)
+        
+        button.backgroundColor = #colorLiteral(red: 1, green: 0.6655073762, blue: 0.9930477738, alpha: 1)
+        
+        button.setBackgroundImage(#imageLiteral(resourceName: "LikeButton"), for: .normal)
+//        button.setImage(#imageLiteral(resourceName: "Logo"), for: .selected)
+       
         button.layer.cornerRadius = 4
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.layer.shadowColor = UIColor.myHeaderColor().cgColor
+        button.layer.shadowRadius = 3
+        button.layer.shadowOffset = CGSize(width: 3, height: 3)
+        button.layer.shadowOpacity = 0.3
         return button
     }()
     
     let backView: UIView = {
         let myView = UIView()
         myView.backgroundColor = .systemBackground
+        myView.layer.cornerRadius = 4
+        myView.layer.shadowColor = UIColor.myHeaderColor().cgColor
+        myView.layer.shadowRadius = 3
+        myView.layer.shadowOffset = CGSize(width: 3, height: 3)
+        myView.layer.shadowOpacity = 0.3
         return myView
     }()
     
@@ -96,15 +111,15 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         
         addSubview(backView)
         addSubview(photo)
-        addSubview(likeButton)
         addSubview(distance)
         addSubview(messageBox)
+        addSubview(likeButton)
         
         NSLayoutConstraint.activate([
-            bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: 25),
+            bottomAnchor.constraint(equalTo: likeButton.bottomAnchor, constant: 0),
             
-            backView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            backView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            backView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
             backView.topAnchor.constraint(equalTo: topAnchor, constant: 25),
             backView.bottomAnchor.constraint(equalTo: messageBox.bottomAnchor, constant: 25),
             
@@ -123,7 +138,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
             photo.widthAnchor.constraint(equalToConstant: 70),
             photo.heightAnchor.constraint(equalToConstant: 70),
             
-            distance.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6),
+            distance.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 6),
             distance.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -6)
             
         ])

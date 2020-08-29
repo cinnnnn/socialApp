@@ -26,7 +26,7 @@ class ListViewController: UIViewController {
         setupNavigationController()
         setupCollectionView()
         setupDataSource()
-        reloadData()
+        reloadData(searchText: nil)
     }
     
     private func setupCollectionView() {
@@ -37,6 +37,7 @@ class ListViewController: UIViewController {
         collectionView.backgroundColor = .myBackgroundColor()
         
         view.addSubview(collectionView)
+        
         collectionView.register(ActiveChatsCell.self, forCellWithReuseIdentifier: ActiveChatsCell.reuseID)
         collectionView.register(WaitingChatsCell.self, forCellWithReuseIdentifier: WaitingChatsCell.reuseID)
         collectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeader.reuseId)
@@ -52,11 +53,13 @@ class ListViewController: UIViewController {
  
         navigationItem.title = "Чаты"
         
+        
         let searchController = UISearchController(searchResultsController: nil)
         
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "Поиск по людям"
         
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -72,13 +75,21 @@ extension ListViewController {
     private func setupCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             
-            guard let section = SectionsChats(rawValue: sectionIndex) else { fatalError("Unknown section")}
+        //    guard let section = SectionsChats(rawValue: sectionIndex) else { fatalError("Unknown section")}
             
-            switch section {
-            case .activeChats:
+//            switch section {
+//            case .activeChats:
+//                return self.createActiveChatsLayout()
+//            case .waitingChats:
+//                return self.createWaitingChatsLayout()
+//            }
+            
+            switch sectionIndex {
+            case 1:
                 return self.createActiveChatsLayout()
-            case .waitingChats:
-                return self.createWaitingChatsLayout()
+    
+            default:
+               return  self.createWaitingChatsLayout()
             }
             
         }
@@ -129,9 +140,9 @@ extension ListViewController {
         section.interGroupSpacing = 16
 
         section.contentInsets = NSDirectionalEdgeInsets(top: 11,
-                                                        leading: 25,
+                                                        leading: 8,
                                                         bottom: 0,
-                                                        trailing: 25)
+                                                        trailing: 8)
         
         return section
     }
@@ -168,9 +179,9 @@ extension ListViewController {
         section.orthogonalScrollingBehavior = .groupPaging
         section.interGroupSpacing = 25
         section.contentInsets = NSDirectionalEdgeInsets(top: 11,
-                                                        leading: 25,
+                                                        leading: 8,
                                                         bottom: 10,
-                                                        trailing: 25)
+                                                        trailing: 8)
         
         return section
     }
@@ -225,22 +236,26 @@ extension ListViewController {
     
     
     //MARK: - reloadData
-    private func reloadData(){
-             
-             var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
-             snapshot.appendSections([.waitingChats, .activeChats])
-             snapshot.appendItems(activeChats, toSection: .activeChats)
-             snapshot.appendItems(waitingChats, toSection: .waitingChats)
-             
-             dataSource?.apply(snapshot, animatingDifferences: true)
-         }
+    private func reloadData(searchText: String?){
+        
+        let filtredChats = activeChats.filter { activeChat -> Bool in
+            activeChat.contains(element: searchText)
+        }
+        
+        var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
+        snapshot.appendSections([.waitingChats, .activeChats])
+        snapshot.appendItems(filtredChats, toSection: .activeChats)
+        snapshot.appendItems(waitingChats, toSection: .waitingChats)
+        
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
 }
 
 //MARK: -UISearchBarDelegate
 extension ListViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
+        reloadData(searchText: searchText)
     }
 }
 
