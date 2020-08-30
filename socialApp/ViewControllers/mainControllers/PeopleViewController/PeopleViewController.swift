@@ -12,7 +12,7 @@ import SwiftUI
 class PeopleViewController: UIViewController {
     
     
-    let peopleNearby = Bundle.main.decode(type: [MPeople].self, from: "PeopleNearby.json")
+    var peopleNearby = Bundle.main.decode(type: [MPeople].self, from: "PeopleNearby.json")
     
     var collectionView: UICollectionView!
     
@@ -62,19 +62,6 @@ class PeopleViewController: UIViewController {
                                 withReuseIdentifier: SectionHeader.reuseId)
     }
     
-         //MARK: - createSectionHeader
-    private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-        
-        let sectionSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                 heightDimension: .estimated(1))
-        
-        let item = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sectionSize,
-                                                                        
-                                                               elementKind: UICollectionView.elementKindSectionHeader,
-                                                               alignment: .top)
-        
-        return item
-    }
        //MARK: - setupMainSection
     private func setupMainSection() -> NSCollectionLayoutSection {
         
@@ -89,10 +76,6 @@ class PeopleViewController: UIViewController {
         
         
         let section = NSCollectionLayoutSection(group: group)
-        
-      //  let header = createSectionHeader()
-        
-      //  section.boundarySupplementaryItems = [header]
         
         section.interGroupSpacing = 16
         section.contentInsets = NSDirectionalEdgeInsets(top: 25,
@@ -119,12 +102,21 @@ class PeopleViewController: UIViewController {
     }
     
     
+    //MARK:  -pressLikeButton()
+    @objc private func pressLikeButton() {
+       
+        reloadData()
+    }
+    
       //MARK: - configureCell
     private func configureCell<T:PeopleConfigurationCell>(cellType: T.Type, value: MPeople, indexPath: IndexPath) -> T {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)")}
+        guard var cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)")}
         
         cell.configure(with: value)
+        cell.likeButton.addTarget(self, action: #selector(pressLikeButton), for: .touchUpInside)
+        cell.delegate = self
+        
         
         return cell
     }
@@ -145,23 +137,6 @@ class PeopleViewController: UIViewController {
                 }
         })
         
-        dataSource?.supplementaryViewProvider = { collectionView, kind, indexPath in
-            
-            guard let reuseSectionHeader = collectionView.dequeueReusableSupplementaryView(
-                ofKind: kind,
-                withReuseIdentifier: SectionHeader.reuseId,
-                for: indexPath
-                ) as? SectionHeader else { fatalError("reuse section header error")}
-            
-            guard let section = SectionsPeople(rawValue: indexPath.section) else {
-                fatalError("Unknown people section")
-            }
-            
-            reuseSectionHeader.configure(text: section.description(),
-                                         font: .systemFont(ofSize: 18),
-                                         textColor: .myHeaderColor())
-            return reuseSectionHeader
-        }
     }
     
     private func reloadData() {
@@ -170,21 +145,26 @@ class PeopleViewController: UIViewController {
         snapshot.appendSections([.main])
         snapshot.appendItems(peopleNearby, toSection: .main)
         
+        snapshot.reloadItems(peopleNearby)
         dataSource?.apply(snapshot, animatingDifferences: true)
         
     }
 }
 
-
-//MARK: -UISearchBarDelegate
-extension PeopleViewController: UISearchBarDelegate {
+extension PeopleViewController: PeopleCellDelegate {
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
+    func likeTupped(userID: Int) {
+        for people in peopleNearby.enumerated() {
+            if people.element.id == userID {
+                print(userID)
+                peopleNearby[people.offset].like = true
+                print(people.offset)
+            }
+        }
+        print(peopleNearby[0])
+        reloadData()
     }
 }
-
-
 
 //MARK:- SwiftUI
 

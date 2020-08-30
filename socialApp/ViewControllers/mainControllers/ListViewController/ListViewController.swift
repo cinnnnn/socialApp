@@ -248,6 +248,7 @@ extension ListViewController {
         snapshot.appendItems(waitingChats, toSection: .waitingChats)
         
         dataSource?.apply(snapshot, animatingDifferences: true)
+        
     }
 }
 

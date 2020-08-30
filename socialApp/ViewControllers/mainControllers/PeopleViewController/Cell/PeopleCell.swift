@@ -9,7 +9,12 @@
 import UIKit
 
 class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
+    
+    
     static var reuseID = "PeopleCell"
+    
+    var person: MPeople?
+    weak var delegate: PeopleCellDelegate?
     
     let photo: UIImageView = {
         let photoImage = UIImageView()
@@ -86,6 +91,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         
         setupConstraints()
         
+        likeButton.addTarget(self, action: #selector(pressLike), for: .touchUpInside)
         
     }
     
@@ -93,11 +99,22 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - pressLike
+    @objc func pressLike() {
+        
+        person?.like = true
+        guard let id = person?.id else { fatalError("person.id unknown")}
+        delegate?.likeTupped(userID: id)
+        print("Like in cell")
+    }
     
+    //MARK: - configure()
     func configure(with value: MPeople) {
+        person = value
+        
         messageBox.text = value.message
         photo.image = UIImage(named: value.userImageString)
-        
+        print(person)
         likeButton.isHidden = value.like
     }
     
