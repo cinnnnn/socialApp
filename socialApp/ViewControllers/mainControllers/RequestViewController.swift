@@ -11,10 +11,13 @@ import SwiftUI
 
 class RequestViewController: UIViewController {
     
-    let photo = UIImageView(image: #imageLiteral(resourceName: "Photo3"), contentMode: .scaleAspectFill)
+    let photo = UIImageView(image: #imageLiteral(resourceName: "Photo6"), contentMode: .scaleAspectFill)
     let container = UIView()
-    let nameLabel = UILabel(labelText: "Зельда", textFont: .boldSystemFont(ofSize: 22))
-    let messageTextView = UITextView(text: "Легенды Зельды", isEditableText: false, delegate: nil)
+    let nameLabel = UILabel(labelText: "Оленька", textFont: .boldSystemFont(ofSize: 22))
+    let messageTextView = UITextView(text: "Твои планы на выходные?", isEditableText: false, delegate: nil)
+    let acceptButton = UIButton(newBackgroundColor: .systemBackground, newBorderColor: .myHeaderColor(), title: "Принять", titleColor: .label)
+    let denyButton = UIButton(newBackgroundColor: .systemBackground, newBorderColor: .red, title: "Отклонить", titleColor: .red)
+    let buttonStackView = UIStackView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +39,13 @@ class RequestViewController: UIViewController {
         
         container.backgroundColor = .myBackgroundColor()
         container.layer.cornerRadius = 30
+        
+        buttonStackView.addArrangedSubview(denyButton)
+        buttonStackView.addArrangedSubview(acceptButton)
+        buttonStackView.alignment = .center
+        buttonStackView.axis = .horizontal
+        buttonStackView.spacing = 20
+        buttonStackView.distribution = .fillEqually
     }
     
     //MARK: - setupConstraints()
@@ -45,11 +55,15 @@ class RequestViewController: UIViewController {
         container.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         messageTextView.translatesAutoresizingMaskIntoConstraints = false
+        acceptButton.translatesAutoresizingMaskIntoConstraints = false
+        denyButton.translatesAutoresizingMaskIntoConstraints = false
+        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
       
         view.addSubview(photo)
         view.addSubview(container)
         container.addSubview(nameLabel)
         container.addSubview(messageTextView)
+        container.addSubview(buttonStackView)
      
         
         NSLayoutConstraint.activate([
@@ -72,7 +86,12 @@ class RequestViewController: UIViewController {
             
             messageTextView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 30),
             messageTextView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 30),
-            messageTextView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -30)
+            messageTextView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -30),
+            
+            buttonStackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 30),
+            buttonStackView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -30),
+            buttonStackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -30),
+            buttonStackView.heightAnchor.constraint(equalToConstant: 50)
             
             
         ])
