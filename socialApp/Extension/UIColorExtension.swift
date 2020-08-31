@@ -20,7 +20,12 @@ extension UIColor {
     
     static func myBackgroundColor() -> UIColor {
         
-        dynamicColor(light: #colorLiteral(red: 0.8525181413, green: 0.8722963929, blue: 0.8775926232, alpha: 1), dark: #colorLiteral(red: 0.1263937652, green: 0.1256497502, blue: 0.1269704401, alpha: 1))
+        dynamicColor(light: #colorLiteral(red: 0.9681631923, green: 0.9624074101, blue: 0.9725872874, alpha: 1), dark: #colorLiteral(red: 0.1263937652, green: 0.1256497502, blue: 0.1269704401, alpha: 1))
+    }
+    
+    static func myLikeButtonColor() -> UIColor {
+        
+        dynamicColor(light: #colorLiteral(red: 0.9348325729, green: 0.9391589165, blue: 0.9497339129, alpha: 1), dark: #colorLiteral(red: 0.2421294749, green: 0.2432564199, blue: 0.2459884286, alpha: 1))
     }
     
     static func myHeaderColor() -> UIColor {

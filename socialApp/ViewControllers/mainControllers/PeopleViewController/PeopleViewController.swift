@@ -21,7 +21,7 @@ class PeopleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .myBackgroundColor()
+        view.backgroundColor = .systemBackground
         setupNavigationController()
         setupCollectionView()
         setupDiffebleDataSource()
@@ -32,17 +32,9 @@ class PeopleViewController: UIViewController {
     private func setupNavigationController(){
         
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.backgroundColor = .myBackgroundColor()
+        navigationController?.navigationBar.backgroundColor = .systemBackground
         navigationItem.title = "Объявления"
         
-//        let searchController = UISearchController(searchResultsController: nil)
-//
-//        searchController.hidesNavigationBarDuringPresentation = false
-//        searchController.obscuresBackgroundDuringPresentation = false
-//        searchController.searchBar.delegate = self
-//
-//        navigationItem.searchController = searchController
-//        navigationItem.hidesSearchBarWhenScrolling = false
     }
     
     //MARK: - setupCollectionView
@@ -52,7 +44,7 @@ class PeopleViewController: UIViewController {
                                           collectionViewLayout: setupCompositionLayout())
         
         collectionView.autoresizingMask = [.flexibleWidth,.flexibleHeight]
-        collectionView.backgroundColor = .myBackgroundColor()
+        collectionView.backgroundColor = .systemBackground
         view.addSubview(collectionView)
         
         collectionView.register(PeopleCell.self,
@@ -139,31 +131,31 @@ class PeopleViewController: UIViewController {
         
     }
     
+    //MARK: - reloadData()
     private func reloadData() {
         
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
         snapshot.appendItems(peopleNearby, toSection: .main)
         
-        snapshot.reloadItems(peopleNearby)
         dataSource?.apply(snapshot, animatingDifferences: true)
         
     }
 }
 
+    //MARK: - PeopleCellDelegate()
+
 extension PeopleViewController: PeopleCellDelegate {
-    
-    func likeTupped(userID: Int) {
-        for people in peopleNearby.enumerated() {
-            if people.element.id == userID {
-                print(userID)
-                peopleNearby[people.offset].like = true
-                print(people.offset)
-            }
+    func likeTupped(user: MPeople) {
+        
+       let indexUser = peopleNearby.firstIndex { people -> Bool in
+            people.id == user.id
         }
-        print(peopleNearby[0])
-        reloadData()
+        
+        guard let index = indexUser else { fatalError("Unknown index of MPeople")}
+        peopleNearby[index] = user
     }
+
 }
 
 //MARK:- SwiftUI

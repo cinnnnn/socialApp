@@ -20,11 +20,19 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        setup()
         setupConstraints()
-        layer.cornerRadius = 4
-        clipsToBounds = true
+        
     }
     
+      //MARK: - setup
+    private func setup() {
+        
+        layer.cornerRadius = 4
+        backgroundColor = .myBackgroundColor()
+        clipsToBounds = true
+        
+    }
     //MARK: - configure
     func configure(with value: MChat) {
         
@@ -49,8 +57,7 @@ extension ActiveChatsCell {
         lastMessage.translatesAutoresizingMaskIntoConstraints = false
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         
-        self.backgroundColor = .systemBackground
-        gradientView.backgroundColor = .orange
+       
         
         addSubview(frendImage)
         addSubview(frendName)

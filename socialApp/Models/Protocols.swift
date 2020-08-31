@@ -23,6 +23,7 @@ protocol PeopleConfigurationCell {
     
 }
 
+
 protocol PeopleCellDelegate: class {
-    func likeTupped(userID: Int)
+    func likeTupped(user: MPeople)
 }

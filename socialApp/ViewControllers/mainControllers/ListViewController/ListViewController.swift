@@ -34,7 +34,7 @@ class ListViewController: UIViewController {
                                           collectionViewLayout: setupCompositionalLayout())
         
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.backgroundColor = .myBackgroundColor()
+        collectionView.backgroundColor = .systemBackground
         
         view.addSubview(collectionView)
         
