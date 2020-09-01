@@ -37,9 +37,37 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemBackground
         setupConstraints()
+        setupButtonAction()
     }
+}
+
+//MARK: - setupButtonAction
+extension LoginViewController {
+    
+    private func setupButtonAction() {
+        
+        signUpButton.addTarget(self, action: #selector(signUpButtonPressed), for: .touchUpInside)
+        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+        appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
+    }
+}
+
+//MARK: - objc action
+extension LoginViewController {
+    
+    @objc func signUpButtonPressed() {
+        
+    }
+    
+    @objc func loginButtonPressed() {
+        
+    }
+    
+    @objc func appleButtonPressed() {
+        
+    }
+
 }
 
 //MARK: - setupConstraints

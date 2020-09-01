@@ -43,6 +43,7 @@ class UserViewController: UIViewController {
         
         container.backgroundColor = .myBackgroundColor()
         container.layer.cornerRadius = 30
+        
     }
     
        //MARK: - setupConstraints()

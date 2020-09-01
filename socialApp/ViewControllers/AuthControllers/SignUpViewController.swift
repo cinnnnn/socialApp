@@ -36,12 +36,34 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+
         setupConstraints()
+        setupButtonAction()
     }
     
 }
 
+//MARK: - setupButtonAction
+extension SignUpViewController {
+    
+    private func setupButtonAction() {
+        
+        signUpButton.addTarget(self, action: #selector(signUpButtonPressed), for: .touchUpInside)
+        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+    }
+}
+
+//MARK: - objc action
+extension SignUpViewController {
+    
+    @objc func signUpButtonPressed() {
+        
+    }
+    
+    @objc func loginButtonPressed() {
+        
+    }
+}
 
 //MARK: - setupConstraints
 extension SignUpViewController {

@@ -15,8 +15,8 @@ class RequestViewController: UIViewController {
     let container = UIView()
     let nameLabel = UILabel(labelText: "Оленька", textFont: .boldSystemFont(ofSize: 22))
     let messageTextView = UITextView(text: "Твои планы на выходные?", isEditableText: false, delegate: nil)
-    let acceptButton = UIButton(newBackgroundColor: .systemBackground, newBorderColor: .myHeaderColor(), title: "Принять", titleColor: .label)
-    let denyButton = UIButton(newBackgroundColor: .systemBackground, newBorderColor: .red, title: "Отклонить", titleColor: .red)
+    let acceptButton = UIButton(newBackgroundColor: .myPurpleColor(), newBorderColor: .myPurpleColor(), title: "Принять", titleColor: .systemBackground)
+    let denyButton = UIButton(newBackgroundColor: .myPinkColor(), newBorderColor: .myPinkColor(), title: "Отклонить", titleColor: .systemBackground)
     let buttonStackView = UIStackView()
     
     override func viewDidLoad() {
@@ -27,6 +27,8 @@ class RequestViewController: UIViewController {
         configure()
         
     }
+    
+    
     
     //MARK: - setupAction()
     private func setupAction() {
@@ -91,7 +93,10 @@ class RequestViewController: UIViewController {
             buttonStackView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 30),
             buttonStackView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -30),
             buttonStackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -30),
-            buttonStackView.heightAnchor.constraint(equalToConstant: 50)
+            buttonStackView.heightAnchor.constraint(equalToConstant: 50),
+            
+            acceptButton.heightAnchor.constraint(equalToConstant: 60),
+            denyButton.heightAnchor.constraint(equalToConstant: 60)
             
             
         ])

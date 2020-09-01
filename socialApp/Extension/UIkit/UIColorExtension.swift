@@ -32,4 +32,13 @@ extension UIColor {
         
         dynamicColor(light: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1), dark: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
     }
+    
+    static func myPurpleColor() -> UIColor {
+        
+        dynamicColor(light: #colorLiteral(red: 0.5750052333, green: 0.5949758887, blue: 0.9911155105, alpha: 1), dark: #colorLiteral(red: 0.6526986957, green: 0.6832183003, blue: 1, alpha: 1))
+    }
+    
+    static func myPinkColor() -> UIColor {
+         dynamicColor(light:  #colorLiteral(red: 0.9419099689, green: 0.4851585627, blue: 0.9007419348, alpha: 1), dark:  #colorLiteral(red: 0.9787521958, green: 0.7720793486, blue: 0.9878835082, alpha: 1))
+    }
 }

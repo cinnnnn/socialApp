@@ -40,6 +40,7 @@ class OneLineTextField: UITextField {
             let textFieldButton = UIButton()
             textFieldButton.setTitle(buttonText, for: .normal)
             textFieldButton.setTitleColor(.label, for: .normal)
+
             
             rightView = textFieldButton
             rightViewMode = .always

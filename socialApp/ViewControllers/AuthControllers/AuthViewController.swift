@@ -35,10 +35,31 @@ class AuthViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupConstraints()
+        setupButtonAction()
     }
 
 }
 
+extension AuthViewController {
+    
+    private func setupButtonAction() {
+        emailButton.addTarget(self, action: #selector(emailButtonPressed), for: .touchUpInside)
+        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+    }
+    
+    
+}
+
+extension AuthViewController {
+    
+    @objc func emailButtonPressed() {
+        
+    }
+    
+    @objc func loginButtonPressed() {
+        
+    }
+}
 // MARK: - Setup Constraints
 
 extension AuthViewController {
