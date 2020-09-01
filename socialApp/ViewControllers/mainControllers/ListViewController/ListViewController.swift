@@ -48,8 +48,8 @@ class ListViewController: UIViewController {
     private func setupNavigationController(){
         
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.backgroundColor = .myBackgroundColor()
-        navigationController?.navigationBar.barTintColor = .myBackgroundColor()
+        navigationController?.navigationBar.backgroundColor = .systemBackground
+        navigationController?.navigationBar.barTintColor = .systemBackground
  
         navigationItem.title = "Чаты"
         

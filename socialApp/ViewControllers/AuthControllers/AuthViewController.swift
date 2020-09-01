@@ -30,14 +30,28 @@ class AuthViewController: UIViewController {
     
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
     
+    let signUPVC = SignUpViewController()
+    let loginVC = LoginViewController()
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        
+        setupVC()
         setupConstraints()
         setupButtonAction()
     }
 
+}
+
+//MARK: - setupVC
+extension AuthViewController {
+    
+    private func setupVC() {
+        view.backgroundColor = .systemBackground
+        
+    }
 }
 
 extension AuthViewController {
@@ -45,6 +59,7 @@ extension AuthViewController {
     private func setupButtonAction() {
         emailButton.addTarget(self, action: #selector(emailButtonPressed), for: .touchUpInside)
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+        appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
     }
     
     
@@ -54,9 +69,14 @@ extension AuthViewController {
     
     @objc func emailButtonPressed() {
         
+        present(signUPVC, animated: true, completion: nil)
     }
     
     @objc func loginButtonPressed() {
+        present(loginVC, animated: true, completion: nil)
+    }
+    
+    @objc func appleButtonPressed() {
         
     }
 }

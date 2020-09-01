@@ -37,11 +37,21 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupVC()
         setupConstraints()
         setupButtonAction()
     }
 }
 
+
+//MARK: - setupVC
+extension LoginViewController {
+    
+    private func setupVC() {
+        view.backgroundColor = .systemBackground
+        
+    }
+}
 //MARK: - setupButtonAction
 extension LoginViewController {
     
@@ -56,18 +66,39 @@ extension LoginViewController {
 //MARK: - objc action
 extension LoginViewController {
     
-    @objc func signUpButtonPressed() {
-        
-    }
-    
-    @objc func loginButtonPressed() {
-        
-    }
-    
     @objc func appleButtonPressed() {
         
     }
-
+    
+    
+    @objc func loginButtonPressed() {
+        
+        AuthService.shared.signIn(email: emailTextField.text,
+                                  password: passwordTextField.text) {[weak self] result in
+                                    switch result {
+                                        
+                                    case .success(let user):
+                                        print("userName")
+                                        if let userName = user.displayName {
+                                            
+                                            self?.showAlert(title: "Вход выполнен",
+                                                            text: userName,
+                                                            buttonText: "Начнем")
+                                        }
+                                    case .failure(let eror):
+                                        let myError = eror.localizedDescription
+                                        print(myError)
+                                        self?.showAlert(title: "Ошибка",
+                                                        text: myError,
+                                                        buttonText: "Понятно")
+                                    }
+        }
+    }
+    
+    
+    @objc func signUpButtonPressed() {
+        
+    }
 }
 
 //MARK: - setupConstraints
@@ -135,6 +166,20 @@ extension LoginViewController {
         needAccountLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
         
         ])
+    }
+}
+
+//MARK: - showAlert
+extension LoginViewController {
+    
+    private func showAlert(title: String, text: String, buttonText: String) {
+        
+        let alert = UIAlertController(title: title,
+                                      text: text,
+                                      buttonText: "",
+                                      style: .alert)
+        
+        present(alert, animated: true, completion: nil)
     }
 }
 //MARK: - SwiftUI

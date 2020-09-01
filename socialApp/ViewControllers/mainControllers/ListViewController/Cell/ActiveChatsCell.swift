@@ -29,8 +29,12 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     private func setup() {
         
         layer.cornerRadius = 4
-        backgroundColor = .myBackgroundColor()
+        backgroundColor = .systemBackground
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.label.cgColor
         clipsToBounds = true
+        gradientView.layer.borderWidth = 1
+        gradientView.layer.borderColor = UIColor.label.cgColor
         
     }
     //MARK: - configure

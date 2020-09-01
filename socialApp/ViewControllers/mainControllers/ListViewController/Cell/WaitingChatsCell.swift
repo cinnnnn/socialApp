@@ -22,16 +22,22 @@ class WaitingChatsCell: UICollectionViewCell,SelfConfiguringCell {
         super.init(frame: frame)
         
         setupConstraints()
-        
-        backgroundColor = .systemBackground
-        layer.cornerRadius = 4
-        clipsToBounds = true
+        setup()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setup() {
+        
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.label.cgColor
+        backgroundColor = .systemBackground
+        layer.cornerRadius = 4
+        clipsToBounds = true
+        
+    }
     private func setupConstraints(){
         
         frendImage.translatesAutoresizingMaskIntoConstraints = false

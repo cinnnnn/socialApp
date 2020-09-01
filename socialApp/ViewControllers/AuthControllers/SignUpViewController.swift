@@ -36,11 +36,20 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        setupVC()
         setupConstraints()
         setupButtonAction()
-    }
+    }    
+}
+
+//MARK: - setupVC
+extension SignUpViewController {
     
+    private func setupVC() {
+        view.backgroundColor = .systemBackground
+        
+    }
 }
 
 //MARK: - setupButtonAction
@@ -57,6 +66,27 @@ extension SignUpViewController {
 extension SignUpViewController {
     
     @objc func signUpButtonPressed() {
+        
+        AuthService.shared.register(email: loginTextField.text,
+                                    password: passwordTextField.text,
+                                    confirmPassword: confirmPasswordTextField.text) {[weak self] result in
+                                        switch result {
+                                            
+                                        case .success(let user):
+                                            if let userName = user.displayName {
+                                                self?.showAlert(title: "Создан",
+                                                                text: userName,
+                                                                buttonText: "Отлично")
+                                            }
+                                            
+                                        case .failure(let error):
+                                            let myError = error.localizedDescription
+                                            self?.showAlert(title: "Ошибка",
+                                                            text: myError,
+                                                            buttonText: "Понятно")
+                                            
+                                        }
+        }
         
     }
     
@@ -99,7 +129,7 @@ extension SignUpViewController {
             loginTextField.topAnchor.constraint(equalTo: signUpLogo.bottomAnchor, constant: 28),
             loginTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             loginTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-          
+            
             loginLabel.bottomAnchor.constraint(equalTo: loginTextField.topAnchor, constant: -5),
             loginLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             loginLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
@@ -115,7 +145,7 @@ extension SignUpViewController {
             confirmPasswordTextField.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 68),
             confirmPasswordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             confirmPasswordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-    
+            
             confirmPasswordLabel.bottomAnchor.constraint(equalTo: confirmPasswordTextField.topAnchor, constant: -5),
             confirmPasswordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             confirmPasswordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
@@ -136,9 +166,23 @@ extension SignUpViewController {
     }
 }
 
+//MARK: - showAlert
+extension SignUpViewController {
+    
+    private func showAlert(title: String, text: String, buttonText: String) {
+        
+        let alert = UIAlertController(title: title,
+                                      text: text,
+                                      buttonText: "",
+                                      style: .alert)
+        
+        present(alert, animated: true, completion: nil)
+    }
+}
+
 //MARK: - SwiftUI
 struct SignUpViewControllerProvider: PreviewProvider {
-   
+    
     static var previews: some View {
         ContenerView().edgesIgnoringSafeArea(.all)
     }

@@ -47,11 +47,11 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     let likeButton: UIButton = {
         let button = UIButton()
         
-        button.backgroundColor = .myLikeButtonColor()
+        button.backgroundColor = .systemBackground
         
         button.setImage(#imageLiteral(resourceName: "Heart"), for: .normal)
-       // button.layer.borderWidth = 1
-       // button.layer.borderColor = UIColor.label.cgColor
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.label.cgColor
         button.layer.cornerRadius = 4
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -61,7 +61,9 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     let backView: UIView = {
         let myView = UIView()
-        myView.backgroundColor = .myBackgroundColor()
+        myView.backgroundColor = .systemBackground
+        myView.layer.borderColor = UIColor.label.cgColor
+        myView.layer.borderWidth = 1
         myView.layer.cornerRadius = 4
         return myView
     }()

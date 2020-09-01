@@ -33,6 +33,8 @@
 		FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B53D24FAB785002761ED /* UIViewExtension.swift */; };
 		FB61B54224FD3DDE002761ED /* RequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54124FD3DDD002761ED /* RequestViewController.swift */; };
 		FB61B54424FE5625002761ED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB61B54324FE5625002761ED /* GoogleService-Info.plist */; };
+		FB61B54724FE7F23002761ED /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54624FE7F22002761ED /* AuthService.swift */; };
+		FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54824FE9581002761ED /* UIAlertExtension.swift */; };
 		FB66288124A93ADC00650820 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* SignUpViewController.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBEF607824A602070005F947 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607724A602070005F947 /* AppDelegate.swift */; };
@@ -77,6 +79,8 @@
 		FB61B53D24FAB785002761ED /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		FB61B54124FD3DDD002761ED /* RequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestViewController.swift; sourceTree = "<group>"; };
 		FB61B54324FE5625002761ED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FB61B54624FE7F22002761ED /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		FB61B54824FE9581002761ED /* UIAlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertExtension.swift; sourceTree = "<group>"; };
 		FB66288024A93ADC00650820 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBEF607424A602070005F947 /* socialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = socialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -197,6 +201,7 @@
 			isa = PBXGroup;
 			children = (
 				FB61B53D24FAB785002761ED /* UIViewExtension.swift */,
+				FB61B54824FE9581002761ED /* UIAlertExtension.swift */,
 				FBEF608B24A8F3FF0005F947 /* UIButtonExtension.swift */,
 				FBEF608D24A9073E0005F947 /* UIFontExtension.swift */,
 				FB09107F24FA93E2006B72D5 /* UITextViewExtension.swift */,
@@ -211,7 +216,7 @@
 		FBA94D1C24F55AC2000DA5D5 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				FB21A1AC24C89F68000A2E91 /* BundleDecode.swift */,
+				FB61B54624FE7F22002761ED /* AuthService.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -248,9 +253,9 @@
 			children = (
 				FBEF607724A602070005F947 /* AppDelegate.swift */,
 				FBEF607924A602070005F947 /* SceneDelegate.swift */,
+				FBA94D1C24F55AC2000DA5D5 /* Controllers */,
 				FB21A1B924E596E3000A2E91 /* Models */,
 				FBEF609424A90DD60005F947 /* ViewControllers */,
-				FBA94D1C24F55AC2000DA5D5 /* Controllers */,
 				FBEF608F24A908100005F947 /* Extension */,
 				FBEF608024A6020A0005F947 /* Assets.xcassets */,
 				FBEF608224A6020A0005F947 /* LaunchScreen.storyboard */,
@@ -263,6 +268,7 @@
 		FBEF608F24A908100005F947 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				FB21A1AC24C89F68000A2E91 /* BundleDecode.swift */,
 				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
 				FB21A1BC24E59A31000A2E91 /* GradientView.swift */,
 				FB1062DD24B0C8DF0012C4D4 /* ProfileImageView.swift */,
@@ -417,6 +423,7 @@
 				FB1062D824AE494A0012C4D4 /* OneLineTextField.swift in Sources */,
 				FB18217724B21F5100FFFC87 /* ListViewController.swift in Sources */,
 				FBEF609324A90C840005F947 /* UIImageViewExtension.swift in Sources */,
+				FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */,
 				FB18217D24B2268E00FFFC87 /* PeopleViewController.swift in Sources */,
 				FBEF608E24A9073E0005F947 /* UIFontExtension.swift in Sources */,
 				FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */,
@@ -428,6 +435,7 @@
 				FB21A1B824E595CF000A2E91 /* Protocols.swift in Sources */,
 				FB21A1AD24C89F68000A2E91 /* BundleDecode.swift in Sources */,
 				FB1062DA24AE69250012C4D4 /* LoginViewController.swift in Sources */,
+				FB61B54724FE7F23002761ED /* AuthService.swift in Sources */,
 				FB21A1BF24E5ADE5000A2E91 /* WaitingChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
 				FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */,
