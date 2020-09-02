@@ -27,3 +27,9 @@ protocol PeopleConfigurationCell {
 protocol PeopleCellDelegate: class {
     func likeTupped(user: MPeople)
 }
+
+protocol AuthNavigationDelegate: class {
+    func toLogin()
+    func toRegister()
+    func toMainTabBar()
+}

@@ -50,10 +50,12 @@ extension AuthViewController {
     
     private func setupVC() {
         view.backgroundColor = .systemBackground
-        
+        signUPVC.delegate = self
+        loginVC.delegate = self
     }
 }
 
+//MARK: - setupButtonAction
 extension AuthViewController {
     
     private func setupButtonAction() {
@@ -61,19 +63,20 @@ extension AuthViewController {
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
         appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
     }
-    
-    
 }
 
+//MARK: - objc func
 extension AuthViewController {
     
     @objc func emailButtonPressed() {
         
         present(signUPVC, animated: true, completion: nil)
+        
     }
     
     @objc func loginButtonPressed() {
         present(loginVC, animated: true, completion: nil)
+        
     }
     
     @objc func appleButtonPressed() {
@@ -125,6 +128,21 @@ extension AuthViewController {
         loginLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         loginLabel.bottomAnchor.constraint(equalTo: loginButton.topAnchor, constant: -10).isActive = true
         
+    }
+}
+
+//MARK: - AuthNavigationDelegate
+extension AuthViewController: AuthNavigationDelegate {
+    func toLogin() {
+        present(loginVC, animated: true, completion: nil)
+    }
+    
+    func toRegister() {
+        present(signUPVC, animated: true, completion: nil)
+    }
+    
+    func toMainTabBar() {
+        present(MainTabBarController(), animated: true, completion: nil)
     }
 }
 

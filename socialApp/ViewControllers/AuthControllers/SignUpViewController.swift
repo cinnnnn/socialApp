@@ -34,6 +34,8 @@ class SignUpViewController: UIViewController {
                                title: "Вход",
                                titleColor: .label)
     
+    weak var delegate: AuthNavigationDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -67,16 +69,27 @@ extension SignUpViewController {
     
     @objc func signUpButtonPressed() {
         
+        signUpButton.isEnabled = false
         AuthService.shared.register(email: loginTextField.text,
                                     password: passwordTextField.text,
                                     confirmPassword: confirmPasswordTextField.text) {[weak self] result in
+                                        
                                         switch result {
                                             
                                         case .success(let user):
-                                            if let userName = user.displayName {
+                                            print("Uspeh")
+                                            if let userName = user.email {
+                                                
                                                 self?.showAlert(title: "Создан",
                                                                 text: userName,
-                                                                buttonText: "Отлично")
+                                                                buttonText: "Начнем",
+                                                                complition: {
+                                                                    self?.dismiss(animated: true,
+                                                                                  completion: {
+                                                                                    self?.delegate?.toMainTabBar()
+                                                                    })
+                                                                    
+                                                })
                                             }
                                             
                                         case .failure(let error):
@@ -84,6 +97,7 @@ extension SignUpViewController {
                                             self?.showAlert(title: "Ошибка",
                                                             text: myError,
                                                             buttonText: "Понятно")
+                                            self?.signUpButton.isEnabled = true
                                             
                                         }
         }
@@ -91,7 +105,9 @@ extension SignUpViewController {
     }
     
     @objc func loginButtonPressed() {
-        
+        dismiss(animated: true) {
+            self.delegate?.toLogin()
+        }
     }
 }
 
@@ -169,12 +185,16 @@ extension SignUpViewController {
 //MARK: - showAlert
 extension SignUpViewController {
     
-    private func showAlert(title: String, text: String, buttonText: String) {
+    private func showAlert(title: String,
+                           text: String,
+                           buttonText: String,
+                           complition: @escaping ()-> Void = { }) {
         
         let alert = UIAlertController(title: title,
                                       text: text,
-                                      buttonText: "",
-                                      style: .alert)
+                                      buttonText: buttonText,
+                                      style: .alert,
+                                      buttonHandler: complition)
         
         present(alert, animated: true, completion: nil)
     }

@@ -33,6 +33,8 @@ class LoginViewController: UIViewController {
     let passwordLabel = UILabel(labelText: "Пароль")
     let needAccountLabel = UILabel(labelText: "Еще не с нами?")
     
+    weak var delegate: AuthNavigationDelegate?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,15 +77,12 @@ extension LoginViewController {
         
         AuthService.shared.signIn(email: emailTextField.text,
                                   password: passwordTextField.text) {[weak self] result in
+                                   
                                     switch result {
                                         
-                                    case .success(let user):
-                                        print("userName")
-                                        if let userName = user.displayName {
-                                            
-                                            self?.showAlert(title: "Вход выполнен",
-                                                            text: userName,
-                                                            buttonText: "Начнем")
+                                    case .success( _):
+                                        self?.dismiss(animated: true) {
+                                            self?.delegate?.toMainTabBar()
                                         }
                                     case .failure(let eror):
                                         let myError = eror.localizedDescription
@@ -98,6 +97,9 @@ extension LoginViewController {
     
     @objc func signUpButtonPressed() {
         
+        dismiss(animated: true) {
+            self.delegate?.toRegister()
+        }
     }
 }
 
