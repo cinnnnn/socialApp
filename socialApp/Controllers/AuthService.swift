@@ -24,7 +24,25 @@ class AuthService {
                   confirmPassword: String?,
                   complition: @escaping (Result<User, Error>) -> Void ) {
         
-        auth.createUser(withEmail: email!, password: password!) { result, error in
+        let isFilledCheck = Validators.shared.isFilledRegister(email: email,
+                                                              password: password,
+                                                              confirmPassword: confirmPassword)
+        
+        guard isFilledCheck.isFilled else { complition(.failure(AuthError.notFilled))
+                                            return }
+        
+
+        guard Validators.shared.isConfirmPassword(password1: isFilledCheck.password, password2: isFilledCheck.confirmPassword) else {
+            complition(.failure(AuthError.passwordNotMatch))
+            return
+        }
+        
+        guard Validators.shared.isEmail(email: isFilledCheck.email) else {
+            complition(.failure(AuthError.invalidEmail))
+            return
+        }
+        
+        auth.createUser(withEmail: isFilledCheck.email, password: isFilledCheck.password) { result, error in
             
             guard let result = result else {
                 complition(.failure(error!))
@@ -33,13 +51,19 @@ class AuthService {
             complition(.success(result.user))
         }
     }
-    
+
         //MARK: - signIn
     func signIn(email: String?,
                 password: String?,
                 complition: @escaping (Result<User,Error>) -> Void) {
         
-        auth.signIn(withEmail: email!, password: password!) { result, error in
+        let isFilledCheck = Validators.shared.isFilledSignIn(email: email, password: password)
+        
+        guard isFilledCheck.isFilled else { complition(.failure(AuthError.notFilled))
+                                            return
+                                          }
+        
+        auth.signIn(withEmail: isFilledCheck.email, password: isFilledCheck.password) { result, error in
             
             guard let result = result else {
                 complition(.failure(error!))

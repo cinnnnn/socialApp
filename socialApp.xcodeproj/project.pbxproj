@@ -46,6 +46,8 @@
 		FBEF608E24A9073E0005F947 /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF608D24A9073E0005F947 /* UIFontExtension.swift */; };
 		FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF609024A90AEC0005F947 /* UILabelExtension.swift */; };
 		FBEF609324A90C840005F947 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF609224A90C840005F947 /* UIImageViewExtension.swift */; };
+		FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293D824FFB33300F7B5F1 /* Validators.swift */; };
+		FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */; };
 		FBF6289524F678C300DCD4AC /* SectionsChats.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF6289424F678C300DCD4AC /* SectionsChats.swift */; };
 		FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF6289624F678EA00DCD4AC /* SectionsPeople.swift */; };
 /* End PBXBuildFile section */
@@ -94,6 +96,8 @@
 		FBEF608D24A9073E0005F947 /* UIFontExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
 		FBEF609024A90AEC0005F947 /* UILabelExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtension.swift; sourceTree = "<group>"; };
 		FBEF609224A90C840005F947 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
+		FBF293D824FFB33300F7B5F1 /* Validators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validators.swift; sourceTree = "<group>"; };
+		FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		FBF6289424F678C300DCD4AC /* SectionsChats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsChats.swift; sourceTree = "<group>"; };
 		FBF6289624F678EA00DCD4AC /* SectionsPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsPeople.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -164,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
+				FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
 				FBF6289424F678C300DCD4AC /* SectionsChats.swift */,
@@ -217,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				FB61B54624FE7F22002761ED /* AuthService.swift */,
+				FBF293D824FFB33300F7B5F1 /* Validators.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -318,7 +324,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1150;
-				LastUpgradeCheck = 1150;
+				LastUpgradeCheck = 1160;
 				ORGANIZATIONNAME = "Денис Щиголев";
 				TargetAttributes = {
 					FBEF607324A602070005F947 = {
@@ -413,8 +419,10 @@
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
+				FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,
 				FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */,
+				FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */,
 				FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */,
 				FB09108024FA93E2006B72D5 /* UITextViewExtension.swift in Sources */,
 				FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */,
@@ -577,6 +585,7 @@
 			baseConfigurationReference = 4F39BCF9878759E95E1F6C3A /* Pods-socialApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W69L42NMK2;
 				INFOPLIST_FILE = socialApp/Info.plist;
@@ -596,6 +605,7 @@
 			baseConfigurationReference = 4BDDF970CC71E710FA80D225 /* Pods-socialApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W69L42NMK2;
 				INFOPLIST_FILE = socialApp/Info.plist;
