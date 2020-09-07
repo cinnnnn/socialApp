@@ -8,11 +8,12 @@
 
 import UIKit
 import SwiftUI
+import FirebaseAuth
 
 class PeopleViewController: UIViewController {
     
     
-    var peopleNearby = Bundle.main.decode(type: [MPeople].self, from: "PeopleNearby.json")
+    var peopleNearby: [MPeople] = []
     
     var collectionView: UICollectionView!
     
@@ -34,8 +35,10 @@ class PeopleViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.backgroundColor = .systemBackground
         navigationItem.title = "Объявления"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Выход", style: .plain, target: self, action: #selector(signOut))
         
     }
+    
     
     //MARK: - setupCollectionView
     private func setupCollectionView() {
@@ -94,12 +97,6 @@ class PeopleViewController: UIViewController {
     }
     
     
-    //MARK:  -pressLikeButton()
-    @objc private func pressLikeButton() {
-       
-        reloadData()
-    }
-    
       //MARK: - configureCell
     private func configureCell<T:PeopleConfigurationCell>(cellType: T.Type, value: MPeople, indexPath: IndexPath) -> T {
         
@@ -143,19 +140,51 @@ class PeopleViewController: UIViewController {
     }
 }
 
-    //MARK: - PeopleCellDelegate()
+//MARK:  - objc
+extension PeopleViewController {
+    
+    
+    @objc private func pressLikeButton() {
+        
+        reloadData()
+    }
+    
+    
+    //MARK:  - signOut
+    @objc func signOut() {
+        let alert = UIAlertController(title: "Покинуть нас", message: "Точно решили поопращаться с нами?", preferredStyle: .actionSheet)
+        let okAction = UIAlertAction(title: "Выйду, но вернусь", style: .destructive) { _ in
+            
+            do {
+                try Auth.auth().signOut()
+                
+                let keyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
+                keyWindow?.rootViewController = AuthViewController()
+            } catch {
+                print( "SignOut error: \(error.localizedDescription)")
+            }
+            
+        }
+        let cancelAction = UIAlertAction(title: "Продолжу общение", style: .cancel)
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+}
+//MARK: - PeopleCellDelegate()
 
 extension PeopleViewController: PeopleCellDelegate {
     func likeTupped(user: MPeople) {
         
-       let indexUser = peopleNearby.firstIndex { people -> Bool in
+        let indexUser = peopleNearby.firstIndex { people -> Bool in
             people.id == user.id
         }
         
         guard let index = indexUser else { fatalError("Unknown index of MPeople")}
         peopleNearby[index] = user
     }
-
+    
 }
 
 //MARK:- SwiftUI

@@ -14,8 +14,8 @@ class ListViewController: UIViewController {
     
     var collectionView: UICollectionView!
     
-    let activeChats = Bundle.main.decode(type: [MChat].self, from: "activeChats.json")
-    let waitingChats = Bundle.main.decode(type: [MChat].self, from: "waitingChats.json")
+    let activeChats: [MChat] = []
+    let waitingChats: [MChat] = []
     
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
     

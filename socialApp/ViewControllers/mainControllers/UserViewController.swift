@@ -9,6 +9,7 @@
 import UIKit
 import SwiftUI
 
+
 class UserViewController: UIViewController {
     
     let photo = UIImageView(image: #imageLiteral(resourceName: "Photo3"), contentMode: .scaleAspectFill)
@@ -38,11 +39,14 @@ class UserViewController: UIViewController {
         print("Olololo")
     }
     
+   
+    
     //MARK: - configure()
     private func configure(){
         
         container.backgroundColor = .myBackgroundColor()
         container.layer.cornerRadius = 30
+       
         
     }
     

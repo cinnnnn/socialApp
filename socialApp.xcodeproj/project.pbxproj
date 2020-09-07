@@ -48,6 +48,8 @@
 		FBEF609324A90C840005F947 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF609224A90C840005F947 /* UIImageViewExtension.swift */; };
 		FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293D824FFB33300F7B5F1 /* Validators.swift */; };
 		FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */; };
+		FBF293DD25065E2800F7B5F1 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293DC25065E2800F7B5F1 /* FirestoreService.swift */; };
+		FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293DE250668CB00F7B5F1 /* UserError.swift */; };
 		FBF6289524F678C300DCD4AC /* SectionsChats.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF6289424F678C300DCD4AC /* SectionsChats.swift */; };
 		FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF6289624F678EA00DCD4AC /* SectionsPeople.swift */; };
 /* End PBXBuildFile section */
@@ -98,6 +100,8 @@
 		FBEF609224A90C840005F947 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		FBF293D824FFB33300F7B5F1 /* Validators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validators.swift; sourceTree = "<group>"; };
 		FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
+		FBF293DC25065E2800F7B5F1 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
+		FBF293DE250668CB00F7B5F1 /* UserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserError.swift; sourceTree = "<group>"; };
 		FBF6289424F678C300DCD4AC /* SectionsChats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsChats.swift; sourceTree = "<group>"; };
 		FBF6289624F678EA00DCD4AC /* SectionsPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsPeople.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -169,6 +173,7 @@
 			children = (
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */,
+				FBF293DE250668CB00F7B5F1 /* UserError.swift */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
 				FBF6289424F678C300DCD4AC /* SectionsChats.swift */,
@@ -222,6 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				FB61B54624FE7F22002761ED /* AuthService.swift */,
+				FBF293DC25065E2800F7B5F1 /* FirestoreService.swift */,
 				FBF293D824FFB33300F7B5F1 /* Validators.swift */,
 			);
 			path = Controllers;
@@ -414,7 +420,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */,
+				FBF293DD25065E2800F7B5F1 /* FirestoreService.swift in Sources */,
 				FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */,
+				FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */,
 				FB1062DE24B0C8DF0012C4D4 /* ProfileImageView.swift in Sources */,
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
@@ -596,7 +604,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "art.jedi-tones.socialApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -616,7 +624,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "art.jedi-tones.socialApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

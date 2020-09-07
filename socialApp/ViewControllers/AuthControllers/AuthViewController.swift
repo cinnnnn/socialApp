@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import FirebaseAuth
 
 
 class AuthViewController: UIViewController {
@@ -133,6 +134,13 @@ extension AuthViewController {
 
 //MARK: - AuthNavigationDelegate
 extension AuthViewController: AuthNavigationDelegate {
+    func toSetProfile(user: User) {
+        
+        let vc = SetProfileViewController(currentUser: user)
+        vc.delegate = self
+        present(vc, animated: true, completion: nil)
+    }
+    
     func toLogin() {
         present(loginVC, animated: true, completion: nil)
     }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 // configure cell of collectionView
 
@@ -31,5 +32,6 @@ protocol PeopleCellDelegate: class {
 protocol AuthNavigationDelegate: class {
     func toLogin()
     func toRegister()
+    func toSetProfile(user: User)
     func toMainTabBar()
 }

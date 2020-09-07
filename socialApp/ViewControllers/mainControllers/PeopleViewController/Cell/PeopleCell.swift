@@ -94,15 +94,15 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     @objc func pressLike() {
         
-        person?.like.toggle()
-        
-        guard let like = person?.like else { fatalError("Unknown like state")}
-        let likeImage = like ? nil : #imageLiteral(resourceName: "Heart")
-        likeButton.setImage(likeImage, for: .normal)
-        
-        guard let newPerson = person else { fatalError("person unknown")}
-        delegate?.likeTupped(user: newPerson)
-        print("Like in cell")
+//        person?.like.toggle()
+//
+//        guard let like = person?.like else { fatalError("Unknown like state")}
+//        let likeImage = like ? nil : #imageLiteral(resourceName: "Heart")
+//        likeButton.setImage(likeImage, for: .normal)
+//
+//        guard let newPerson = person else { fatalError("person unknown")}
+//        delegate?.likeTupped(user: newPerson)
+//        print("Like in cell")
         
     }
         //MARK: - setup()
@@ -116,11 +116,11 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     func configure(with value: MPeople) {
         person = value
         
-        messageBox.text = value.message
-        photo.image = UIImage(named: value.userImageString)
+        messageBox.text = value.advert
+        photo.image = UIImage(named: value.userImage)
         
-        let likeImage = value.like ? nil : #imageLiteral(resourceName: "Heart")
-        likeButton.setImage(likeImage, for: .normal)
+//        let likeImage = value.like ? nil : #imageLiteral(resourceName: "Heart")
+//        likeButton.setImage(likeImage, for: .normal)
         
     }
     

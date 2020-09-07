@@ -86,7 +86,7 @@ extension SignUpViewController {
                                                                 complition: {
                                                                     self?.dismiss(animated: true,
                                                                                   completion: {
-                                                                                    self?.delegate?.toMainTabBar()
+                                                                                    self?.delegate?.toSetProfile(user: user)
                                                                     })
                                                                     
                                                 })

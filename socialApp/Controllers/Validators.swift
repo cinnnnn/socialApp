@@ -39,6 +39,20 @@ class Validators {
         return (true, email, password)
     }
     
+    
+    func isFilledSetProfile(userName: String?, advert: String? ) -> (isFilled: Bool,
+                                                                     userName: String,
+                                                                     advert: String) {
+        guard let userName = userName,
+            let advert = advert,
+            userName != "",
+            advert != ""
+            else { return (false, "", "") }
+        
+        return (true, userName, advert)
+    }
+    
+    
     func isEmail(email: String) -> Bool {
         
         let mailRegEX = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,20}"
