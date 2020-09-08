@@ -58,8 +58,7 @@ class ListViewController: UIViewController {
         navigationController?.navigationBar.backgroundColor = .systemBackground
         navigationController?.navigationBar.barTintColor = .systemBackground
  
-        navigationItem.title = "Чаты"
-        
+        navigationItem.title = "Чаты для \(currentPeople.userName)"
         
         let searchController = UISearchController(searchResultsController: nil)
         

@@ -15,7 +15,9 @@ class FirestoreService {
     
     static let shared = FirestoreService()
     
-    let db = Firestore.firestore()
+    private init() {}
+    
+    private let db = Firestore.firestore()
     
     private var usersReference: CollectionReference {
         db.collection("users")

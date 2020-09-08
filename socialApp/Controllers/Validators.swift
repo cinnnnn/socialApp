@@ -12,6 +12,8 @@ class Validators {
     
     static let shared = Validators()
     
+    private init() {}
+    
     func isFilledRegister(email: String?, password: String?, confirmPassword: String? ) -> (isFilled: Bool,
                                                                                     email: String,
                                                                                     password: String,

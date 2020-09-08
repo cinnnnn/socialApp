@@ -9,10 +9,10 @@
 import UIKit
 import SwiftUI
 import FirebaseAuth
-
+import AuthenticationServices
 
 class AuthViewController: UIViewController {
-
+    
     let emailButton = UIButton(newBackgroundColor: .systemBackground,
                                newBorderColor: .label,
                                title: "Регистрация по Email",
@@ -25,7 +25,7 @@ class AuthViewController: UIViewController {
                                titleColor: .label,
                                isShadow: false)
     
-    let appleButton = UIButton(image: #imageLiteral(resourceName: "SignUpApple"))
+    let appleButton = ASAuthorizationAppleIDButton()
     
     let loginLabel = UILabel(labelText: "Уже с нами?")
     
@@ -43,7 +43,7 @@ class AuthViewController: UIViewController {
         setupConstraints()
         setupButtonAction()
     }
-
+    
 }
 
 //MARK: - setupVC
@@ -81,7 +81,8 @@ extension AuthViewController {
     }
     
     @objc func appleButtonPressed() {
-        
+        AuthService.shared.AppleIDRequest(delegateController: self,
+                                          presetationController: self)
     }
 }
 // MARK: - Setup Constraints
@@ -132,6 +133,58 @@ extension AuthViewController {
     }
 }
 
+//MARK: - ASWebAuthenticationPresentationContextProviding
+extension AuthViewController: ASAuthorizationControllerPresentationContextProviding {
+    
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        guard let window = self.view.window else { fatalError("can't get window")}
+        return window
+    }
+    
+}
+
+//MARK: - ASAuthorizationControllerDelegate
+extension AuthViewController: ASAuthorizationControllerDelegate {
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        
+        AuthService.shared.didCompleteWithAuthorizationApple(authorization: authorization) {  [weak self] result in
+            switch result {
+                
+            case .success(let user):
+                FirestoreService.shared.getUserData(user: user) { resultOfFirestore in
+                    switch resultOfFirestore {
+                        
+                    case .success(let mPeople):
+                        self?.toMainTabBar(currentMPeople: mPeople)
+                    case .failure(_):
+                        self?.toSetProfile(user: user)
+                    }
+                }
+            case .failure(_):
+                let alert = UIAlertController(title: "Проблемки со входом",
+                                              message: "Что то с твоим AppleID пошло не так",
+                                              preferredStyle: .actionSheet)
+                let actionMail = UIAlertAction(title: "Попробовать по почте",
+                                               style: .default) { _ in
+                                                self?.loginButtonPressed()
+                }
+                let actionRetry = UIAlertAction(title: "Попробовать еще раз AppleID",
+                                                style: .default) { _ in
+                                                    self?.appleButtonPressed()
+                }
+                let actionCancel = UIAlertAction(title: "Отмена, надо подумать",
+                                                 style: .destructive, handler: nil)
+                
+                alert.addAction(actionMail)
+                alert.addAction(actionRetry)
+                alert.addAction(actionCancel)
+                self?.present(alert, animated: true, completion: nil)
+            }
+            
+        }
+    }
+}
 //MARK: - AuthNavigationDelegate
 extension AuthViewController: AuthNavigationDelegate {
     
@@ -160,7 +213,7 @@ extension AuthViewController: AuthNavigationDelegate {
 
 //MARK: - SwiftUI
 struct ViewControllerProvider: PreviewProvider {
-   
+    
     static var previews: some View {
         ContenerView().edgesIgnoringSafeArea(.all)
     }
