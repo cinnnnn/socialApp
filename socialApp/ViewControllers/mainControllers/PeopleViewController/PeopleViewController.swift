@@ -12,12 +12,20 @@ import FirebaseAuth
 
 class PeopleViewController: UIViewController {
     
-    
     var peopleNearby: [MPeople] = []
-    
     var collectionView: UICollectionView!
-    
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
+    var currentPeople: MPeople!
+    
+    init(currentPeople: MPeople) {
+        self.currentPeople = currentPeople
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -152,7 +160,7 @@ extension PeopleViewController {
     
     //MARK:  - signOut
     @objc func signOut() {
-        let alert = UIAlertController(title: "Покинуть нас", message: "Точно решили поопращаться с нами?", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Покинуть", message: "Точно прощаешься с нами?", preferredStyle: .actionSheet)
         let okAction = UIAlertAction(title: "Выйду, но вернусь", style: .destructive) { _ in
             
             do {
@@ -198,7 +206,13 @@ struct PeopleViewControllerProvider: PreviewProvider {
     struct ContenerView: UIViewControllerRepresentable {
         
         func makeUIViewController(context: Context) -> MainTabBarController {
-            MainTabBarController()
+            MainTabBarController(currentPeople: MPeople(userName: "Foo",
+                                                        advert: "Faa",
+                                                        userImage: "Fee",
+                                                        search: "Boo",
+                                                        mail: "Boa",
+                                                        sex: "Fea",
+                                                        id: "Fuu"))
         }
         
         func updateUIViewController(_ uiViewController: MainTabBarController, context: Context) {

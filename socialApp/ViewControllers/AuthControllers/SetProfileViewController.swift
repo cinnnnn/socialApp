@@ -83,9 +83,9 @@ extension SetProfileViewController {
                                                 
                                                 switch result {
                                                     
-                                                case .success(_):
+                                                case .success(let mPeople):
                                                     self?.dismiss(animated: true) {
-                                                        self?.delegate?.toMainTabBar()
+                                                        self?.delegate?.toMainTabBar(currentMPeople: mPeople)
                                                     }
                                                 case .failure(let error):
                                                     print(error.localizedDescription)

@@ -13,12 +13,19 @@ import SwiftUI
 class ListViewController: UIViewController {
     
     var collectionView: UICollectionView!
-    
     let activeChats: [MChat] = []
     let waitingChats: [MChat] = []
-    
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
+    var currentPeople: MPeople!
     
+    init(currentPeople: MPeople) {
+        self.currentPeople = currentPeople
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -272,7 +279,13 @@ struct ListViewControllerProvider: PreviewProvider {
     struct ContenerView: UIViewControllerRepresentable {
         
         func makeUIViewController(context: Context) -> MainTabBarController {
-            MainTabBarController()
+            MainTabBarController(currentPeople: MPeople(userName: "Foo",
+                                                        advert: "Faa",
+                                                        userImage: "Fee",
+                                                        search: "Boo",
+                                                        mail: "Boa",
+                                                        sex: "Fea",
+                                                        id: "Fuu"))
         }
         
         func updateUIViewController(_ uiViewController: MainTabBarController, context: Context) {

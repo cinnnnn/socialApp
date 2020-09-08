@@ -65,8 +65,9 @@ class FirestoreService {
         
         let documentReference = usersReference.document(user.uid)
         documentReference.getDocument { (snapshot, error) in
-                print("asdasdasdasd")
+                
                 if let snapshot = snapshot, snapshot.exists {
+                    
                     guard let people = MPeople(documentSnap: snapshot) else {
                         complition(.failure(UserError.incorrectSetProfile))
                         return

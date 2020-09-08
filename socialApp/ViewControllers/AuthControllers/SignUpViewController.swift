@@ -77,20 +77,11 @@ extension SignUpViewController {
                                         switch result {
                                             
                                         case .success(let user):
-                                            print("Uspeh")
-                                            if let userName = user.email {
-                                                
-                                                self?.showAlert(title: "Создан",
-                                                                text: userName,
-                                                                buttonText: "Начнем",
-                                                                complition: {
-                                                                    self?.dismiss(animated: true,
-                                                                                  completion: {
-                                                                                    self?.delegate?.toSetProfile(user: user)
-                                                                    })
-                                                                    
-                                                })
-                                            }
+                                            
+                                            self?.dismiss(animated: true,
+                                                          completion: {
+                                                            self?.delegate?.toSetProfile(user: user)
+                                            })
                                             
                                         case .failure(let error):
                                             let myError = error.localizedDescription

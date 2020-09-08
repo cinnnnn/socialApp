@@ -10,6 +10,17 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
     
+    private var currentPeople: MPeople!
+    
+    init(currentPeople: MPeople) {
+        self.currentPeople = currentPeople
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -19,8 +30,8 @@ class MainTabBarController: UITabBarController {
     
     private func setupControllers(){
         
-        let listVC = ListViewController()
-        let peopleVC = PeopleViewController()
+        let listVC = ListViewController(currentPeople: currentPeople)
+        let peopleVC = PeopleViewController(currentPeople: currentPeople)
         
         guard let listImage = UIImage(systemName: "bubble.left.and.bubble.right.fill") else { return }
         guard let peopleImage = UIImage(systemName: "person.2.fill") else { return }
@@ -29,7 +40,7 @@ class MainTabBarController: UITabBarController {
         
         viewControllers = [
             generateNavigationController(rootViewController: peopleVC, image: peopleImage, title: "Объявления"),
-            generateNavigationController(rootViewController: listVC, image: listImage, title: "Чаты")
+            generateNavigationController(rootViewController: listVC, image: listImage, title: "Чаты \(currentPeople.userName)")
             
         ]
     }

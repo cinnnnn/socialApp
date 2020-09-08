@@ -77,13 +77,28 @@ extension LoginViewController {
         
         AuthService.shared.signIn(email: emailTextField.text,
                                   password: passwordTextField.text) {[weak self] result in
-                                   
+                                    
                                     switch result {
                                         
-                                    case .success( _):
+                                    case .success( let user):
+                                        
+                                        //if correct login user, than close LoginVC and check setProfile info
                                         self?.dismiss(animated: true) {
-                                            self?.delegate?.toMainTabBar()
+                                            
+                                            FirestoreService.shared.getUserData(user: user) { result in
+                                                switch result {
+                                                    
+                                                case .success(let mPeople):
+                                                    //go to chats
+                                                    self?.delegate?.toMainTabBar(currentMPeople: mPeople)
+                                                case .failure(_):
+                                                    //go to correct setProfileVC
+                                                    self?.delegate?.toSetProfile(user: user)
+                                                }
+                                            }
                                         }
+                                        
+                                    //error of logIn
                                     case .failure(let eror):
                                         let myError = eror.localizedDescription
                                         print(myError)

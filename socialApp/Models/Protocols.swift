@@ -33,5 +33,5 @@ protocol AuthNavigationDelegate: class {
     func toLogin()
     func toRegister()
     func toSetProfile(user: User)
-    func toMainTabBar()
+    func toMainTabBar(currentMPeople: MPeople)
 }

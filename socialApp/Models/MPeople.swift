@@ -44,7 +44,7 @@ struct MPeople: Hashable, Decodable {
         guard let search = documet["search"] as? String else { return nil }
         guard let mail = documet["mail"] as? String else { return nil }
         guard let sex = documet["sex"] as? String else { return nil }
-        guard let id = documet["id"] as? String else { return nil }
+        guard let id = documet["uid"] as? String else { return nil }
         
         self.userName = username
         self.advert = advert
@@ -62,7 +62,7 @@ struct MPeople: Hashable, Decodable {
         rep["search"] = search
         rep["mail"] = mail
         rep["sex"] = sex
-        rep["id"] = id
+        rep["uid"] = id
         return rep
     }
     

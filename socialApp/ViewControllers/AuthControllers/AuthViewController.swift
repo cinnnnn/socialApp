@@ -134,8 +134,15 @@ extension AuthViewController {
 
 //MARK: - AuthNavigationDelegate
 extension AuthViewController: AuthNavigationDelegate {
-    func toSetProfile(user: User) {
+    
+    func toMainTabBar(currentMPeople: MPeople) {
+        let mainTabBarCont = MainTabBarController(currentPeople: currentMPeople)
+        mainTabBarCont.modalPresentationStyle = .fullScreen
         
+        present(mainTabBarCont, animated: true, completion: nil)
+    }
+    
+    func toSetProfile(user: User) {
         let vc = SetProfileViewController(currentUser: user)
         vc.delegate = self
         present(vc, animated: true, completion: nil)
@@ -147,10 +154,6 @@ extension AuthViewController: AuthNavigationDelegate {
     
     func toRegister() {
         present(signUPVC, animated: true, completion: nil)
-    }
-    
-    func toMainTabBar() {
-        present(MainTabBarController(), animated: true, completion: nil)
     }
 }
 
