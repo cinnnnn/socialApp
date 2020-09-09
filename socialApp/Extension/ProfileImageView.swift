@@ -12,16 +12,16 @@ class ProfileImageView: UIView {
 
     let backgroundView: UIView = {
         let myView = UIView()
-        myView.backgroundColor = .label
+        myView.backgroundColor = .myPurpleColor()
         myView.translatesAutoresizingMaskIntoConstraints = false
         return myView
     }()
     
     let profileImage: UIImageView = {
         let myImage = UIImageView()
-        myImage.image = #imageLiteral(resourceName: "userPhoto")
+        myImage.image = #imageLiteral(resourceName: "avatar")
         myImage.clipsToBounds = true
-        myImage.contentMode = .scaleAspectFit
+        myImage.contentMode = .scaleAspectFill
         myImage.translatesAutoresizingMaskIntoConstraints = false
         
         return myImage

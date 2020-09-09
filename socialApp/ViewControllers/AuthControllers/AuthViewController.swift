@@ -156,6 +156,7 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                     switch resultOfFirestore {
                         
                     case .success(let mPeople):
+                        //if all section info complited, go to chats
                         self?.toMainTabBar(currentMPeople: mPeople)
                     case .failure(_):
                         self?.toSetProfile(user: user)

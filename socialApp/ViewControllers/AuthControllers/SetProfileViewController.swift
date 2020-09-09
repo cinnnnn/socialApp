@@ -59,12 +59,25 @@ extension SetProfileViewController {
     private func setupButtonAction() {
         
         goButton.addTarget(self, action: #selector(goButtonPressed), for: .touchUpInside)
+        profileImage.plusButton.addTarget(self, action: #selector(choosePhoto), for: .touchUpInside)
         
     }
 }
 
 //MARK: - objc action
 extension SetProfileViewController {
+    
+    @objc func choosePhoto() {
+        
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        choosePhotoAlert {[weak self] sourceType in
+            imagePicker.sourceType = sourceType
+            self?.present(imagePicker, animated: true, completion: nil)
+        }
+        
+    }
     
     @objc func goButtonPressed() {
         
@@ -76,7 +89,7 @@ extension SetProfileViewController {
         FirestoreService.shared.saveProfile(id: currentUser.uid,
                                             email: email,
                                             username: nameTextField.text,
-                                            avatarImage:"unloaded",
+                                            avatarImage: profileImage.profileImage.image,
                                             advert: aboutTextField.text,
                                             search: search,
                                             sex: sex ) {[weak self] result in
@@ -169,6 +182,50 @@ extension SetProfileViewController {
     
 }
 
+
+//MARK: - UIImagePickerControllerDelegate
+
+extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigationControllerDelegate{
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        picker.dismiss(animated: true, completion: nil)
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        profileImage.profileImage.image = image
+    }
+}
+    
+
+//MARK: - AlertController
+
+extension SetProfileViewController {
+    
+    private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerController.SourceType) -> Void) {
+       
+        let photoAlert = UIAlertController(title: "Фоточка",
+                                           message: "Если сделать новую, остальным отобразится, что твое она настоящяя",
+                                           preferredStyle: .actionSheet)
+        let cameraAction = UIAlertAction(title: "Новая, открыть камеру",
+                                         style: .default) { _ in
+                                            
+                                            complition(UIImagePickerController.SourceType.camera)
+        }
+        let libraryAction = UIAlertAction(title: "Выбрать из галереи",
+                                         style: .default) { _ in
+                                            complition(UIImagePickerController.SourceType.photoLibrary)
+        }
+        let cancelAction = UIAlertAction(title: "Отмена",
+                                         style: .destructive) { _ in
+                                            complition(UIImagePickerController.SourceType.camera)
+        }
+        photoAlert.addAction(cameraAction)
+        photoAlert.addAction(libraryAction)
+        photoAlert.addAction(cancelAction)
+        
+        present(photoAlert, animated: true, completion: nil)
+    }
+    
+}
 //MARK: - SwiftUI
 struct SetupProfileViewControllerProvider: PreviewProvider {
    

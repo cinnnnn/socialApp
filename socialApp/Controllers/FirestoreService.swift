@@ -28,11 +28,15 @@ class FirestoreService {
     func saveProfile(id: String,
                      email: String,
                      username: String?,
-                     avatarImage: String,
+                     avatarImage: UIImage?,
                      advert: String?,
                      search: String,
                      sex: String,
                      complition: @escaping (Result<MPeople, Error>) -> Void){
+        
+       
+        
+        guard let avatar = avatarImage else { fatalError("cant get userProfile image") }
         
         let isFilled = Validators.shared.isFilledSetProfile(userName: username, advert: advert)
         
@@ -41,14 +45,29 @@ class FirestoreService {
             return
         }
         
-        let user = MPeople(userName: isFilled.userName,
+        
+        var user = MPeople(userName: isFilled.userName,
                            advert: isFilled.advert,
-                           userImage: "unloaded",
+                           userImage: "gs://socialapp-aacc9.appspot.com/avatars/avatar@3x.png",
                            search: search,
                            mail: email,
                            sex: sex,
                            id: id)
         
+        //if user choose photo, than upload new photo to Storage
+        if  avatarImage != #imageLiteral(resourceName: "avatar")  {
+            StorageService.shared.uploadImage(image: avatar) { result in
+                switch result {
+                    
+                case .success(let url):
+                    user.userImage = url.absoluteString
+                case .failure(_):
+                    fatalError("Cant upload image")
+                }
+            }
+        }
+        
+        //save user to FireStore
         usersReference.document(user.id).setData(user.representation) { error in
             
             if let error = error {
