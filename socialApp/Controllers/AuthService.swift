@@ -20,6 +20,19 @@ class AuthService {
     
     private init() {}
     
+    func isEmailAlreadyRegister(email: String?, complition: @escaping(Result<Bool,Error>) -> Void) {
+        guard let email = email else { return }
+        
+        auth.fetchSignInMethods(forEmail: email) { (methods, error) in
+            if let error = error {
+                complition(.failure(error))
+            } else if methods != nil {
+                complition(.success(true))
+            } else {
+                complition(.success(false))
+            }
+        }
+    }
     //MARK: - sendAppleIdRequest
     //send appleIdRequset to signIn
     func AppleIDRequest(delegateController: ASAuthorizationControllerDelegate,
@@ -33,6 +46,7 @@ class AuthService {
         authController.performRequests()
     }
     
+    //MARK: - signIn Apple
     //after complite auth get token and push to FirebaseAuth
     func didCompleteWithAuthorizationApple(authorization: ASAuthorization,
                                            complition: @escaping (Result<User,Error>) -> Void) {
@@ -113,6 +127,7 @@ class AuthService {
         
         auth.signIn(withEmail: isFilledCheck.email, password: isFilledCheck.password) { result, error in
             
+           
             guard let result = result else {
                 complition(.failure(error!))
                 return

@@ -15,29 +15,42 @@ class SignUpViewController: UIViewController {
     let signUpLogo = UIImageView(image: #imageLiteral(resourceName: "SignUpLogo"),
                                  contentMode: .scaleAspectFit)
     
-    let loginLabel = UILabel(labelText: "Email")
-    let passwordLabel = UILabel(labelText: "Пароль")
-    let confirmPasswordLabel = UILabel(labelText: "Повтори пароль")
-    let onboardLabel = UILabel(labelText: "Уже с нами?")
+    let loginLabel = UILabel(labelText: "Проверь test3@gmail.com почту",
+                             textFont: .boldSystemFont(ofSize: 18))
+    let emailInstructionLabel = UILabel(labelText: "Пройди по ссылке в письме для активации",
+                                        multiline: true,
+                                        textFont: .systemFont(ofSize: 12, weight: .thin))
+    let passwordLabel = UILabel(labelText: "Придумай пароль",
+                                opacity: 0)
+    let confirmPasswordLabel = UILabel(labelText: "Повтори пароль",
+                                       opacity: 0)
     
-    let loginTextField = OneLineTextField(isSecureText: false)
-    let passwordTextField = OneLineTextField(isSecureText: true)
-    let confirmPasswordTextField = OneLineTextField(isSecureText: true)
+    let passwordTextField = OneLineTextField(isSecureText: true,
+                                             tag: 1,
+                                             opacity: 0,
+                                             isEnable: true)
+    let confirmPasswordTextField = OneLineTextField(isSecureText: true,
+                                                    tag: 2,
+                                                    opacity: 0,
+                                                    isEnable: true)
     
     let signUpButton = UIButton(newBackgroundColor: .label,
                                 newBorderColor: .label,
                                 title: "Зарегистрироваться",
-                                titleColor: .systemBackground)
-    
-    let loginButton = UIButton(newBackgroundColor: .systemBackground,
-                               newBorderColor: .label,
-                               title: "Вход",
-                               titleColor: .label)
+                                titleColor: .systemBackground,
+                                isHidden: true,
+                                opacity: 0)
+    let checkMailButton = UIButton(newBackgroundColor: .label,
+                             newBorderColor: .label,
+                             title: "Проверить активацию",
+                             titleColor: .systemBackground)
     
     weak var delegate: AuthNavigationDelegate?
+    var email:String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         setupVC()
         setupConstraints()
@@ -51,6 +64,11 @@ extension SignUpViewController {
     private func setupVC() {
         view.backgroundColor = .systemBackground
         
+        if let email = email {
+            
+            loginLabel.text = "Проверь \(email) почту, пройди по ссылке в письме для активации"
+        }
+        
     }
 }
 
@@ -60,7 +78,6 @@ extension SignUpViewController {
     private func setupButtonAction() {
         
         signUpButton.addTarget(self, action: #selector(signUpButtonPressed), for: .touchUpInside)
-        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
     }
 }
 
@@ -70,7 +87,7 @@ extension SignUpViewController {
     @objc func signUpButtonPressed() {
         
         signUpButton.isEnabled = false
-        AuthService.shared.register(email: loginTextField.text,
+        AuthService.shared.register(email: email,
                                     password: passwordTextField.text,
                                     confirmPassword: confirmPasswordTextField.text) {[weak self] result in
                                         
@@ -107,41 +124,44 @@ extension SignUpViewController {
     private func setupConstraints() {
         
         signUpLogo.translatesAutoresizingMaskIntoConstraints = false
-        loginTextField.translatesAutoresizingMaskIntoConstraints = false
+        emailInstructionLabel.translatesAutoresizingMaskIntoConstraints = false
+        checkMailButton.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         confirmPasswordTextField.translatesAutoresizingMaskIntoConstraints = false
         loginLabel.translatesAutoresizingMaskIntoConstraints = false
         passwordLabel.translatesAutoresizingMaskIntoConstraints = false
         confirmPasswordLabel.translatesAutoresizingMaskIntoConstraints = false
         signUpButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        onboardLabel.translatesAutoresizingMaskIntoConstraints = false
         
         
         view.addSubview(signUpLogo)
-        view.addSubview(loginTextField)
+        view.addSubview(emailInstructionLabel)
+        view.addSubview(checkMailButton)
         view.addSubview(passwordTextField)
         view.addSubview(confirmPasswordTextField)
         view.addSubview(loginLabel)
         view.addSubview(passwordLabel)
         view.addSubview(confirmPasswordLabel)
         view.addSubview(signUpButton)
-        view.addSubview(loginButton)
-        view.addSubview(onboardLabel)
         
         NSLayoutConstraint.activate([
             signUpLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
             signUpLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            loginTextField.topAnchor.constraint(equalTo: signUpLogo.bottomAnchor, constant: 28),
-            loginTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            loginTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            
-            loginLabel.bottomAnchor.constraint(equalTo: loginTextField.topAnchor, constant: -5),
+            loginLabel.topAnchor.constraint(equalTo: signUpLogo.bottomAnchor, constant: 5),
             loginLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             loginLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            passwordTextField.topAnchor.constraint(equalTo: loginTextField.bottomAnchor, constant: 68),
+            emailInstructionLabel.topAnchor.constraint(equalTo: loginLabel.bottomAnchor, constant: 5),
+            emailInstructionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            emailInstructionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            checkMailButton.topAnchor.constraint(equalTo: loginLabel.bottomAnchor, constant: 55),
+            checkMailButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            checkMailButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            checkMailButton.heightAnchor.constraint(equalTo: checkMailButton.widthAnchor, multiplier: 1.0/7.28),
+            
+            passwordTextField.topAnchor.constraint(equalTo: checkMailButton.bottomAnchor, constant: 68),
             passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
@@ -157,18 +177,10 @@ extension SignUpViewController {
             confirmPasswordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             confirmPasswordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            signUpButton.topAnchor.constraint(equalTo: confirmPasswordTextField.bottomAnchor, constant: 25),
+            signUpButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25),
             signUpButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            signUpButton.heightAnchor.constraint(equalTo: signUpButton.widthAnchor, multiplier: 1.0/7.28),
-            
-            loginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25),
-            loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 1.0/7.28),
-            
-            onboardLabel.bottomAnchor.constraint(equalTo: loginButton.topAnchor, constant: -10),
-            onboardLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            signUpButton.heightAnchor.constraint(equalTo: signUpButton.widthAnchor, multiplier: 1.0/7.28)
         ])
     }
 }

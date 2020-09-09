@@ -142,7 +142,7 @@ extension AuthViewController: AuthNavigationDelegate {
         present(loginVC, animated: true, completion: nil)
     }
     
-    func toRegister() {
+    func toRegister(email: String?) {
         present(signUPVC, animated: true, completion: nil)
     }
 }

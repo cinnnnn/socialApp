@@ -17,8 +17,10 @@ class SetProfileViewController: UIViewController {
     let aboutLabel = UILabel(labelText: "Мои желания на сегодоня:")
     let sexLabel = UILabel(labelText: "Мой пол:")
     let wantLabel = UILabel(labelText: "Ищу:")
-    let nameTextField = OneLineTextField(isSecureText: false)
-    let aboutTextField = OneLineTextField(isSecureText: false)
+    let nameTextField = OneLineTextField(isSecureText: false,
+                                         tag: 1)
+    let aboutTextField = OneLineTextField(isSecureText: false,
+                                          tag: 2)
     let sexSegmentedControl = UISegmentedControl(first: "Парень",
                                                  second: "Девушка",
                                                  selectedIndex: 0)

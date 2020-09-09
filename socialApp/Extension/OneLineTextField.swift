@@ -12,9 +12,18 @@ class OneLineTextField: UITextField {
     
     
     
-    convenience init(isSecureText: Bool, withButton: Bool = false, buttonText: String = "", placeHoledText: String = ""){
+    convenience init(isSecureText: Bool,
+                     tag: Int,
+                     opacity:Float = 1,
+                     isEnable: Bool = true,
+                     withButton: Bool = false,
+                     buttonText: String = "",
+                     placeHoledText: String = "") {
         self.init()
         
+        self.tag = tag
+        isEnabled = isEnable
+        layer.opacity = opacity
         borderStyle = .none
         translatesAutoresizingMaskIntoConstraints = false
         isSecureTextEntry = isSecureText

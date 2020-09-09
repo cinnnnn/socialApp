@@ -31,7 +31,7 @@ protocol PeopleCellDelegate: class {
 
 protocol AuthNavigationDelegate: class {
     func toLogin()
-    func toRegister()
+    func toRegister(email:String?)
     func toSetProfile(user: User)
     func toMainTabBar(currentMPeople: MPeople)
 }

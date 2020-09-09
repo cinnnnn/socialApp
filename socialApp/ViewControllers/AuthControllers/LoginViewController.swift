@@ -14,44 +14,41 @@ class LoginViewController: UIViewController {
     let signInLogo = UIImageView(image: #imageLiteral(resourceName: "SignInLogo"),
                                  contentMode: .scaleAspectFit)
     
-    let appleButton = UIButton(image: #imageLiteral(resourceName: "SignInApple"))
-    
     let loginButton = UIButton(newBackgroundColor: .label,
                                newBorderColor: .label,
-                               title: "Вход",
+                               title: "Далее",
                                titleColor: .systemBackground)
     
-    let signUpButton = UIButton(newBackgroundColor: .systemBackground,
-                               newBorderColor: .label,
-                               title: "Зарегистрироваться",
-                               titleColor: .label)
+    let emailTextField = OneLineTextField(isSecureText: false,
+                                          tag: 1)
+    let passwordTextField = OneLineTextField(isSecureText: true,
+                                             tag: 2,
+                                             opacity: 0,
+                                             isEnable: false)
     
-    let emailTextField = OneLineTextField(isSecureText: false)
-    let passwordTextField = OneLineTextField(isSecureText: true)
-    
-    let emailLabel = UILabel(labelText: "Email")
-    let passwordLabel = UILabel(labelText: "Пароль")
-    let needAccountLabel = UILabel(labelText: "Еще не с нами?")
+    let emailLabel = UILabel(labelText: "Напиши свою почту")
+    let passwordLabel = UILabel(labelText: "Пароль",
+                                opacity: 0)
     
     weak var delegate: AuthNavigationDelegate?
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupVC()
         setupConstraints()
         setupButtonAction()
     }
 }
 
-
 //MARK: - setupVC
 extension LoginViewController {
     
     private func setupVC() {
         view.backgroundColor = .systemBackground
+        loginButton.isEnabled = false
         
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
     }
 }
 //MARK: - setupButtonAction
@@ -59,130 +56,105 @@ extension LoginViewController {
     
     private func setupButtonAction() {
         
-        signUpButton.addTarget(self, action: #selector(signUpButtonPressed), for: .touchUpInside)
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
-        appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
+        emailTextField.addTarget(self, action: #selector(emailEnterComplite), for: .editingDidEnd)
+      
     }
 }
 
 //MARK: - objc action
 extension LoginViewController {
     
-    @objc func appleButtonPressed() {
+    //MARK: - emailEnterComplite
+    @objc func emailEnterComplite() {
         
-    }
-    
-    
-    @objc func loginButtonPressed() {
-        
-        AuthService.shared.signIn(email: emailTextField.text,
-                                  password: passwordTextField.text) {[weak self] result in
-                                    
-                                    switch result {
-                                        
-                                    case .success( let user):
-                                        
-                                        //if correct login user, than close LoginVC and check setProfile info
-                                        self?.dismiss(animated: true) {
-                                            
-                                            FirestoreService.shared.getUserData(user: user) { result in
-                                                switch result {
-                                                    
-                                                case .success(let mPeople):
-                                                    //go to chats
-                                                    self?.delegate?.toMainTabBar(currentMPeople: mPeople)
-                                                case .failure(_):
-                                                    //go to correct setProfileVC
-                                                    self?.delegate?.toSetProfile(user: user)
-                                                }
-                                            }
-                                        }
-                                        
-                                    //error of logIn
-                                    case .failure(let eror):
-                                        let myError = eror.localizedDescription
-                                        print(myError)
-                                        self?.showAlert(title: "Ошибка",
-                                                        text: myError,
-                                                        buttonText: "Понятно")
-                                    }
+        AuthService.shared.isEmailAlreadyRegister(email: emailTextField.text) {[weak self] result in
+            switch result {
+                
+            case .success(let isRegister):
+                if isRegister {
+                    self?.passwordTextField.isEnabled = true
+                    UIView.animate(withDuration: 0.3) {
+                        self?.passwordTextField.layer.opacity = 1
+                        self?.passwordLabel.layer.opacity = 1
+                        self?.resignFirstResponder()
+                        self?.loginButton.isEnabled = true
+                    }
+                } else {
+                    self?.passwordTextField.isEnabled = false
+                    UIView.animate(withDuration: 0.3) {
+                        self?.passwordTextField.text = ""
+                        self?.passwordTextField.layer.opacity = 0
+                        self?.passwordLabel.layer.opacity = 0
+                        
+                    }
+                    self?.loginButton.isEnabled = true
+                }
+            case .failure(_):
+                fatalError("Cant fetch Email registration status")
+            }
         }
     }
     
-    
-    @objc func signUpButtonPressed() {
+    //MARK: - loginButtonPressed
+    @objc func loginButtonPressed() {
         
-        dismiss(animated: true) {
-            self.delegate?.toRegister()
+        switch passwordTextField.isEnabled {
+        case true:
+            AuthService.shared.signIn(email: emailTextField.text,
+                                      password: passwordTextField.text) {[weak self] result in
+                                        switch result {
+                                        case .success( let user):
+                                            //if correct login user, than close LoginVC and check setProfile info
+                                            self?.dismiss(animated: true) {
+                                                FirestoreService.shared.getUserData(user: user) { result in
+                                                    switch result {
+                                                        
+                                                    case .success(let mPeople):
+                                                        //go to chats
+                                                        self?.delegate?.toMainTabBar(currentMPeople: mPeople)
+                                                    case .failure(_):
+                                                        //go to correct setProfileVC
+                                                        self?.delegate?.toSetProfile(user: user)
+                                                    }
+                                                }
+                                            }
+                                            
+                                        //error of logIn
+                                        case .failure(let eror):
+                                            let myError = eror.localizedDescription
+                                            print(myError)
+                                            self?.showAlert(title: "Ошибка",
+                                                            text: myError,
+                                                            buttonText: "Понятно")
+                                        }
+            }
+        default:
+            dismiss(animated: true) {
+                self.delegate?.toRegister(email: self.emailTextField.text)
+            }
+            
         }
     }
 }
-
-//MARK: - setupConstraints
-
-extension LoginViewController {
-    private func setupConstraints() {
+    
+//MARK: - UITextFieldDelegate
+extension LoginViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == emailTextField {
+            emailEnterComplite()
+        }
         
-        signInLogo.translatesAutoresizingMaskIntoConstraints = false
-        appleButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        signUpButton.translatesAutoresizingMaskIntoConstraints = false
-        emailLabel.translatesAutoresizingMaskIntoConstraints = false
-        passwordLabel.translatesAutoresizingMaskIntoConstraints = false
-        needAccountLabel.translatesAutoresizingMaskIntoConstraints = false
-        emailTextField.translatesAutoresizingMaskIntoConstraints = false
-        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(signInLogo)
-        view.addSubview(appleButton)
-        view.addSubview(loginButton)
-        view.addSubview(signUpButton)
-        view.addSubview(emailLabel)
-        view.addSubview(passwordLabel)
-        view.addSubview(needAccountLabel)
-        view.addSubview(emailTextField)
-        view.addSubview(passwordTextField)
-        
-        NSLayoutConstraint.activate([
-        signInLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
-        signInLogo.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        signInLogo.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        appleButton.topAnchor.constraint(equalTo: signInLogo.bottomAnchor, constant: 28),
-        appleButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        appleButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        appleButton.heightAnchor.constraint(equalTo: appleButton.widthAnchor, multiplier: 1.0/7.28),
-        
-        emailTextField.topAnchor.constraint(equalTo: appleButton.bottomAnchor, constant: 58),
-        emailTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        emailTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        emailLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -5),
-        emailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        emailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 38),
-        passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        passwordLabel.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -5),
-        passwordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        passwordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 25),
-        loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 1.0/7.28),
-        
-        signUpButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25),
-        signUpButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        signUpButton.heightAnchor.constraint(equalTo: signUpButton.widthAnchor, multiplier: 1.0/7.28),
-        
-        needAccountLabel.bottomAnchor.constraint(equalTo: signUpButton.topAnchor, constant: -5),
-        needAccountLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
-        
-        ])
+        // Try to find next responder
+        if let nextField = textField.superview?.viewWithTag(textField.tag + 1) as? UITextField, nextField.isEnabled {
+           nextField.becomeFirstResponder()
+        } else {
+           // Not found, so remove keyboard.
+           textField.resignFirstResponder()
+        }
+       
+        return false
     }
 }
 
@@ -199,6 +171,58 @@ extension LoginViewController {
         present(alert, animated: true, completion: nil)
     }
 }
+
+//MARK: - setupConstraints
+
+extension LoginViewController {
+    private func setupConstraints() {
+        
+        signInLogo.translatesAutoresizingMaskIntoConstraints = false
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
+        emailLabel.translatesAutoresizingMaskIntoConstraints = false
+        passwordLabel.translatesAutoresizingMaskIntoConstraints = false
+        emailTextField.translatesAutoresizingMaskIntoConstraints = false
+        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(signInLogo)
+        view.addSubview(loginButton)
+        view.addSubview(emailLabel)
+        view.addSubview(passwordLabel)
+        view.addSubview(emailTextField)
+        view.addSubview(passwordTextField)
+        
+        NSLayoutConstraint.activate([
+        signInLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
+        signInLogo.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        signInLogo.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+    
+        
+        emailTextField.topAnchor.constraint(equalTo: signInLogo.bottomAnchor, constant: 58),
+        emailTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        emailTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        emailLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -5),
+        emailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        emailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 38),
+        passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        passwordLabel.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -5),
+        passwordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        passwordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        
+        loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25),
+        loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+        loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+        loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 1.0/7.28),
+        
+        ])
+    }
+}
+
+
 //MARK: - SwiftUI
 struct LoginViewControllerProvider: PreviewProvider {
    

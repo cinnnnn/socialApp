@@ -17,14 +17,20 @@ extension UIButton {
                      titleColor: UIColor,
                      font: UIFont? = .boldSystemFont(ofSize: 18),
                      cornerRadius: CGFloat = 4,
-                     isShadow: Bool = false) {
+                     isShadow: Bool = false,
+                     isEnable: Bool = true,
+                     isHidden: Bool = false,
+                     opacity: Float = 1) {
         self.init(type: .system)
         
+        isEnabled = isEnable
+        self.isHidden = isHidden
         setTitle(title, for: .normal)
         setTitleColor(titleColor, for: .normal)
         backgroundColor = newBackgroundColor
         titleLabel?.font = font
         
+        layer.opacity = opacity
         layer.borderColor = newBorderColor.cgColor
         layer.borderWidth = 1
         layer.cornerRadius = cornerRadius

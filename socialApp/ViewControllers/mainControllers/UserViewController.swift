@@ -16,7 +16,11 @@ class UserViewController: UIViewController {
     let container = UIView()
     let nameLabel = UILabel(labelText: "Зельда", textFont: .boldSystemFont(ofSize: 22))
     let messageTextView = UITextView(text: "Легенды Зельды", isEditableText: false, delegate: nil)
-    let unswerTextField = OneLineTextField(isSecureText: false, withButton: true, buttonText: "Отправить", placeHoledText: "Сообщение")
+    let unswerTextField = OneLineTextField(isSecureText: false,
+                                           tag: 1,
+                                           withButton: true,
+                                           buttonText: "Отправить",
+                                           placeHoledText: "Сообщение")
     
     override func viewDidLoad() {
         super.viewDidLoad()
