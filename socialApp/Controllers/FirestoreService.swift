@@ -48,7 +48,7 @@ class FirestoreService {
         
         var user = MPeople(userName: isFilled.userName,
                            advert: isFilled.advert,
-                           userImage: "gs://socialapp-aacc9.appspot.com/avatars/avatar@3x.png",
+                           userImage: "https://firebasestorage.googleapis.com/v0/b/socialapp-aacc9.appspot.com/o/avatars%2Favatar%403x.png?alt=media&token=84f8b6ac-e21d-48b1-a864-79626c007d57",
                            search: search,
                            mail: email,
                            sex: sex,
@@ -56,27 +56,37 @@ class FirestoreService {
         
         //if user choose photo, than upload new photo to Storage
         if  avatarImage != #imageLiteral(resourceName: "avatar")  {
-            StorageService.shared.uploadImage(image: avatar) { result in
+            StorageService.shared.uploadImage(image: avatar) {[weak self] result in
                 switch result {
                     
                 case .success(let url):
                     user.userImage = url.absoluteString
+                    
+                    //save user to FireStore
+                    self?.usersReference.document(user.id).setData(user.representation) { error in
+                        
+                        if let error = error {
+                            complition(.failure(error))
+                        } else {
+                            complition(.success(user))
+                        }
+                    }
                 case .failure(_):
-                    fatalError("Cant upload image")
+                    
+                    //save user to FireStore with default image
+                    self?.usersReference.document(user.id).setData(user.representation) { error in
+                        
+                        if let error = error {
+                            complition(.failure(error))
+                        } else {
+                            complition(.success(user))
+                        }
+                    }
                 }
             }
         }
         
-        //save user to FireStore
-        usersReference.document(user.id).setData(user.representation) { error in
-            
-            if let error = error {
-                complition(.failure(error))
-            } else {
-                complition(.success(user))
-            }
-            
-        }
+      
         
     }
     

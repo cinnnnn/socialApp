@@ -32,10 +32,15 @@ class SetProfileViewController: UIViewController {
     
     var delegate: AuthNavigationDelegate?
     
-    private var currentUser: User
+    private var currentUser: User?
     
     init(currentUser: User) {
         self.currentUser = currentUser
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    //init for SwiftUI canvas
+    init(){
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -60,6 +65,7 @@ extension SetProfileViewController {
         
         goButton.addTarget(self, action: #selector(goButtonPressed), for: .touchUpInside)
         profileImage.plusButton.addTarget(self, action: #selector(choosePhoto), for: .touchUpInside)
+        sexSegmentedControl.addTarget(self, action: #selector(changeSexSegmentControl), for: .valueChanged)
         
     }
 }
@@ -67,8 +73,13 @@ extension SetProfileViewController {
 //MARK: - objc action
 extension SetProfileViewController {
     
+    @objc func changeSexSegmentControl() {
+        let numberOfSegments = wantSegmentedControl.numberOfSegments - 1
+        let currentSelectSex = sexSegmentedControl.selectedSegmentIndex
+        wantSegmentedControl.selectedSegmentIndex = numberOfSegments - currentSelectSex
+    }
+    
     @objc func choosePhoto() {
-        
         
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -83,10 +94,10 @@ extension SetProfileViewController {
         
         guard let sex = sexSegmentedControl.titleForSegment(at: sexSegmentedControl.selectedSegmentIndex) else { return }
         guard let search = wantSegmentedControl.titleForSegment(at: wantSegmentedControl.selectedSegmentIndex) else { return }
-        
-        guard let email = currentUser.email else { return }
+        guard let user = currentUser else { return }
+        guard let email = user.email else { return }
          
-        FirestoreService.shared.saveProfile(id: currentUser.uid,
+        FirestoreService.shared.saveProfile(id: user.uid,
                                             email: email,
                                             username: nameTextField.text,
                                             avatarImage: profileImage.profileImage.image,
@@ -236,7 +247,8 @@ struct SetupProfileViewControllerProvider: PreviewProvider {
     struct ContenerView: UIViewControllerRepresentable {
         
         func makeUIViewController(context: Context) -> SetProfileViewController {
-            SetProfileViewController(currentUser: Auth.auth().currentUser!)
+            
+           return SetProfileViewController()
         }
         
         func updateUIViewController(_ uiViewController: SetProfileViewController, context: Context) {

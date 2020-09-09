@@ -85,6 +85,94 @@ extension AuthViewController {
                                           presetationController: self)
     }
 }
+
+//MARK: - ASWebAuthenticationPresentationContextProviding
+extension AuthViewController: ASAuthorizationControllerPresentationContextProviding {
+    
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        guard let window = self.view.window else { fatalError("can't get window")}
+        return window
+    }
+    
+}
+
+//MARK: - ASAuthorizationControllerDelegate
+extension AuthViewController: ASAuthorizationControllerDelegate {
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        
+        AuthService.shared.didCompleteWithAuthorizationApple(authorization: authorization) {  [weak self] result in
+            switch result {
+                
+            case .success(let user):
+                FirestoreService.shared.getUserData(user: user) { resultOfFirestore in
+                    switch resultOfFirestore {
+                        
+                    case .success(let mPeople):
+                        //if all section info complited, go to chats
+                        self?.toMainTabBar(currentMPeople: mPeople)
+                    case .failure(_):
+                        self?.toSetProfile(user: user)
+                    }
+                }
+            case .failure(_):
+                self?.appleSignInAlerController()
+            }
+            
+        }
+    }
+}
+//MARK: - AuthNavigationDelegate
+extension AuthViewController: AuthNavigationDelegate {
+    
+    func toMainTabBar(currentMPeople: MPeople) {
+        let mainTabBarCont = MainTabBarController(currentPeople: currentMPeople)
+        mainTabBarCont.modalPresentationStyle = .fullScreen
+        
+        present(mainTabBarCont, animated: true, completion: nil)
+    }
+    
+    func toSetProfile(user: User) {
+        let vc = SetProfileViewController(currentUser: user)
+        vc.delegate = self
+        present(vc, animated: true, completion: nil)
+    }
+    
+    func toLogin() {
+        present(loginVC, animated: true, completion: nil)
+    }
+    
+    func toRegister() {
+        present(signUPVC, animated: true, completion: nil)
+    }
+}
+
+
+//MARK: -  alertController
+extension AuthViewController {
+    
+    private func appleSignInAlerController() {
+        let alert = UIAlertController(title: "Проблемки со входом",
+                                      message: "Что то с твоим AppleID пошло не так",
+                                      preferredStyle: .actionSheet)
+        let actionMail = UIAlertAction(title: "Попробовать по почте",
+                                       style: .default) { _ in
+                                        self.loginButtonPressed()
+        }
+        let actionRetry = UIAlertAction(title: "Попробовать еще раз AppleID",
+                                        style: .default) { _ in
+                                            self.appleButtonPressed()
+        }
+        let actionCancel = UIAlertAction(title: "Отмена, надо подумать",
+                                         style: .destructive, handler: nil)
+        
+        alert.addAction(actionMail)
+        alert.addAction(actionRetry)
+        alert.addAction(actionCancel)
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
 // MARK: - Setup Constraints
 
 extension AuthViewController {
@@ -132,85 +220,6 @@ extension AuthViewController {
         
     }
 }
-
-//MARK: - ASWebAuthenticationPresentationContextProviding
-extension AuthViewController: ASAuthorizationControllerPresentationContextProviding {
-    
-    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        guard let window = self.view.window else { fatalError("can't get window")}
-        return window
-    }
-    
-}
-
-//MARK: - ASAuthorizationControllerDelegate
-extension AuthViewController: ASAuthorizationControllerDelegate {
-    
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        
-        AuthService.shared.didCompleteWithAuthorizationApple(authorization: authorization) {  [weak self] result in
-            switch result {
-                
-            case .success(let user):
-                FirestoreService.shared.getUserData(user: user) { resultOfFirestore in
-                    switch resultOfFirestore {
-                        
-                    case .success(let mPeople):
-                        //if all section info complited, go to chats
-                        self?.toMainTabBar(currentMPeople: mPeople)
-                    case .failure(_):
-                        self?.toSetProfile(user: user)
-                    }
-                }
-            case .failure(_):
-                let alert = UIAlertController(title: "Проблемки со входом",
-                                              message: "Что то с твоим AppleID пошло не так",
-                                              preferredStyle: .actionSheet)
-                let actionMail = UIAlertAction(title: "Попробовать по почте",
-                                               style: .default) { _ in
-                                                self?.loginButtonPressed()
-                }
-                let actionRetry = UIAlertAction(title: "Попробовать еще раз AppleID",
-                                                style: .default) { _ in
-                                                    self?.appleButtonPressed()
-                }
-                let actionCancel = UIAlertAction(title: "Отмена, надо подумать",
-                                                 style: .destructive, handler: nil)
-                
-                alert.addAction(actionMail)
-                alert.addAction(actionRetry)
-                alert.addAction(actionCancel)
-                self?.present(alert, animated: true, completion: nil)
-            }
-            
-        }
-    }
-}
-//MARK: - AuthNavigationDelegate
-extension AuthViewController: AuthNavigationDelegate {
-    
-    func toMainTabBar(currentMPeople: MPeople) {
-        let mainTabBarCont = MainTabBarController(currentPeople: currentMPeople)
-        mainTabBarCont.modalPresentationStyle = .fullScreen
-        
-        present(mainTabBarCont, animated: true, completion: nil)
-    }
-    
-    func toSetProfile(user: User) {
-        let vc = SetProfileViewController(currentUser: user)
-        vc.delegate = self
-        present(vc, animated: true, completion: nil)
-    }
-    
-    func toLogin() {
-        present(loginVC, animated: true, completion: nil)
-    }
-    
-    func toRegister() {
-        present(signUPVC, animated: true, completion: nil)
-    }
-}
-
 
 //MARK: - SwiftUI
 struct ViewControllerProvider: PreviewProvider {
