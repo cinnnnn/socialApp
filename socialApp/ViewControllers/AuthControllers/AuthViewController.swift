@@ -91,16 +91,7 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
             switch result {
                 
             case .success(let user):
-                FirestoreService.shared.getUserData(user: user) { resultOfFirestore in
-                    switch resultOfFirestore {
-                        
-                    case .success(let mPeople):
-                        //if all section info complited, go to chats
-                        self?.toMainTabBar(currentMPeople: mPeople)
-                    case .failure(_):
-                        self?.toSetProfile(user: user)
-                    }
-                }
+                self?.toMainTabBar(currentUser: user)
             case .failure(_):
                 self?.appleSignInAlerController()
             }
@@ -111,8 +102,8 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
 //MARK: - AuthNavigationDelegate
 extension AuthViewController: AuthNavigationDelegate {
     
-    func toMainTabBar(currentMPeople: MPeople) {
-        let mainTabBarCont = MainTabBarController(currentPeople: currentMPeople)
+    func toMainTabBar(currentUser: User) {
+        let mainTabBarCont = MainTabBarController(currentUser: currentUser)
         mainTabBarCont.modalPresentationStyle = .fullScreen
         
         present(mainTabBarCont, animated: true, completion: nil)

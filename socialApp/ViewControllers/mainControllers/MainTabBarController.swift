@@ -7,13 +7,21 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class MainTabBarController: UITabBarController {
     
-    private var currentPeople: MPeople!
+    private var currentPeople: MPeople?
+    var currentUser: User!
+
     
-    init(currentPeople: MPeople) {
-        self.currentPeople = currentPeople
+    init(currentUser: User) {
+        self.currentUser = currentUser
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    //only for swiftUI
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -30,8 +38,9 @@ class MainTabBarController: UITabBarController {
     
     private func setupControllers(){
         
-        let listVC = ListViewController(currentPeople: currentPeople)
-        let peopleVC = PeopleViewController(currentPeople: currentPeople)
+        let listVC = ListViewController(currentUser: currentUser )
+        let peopleVC = PeopleViewController(currentUser: currentUser)
+        let setProfileVC = SetProfileViewController(currentUser: currentUser)
         
         guard let listImage = UIImage(systemName: "bubble.left.and.bubble.right.fill") else { return }
         guard let peopleImage = UIImage(systemName: "person.2.fill") else { return }
@@ -39,6 +48,7 @@ class MainTabBarController: UITabBarController {
         tabBar.tintColor = .label
         
         viewControllers = [
+            generateNavigationController(rootViewController: setProfileVC, image: listImage, title: "Профиль"),
             generateNavigationController(rootViewController: peopleVC, image: peopleImage, title: "Объявления"),
             generateNavigationController(rootViewController: listVC, image: listImage, title: "Чаты")
             

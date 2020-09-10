@@ -116,7 +116,7 @@ extension SignUpViewController {
                                             
                                             self?.dismiss(animated: true,
                                                           completion: {
-                                                            self?.delegate?.toSetProfile(user: user)
+                                                            self?.delegate?.toMainTabBar(currentUser: user)
                                             })
                                             
                                         case .failure(let error):

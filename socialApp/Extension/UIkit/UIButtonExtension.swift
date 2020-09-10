@@ -11,7 +11,7 @@ import UIKit
 
 extension UIButton {
     
-    convenience init(newBackgroundColor: UIColor,
+    convenience init(newBackgroundColor: UIColor?,
                      newBorderColor: UIColor = .label,
                      borderWidth: CGFloat = 1,
                      title: String,

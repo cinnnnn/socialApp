@@ -15,10 +15,10 @@ class PeopleViewController: UIViewController {
     var peopleNearby: [MPeople] = []
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
-    var currentPeople: MPeople!
+    var currentUser: User!
     
-    init(currentPeople: MPeople) {
-        self.currentPeople = currentPeople
+    init(currentUser: User) {
+        self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,7 +43,6 @@ class PeopleViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.backgroundColor = .systemBackground
         navigationItem.title = "Объявления"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Выход", style: .plain, target: self, action: #selector(signOut))
         
     }
     
@@ -150,35 +149,12 @@ class PeopleViewController: UIViewController {
 
 //MARK:  - objc
 extension PeopleViewController {
-    
-    
+
     @objc private func pressLikeButton() {
         
         reloadData()
     }
     
-    
-    //MARK:  - signOut
-    @objc func signOut() {
-        let alert = UIAlertController(title: "Покинуть", message: "Точно прощаешься с нами?", preferredStyle: .actionSheet)
-        let okAction = UIAlertAction(title: "Выйду, но вернусь", style: .destructive) { _ in
-            
-            do {
-                try Auth.auth().signOut()
-                
-                let keyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
-                keyWindow?.rootViewController = AuthViewController()
-            } catch {
-                print( "SignOut error: \(error.localizedDescription)")
-            }
-            
-        }
-        let cancelAction = UIAlertAction(title: "Продолжу общение", style: .cancel)
-        alert.addAction(okAction)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true, completion: nil)
-    }
 }
 //MARK: - PeopleCellDelegate()
 
@@ -206,13 +182,7 @@ struct PeopleViewControllerProvider: PreviewProvider {
     struct ContenerView: UIViewControllerRepresentable {
         
         func makeUIViewController(context: Context) -> MainTabBarController {
-            MainTabBarController(currentPeople: MPeople(userName: "Foo",
-                                                        advert: "Faa",
-                                                        userImage: "Fee",
-                                                        search: "Boo",
-                                                        mail: "Boa",
-                                                        sex: "Fea",
-                                                        id: "Fuu"))
+            MainTabBarController()
         }
         
         func updateUIViewController(_ uiViewController: MainTabBarController, context: Context) {

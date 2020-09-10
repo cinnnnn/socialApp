@@ -12,7 +12,7 @@ class ProfileImageView: UIView {
 
     let backgroundView: UIView = {
         let myView = UIView()
-        myView.backgroundColor = .myPurpleColor()
+        myView.backgroundColor = .label
         myView.translatesAutoresizingMaskIntoConstraints = false
         return myView
     }()

@@ -34,7 +34,7 @@ class FirestoreService {
                      sex: String,
                      complition: @escaping (Result<MPeople, Error>) -> Void){
         
-       
+        
         
         guard let avatar = avatarImage else { fatalError("cant get userProfile image") }
         
@@ -45,14 +45,13 @@ class FirestoreService {
             return
         }
         
-        
-        var user = MPeople(userName: isFilled.userName,
-                           advert: isFilled.advert,
-                           userImage: "https://firebasestorage.googleapis.com/v0/b/socialapp-aacc9.appspot.com/o/avatars%2Favatar%403x.png?alt=media&token=84f8b6ac-e21d-48b1-a864-79626c007d57",
-                           search: search,
-                           mail: email,
-                           sex: sex,
-                           id: id)
+        var mPeople = MPeople(userName: isFilled.userName,
+                              advert: isFilled.advert,
+                              userImage: "https://firebasestorage.googleapis.com/v0/b/socialapp-aacc9.appspot.com/o/avatars%2Favatar%403x.png?alt=media&token=84f8b6ac-e21d-48b1-a864-79626c007d57",
+                              search: search,
+                              mail: email,
+                              sex: sex,
+                              id: id)
         
         //if user choose photo, than upload new photo to Storage
         if  avatarImage != #imageLiteral(resourceName: "avatar")  {
@@ -60,35 +59,30 @@ class FirestoreService {
                 switch result {
                     
                 case .success(let url):
-                    user.userImage = url.absoluteString
-                    
+                    mPeople.userImage = url.absoluteString
                     //save user to FireStore
-                    self?.usersReference.document(user.id).setData(user.representation) { error in
+                    self?.usersReference.document(mPeople.id).setData(mPeople.representation) { error in
                         
                         if let error = error {
                             complition(.failure(error))
                         } else {
-                            complition(.success(user))
+                            complition(.success(mPeople))
                         }
                     }
                 case .failure(_):
-                    
-                    //save user to FireStore with default image
-                    self?.usersReference.document(user.id).setData(user.representation) { error in
-                        
-                        if let error = error {
-                            complition(.failure(error))
-                        } else {
-                            complition(.success(user))
-                        }
-                    }
+                    fatalError("Cant upload Image") 
                 }
             }
         }
-        complition(.success(user))
-        
-      
-        
+        //save user to FireStore with default image
+        usersReference.document(mPeople.id).setData(mPeople.representation) { error in
+            
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                complition(.success(mPeople))
+            }
+        }
     }
     
     //MARK: - getUserData
@@ -97,23 +91,20 @@ class FirestoreService {
         
         let documentReference = usersReference.document(user.uid)
         documentReference.getDocument { (snapshot, error) in
+            
+            if let snapshot = snapshot, snapshot.exists {
                 
-                if let snapshot = snapshot, snapshot.exists {
-                    
-                    guard let people = MPeople(documentSnap: snapshot) else {
-                        complition(.failure(UserError.incorrectSetProfile))
-                        return
-                    }
-                    complition(.success(people))
-                    
-                } else {
+                guard let people = MPeople(documentSnap: snapshot) else {
                     complition(.failure(UserError.incorrectSetProfile))
+                    return
                 }
+                complition(.success(people))
                 
+            } else {
+                complition(.failure(UserError.incorrectSetProfile))
             }
-        
-       
         }
     }
-    
+}
+
 

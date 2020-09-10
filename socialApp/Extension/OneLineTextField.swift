@@ -10,8 +10,6 @@ import UIKit
 
 class OneLineTextField: UITextField {
     
-    
-    
     convenience init(isSecureText: Bool,
                      tag: Int,
                      opacity:Float = 1,
@@ -28,9 +26,7 @@ class OneLineTextField: UITextField {
         translatesAutoresizingMaskIntoConstraints = false
         isSecureTextEntry = isSecureText
         placeholder = placeHoledText
-        
-        
-        
+          
         let bottomView =  UIView.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         bottomView.backgroundColor = .label
         bottomView.translatesAutoresizingMaskIntoConstraints = false
@@ -45,7 +41,6 @@ class OneLineTextField: UITextField {
         ])
         
         if withButton {
-            
             let textFieldButton = UIButton()
             textFieldButton.setTitle(buttonText, for: .normal)
             textFieldButton.setTitleColor(.label, for: .normal)
@@ -54,7 +49,6 @@ class OneLineTextField: UITextField {
             rightView = textFieldButton
             rightViewMode = .always
             rightView?.frame = CGRect(x: 0, y: 0, width: 8 , height: 8)
-            
         }
     }
     

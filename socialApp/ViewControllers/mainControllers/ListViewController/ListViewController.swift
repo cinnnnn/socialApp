@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import FirebaseAuth
 
 
 class ListViewController: UIViewController {
@@ -16,10 +17,10 @@ class ListViewController: UIViewController {
     let activeChats: [MChat] = []
     let waitingChats: [MChat] = []
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
-    var currentPeople: MPeople!
+    var currentUser: User!
     
-    init(currentPeople: MPeople) {
-        self.currentPeople = currentPeople
+    init(currentUser: User) {
+        self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -58,7 +59,7 @@ class ListViewController: UIViewController {
         navigationController?.navigationBar.backgroundColor = .systemBackground
         navigationController?.navigationBar.barTintColor = .systemBackground
  
-        navigationItem.title = "Чаты для \(currentPeople.userName)"
+        navigationItem.title = "Чаты"
         
         let searchController = UISearchController(searchResultsController: nil)
         
@@ -278,13 +279,7 @@ struct ListViewControllerProvider: PreviewProvider {
     struct ContenerView: UIViewControllerRepresentable {
         
         func makeUIViewController(context: Context) -> MainTabBarController {
-            MainTabBarController(currentPeople: MPeople(userName: "Foo",
-                                                        advert: "Faa",
-                                                        userImage: "Fee",
-                                                        search: "Boo",
-                                                        mail: "Boa",
-                                                        sex: "Fea",
-                                                        id: "Fuu"))
+            MainTabBarController()
         }
         
         func updateUIViewController(_ uiViewController: MainTabBarController, context: Context) {

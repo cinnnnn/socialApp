@@ -127,17 +127,7 @@ extension LoginViewController {
                                         case .success( let user):
                                             //if correct login user, than close LoginVC and check setProfile info
                                             self?.dismiss(animated: true) {
-                                                FirestoreService.shared.getUserData(user: user) { result in
-                                                    switch result {
-                                                        
-                                                    case .success(let mPeople):
-                                                        //go to chats
-                                                        self?.delegate?.toMainTabBar(currentMPeople: mPeople)
-                                                    case .failure(_):
-                                                        //go to correct setProfileVC
-                                                        self?.delegate?.toSetProfile(user: user)
-                                                    }
-                                                }
+                                                self?.delegate?.toMainTabBar(currentUser: user)
                                             }
                                             
                                         //error of logIn
@@ -166,8 +156,6 @@ extension LoginViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField == emailTextField {
             textField.selectAll(nil)
-            
-            
         }
     }
     

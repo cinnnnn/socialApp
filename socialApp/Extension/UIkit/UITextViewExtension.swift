@@ -10,7 +10,9 @@ import UIKit
 
 extension UITextView {
     
-    convenience init(text: String, isEditableText: Bool, delegate: UITextViewDelegate?) {
+    convenience init(text: String,
+                     isEditableText: Bool,
+                     delegate: UITextViewDelegate?) {
         self.init()
         
         self.text = text
@@ -20,6 +22,7 @@ extension UITextView {
         backgroundColor = nil
         font = .systemFont(ofSize: 18, weight: .regular)
         textColor = .label
+        
         
         //for setup maximum lines and symbols
         if isEditableText {
