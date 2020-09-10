@@ -12,7 +12,8 @@ import UIKit
 extension UIButton {
     
     convenience init(newBackgroundColor: UIColor,
-                     newBorderColor: UIColor,
+                     newBorderColor: UIColor = .label,
+                     borderWidth: CGFloat = 1,
                      title: String,
                      titleColor: UIColor,
                      font: UIFont? = .boldSystemFont(ofSize: 18),
@@ -32,7 +33,7 @@ extension UIButton {
         
         layer.opacity = opacity
         layer.borderColor = newBorderColor.cgColor
-        layer.borderWidth = 1
+        layer.borderWidth = borderWidth
         layer.cornerRadius = cornerRadius
         
         if isShadow {

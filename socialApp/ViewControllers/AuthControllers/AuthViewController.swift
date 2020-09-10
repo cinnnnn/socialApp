@@ -12,26 +12,18 @@ import FirebaseAuth
 import AuthenticationServices
 
 class AuthViewController: UIViewController {
-    
-    let emailButton = UIButton(newBackgroundColor: .systemBackground,
-                               newBorderColor: .label,
-                               title: "Регистрация по Email",
-                               titleColor: .label,
-                               isShadow: false)
-    
+        
     let loginButton = UIButton(newBackgroundColor: .systemBackground,
-                               newBorderColor: .label,
-                               title: "Вход",
-                               titleColor: .label,
+                               borderWidth: 0,
+                               title: "Войти с Email",
+                               titleColor: .myHeaderColor(),
+                               font: .systemFont(ofSize: 16, weight: .regular),
                                isShadow: false)
     
     let appleButton = ASAuthorizationAppleIDButton()
     
-    let loginLabel = UILabel(labelText: "Уже с нами?")
-    
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
     
-    let signUPVC = SignUpViewController()
     let loginVC = LoginViewController()
     
     
@@ -51,7 +43,7 @@ extension AuthViewController {
     
     private func setupVC() {
         view.backgroundColor = .systemBackground
-        signUPVC.delegate = self
+    
         loginVC.delegate = self
     }
 }
@@ -60,7 +52,6 @@ extension AuthViewController {
 extension AuthViewController {
     
     private func setupButtonAction() {
-        emailButton.addTarget(self, action: #selector(emailButtonPressed), for: .touchUpInside)
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
         appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
     }
@@ -69,11 +60,6 @@ extension AuthViewController {
 //MARK: - objc func
 extension AuthViewController {
     
-    @objc func emailButtonPressed() {
-        
-        present(signUPVC, animated: true, completion: nil)
-        
-    }
     
     @objc func loginButtonPressed() {
         present(loginVC, animated: true, completion: nil)
@@ -143,7 +129,9 @@ extension AuthViewController: AuthNavigationDelegate {
     }
     
     func toRegister(email: String?) {
-        present(signUPVC, animated: true, completion: nil)
+        let signUpVc = SignUpViewController(email: email)
+        signUpVc.delegate = self
+        present(signUpVc, animated: true, completion: nil)
     }
 }
 
@@ -179,10 +167,8 @@ extension AuthViewController {
     private func setupConstraints(){
         
         logoImage.translatesAutoresizingMaskIntoConstraints = false
-        emailButton.translatesAutoresizingMaskIntoConstraints = false
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         appleButton.translatesAutoresizingMaskIntoConstraints = false
-        loginLabel.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(logoImage)
         logoImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25).isActive = true
@@ -190,7 +176,7 @@ extension AuthViewController {
         logoImage.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25).isActive = true
         logoImage.heightAnchor.constraint(equalTo: logoImage.widthAnchor, multiplier: 1.0/1.0).isActive = true
         
-        let buttonStackView = UIStackView(arrangedSubviews: [ appleButton, emailButton ])
+        let buttonStackView = UIStackView(arrangedSubviews: [ appleButton, loginButton ])
         buttonStackView.axis = .vertical
         buttonStackView.spacing = 10
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -201,22 +187,7 @@ extension AuthViewController {
         buttonStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
         buttonStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25).isActive = true
         
-        
-        emailButton.heightAnchor.constraint(equalTo: emailButton.widthAnchor, multiplier: 1.0/7.28).isActive = true
         appleButton.heightAnchor.constraint(equalTo: appleButton.widthAnchor, multiplier: 1.0/7.28).isActive = true
-        
-        
-        view.addSubview(loginButton)
-        
-        loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 1.0/7.28).isActive = true
-        loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
-        loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25).isActive = true
-        loginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
-        
-        
-        view.addSubview(loginLabel)
-        loginLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loginLabel.bottomAnchor.constraint(equalTo: loginButton.topAnchor, constant: -10).isActive = true
         
     }
 }

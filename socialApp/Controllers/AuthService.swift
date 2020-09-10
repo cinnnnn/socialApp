@@ -99,10 +99,6 @@ class AuthService {
             return
         }
         
-        guard Validators.shared.isEmail(email: isFilledCheck.email) else {
-            complition(.failure(AuthError.invalidEmail))
-            return
-        }
         
         auth.createUser(withEmail: isFilledCheck.email, password: isFilledCheck.password) { result, error in
             

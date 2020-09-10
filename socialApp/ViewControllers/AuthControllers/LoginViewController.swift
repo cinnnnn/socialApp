@@ -27,6 +27,9 @@ class LoginViewController: UIViewController {
                                              isEnable: false)
     
     let emailLabel = UILabel(labelText: "Напиши свою почту")
+    let correctEmailLabel = UILabel(labelText: "Неправильно введена почта",
+                                    textColor: .red,
+                                    opacity: 0)
     let passwordLabel = UILabel(labelText: "Пароль",
                                 opacity: 0)
     
@@ -58,7 +61,7 @@ extension LoginViewController {
         
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
         emailTextField.addTarget(self, action: #selector(emailEnterComplite), for: .editingDidEnd)
-      
+        
     }
 }
 
@@ -68,13 +71,29 @@ extension LoginViewController {
     //MARK: - emailEnterComplite
     @objc func emailEnterComplite() {
         
-        AuthService.shared.isEmailAlreadyRegister(email: emailTextField.text) {[weak self] result in
+        guard let email = emailTextField.text, email != "" else { return }
+        
+        guard Validators.shared.isEmail(email: email) else {
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.loginButton.isEnabled = false
+                self?.correctEmailLabel.layer.opacity = 1
+                self?.emailTextField.becomeFirstResponder()
+                self?.passwordTextField.text = ""
+                self?.passwordTextField.layer.opacity = 0
+                self?.passwordLabel.layer.opacity = 0
+            }
+            return
+        }
+        
+        
+        AuthService.shared.isEmailAlreadyRegister(email: email) {[weak self] result in
             switch result {
                 
             case .success(let isRegister):
                 if isRegister {
                     self?.passwordTextField.isEnabled = true
                     UIView.animate(withDuration: 0.3) {
+                        self?.correctEmailLabel.layer.opacity = 0
                         self?.passwordTextField.layer.opacity = 1
                         self?.passwordLabel.layer.opacity = 1
                         self?.resignFirstResponder()
@@ -83,6 +102,7 @@ extension LoginViewController {
                 } else {
                     self?.passwordTextField.isEnabled = false
                     UIView.animate(withDuration: 0.3) {
+                        self?.correctEmailLabel.layer.opacity = 0
                         self?.passwordTextField.text = ""
                         self?.passwordTextField.layer.opacity = 0
                         self?.passwordLabel.layer.opacity = 0
@@ -130,6 +150,8 @@ extension LoginViewController {
                                         }
             }
         default:
+            
+            
             dismiss(animated: true) {
                 self.delegate?.toRegister(email: self.emailTextField.text)
             }
@@ -137,23 +159,42 @@ extension LoginViewController {
         }
     }
 }
-    
+
 //MARK: - UITextFieldDelegate
 extension LoginViewController: UITextFieldDelegate {
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == emailTextField {
+            textField.selectAll(nil)
+            
+            
+        }
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == emailTextField {
-            emailEnterComplite()
+            if Validators.shared.isEmail(email: emailTextField.text ?? "") {
+                emailEnterComplite()
+            }
         }
         
         // Try to find next responder
         if let nextField = textField.superview?.viewWithTag(textField.tag + 1) as? UITextField, nextField.isEnabled {
-           nextField.becomeFirstResponder()
+            
+            if Validators.shared.isEmail(email: emailTextField.text ?? "") {
+                nextField.becomeFirstResponder()
+            } else {
+                textField.becomeFirstResponder()
+                textField.selectAll(nil)
+                emailEnterComplite()
+                return false
+            }
+            
         } else {
-           // Not found, so remove keyboard.
-           textField.resignFirstResponder()
+            // Not found, so remove keyboard.
+            textField.resignFirstResponder()
         }
-       
+        
         return false
     }
 }
@@ -179,6 +220,7 @@ extension LoginViewController {
         
         signInLogo.translatesAutoresizingMaskIntoConstraints = false
         loginButton.translatesAutoresizingMaskIntoConstraints = false
+        correctEmailLabel.translatesAutoresizingMaskIntoConstraints = false
         emailLabel.translatesAutoresizingMaskIntoConstraints = false
         passwordLabel.translatesAutoresizingMaskIntoConstraints = false
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -186,38 +228,44 @@ extension LoginViewController {
         
         view.addSubview(signInLogo)
         view.addSubview(loginButton)
+        view.addSubview(correctEmailLabel)
         view.addSubview(emailLabel)
         view.addSubview(passwordLabel)
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
         
         NSLayoutConstraint.activate([
-        signInLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
-        signInLogo.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        signInLogo.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-    
-        
-        emailTextField.topAnchor.constraint(equalTo: signInLogo.bottomAnchor, constant: 58),
-        emailTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        emailTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        emailLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -5),
-        emailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        emailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 38),
-        passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        passwordLabel.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -5),
-        passwordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        passwordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        
-        loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25),
-        loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-        loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-        loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 1.0/7.28),
-        
+            signInLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
+            signInLogo.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            signInLogo.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            
+            emailTextField.topAnchor.constraint(equalTo: signInLogo.bottomAnchor, constant: 58),
+            emailTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            emailTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            emailLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -5),
+            emailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            emailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            correctEmailLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 5),
+            correctEmailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            correctEmailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            
+            passwordTextField.topAnchor.constraint(equalTo: correctEmailLabel.bottomAnchor, constant: 38),
+            passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            passwordLabel.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -5),
+            passwordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            passwordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25),
+            loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 1.0/7.28),
+            
         ])
     }
 }
@@ -225,7 +273,7 @@ extension LoginViewController {
 
 //MARK: - SwiftUI
 struct LoginViewControllerProvider: PreviewProvider {
-   
+    
     static var previews: some View {
         ContenerView().edgesIgnoringSafeArea(.all)
     }
