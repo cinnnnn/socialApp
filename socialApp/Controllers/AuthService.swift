@@ -148,6 +148,19 @@ class AuthService {
             
         }
     }
+    
+    //MARK: - signOut
+    func signOut(complition: @escaping (Result<Bool,Error>)-> Void) {
+        do {
+            try Auth.auth().signOut()
+            
+            let keyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
+            keyWindow?.rootViewController = AuthViewController()
+            complition(.success(true))
+        } catch {
+            complition(.failure(error))
+        }
+    }
 }
 
 

@@ -13,7 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -21,7 +21,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         
         if let user = Auth.auth().currentUser {
-            window?.rootViewController = MainTabBarController(currentUser: user)
+            //try reload, to check profile is avalible on server
+            user.reload {[weak self] error in
+                if let _ = error {
+                    AuthService.shared.signOut { result in
+                        switch result {
+                        case .success(_):
+                            self?.window?.rootViewController = AuthViewController()
+                        case .failure(let error):
+                            fatalError(error.localizedDescription)
+                        }
+                    }
+                } else {
+                    self?.window?.rootViewController = MainTabBarController(currentUser: user)
+                }
+            }
         } else {
             window?.rootViewController = AuthViewController()
         }

@@ -38,20 +38,18 @@ struct MPeople: Hashable, Decodable {
     
     init?(documentSnap: DocumentSnapshot){
         guard let documet = documentSnap.data()  else { return nil }
-        guard let username = documet["username"] as? String else { return nil }
-        guard let advert = documet["advert"] as? String else { return nil }
-        guard let userImage = documet["userImage"] as? String else { return nil }
-        guard let search = documet["search"] as? String else { return nil }
+        
+        if let userName = documet["username"] as? String { self.userName = userName } else { userName = ""}
+        if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
+        if let userImage = documet["userImage"] as? String { self.userImage = userImage } else {
+            self.userImage = "https://firebasestorage.googleapis.com/v0/b/socialapp-aacc9.appspot.com/o/avatars%2Favatar%403x.png?alt=media&token=b31d0413-89bd-4927-b930-a69e8523f094"
+        }
+        if let search = documet["search"] as? String { self.search = search } else { self.search = ""}
+        if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = ""}
         guard let mail = documet["mail"] as? String else { return nil }
-        guard let sex = documet["sex"] as? String else { return nil }
         guard let id = documet["uid"] as? String else { return nil }
         
-        self.userName = username
-        self.advert = advert
-        self.userImage = userImage
-        self.search = search
         self.mail = mail
-        self.sex = sex
         self.id = id
     }
     

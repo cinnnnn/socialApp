@@ -105,9 +105,8 @@ extension SetProfileViewController {
                 self?.currentPeople = mPeople
                 self?.setPeopleData()
                 
-            case .failure(_):
-                print("Cant get user data")
-                return
+            case .failure(let error):
+                fatalError(error.localizedDescription)
             }
         }
         
@@ -241,13 +240,13 @@ extension SetProfileViewController {
         let alert = UIAlertController(title: "Покинуть", message: "Точно прощаешься с нами?", preferredStyle: .actionSheet)
         let okAction = UIAlertAction(title: "Выйду, но вернусь", style: .destructive) { _ in
             
-            do {
-                try Auth.auth().signOut()
-                
-                let keyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
-                keyWindow?.rootViewController = AuthViewController()
-            } catch {
-                print( "SignOut error: \(error.localizedDescription)")
+            AuthService.shared.signOut { result in
+                switch result {
+                case .success(_):
+                    return
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                }
             }
             
         }
