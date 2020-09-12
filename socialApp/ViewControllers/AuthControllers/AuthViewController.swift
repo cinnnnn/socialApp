@@ -88,14 +88,23 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         
         AuthService.shared.didCompleteWithAuthorizationApple(authorization: authorization) {  [weak self] result in
+            
             switch result {
                 
-            case .success(let user):
-                self?.toMainTabBar(currentUser: user)
-            case .failure(_):
-                self?.appleSignInAlerController()
+                //if success get credential, then auth
+            case .success(let credential):
+                AuthService.shared.signInApple(with: credential) { result in
+                    switch result {
+                        
+                    case .success(let user):
+                        self?.toMainTabBar(currentUser: user)
+                    case .failure(_):
+                        self?.appleSignInAlerController()
+                    }
+                }
+            case .failure(let error):
+                fatalError(error.localizedDescription)
             }
-            
         }
     }
 }

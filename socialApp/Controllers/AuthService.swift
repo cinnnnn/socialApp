@@ -33,6 +33,20 @@ class AuthService {
             }
         }
     }
+    
+    func verifyEmail(user: User, complition: @escaping(Result<Bool,Error>) -> Void) {
+        
+        user.sendEmailVerification { error in
+            
+            
+            
+            
+            user.reauthenticate(with: credential) { (result, error) in
+                
+            }
+        }
+    }
+    
     //MARK: - sendAppleIdRequest
     //send appleIdRequset to signIn
     func AppleIDRequest(delegateController: ASAuthorizationControllerDelegate,
@@ -46,35 +60,41 @@ class AuthService {
         authController.performRequests()
     }
     
-    //MARK: - signIn Apple
+    //MARK: - getCredentialApple
     //after complite auth get token and push to FirebaseAuth
     func didCompleteWithAuthorizationApple(authorization: ASAuthorization,
-                                           complition: @escaping (Result<User,Error>) -> Void) {
+                                           complition: @escaping (Result<OAuthCredential,Error>) -> Void) {
         
         if let authCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             
             guard let nonce = currentNonce else { fatalError("No login request was sent")}
             
             guard let appleIDToken = authCredential.identityToken else {
-                print("Unable to return Apple Token")
+                complition(.failure(AuthError.appleToken))
                 return
             }
             
             guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
-                print("Unable to serialize token to string")
+                complition(.failure(AuthError.serializeAppleToken))
                 return
             }
             
-            let credential = OAuthProvider.credential(withProviderID: "apple.com",
+             let credential = OAuthProvider.credential(withProviderID: "apple.com",
                                                       idToken: idTokenString,
                                                       rawNonce: nonce)
-            
-            auth.signIn(with: credential) { data, error in
-                if let user = data?.user {
-                    complition(.success(user))
-                } else if let error = error {
-                    complition(.failure(error))
-                }
+                
+             complition(.success(credential))
+        }
+    }
+    
+    //MARK: - signInApple
+    func signInApple(with credential: OAuthCredential, complition: @escaping (Result<User, Error>) -> Void) {
+        
+        auth.signIn(with: credential) { data, error in
+            if let user = data?.user {
+                complition(.success(user))
+            } else if let error = error {
+                complition(.failure(error))
             }
         }
     }
@@ -130,6 +150,7 @@ class AuthService {
             }
             
             complition(.success(result.user))
+            
         }
     }
 }
