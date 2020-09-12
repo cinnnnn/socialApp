@@ -38,12 +38,7 @@ class AuthService {
         
         user.sendEmailVerification { error in
             
-            
-            
-            
-            user.reauthenticate(with: credential) { (result, error) in
-                
-            }
+
         }
     }
     
