@@ -26,6 +26,29 @@ class StorageService {
         Auth.auth().currentUser?.uid
     }
     
+     //MARK: - getImage
+    func getImage(link: String?, complition: @escaping (Result<UIImage,Error>)->Void ) {
+    
+        guard let link = link else { complition(.failure(StorageError.referenceError)); return}
+        
+        let ref =  Storage.storage().reference(forURL: link)
+        let maxDownloadSize:Int64 = 3 * 1024 * 1024
+        
+        ref.getData(maxSize: maxDownloadSize) { data, error in
+            
+            if let data = data {
+                guard let image = UIImage(data: data) else {
+                    complition(.failure(StorageError.getImageFromDataError))
+                    return
+                }
+                complition(.success(image))
+            } else if let error = error {
+                complition(.failure(error))
+            }
+        }
+    }
+    
+    //MARK: - uploadImage
     func uploadImage(image: UIImage, complition: @escaping (Result<URL,Error>)->Void ) {
         
         let scaleImage = image.resizeImage(targetLength: 400)

@@ -121,7 +121,16 @@ extension SetProfileViewController {
         
         guard let people = currentPeople else { return }
         
-       // profileImage.profileImage.image =
+        StorageService.shared.getImage(link: people.userImage) {[weak self] result in
+            switch result {
+
+            case .success(let image):
+                self?.profileImage.profileImage.image = image
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+        
         nameTextField.text = people.userName
         advertTextView.text = people.advert
         advertTextView.textColor = .label

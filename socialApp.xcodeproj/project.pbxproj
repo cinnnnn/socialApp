@@ -41,6 +41,7 @@
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
 		FBB3B263250A7CCC00440632 /* OneLineTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B262250A7CCC00440632 /* OneLineTextView.swift */; };
 		FBB3B265250ACA0700440632 /* Sex.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B264250ACA0700440632 /* Sex.swift */; };
+		FBB3B267250D00D000440632 /* StorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B266250D00CF00440632 /* StorageError.swift */; };
 		FBEF607824A602070005F947 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607724A602070005F947 /* AppDelegate.swift */; };
 		FBEF607A24A602070005F947 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607924A602070005F947 /* SceneDelegate.swift */; };
 		FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607B24A602070005F947 /* AuthViewController.swift */; };
@@ -96,6 +97,7 @@
 		FBB3B260250905D800440632 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		FBB3B262250A7CCC00440632 /* OneLineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneLineTextView.swift; sourceTree = "<group>"; };
 		FBB3B264250ACA0700440632 /* Sex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sex.swift; sourceTree = "<group>"; };
+		FBB3B266250D00CF00440632 /* StorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageError.swift; sourceTree = "<group>"; };
 		FBEF607424A602070005F947 /* socialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = socialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBEF607724A602070005F947 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBEF607924A602070005F947 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 			children = (
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */,
+				FBB3B266250D00CF00440632 /* StorageError.swift */,
 				FBF293DE250668CB00F7B5F1 /* UserError.swift */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
@@ -454,6 +457,7 @@
 				FB66288124A93ADC00650820 /* SignUpViewController.swift in Sources */,
 				FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */,
 				FB1062D824AE494A0012C4D4 /* OneLineTextField.swift in Sources */,
+				FBB3B267250D00D000440632 /* StorageError.swift in Sources */,
 				FB18217724B21F5100FFFC87 /* ListViewController.swift in Sources */,
 				FBEF609324A90C840005F947 /* UIImageViewExtension.swift in Sources */,
 				FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */,

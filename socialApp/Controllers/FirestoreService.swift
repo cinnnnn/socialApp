@@ -47,7 +47,7 @@ class FirestoreService {
         
         var mPeople = MPeople(userName: isFilled.userName,
                               advert: isFilled.advert,
-                              userImage: "https://firebasestorage.googleapis.com/v0/b/socialapp-aacc9.appspot.com/o/avatars%2Favatar%403x.png?alt=media&token=84f8b6ac-e21d-48b1-a864-79626c007d57",
+                              userImage: "https://firebasestorage.googleapis.com/v0/b/socialapp-aacc9.appspot.com/o/avatars%2Favatar%403x.png?alt=media&token=b31d0413-89bd-4927-b930-a69e8523f094",
                               search: search,
                               mail: email,
                               sex: sex,
@@ -92,6 +92,7 @@ class FirestoreService {
         let documentReference = usersReference.document(user.uid)
         documentReference.getDocument { (snapshot, error) in
             
+           
             if let snapshot = snapshot, snapshot.exists {
                 
                 guard let people = MPeople(documentSnap: snapshot) else {
