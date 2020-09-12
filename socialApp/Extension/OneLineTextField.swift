@@ -21,6 +21,7 @@ class OneLineTextField: UITextField {
         
         self.tag = tag
         isEnabled = isEnable
+        font = .systemFont(ofSize: 16, weight: .regular)
         layer.opacity = opacity
         borderStyle = .none
         translatesAutoresizingMaskIntoConstraints = false

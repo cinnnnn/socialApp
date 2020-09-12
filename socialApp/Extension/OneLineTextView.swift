@@ -21,17 +21,17 @@ class OneLineTextView: UITextView {
         isSelectable = isEditable
         isScrollEnabled = false //for autosize height
         backgroundColor = nil
-        font = .systemFont(ofSize: 18, weight: .regular)
+        font = .systemFont(ofSize: 16, weight: .regular)
         textColor = .lightGray
         translatesAutoresizingMaskIntoConstraints = false
         
         layer.borderColor = UIColor.label.cgColor
-        layer.borderWidth = 1
+        layer.borderWidth = 0
         layer.cornerRadius = 4
         
         //for setup maximum lines and symbols
         if isEditable {
-            textContainer.maximumNumberOfLines = 3
+            textContainer.maximumNumberOfLines = 5
             textContainer.lineBreakMode = .byClipping
         }
         

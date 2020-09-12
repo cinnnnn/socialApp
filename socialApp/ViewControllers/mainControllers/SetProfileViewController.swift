@@ -13,8 +13,10 @@ import FirebaseAuth
 class SetProfileViewController: UIViewController {
     
     let profileImage = ProfileImageView()
-    let nameLabel = UILabel(labelText: "Называй меня:")
-    let aboutLabel = UILabel(labelText: "Мои желания на сегодня:")
+    let nameLabel = UILabel(labelText: "Называй меня:",
+                            textFont: .systemFont(ofSize: 16, weight: .bold))
+    let aboutLabel = UILabel(labelText: "Мои желания на сегодня:",
+                             textFont: .systemFont(ofSize: 16, weight: .bold))
     let sexLabel = UILabel(labelText: "Я",
                            textFont: .systemFont(ofSize: 16, weight: .regular))
     let wantLabel = UILabel(labelText: "ищу",
@@ -71,6 +73,7 @@ class SetProfileViewController: UIViewController {
     private func setupVC() {
         view.backgroundColor = .systemBackground
         advertTextView.delegate = self
+        nameTextField.delegate = self
     }
 }
 //MARK: - setupNavigationController
@@ -273,6 +276,15 @@ private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerC
     }
 }
 
+extension SetProfileViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+           
+           textField.resignFirstResponder()
+           return false
+       }
+    
+}
 //MARK: - UITextViewDelegate
 extension SetProfileViewController:UITextViewDelegate {
     
@@ -363,7 +375,7 @@ extension SetProfileViewController {
             profileImage.widthAnchor.constraint(equalToConstant: self.view.frame.width / 4),
             profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor, multiplier: 1/1),
             
-            nameTextField.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 28),
+            nameTextField.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 45),
             nameTextField.heightAnchor.constraint(equalToConstant: 25),
             nameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             nameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
@@ -372,12 +384,12 @@ extension SetProfileViewController {
             nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            advertTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 38),
+            advertTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 45),
             advertTextView.heightAnchor.constraint(equalToConstant: 100),
-            advertTextView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            advertTextView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             advertTextView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            aboutLabel.bottomAnchor.constraint(equalTo: advertTextView.topAnchor, constant: -5),
+            aboutLabel.bottomAnchor.constraint(equalTo: advertTextView.topAnchor, constant: 0),
             aboutLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             aboutLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
