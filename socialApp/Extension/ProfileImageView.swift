@@ -19,6 +19,7 @@ class ProfileImageView: UIView {
     
     let profileImage: UIImageView = {
         let myImage = UIImageView()
+        myImage.sd_imageTransition = .flipFromBottom
         myImage.image = #imageLiteral(resourceName: "avatar")
         myImage.clipsToBounds = true
         myImage.contentMode = .scaleAspectFill

@@ -9,6 +9,7 @@
 import UIKit
 import SwiftUI
 import FirebaseAuth
+import SDWebImage
 
 class SetProfileViewController: UIViewController {
     
@@ -105,8 +106,8 @@ extension SetProfileViewController {
                 self?.currentPeople = mPeople
                 self?.setPeopleData()
                 
-            case .failure(let error):
-                fatalError(error.localizedDescription)
+            case .failure(_):
+                return
             }
         }
         
@@ -120,14 +121,8 @@ extension SetProfileViewController {
         
         guard let people = currentPeople else { return }
         
-        StorageService.shared.getImage(link: people.userImage) {[weak self] result in
-            switch result {
-
-            case .success(let image):
-                self?.profileImage.profileImage.image = image
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
+        if let imageURL = URL(string: people.userImage) {
+            profileImage.profileImage.sd_setImage(with: imageURL, completed: nil)
         }
         
         nameTextField.text = people.userName

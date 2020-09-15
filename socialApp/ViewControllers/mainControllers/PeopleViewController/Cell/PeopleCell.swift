@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
@@ -18,10 +19,10 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     let photo: UIImageView = {
         let photoImage = UIImageView()
-        photoImage.image = #imageLiteral(resourceName: "userPhoto")
         photoImage.clipsToBounds = true
         photoImage.layer.cornerRadius = 4
-       
+        photoImage.sd_imageTransition = .fade
+        
         photoImage.contentMode = .scaleAspectFill
         photoImage.translatesAutoresizingMaskIntoConstraints = false
         return photoImage
@@ -33,15 +34,6 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         label.textColor = .myHeaderColor()
         label.font = .systemFont(ofSize: 11)
         return label
-    }()
-    
-    let photoBoarder: UIImageView = {
-        let photoImage = UIImageView()
-        photoImage.image = #imageLiteral(resourceName: "PhotoBorder")
-        photoImage.clipsToBounds = true
-        photoImage.contentMode = .scaleAspectFit
-        photoImage.translatesAutoresizingMaskIntoConstraints = false
-        return photoImage
     }()
     
     let likeButton: UIButton = {
@@ -110,6 +102,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         likeButton.addTarget(self, action: #selector(pressLike), for: .touchUpInside)
         
         backgroundColor = .systemBackground
+        
     }
     
     //MARK: - configure()
@@ -117,13 +110,22 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         person = value
         
         messageBox.text = value.advert
-        photo.image = UIImage(named: value.userImage)
+        print(value.userImage)
+        if value.userImage != "" {
+            let imageURL = URL(string: value.userImage)
+            photo.sd_setImage(with: imageURL, completed: nil)
+        } else {
+            photo.image = #imageLiteral(resourceName: "avatar")
+        }
         
 //        let likeImage = value.like ? nil : #imageLiteral(resourceName: "Heart")
 //        likeButton.setImage(likeImage, for: .normal)
         
     }
     
+    override func prepareForReuse() {
+       photo.image = nil
+    }
     private func setupConstraints(){
     
         backView.translatesAutoresizingMaskIntoConstraints = false

@@ -9,16 +9,19 @@
 import UIKit
 import SwiftUI
 import FirebaseAuth
+import FirebaseFirestore
 
 class PeopleViewController: UIViewController {
     
     var peopleNearby: [MPeople] = []
+    var peopleListner: ListenerRegistration?
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     var currentUser: User!
     
     init(currentUser: User) {
         self.currentUser = currentUser
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,17 +29,25 @@ class PeopleViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        peopleListner?.remove()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .systemBackground
+        setup()
         setupNavigationController()
         setupCollectionView()
         setupDiffebleDataSource()
-        reloadData()
+        setupListener()
+        
     }
-    
+    //MARK: - setup
+    private func setup() {
+        view.backgroundColor = .systemBackground
+        
+       
+    }
       //MARK: - setupNavigationController
     private func setupNavigationController(){
         
@@ -46,6 +57,44 @@ class PeopleViewController: UIViewController {
         
     }
     
+     //MARK: - setupListener
+    private func setupListener() {
+        
+        let db = Firestore.firestore()
+        var userRef: CollectionReference {
+            db.collection("users")
+        }
+        peopleListner = userRef.addSnapshotListener { snapshot, error in
+            guard let snapshot = snapshot else { fatalError("Cant get snapshot") }
+            
+            snapshot.documentChanges.forEach {[weak self] changes in
+                guard let user = MPeople(documentSnap: changes.document) else { return }
+                guard let people = self?.peopleNearby else { return }
+                switch changes.type {
+                    
+                case .added:
+                    guard !people.contains(user) else { return }
+                    guard user.id != self?.currentUser?.uid else { return }
+                    self?.peopleNearby.append(user)
+                    self?.reloadData()
+                    
+                case .modified:
+                    guard let index = people.firstIndex(of: user) else { return }
+                    guard let oldPeople = self?.peopleNearby[index] else { return }
+                    self?.peopleNearby[index] = user
+                    self?.updateData(peopleToDelete: [oldPeople], newPeople: [user])
+                    
+                    
+                case .removed:
+                    guard let index = people.firstIndex(of: user) else { return }
+                    guard let oldPeople = self?.peopleNearby[index] else { return }
+                    self?.peopleNearby.remove(at: index)
+                    self?.deleteData(people: [oldPeople])
+                    
+                }
+            }
+        }
+    }
     
     //MARK: - setupCollectionView
     private func setupCollectionView() {
@@ -134,16 +183,36 @@ class PeopleViewController: UIViewController {
         })
         
     }
+     //MARK: - deleteData
+    private func deleteData(people: [MPeople]) {
     
-    //MARK: - reloadData()
+        guard var snapshot = dataSource?.snapshot() else { return }
+        snapshot.deleteItems(people)
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
+    //MARK: - updateData
+    private func updateData(peopleToDelete: [MPeople], newPeople: [MPeople]) {
+    
+        guard var snapshot = dataSource?.snapshot() else { return }
+        snapshot.deleteItems(peopleToDelete)
+        dataSource?.apply(snapshot, animatingDifferences: true)
+        let sortedPeople = peopleNearby.sorted { (people1, people2) -> Bool in
+            people1.advert < people2.advert
+        }
+        snapshot.appendItems(sortedPeople, toSection: .main)
+        
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
+    //MARK: - reloadData
     private func reloadData() {
         
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(peopleNearby, toSection: .main)
-        
+        let sortPeople = peopleNearby.sorted { (people1, people2) -> Bool in
+            people1.advert < people2.advert
+        }
+        snapshot.appendItems(sortPeople, toSection: .main)
         dataSource?.apply(snapshot, animatingDifferences: true)
-        
     }
 }
 
@@ -151,10 +220,8 @@ class PeopleViewController: UIViewController {
 extension PeopleViewController {
 
     @objc private func pressLikeButton() {
-        
         reloadData()
     }
-    
 }
 //MARK: - PeopleCellDelegate()
 

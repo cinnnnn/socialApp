@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseFirestore
+import FirebaseFirestoreSwift
 import Firebase
 import FirebaseAuth
 
@@ -47,7 +48,7 @@ class FirestoreService {
         
         var mPeople = MPeople(userName: isFilled.userName,
                               advert: isFilled.advert,
-                              userImage: "https://firebasestorage.googleapis.com/v0/b/socialapp-aacc9.appspot.com/o/avatars%2Favatar%403x.png?alt=media&token=b31d0413-89bd-4927-b930-a69e8523f094",
+                              userImage: "",
                               search: search,
                               mail: email,
                               sex: sex,
@@ -60,29 +61,26 @@ class FirestoreService {
                     
                 case .success(let url):
                     mPeople.userImage = url.absoluteString
+                    
                     //save user to FireStore
-                    self?.usersReference.document(mPeople.id).setData(mPeople.representation) { error in
-                        
-                        if let error = error {
-                            complition(.failure(error))
-                        } else {
-                            complition(.success(mPeople))
-                        }
-                    }
+                    do {
+                        try self?.usersReference.document(mPeople.id).setData(from: mPeople)
+                        complition(.success(mPeople))
+                    } catch { fatalError(error.localizedDescription) }
+                    
                 case .failure(_):
                     fatalError("Cant upload Image") 
                 }
             }
-        }
-        //save user to FireStore with default image
-        usersReference.document(mPeople.id).setData(mPeople.representation) { error in
-            
-            if let error = error {
-                complition(.failure(error))
-            } else {
+        } else {
+             //save user to FireStore with default image
+            do {
+                try usersReference.document(mPeople.id).setData(from: mPeople)
                 complition(.success(mPeople))
-            }
+            } catch { fatalError(error.localizedDescription) }
         }
+       
+        
     }
     
     //MARK: - getUserData
@@ -92,8 +90,29 @@ class FirestoreService {
         let documentReference = usersReference.document(user.uid)
         documentReference.getDocument { (snapshot, error) in
             
-           
+            
             if let snapshot = snapshot, snapshot.exists {
+                
+                /*  FirebaseFirestoreSwift
+                 
+                 let result = Result {
+                 try snapshot.data(as: MPeople.self)
+                 }
+                 switch result {
+                 case .success(let mPeople):
+                 if let mPeople = mPeople {
+                 complition(.success(mPeople))
+                 } else {
+                 complition(.failure(UserError.incorrectSetProfile))
+                 }
+                 
+                 case .failure(let error):
+                 fatalError(error.localizedDescription)
+                 }
+                 */
+                
+                
+                // for control old users data, use this method
                 
                 guard let people = MPeople(documentSnap: snapshot) else {
                     complition(.failure(UserError.incorrectSetProfile))
@@ -102,7 +121,7 @@ class FirestoreService {
                 complition(.success(people))
                 
             } else {
-                complition(.failure(UserError.incorrectSetProfile))
+                complition(.failure(UserError.notAvailableUser))
             }
         }
     }

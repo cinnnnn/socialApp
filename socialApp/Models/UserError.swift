@@ -12,6 +12,7 @@ enum UserError {
     case notFilled
     case getUserData
     case incorrectSetProfile
+    case notAvailableUser
 }
 
 extension UserError: LocalizedError {
@@ -24,6 +25,8 @@ extension UserError: LocalizedError {
             return NSLocalizedString("Ошибка получения данных пользователя", comment: "")
         case .incorrectSetProfile:
             return NSLocalizedString("Профиль не заполнен, продложим регистрацию", comment: "")
+        case .notAvailableUser:
+            return NSLocalizedString("Данные текущего пользователя не существуют", comment: "")
         }
     }
 }

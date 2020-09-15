@@ -9,7 +9,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct MPeople: Hashable, Decodable {
+struct MPeople: Hashable, Codable {
     var userName: String
     var advert: String
     var userImage: String
@@ -17,7 +17,6 @@ struct MPeople: Hashable, Decodable {
     var mail: String
     var sex: String
     var id: String
-    
     
     init(userName: String,
          advert: String,
@@ -36,16 +35,15 @@ struct MPeople: Hashable, Decodable {
         self.id = id
     }
     
+    //for get document from Firestore
     init?(documentSnap: DocumentSnapshot){
         guard let documet = documentSnap.data()  else { return nil }
         
-        if let userName = documet["username"] as? String { self.userName = userName } else { userName = ""}
+        if let userName = documet["userName"] as? String { self.userName = userName } else { userName = ""}
         if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
-        if let userImage = documet["userImage"] as? String { self.userImage = userImage } else {
-            self.userImage = "https://firebasestorage.googleapis.com/v0/b/socialapp-aacc9.appspot.com/o/avatars%2Favatar%403x.png?alt=media&token=b31d0413-89bd-4927-b930-a69e8523f094"
-        }
+        if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }
         if let search = documet["search"] as? String { self.search = search } else { self.search = ""}
-        if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = ""}
+        if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = "парень,"}
         guard let mail = documet["mail"] as? String else { return nil }
         guard let id = documet["uid"] as? String else { return nil }
         
@@ -53,22 +51,43 @@ struct MPeople: Hashable, Decodable {
         self.id = id
     }
     
-    var representation: [String: Any] {
-        var rep = ["username": userName]
-        rep["advert"] = advert
-        rep["userImage"] = userImage
-        rep["search"] = search
-        rep["mail"] = mail
-        rep["sex"] = sex
-        rep["uid"] = id
-        return rep
+    //for init with ListenerService
+    init?(documentSnap: QueryDocumentSnapshot){
+          let documet = documentSnap.data()
+          
+          if let userName = documet["userName"] as? String { self.userName = userName } else { userName = ""}
+          if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
+          if let userImage = documet["userImage"] as? String { self.userImage = userImage } else {self.userImage = "" }
+          if let search = documet["search"] as? String { self.search = search } else { self.search = ""}
+          if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = "парень,"}
+          guard let mail = documet["mail"] as? String else { return nil }
+          guard let id = documet["uid"] as? String else { return nil }
+          
+          self.mail = mail
+          self.id = id
+      }
+    
+    enum CodingKeys: String, CodingKey {
+        case userName
+        case advert
+        case userImage
+        case search
+        case mail
+        case sex
+        case id = "uid"
     }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+//        hasher.combine(userImage)
+//        hasher.combine(userName)
+//        hasher.combine(search)
+//        hasher.combine(mail)
+//        hasher.combine(sex)
+//        hasher.combine(advert)
     }
     
     static func == (lhs: MPeople, rhs: MPeople) -> Bool {
-        return lhs.id == rhs.id
+        return  lhs.id == rhs.id
     }
 }
