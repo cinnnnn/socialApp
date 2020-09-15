@@ -38,12 +38,12 @@ struct MPeople: Hashable, Codable {
     //for get document from Firestore
     init?(documentSnap: DocumentSnapshot){
         guard let documet = documentSnap.data()  else { return nil }
-        
+        print("3")
         if let userName = documet["userName"] as? String { self.userName = userName } else { userName = ""}
         if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
         if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }
         if let search = documet["search"] as? String { self.search = search } else { self.search = ""}
-        if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = "парень,"}
+        if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = ""}
         guard let mail = documet["mail"] as? String else { return nil }
         guard let id = documet["uid"] as? String else { return nil }
         
@@ -79,12 +79,6 @@ struct MPeople: Hashable, Codable {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
-//        hasher.combine(userImage)
-//        hasher.combine(userName)
-//        hasher.combine(search)
-//        hasher.combine(mail)
-//        hasher.combine(sex)
-//        hasher.combine(advert)
     }
     
     static func == (lhs: MPeople, rhs: MPeople) -> Bool {

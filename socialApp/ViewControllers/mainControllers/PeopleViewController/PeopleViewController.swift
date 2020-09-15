@@ -14,6 +14,11 @@ import FirebaseFirestore
 class PeopleViewController: UIViewController {
     
     var peopleNearby: [MPeople] = []
+    var sortedPeopleNearby: [MPeople] {
+        peopleNearby.sorted { p1, p2  in
+            p1.advert < p2.advert
+        }
+    }
     var peopleListner: ListenerRegistration?
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
@@ -80,17 +85,13 @@ class PeopleViewController: UIViewController {
                     
                 case .modified:
                     guard let index = people.firstIndex(of: user) else { return }
-                    guard let oldPeople = self?.peopleNearby[index] else { return }
                     self?.peopleNearby[index] = user
-                    self?.updateData(peopleToDelete: [oldPeople], newPeople: [user])
-                    
-                    
+                    self?.updateData()
+                  
                 case .removed:
                     guard let index = people.firstIndex(of: user) else { return }
-                    guard let oldPeople = self?.peopleNearby[index] else { return }
                     self?.peopleNearby.remove(at: index)
-                    self?.deleteData(people: [oldPeople])
-                    
+                    self?.reloadData()
                 }
             }
         }
@@ -191,15 +192,11 @@ class PeopleViewController: UIViewController {
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
     //MARK: - updateData
-    private func updateData(peopleToDelete: [MPeople], newPeople: [MPeople]) {
+    private func updateData() {
     
         guard var snapshot = dataSource?.snapshot() else { return }
-        snapshot.deleteItems(peopleToDelete)
-        dataSource?.apply(snapshot, animatingDifferences: true)
-        let sortedPeople = peopleNearby.sorted { (people1, people2) -> Bool in
-            people1.advert < people2.advert
-        }
-        snapshot.appendItems(sortedPeople, toSection: .main)
+        
+        snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
@@ -208,10 +205,7 @@ class PeopleViewController: UIViewController {
         
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
-        let sortPeople = peopleNearby.sorted { (people1, people2) -> Bool in
-            people1.advert < people2.advert
-        }
-        snapshot.appendItems(sortPeople, toSection: .main)
+        snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
 }

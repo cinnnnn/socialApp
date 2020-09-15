@@ -24,10 +24,6 @@ class AuthViewController: UIViewController {
     
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
     
-    let loginVC = LoginViewController()
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -43,8 +39,7 @@ extension AuthViewController {
     
     private func setupVC() {
         view.backgroundColor = .systemBackground
-    
-        loginVC.delegate = self
+
     }
 }
 
@@ -62,7 +57,7 @@ extension AuthViewController {
     
     
     @objc func loginButtonPressed() {
-        present(loginVC, animated: true, completion: nil)
+        toLogin()
         
     }
     
@@ -97,7 +92,29 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                     switch result {
                         
                     case .success(let user):
-                        self?.toMainTabBar(currentUser: user)
+                        
+                        //if success Apple login renew or create base mPeople info
+                        FirestoreService.shared.saveBaseProfile(id: user.uid,
+                                                                email: user.email!) { result in
+                                                                    //check mPeople data for next VC
+                                                                    FirestoreService.shared.getUserData(user: user) { result in
+                                                                        switch result {
+                                                                        
+                                                                        case .success(let mPeople):
+                                                                            //check gender and want data in mPeople
+                                                                            if mPeople.sex == "" {
+                                                                                self?.toGenderSelect(currentUser: user)
+                                                                            } else if mPeople.search == "" {
+                                                                                self?.toWantSelect(currentUser: user)
+                                                                            } else {
+                                                                                self?.toMainTabBar(currentUser: user)
+                                                                            }
+                                                                        case .failure(_):
+                                                                             break
+                                                                        }
+                                                                    }
+                        }
+                        
                     case .failure(_):
                         self?.appleSignInAlerController()
                     }
@@ -110,27 +127,37 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
 }
 //MARK: - AuthNavigationDelegate
 extension AuthViewController: AuthNavigationDelegate {
+    func toGenderSelect(currentUser: User) {
+        let genderVC = GenderSelectionViewController(currentUser: currentUser)
+        genderVC.delegate = self
+        genderVC.modalPresentationStyle = .fullScreen
+        present(genderVC, animated: true, completion: nil)
+    }
+    
+    func toWantSelect(currentUser: User) {
+        let wantVC = WantSelectionViewController(currentUser: currentUser)
+        wantVC.delegate = self
+        wantVC.modalPresentationStyle = .fullScreen
+        present(wantVC, animated: true, completion: nil)
+    }
     
     func toMainTabBar(currentUser: User) {
         let mainTabBarCont = MainTabBarController(currentUser: currentUser)
         mainTabBarCont.modalPresentationStyle = .fullScreen
-        
         present(mainTabBarCont, animated: true, completion: nil)
     }
     
-    func toSetProfile(user: User) {
-        let vc = SetProfileViewController(currentUser: user)
-        vc.delegate = self
-        present(vc, animated: true, completion: nil)
-    }
-    
     func toLogin() {
+        let loginVC = LoginViewController()
+        loginVC.delegate = self
+        loginVC.modalPresentationStyle = .fullScreen
         present(loginVC, animated: true, completion: nil)
     }
     
     func toRegister(email: String?) {
         let signUpVc = SignUpViewController(email: email)
         signUpVc.delegate = self
+        signUpVc.modalPresentationStyle = .fullScreen
         present(signUpVc, animated: true, completion: nil)
     }
 }

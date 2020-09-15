@@ -14,7 +14,7 @@ class WaitingChatsCell: UICollectionViewCell,SelfConfiguringCell {
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
     
     func configure(with value: MChat) {
-        frendImage.image = UIImage(named: value.userImageString)
+        frendImage.image = UIImage(named: value.friendUserImageString)
     }
     
     

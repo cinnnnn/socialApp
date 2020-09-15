@@ -26,12 +26,13 @@ class SetProfileViewController: UIViewController {
                                          tag: 1,
                                          placeHoledText: "Ты можешь быть кем угодно...")
     let advertTextView = OneLineTextView(text: "Для просмотра обьявлений других пользователей, расскажи о своих желаниях...",
-                                          isEditable: true)
-
+                                         isEditable: true)
+    
     let sexButton = UIButton(newBackgroundColor: nil,
                              borderWidth: 0,
                              title: Sex.man.rawValue,
-                             titleColor: .myPurpleColor())
+                             titleColor: .myPurpleColor(),
+                             isEnable: false)
     let wantButton = UIButton(newBackgroundColor: nil,
                               borderWidth: 0,
                               title: Want.woman.rawValue,
@@ -88,7 +89,6 @@ extension SetProfileViewController {
         exitItem.tintColor = .label
         navigationItem.rightBarButtonItem = exitItem
         
-        
     }
 }
 
@@ -99,18 +99,15 @@ extension SetProfileViewController {
         
         guard let user = currentUser else { return }
         FirestoreService.shared.getUserData(user: user) {[weak self] result in
+            print("1")
             switch result {
-                
             case .success(let mPeople):
-                
                 self?.currentPeople = mPeople
                 self?.setPeopleData()
-                
-            case .failure(_):
-                return
+            case .failure(let error):
+                fatalError(error.localizedDescription)
             }
         }
-        
     }
 }
 
@@ -128,14 +125,17 @@ extension SetProfileViewController {
         nameTextField.text = people.userName
         advertTextView.text = people.advert
         advertTextView.textColor = .label
-        sexButton.isEnabled = false
-        sexButton.setTitleColor(.label, for: .disabled)
         
-        if people.sex != "" {
+        if people.sex == "" {
+            sexButton.isEnabled = true
+            sexButton.setTitle(Sex.man.rawValue, for: .normal)
+        } else {
             sexButton.setTitle(people.sex, for: .normal)
         }
         
-        if people.search != "" {
+        if people.search == "" {
+            wantButton.setTitle(Want.woman.rawValue, for: .normal)
+        } else {
             wantButton.setTitle(people.search, for: .normal)
         }
     }
@@ -146,40 +146,75 @@ extension SetProfileViewController {
     private func setupButtonAction() {
         
         goButton.addTarget(self, action: #selector(goButtonPressed), for: .touchUpInside)
-        profileImage.plusButton.addTarget(self, action: #selector(choosePhoto), for: .touchUpInside)
         sexButton.addTarget(self, action: #selector(touchSexButton), for: .touchUpInside)
         wantButton.addTarget(self, action: #selector(touchWantButton), for: .touchUpInside)
-        
+        profileImage.plusButton.addTarget(self, action: #selector(choosePhoto), for: .touchUpInside)
     }
 }
 
-//MARK: - objc action
+
 extension SetProfileViewController {
-    
+    //MARK: - signOut
     @objc func signOut() {
         signOutAlert()
     }
     
+    //MARK: - touchSexButton
     @objc func touchSexButton() {
+        guard let user = currentUser else { return }
         switch sexButton.titleLabel?.text {
         case Sex.man.rawValue:
-            sexButton.setTitle(Sex.woman.rawValue, for: .normal)
-            wantButton.setTitle(Want.man.rawValue, for: .normal)
+            FirestoreService.shared.saveGender(user: user,
+                                               gender: Sex.woman.rawValue) {[weak self] result in
+                                                switch result {
+                                                case .success():
+                                                    self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
+                                                case .failure(let error):
+                                                    fatalError(error.localizedDescription)
+                                                }
+            }
         default:
-            sexButton.setTitle(Sex.man.rawValue, for: .normal)
-            wantButton.setTitle(Want.woman.rawValue, for: .normal)
+            FirestoreService.shared.saveGender(user: user,
+                                               gender: Sex.woman.rawValue) {[weak self] result in
+                                                switch result {
+                                                case .success():
+                                                    self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
+                                                case .failure(let error):
+                                                    fatalError(error.localizedDescription)
+                                                }
+            }
         }
     }
     
+    //MARK: - touchWantButton
     @objc func touchWantButton() {
+        guard let user = currentUser else { return }
         switch wantButton.titleLabel?.text {
         case Want.man.rawValue:
-            wantButton.setTitle(Want.woman.rawValue, for: .normal)
+            FirestoreService.shared.saveWant(user: user,
+                                             want: Want.woman.rawValue) {[weak self] result in
+                                                switch result {
+                                                case .success():
+                                                    self?.wantButton.setTitle(Want.woman.rawValue, for: .normal)
+                                                case .failure(let error):
+                                                    fatalError(error.localizedDescription)
+                                                }
+            }
+            
         default:
-            wantButton.setTitle(Want.man.rawValue, for: .normal)
+            FirestoreService.shared.saveWant(user: user,
+                                             want: Want.man.rawValue) {[weak self] result in
+                                                switch result {
+                                                case .success():
+                                                    self?.wantButton.setTitle(Want.man.rawValue, for: .normal)
+                                                case .failure(let error):
+                                                    fatalError(error.localizedDescription)
+                                                }
+            }
         }
     }
     
+    //MARK: - choosePhoto
     @objc func choosePhoto() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -188,52 +223,33 @@ extension SetProfileViewController {
             imagePicker.sourceType = type
             self?.present(imagePicker, animated: true, completion: nil)
         }
-        
     }
     
+    //MARK: - goButtonPressed
     @objc func goButtonPressed() {
-        guard let sex = sexButton.titleLabel?.text else { return }
-        guard let search = wantButton.titleLabel?.text else { return }
         guard let user = currentUser else { return }
-        guard let email = user.email else { return }
-        
-        print(user.uid)
-        
-        FirestoreService.shared.saveProfile(
-            id: user.uid,
-            email: email,
-            username: nameTextField.text,
-            avatarImage: profileImage.profileImage.image,
-            advert: advertTextView.text,
-            search: search,
-            sex: sex
-        ) {[weak self] result in
-            
-            switch result {
-                
-            case .success(let mPeople):
-                self?.currentPeople = mPeople
-                self?.sexButton.isEnabled = false
-                self?.sexButton.setTitleColor(.label, for: .disabled)
-            case .failure(let error):
-                
-                let alert = UIAlertController(title: "Ошибочка",
-                                              text: error.localizedDescription,
-                                              buttonText: "Понятненько",
-                                              style: .actionSheet)
-                self?.present(alert, animated: true, completion: nil)
-            }
+        FirestoreService.shared.saveAdvertAndName(user: user,
+                                                  userName: nameTextField.text ?? "",
+                                                  advert: advertTextView.text) { result in
+                                                    switch result {
+                                                    case .success():
+                                                         break
+                                                    case .failure(let error):
+                                                        fatalError(error.localizedDescription)
+                                                    }
         }
     }
 }
 
-//MARK: - AlertController
-
 extension SetProfileViewController {
-    
+    //MARK: - signOutAlert
     private func signOutAlert() {
-        let alert = UIAlertController(title: "Покинуть", message: "Точно прощаешься с нами?", preferredStyle: .actionSheet)
-        let okAction = UIAlertAction(title: "Выйду, но вернусь", style: .destructive) { _ in
+        let alert = UIAlertController(title: "Покинуть",
+                                      message: "Точно прощаешься с нами?",
+                                      preferredStyle: .actionSheet)
+        
+        let okAction = UIAlertAction(title: "Выйду, но вернусь",
+                                     style: .destructive) { _ in
             
             AuthService.shared.signOut { result in
                 switch result {
@@ -243,50 +259,49 @@ extension SetProfileViewController {
                     fatalError(error.localizedDescription)
                 }
             }
-            
         }
-        let cancelAction = UIAlertAction(title: "Продолжу общение", style: .cancel)
+        let cancelAction = UIAlertAction(title: "Продолжу общение",
+                                         style: .cancel)
         alert.addAction(okAction)
         alert.addAction(cancelAction)
         
         present(alert, animated: true, completion: nil)
     }
-
-
-private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerController.SourceType?) -> Void) {
     
-    let photoAlert = UIAlertController(title: "Фоточка",
-                                       message: "Если сделать новую, остальным отобразится, что твое она настоящяя",
-                                       preferredStyle: .actionSheet)
-    let cameraAction = UIAlertAction(title: "Новая, открыть камеру",
-                                     style: .default) { _ in
-                                        
-                                        complition(UIImagePickerController.SourceType.camera)
-    }
-    let libraryAction = UIAlertAction(title: "Выбрать из галереи",
-                                      style: .default) { _ in
-                                        complition(UIImagePickerController.SourceType.photoLibrary)
-    }
-    let cancelAction = UIAlertAction(title: "Отмена",
-                                     style: .destructive) { _ in
-                                        complition(nil)
-    }
-    photoAlert.addAction(cameraAction)
-    photoAlert.addAction(libraryAction)
-    photoAlert.addAction(cancelAction)
-    
-    present(photoAlert, animated: true, completion: nil)
+    //MARK: - choosePhotoAlert
+    private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerController.SourceType?) -> Void) {
+        
+        let photoAlert = UIAlertController(title: "Фоточка",
+                                           message: "Если сделать новую, остальным отобразится, что твое она настоящяя",
+                                           preferredStyle: .actionSheet)
+        let cameraAction = UIAlertAction(title: "Новая, открыть камеру",
+                                         style: .default) { _ in
+                                            
+                                            complition(UIImagePickerController.SourceType.camera)
+        }
+        let libraryAction = UIAlertAction(title: "Выбрать из галереи",
+                                          style: .default) { _ in
+                                            complition(UIImagePickerController.SourceType.photoLibrary)
+        }
+        let cancelAction = UIAlertAction(title: "Отмена",
+                                         style: .destructive) { _ in
+                                            complition(nil)
+        }
+        photoAlert.addAction(cameraAction)
+        photoAlert.addAction(libraryAction)
+        photoAlert.addAction(cancelAction)
+        
+        present(photoAlert, animated: true, completion: nil)
     }
 }
 
 extension SetProfileViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-           
-           textField.resignFirstResponder()
-           return false
-       }
-    
+        
+        textField.resignFirstResponder()
+        return false
+    }
 }
 //MARK: - UITextViewDelegate
 extension SetProfileViewController:UITextViewDelegate {
@@ -328,7 +343,6 @@ extension SetProfileViewController:UITextViewDelegate {
             textView.resignFirstResponder()
             return false
         }
-        
     }
 }
 
@@ -341,6 +355,15 @@ extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigatio
         picker.dismiss(animated: true, completion: nil)
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
         profileImage.profileImage.image = image
+        guard let user = currentUser else { fatalError("Cant get current user") }
+        FirestoreService.shared.saveAvatar(image: image, user: user) { result in
+            switch result {
+            case .success(_):
+                return
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -417,7 +440,6 @@ extension SetProfileViewController {
             goButton.heightAnchor.constraint(equalTo: goButton.widthAnchor, multiplier: 1.0/7.28),
         ])
     }
-    
 }
 
 //MARK: - SwiftUI

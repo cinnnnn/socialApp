@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import FirebaseAuth
 
 class SignUpViewController: UIViewController {
     
@@ -24,7 +25,7 @@ class SignUpViewController: UIViewController {
                                         opacity:  0)
     let emailLabel = UILabel(labelText: "Твоя почта ",
                              textFont: .systemFont(ofSize: 16, weight: .light),
-                                opacity: 1)
+                             opacity: 1)
     let passwordLabel = UILabel(labelText: "Придумай к ней пароль",
                                 textFont: .systemFont(ofSize: 16, weight: .regular),
                                 opacity: 1)
@@ -47,10 +48,10 @@ class SignUpViewController: UIViewController {
                                 titleColor: .systemBackground)
     
     let checkMailButton = UIButton(newBackgroundColor: .label,
-                             newBorderColor: .label,
-                             title: "Проверить активацию",
-                             titleColor: .systemBackground,
-                             isHidden: true)
+                                   newBorderColor: .label,
+                                   title: "Проверить активацию",
+                                   titleColor: .systemBackground,
+                                   isHidden: true)
     
     weak var delegate: AuthNavigationDelegate?
     var email:String?
@@ -81,11 +82,12 @@ extension SignUpViewController {
         view.backgroundColor = .systemBackground
         
         if let email = email {
-            
             loginLabel.text = "Проверь \(email) почту, пройди по ссылке в письме для активации"
             emailLabel.text = "Твоя почта \(email)"
         }
         
+        passwordTextField.delegate = self
+        confirmPasswordTextField.delegate = self
     }
 }
 
@@ -105,30 +107,36 @@ extension SignUpViewController {
         
         //check activation mail before next VC
         
-
-        AuthService.shared.register(email: email,
-                                    password: passwordTextField.text,
-                                    confirmPassword: confirmPasswordTextField.text) {[weak self] result in
-                                        
-                                        switch result {
-                                            
-                                        case .success(let user):
-                                            
-                                            self?.dismiss(animated: true,
-                                                          completion: {
-                                                            self?.delegate?.toMainTabBar(currentUser: user)
-                                            })
-                                            
-                                        case .failure(let error):
-                                            let myError = error.localizedDescription
-                                            self?.showAlert(title: "Ошибка",
-                                                            text: myError,
-                                                            buttonText: "Понятно")
-                                            self?.signUpButton.isEnabled = true
-                                            
-                                        }
+        AuthService.shared.register(
+            email: email,
+            password: passwordTextField.text,
+            confirmPassword: confirmPasswordTextField.text
+        ) {[weak self] result in
+            switch result {
+            case .success(let user):
+                guard let email = user.email else { fatalError("cant get email")}
+                //if user create in auth, then create current user in cloud Firestore
+                FirestoreService.shared.saveBaseProfile(id: user.uid,
+                                                        email: email ) { result in
+                                                            switch result {
+                                                            case .success():
+                                                                self?.dismiss(animated: true) {
+                                                                    self?.delegate?.toGenderSelect(currentUser: user)
+                                                                }
+                                                            case .failure(let error):
+                                                                fatalError(error.localizedDescription)
+                                                            }
+                }
+                
+            case .failure(let error):
+                let myError = error.localizedDescription
+                self?.showAlert(title: "Ошибка",
+                                text: myError,
+                                buttonText: "Понятно")
+                self?.signUpButton.isEnabled = true
+                
+            }
         }
-        
     }
     
     @objc func loginButtonPressed() {
@@ -145,12 +153,11 @@ extension SignUpViewController: UITextFieldDelegate {
         
         // Try to find next responder
         if let nextField = textField.superview?.viewWithTag(textField.tag + 1) as? UITextField, nextField.isEnabled {
-           nextField.becomeFirstResponder()
+            nextField.becomeFirstResponder()
         } else {
-           // Not found, so remove keyboard.
-           textField.resignFirstResponder()
+            // Not found, so remove keyboard.
+            textField.resignFirstResponder()
         }
-       
         return false
     }
 }
@@ -169,6 +176,20 @@ extension SignUpViewController {
                                       buttonHandler: complition)
         
         present(alert, animated: true, completion: nil)
+    }
+    
+    private func showSexAlert(user: User) {
+       let alert = UIAlertController(title: "Нужно знать твой пол",
+                                     message: "Не ошибись, изменить пол будет невозможно",
+                                     preferredStyle: .actionSheet)
+        let saveAction = UIAlertAction(title: "Продолжить", style: .default) {[weak self] _ in
+            self?.dismiss(animated: true,
+                          completion: {
+                            self?.delegate?.toMainTabBar(currentUser: user)
+            })
+        }
+        alert.addAction(saveAction)
+        
     }
 }
 
@@ -237,7 +258,7 @@ extension SignUpViewController {
             checkMailButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             checkMailButton.heightAnchor.constraint(equalTo: checkMailButton.widthAnchor, multiplier: 1.0/7.28),
             
-           
+            
             signUpButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25),
             signUpButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),

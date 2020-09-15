@@ -61,14 +61,11 @@ extension LoginViewController {
         
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
         emailTextField.addTarget(self, action: #selector(emailEnterComplite), for: .editingDidEnd)
-        
     }
 }
 
-//MARK: - objc action
 extension LoginViewController {
-    
-    //MARK: - emailEnterComplite
+    //MARK:  emailEnterComplite
     @objc func emailEnterComplite() {
         
         guard let email = emailTextField.text, email != "" else { return }
@@ -84,7 +81,6 @@ extension LoginViewController {
             }
             return
         }
-        
         
         AuthService.shared.isEmailAlreadyRegister(email: email) {[weak self] result in
             switch result {
@@ -106,7 +102,6 @@ extension LoginViewController {
                         self?.passwordTextField.text = ""
                         self?.passwordTextField.layer.opacity = 0
                         self?.passwordLabel.layer.opacity = 0
-                        
                     }
                     self?.loginButton.isEnabled = true
                 }
@@ -126,10 +121,24 @@ extension LoginViewController {
                                         switch result {
                                         case .success( let user):
                                             //if correct login user, than close LoginVC and check setProfile info
-                                            self?.dismiss(animated: true) {
-                                                self?.delegate?.toMainTabBar(currentUser: user)
+                                            FirestoreService.shared.getUserData(user: user) { result in
+                                                switch result {
+                                                
+                                                case .success(let mPeople):
+                                                    self?.dismiss(animated: true) {
+                                                        if mPeople.sex == "" {
+                                                            self?.delegate?.toGenderSelect(currentUser: user)
+                                                        } else if mPeople.search == "" {
+                                                            self?.delegate?.toWantSelect(currentUser: user)
+                                                        } else {
+                                                            self?.delegate?.toMainTabBar(currentUser: user)
+                                                        }
+                                                    }
+                                                    //error of getUserData
+                                                case .failure(let error):
+                                                    fatalError(error.localizedDescription)
+                                                }
                                             }
-                                            
                                         //error of logIn
                                         case .failure(let eror):
                                             let myError = eror.localizedDescription
@@ -139,13 +148,11 @@ extension LoginViewController {
                                                             buttonText: "Понятно")
                                         }
             }
+            //if passwordTextField is disable go to RegisterVC
         default:
-            
-            
             dismiss(animated: true) {
                 self.delegate?.toRegister(email: self.emailTextField.text)
             }
-            
         }
     }
 }
@@ -165,7 +172,6 @@ extension LoginViewController: UITextFieldDelegate {
                 emailEnterComplite()
             }
         }
-        
         // Try to find next responder
         if let nextField = textField.superview?.viewWithTag(textField.tag + 1) as? UITextField, nextField.isEnabled {
             
@@ -182,7 +188,6 @@ extension LoginViewController: UITextFieldDelegate {
             // Not found, so remove keyboard.
             textField.resignFirstResponder()
         }
-        
         return false
     }
 }

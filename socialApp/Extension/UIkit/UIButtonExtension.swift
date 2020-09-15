@@ -27,7 +27,9 @@ extension UIButton {
         isEnabled = isEnable
         self.isHidden = isHidden
         setTitle(title, for: .normal)
+        setTitle(title, for: .selected)
         setTitleColor(titleColor, for: .normal)
+        setTitleColor(.label, for: .disabled)
         backgroundColor = newBackgroundColor
         titleLabel?.font = font
         

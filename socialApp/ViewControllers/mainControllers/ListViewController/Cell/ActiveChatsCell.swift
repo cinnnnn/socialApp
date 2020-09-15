@@ -40,8 +40,8 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     //MARK: - configure
     func configure(with value: MChat) {
         
-        frendImage.image = UIImage(named: value.userImageString)
-        frendName.text = value.userName
+        frendImage.image = UIImage(named: value.friendUserImageString)
+        frendName.text = value.friendUserName
         lastMessage.text = value.lastMessage
         
     }

@@ -110,16 +110,12 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         person = value
         
         messageBox.text = value.advert
-        print(value.userImage)
-        if value.userImage != "" {
-            let imageURL = URL(string: value.userImage)
-            photo.sd_setImage(with: imageURL, completed: nil)
-        } else {
-            photo.image = #imageLiteral(resourceName: "avatar")
-        }
         
-//        let likeImage = value.like ? nil : #imageLiteral(resourceName: "Heart")
-//        likeButton.setImage(likeImage, for: .normal)
+        let imageURL = URL(string: value.userImage)
+        photo.sd_setImage(with: imageURL, completed: nil)
+        
+        //        let likeImage = value.like ? nil : #imageLiteral(resourceName: "Heart")
+        //        likeButton.setImage(likeImage, for: .normal)
         
     }
     

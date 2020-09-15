@@ -24,95 +24,111 @@ class FirestoreService {
         db.collection("users")
     }
     
-    //MARK: - saveProfile
-    
-    func saveProfile(id: String,
-                     email: String,
-                     username: String?,
-                     avatarImage: UIImage?,
-                     advert: String?,
-                     search: String,
-                     sex: String,
-                     complition: @escaping (Result<MPeople, Error>) -> Void){
-        
-        
-        
-        guard let avatar = avatarImage else { fatalError("cant get userProfile image") }
-        
-        let isFilled = Validators.shared.isFilledSetProfile(userName: username, advert: advert)
-        
-        guard isFilled.isFilled else {
-            complition(.failure(AuthError.notFilled))
-            return
-        }
-        
-        var mPeople = MPeople(userName: isFilled.userName,
-                              advert: isFilled.advert,
-                              userImage: "",
-                              search: search,
-                              mail: email,
-                              sex: sex,
-                              id: id)
-        
+    //MARK:  saveAvatar
+    func saveAvatar(image: UIImage?, user: User, complition: @escaping (Result<String, Error>) -> Void) {
+       
+        guard let avatar = image else { fatalError("cant get userProfile image") }
         //if user choose photo, than upload new photo to Storage
-        if  avatarImage != #imageLiteral(resourceName: "avatar")  {
+        if  image != #imageLiteral(resourceName: "avatar")  {
             StorageService.shared.uploadImage(image: avatar) {[weak self] result in
                 switch result {
                     
                 case .success(let url):
-                    mPeople.userImage = url.absoluteString
-                    
+                    let userImageString = url.absoluteString
                     //save user to FireStore
-                    do {
-                        try self?.usersReference.document(mPeople.id).setData(from: mPeople)
-                        complition(.success(mPeople))
-                    } catch { fatalError(error.localizedDescription) }
-                    
+                    self?.usersReference.document(user.uid).setData(["userImage" : userImageString], merge: true, completion: { error in
+                            if let error = error {
+                                complition(.failure(error))
+                            } else {
+                                complition(.success(userImageString))
+                            }
+                        })
                 case .failure(_):
-                    fatalError("Cant upload Image") 
+                    fatalError("Cant upload Image")
                 }
             }
-        } else {
-             //save user to FireStore with default image
-            do {
-                try usersReference.document(mPeople.id).setData(from: mPeople)
-                complition(.success(mPeople))
-            } catch { fatalError(error.localizedDescription) }
         }
-       
-        
     }
     
-    //MARK: - getUserData
+    //MARK:  saveBaseProfile
+    func saveBaseProfile(id: String,
+                         email: String,
+                         complition: @escaping (Result<Void, Error>) -> Void){
+        
+        //save base user info to cloud FireStore
+        usersReference.document(id).setData([MPeople.CodingKeys.id.rawValue : id,
+                                             MPeople.CodingKeys.mail.rawValue: email],
+                                             merge: true,
+                                             completion: { (error) in
+                                                if let error = error {
+                                                    fatalError(error.localizedDescription)
+                                                } else {
+                                                    complition(.success(()))
+                                                }
+                                            })
+    }
+    //MARK:  saveGender
+    func saveGender(user: User, gender: String, complition: @escaping (Result<Void, Error>) -> Void) {
+        usersReference.document(user.uid).setData([MPeople.CodingKeys.sex.rawValue : gender],
+                                                  merge: true,
+                                                  completion: { (error) in
+                                                    if let error = error {
+                                                        complition(.failure(error))
+                                                    } else {
+                                                        complition(.success(()))
+                                                    }
+        })
+    }
     
+    //MARK:  saveWant
+    func saveWant(user: User, want: String, complition: @escaping (Result<Void, Error>) -> Void) {
+        usersReference.document(user.uid).setData([MPeople.CodingKeys.search.rawValue : want],
+                                                  merge: true,
+                                                  completion: { (error) in
+                                                    if let error = error {
+                                                        complition(.failure(error))
+                                                    } else {
+                                                        complition(.success(()))
+                                                    }
+        })
+    }
+    
+    //MARK:  saveDefaultImage
+       func saveDefaultImage(user: User, defaultImageString: String, complition: @escaping (Result<Void, Error>) -> Void) {
+           usersReference.document(user.uid).setData([MPeople.CodingKeys.userImage.rawValue : defaultImageString],
+                                                     merge: true,
+                                                     completion: { (error) in
+                                                       if let error = error {
+                                                           complition(.failure(error))
+                                                       } else {
+                                                           complition(.success(()))
+                                                       }
+           })
+       }
+    
+    //MARK: - saveAdvertAndName
+    func saveAdvertAndName(user: User,
+                           userName: String,
+                           advert: String,
+                           complition: @escaping (Result<Void, Error>) -> Void){
+        usersReference.document(user.uid).setData([MPeople.CodingKeys.userName.rawValue : userName,
+                                                   MPeople.CodingKeys.advert.rawValue: advert],
+                                                  merge: true,
+                                                  completion: { (error) in
+                                                    if let error = error {
+                                                        complition(.failure(error))
+                                                    } else {
+                                                        complition(.success(()))                                                    }
+        })
+    }
+    
+    //MARK:  getUserData
     func getUserData(user: User, complition: @escaping (Result<MPeople,Error>) -> Void) {
         
         let documentReference = usersReference.document(user.uid)
         documentReference.getDocument { (snapshot, error) in
             
-            
             if let snapshot = snapshot, snapshot.exists {
-                
-                /*  FirebaseFirestoreSwift
-                 
-                 let result = Result {
-                 try snapshot.data(as: MPeople.self)
-                 }
-                 switch result {
-                 case .success(let mPeople):
-                 if let mPeople = mPeople {
-                 complition(.success(mPeople))
-                 } else {
-                 complition(.failure(UserError.incorrectSetProfile))
-                 }
-                 
-                 case .failure(let error):
-                 fatalError(error.localizedDescription)
-                 }
-                 */
-                
-                
-                // for control old users data, use this method
                 
                 guard let people = MPeople(documentSnap: snapshot) else {
                     complition(.failure(UserError.incorrectSetProfile))

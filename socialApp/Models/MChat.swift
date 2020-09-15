@@ -9,17 +9,17 @@
 import Foundation
 
 struct MChat: Hashable, Decodable {
-    var userName: String
-    var userImageString: String
+    var friendUserName: String
+    var friendUserImageString: String
     var lastMessage: String
-    var id: Int
+    var friendId: Int
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(friendId)
     }
     
     static func == (lhs: MChat, rhs: MChat) -> Bool {
-        return lhs.id == rhs.id
+        return lhs.friendId == rhs.friendId
     }
     
     func contains(element: String?) -> Bool {
@@ -28,6 +28,6 @@ struct MChat: Hashable, Decodable {
         
         let lowercasedElement = element.lowercased()
         
-        return userName.lowercased().contains(lowercasedElement)
+        return friendUserName.lowercased().contains(lowercasedElement)
     }
 }
