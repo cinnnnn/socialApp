@@ -35,3 +35,10 @@ protocol AuthNavigationDelegate: class {
     func toWantSelect(currentUser: User)
     func toMainTabBar(currentUser: User)
 }
+
+protocol PeopleListenerDelegate: class {
+    var peopleNearby: [MPeople] { get set }
+    func updateData()
+    func reloadData()
+    
+}

@@ -29,7 +29,7 @@ class WantSelectionViewController: UIViewController {
                                 titleColor: .systemBackground)
     let radioButton = RadioButton()
     
-    var delegate: AuthNavigationDelegate?
+    weak var delegate: AuthNavigationDelegate?
     var currentUser: User?
     
     init(currentUser: User?){

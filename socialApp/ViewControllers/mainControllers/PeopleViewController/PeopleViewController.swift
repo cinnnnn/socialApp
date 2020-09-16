@@ -11,7 +11,7 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController {
+class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     var peopleNearby: [MPeople] = []
     var sortedPeopleNearby: [MPeople] {
@@ -19,7 +19,7 @@ class PeopleViewController: UIViewController {
             p1.advert < p2.advert
         }
     }
-    var peopleListner: ListenerRegistration?
+
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     var currentUser: User!
@@ -35,7 +35,7 @@ class PeopleViewController: UIViewController {
     }
 
     deinit {
-        peopleListner?.remove()
+        ListenerService.shared.removePeopleListener()
     }
     
     override func viewDidLoad() {
@@ -44,70 +44,23 @@ class PeopleViewController: UIViewController {
         setupNavigationController()
         setupCollectionView()
         setupDiffebleDataSource()
-        setupListener()
-        
+        ListenerService.shared.addPeopleListener(delegate: self)
     }
-    //MARK: - setup
+    
+    //MARK:  setup
     private func setup() {
         view.backgroundColor = .systemBackground
-        
-       
     }
-      //MARK: - setupNavigationController
+    
+    //MARK:  setupNavigationController
     private func setupNavigationController(){
         
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.backgroundColor = .systemBackground
         navigationItem.title = "Объявления"
-        
     }
     
-     //MARK: - setupListener
-    private func setupListener() {
-        
-        let db = Firestore.firestore()
-        var userRef: CollectionReference {
-            db.collection("users")
-        }
-        peopleListner = userRef.addSnapshotListener { snapshot, error in
-            guard let snapshot = snapshot else { fatalError("Cant get snapshot") }
-            
-            snapshot.documentChanges.forEach {[weak self] changes in
-                guard let user = MPeople(documentSnap: changes.document) else { return }
-                guard let people = self?.peopleNearby else { return }
-                switch changes.type {
-                    
-                case .added:
-                    guard !people.contains(user) else { return }
-                    guard user.id != self?.currentUser?.uid else { return }
-                    guard user.isActive == true else { return }
-                    self?.peopleNearby.append(user)
-                    self?.reloadData()
-                    
-                case .modified:
-                    if let index = people.firstIndex(of: user) {
-                        if user.isActive == true {
-                            self?.peopleNearby[index] = user
-                            self?.updateData()
-                        } else { //if user change to deactive profile delete him from collection
-                             self?.peopleNearby.remove(at: index)
-                             self?.reloadData()
-                        }
-                    } else if user.isActive == true { //if user change to active profile add him to collection
-                        self?.peopleNearby.append(user)
-                        self?.reloadData()
-                    }
-                  
-                case .removed:
-                    guard let index = people.firstIndex(of: user) else { return }
-                    self?.peopleNearby.remove(at: index)
-                    self?.reloadData()
-                }
-            }
-        }
-    }
-    
-    //MARK: - setupCollectionView
+    //MARK: setupCollectionView
     private func setupCollectionView() {
         
         collectionView = UICollectionView(frame: view.bounds,
@@ -124,7 +77,7 @@ class PeopleViewController: UIViewController {
                                 withReuseIdentifier: SectionHeader.reuseId)
     }
     
-       //MARK: - setupMainSection
+    //MARK: setupMainSection
     private func setupMainSection() -> NSCollectionLayoutSection {
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -147,7 +100,7 @@ class PeopleViewController: UIViewController {
         return section
     }
     
-       //MARK: - setupCompositionLayout
+    //MARK: setupCompositionLayout
     private func setupCompositionLayout() -> UICollectionViewLayout {
         
         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment -> NSCollectionLayoutSection? in
@@ -164,7 +117,7 @@ class PeopleViewController: UIViewController {
     }
     
     
-      //MARK: - configureCell
+    //MARK: configureCell
     private func configureCell<T:PeopleConfigurationCell>(cellType: T.Type, value: MPeople, indexPath: IndexPath) -> T {
         
         guard var cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)")}
@@ -177,7 +130,7 @@ class PeopleViewController: UIViewController {
         return cell
     }
     
-     //MARK: - setupDiffebleDataSource
+    //MARK: setupDiffebleDataSource
     private func setupDiffebleDataSource() {
         
         dataSource = UICollectionViewDiffableDataSource<SectionsPeople,MPeople>(
@@ -192,26 +145,19 @@ class PeopleViewController: UIViewController {
                                                indexPath: indexPath)
                 }
         })
+    }
+
+    //MARK:  updateData
+    func updateData() {
         
-    }
-     //MARK: - deleteData
-    private func deleteData(people: [MPeople]) {
-    
-        guard var snapshot = dataSource?.snapshot() else { return }
-        snapshot.deleteItems(people)
-        dataSource?.apply(snapshot, animatingDifferences: true)
-    }
-    //MARK: - updateData
-    private func updateData() {
-    
         guard var snapshot = dataSource?.snapshot() else { return }
         
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
-    //MARK: - reloadData
-    private func reloadData() {
+    //MARK:  reloadData
+    func reloadData() {
         
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
@@ -220,15 +166,14 @@ class PeopleViewController: UIViewController {
     }
 }
 
-//MARK:  - objc
+//MARK:  objc
 extension PeopleViewController {
-
+    
     @objc private func pressLikeButton() {
         reloadData()
     }
 }
-//MARK: - PeopleCellDelegate()
-
+//MARK:  PeopleCellDelegate()
 extension PeopleViewController: PeopleCellDelegate {
     func likeTupped(user: MPeople) {
         
