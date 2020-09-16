@@ -230,7 +230,8 @@ extension SetProfileViewController {
         guard let user = currentUser else { return }
         FirestoreService.shared.saveAdvertAndName(user: user,
                                                   userName: nameTextField.text ?? "",
-                                                  advert: advertTextView.text) { result in
+                                                  advert: advertTextView.text,
+                                                  isActive: true) { result in
                                                     switch result {
                                                     case .success():
                                                          break

@@ -16,7 +16,9 @@ struct MPeople: Hashable, Codable {
     var search: String
     var mail: String
     var sex: String
+    var isActive: Bool
     var id: String
+    
     
     init(userName: String,
          advert: String,
@@ -24,6 +26,7 @@ struct MPeople: Hashable, Codable {
          search: String,
          mail: String,
          sex: String,
+         isActive: Bool,
          id: String) {
         
         self.userName = userName
@@ -32,6 +35,7 @@ struct MPeople: Hashable, Codable {
         self.search = search
         self.mail = mail
         self.sex = sex
+        self.isActive = isActive
         self.id = id
     }
     
@@ -44,6 +48,7 @@ struct MPeople: Hashable, Codable {
         if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }
         if let search = documet["search"] as? String { self.search = search } else { self.search = ""}
         if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = ""}
+        if let isActive = documet["isActive"] as? Bool { self.isActive = isActive} else { self.isActive = false}
         guard let mail = documet["mail"] as? String else { return nil }
         guard let id = documet["uid"] as? String else { return nil }
         
@@ -59,7 +64,8 @@ struct MPeople: Hashable, Codable {
           if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
           if let userImage = documet["userImage"] as? String { self.userImage = userImage } else {self.userImage = "" }
           if let search = documet["search"] as? String { self.search = search } else { self.search = ""}
-          if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = "парень,"}
+          if let sex = documet["sex"] as? String { self.sex = sex } else { self.sex = ""}
+          if let isActive = documet["isActive"] as? Bool { self.isActive = isActive} else { self.isActive = false}
           guard let mail = documet["mail"] as? String else { return nil }
           guard let id = documet["uid"] as? String else { return nil }
           
@@ -74,6 +80,7 @@ struct MPeople: Hashable, Codable {
         case search
         case mail
         case sex
+        case isActive
         case id = "uid"
     }
     

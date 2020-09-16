@@ -80,13 +80,23 @@ class PeopleViewController: UIViewController {
                 case .added:
                     guard !people.contains(user) else { return }
                     guard user.id != self?.currentUser?.uid else { return }
+                    guard user.isActive == true else { return }
                     self?.peopleNearby.append(user)
                     self?.reloadData()
                     
                 case .modified:
-                    guard let index = people.firstIndex(of: user) else { return }
-                    self?.peopleNearby[index] = user
-                    self?.updateData()
+                    if let index = people.firstIndex(of: user) {
+                        if user.isActive == true {
+                            self?.peopleNearby[index] = user
+                            self?.updateData()
+                        } else { //if user change to deactive profile delete him from collection
+                             self?.peopleNearby.remove(at: index)
+                             self?.reloadData()
+                        }
+                    } else if user.isActive == true { //if user change to active profile add him to collection
+                        self?.peopleNearby.append(user)
+                        self?.reloadData()
+                    }
                   
                 case .removed:
                     guard let index = people.firstIndex(of: user) else { return }

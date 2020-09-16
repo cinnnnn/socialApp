@@ -57,7 +57,8 @@ class FirestoreService {
         
         //save base user info to cloud FireStore
         usersReference.document(id).setData([MPeople.CodingKeys.id.rawValue : id,
-                                             MPeople.CodingKeys.mail.rawValue: email],
+                                             MPeople.CodingKeys.mail.rawValue: email,
+                                             MPeople.CodingKeys.isActive.rawValue: false],
                                              merge: true,
                                              completion: { (error) in
                                                 if let error = error {
@@ -110,9 +111,11 @@ class FirestoreService {
     func saveAdvertAndName(user: User,
                            userName: String,
                            advert: String,
+                           isActive: Bool,
                            complition: @escaping (Result<Void, Error>) -> Void){
         usersReference.document(user.uid).setData([MPeople.CodingKeys.userName.rawValue : userName,
-                                                   MPeople.CodingKeys.advert.rawValue: advert],
+                                                   MPeople.CodingKeys.advert.rawValue: advert,
+                                                   MPeople.CodingKeys.isActive.rawValue: isActive],
                                                   merge: true,
                                                   completion: { (error) in
                                                     if let error = error {
