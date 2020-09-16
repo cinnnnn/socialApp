@@ -116,7 +116,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         return layout
     }
     
-    
     //MARK: configureCell
     private func configureCell<T:PeopleConfigurationCell>(cellType: T.Type, value: MPeople, indexPath: IndexPath) -> T {
         
@@ -125,8 +124,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         cell.configure(with: value)
         cell.likeButton.addTarget(self, action: #selector(pressLikeButton), for: .touchUpInside)
         cell.delegate = self
-        
-        
         return cell
     }
     

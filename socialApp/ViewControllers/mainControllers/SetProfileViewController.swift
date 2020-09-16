@@ -78,7 +78,7 @@ class SetProfileViewController: UIViewController {
         nameTextField.delegate = self
     }
 }
-//MARK: - setupNavigationController
+//MARK:  setupNavigationController
 extension SetProfileViewController {
     private func setupNavigationController(){
         
@@ -92,7 +92,7 @@ extension SetProfileViewController {
     }
 }
 
-//MARK: - getPeopleData
+//MARK:  getPeopleData
 extension SetProfileViewController {
     
     private func getPeopleData() {
@@ -111,7 +111,7 @@ extension SetProfileViewController {
     }
 }
 
-//MARK: - setPeopleData
+//MARK:  setPeopleData
 extension SetProfileViewController {
     
     private func setPeopleData() {
@@ -140,7 +140,7 @@ extension SetProfileViewController {
         }
     }
 }
-//MARK: - setupButtonAction
+//MARK:  setupButtonAction
 extension SetProfileViewController {
     
     private func setupButtonAction() {
@@ -154,12 +154,12 @@ extension SetProfileViewController {
 
 
 extension SetProfileViewController {
-    //MARK: - signOut
+    //MARK:  signOut
     @objc func signOut() {
         signOutAlert()
     }
     
-    //MARK: - touchSexButton
+    //MARK:  touchSexButton
     @objc func touchSexButton() {
         guard let user = currentUser else { return }
         switch sexButton.titleLabel?.text {
@@ -186,7 +186,7 @@ extension SetProfileViewController {
         }
     }
     
-    //MARK: - touchWantButton
+    //MARK:  touchWantButton
     @objc func touchWantButton() {
         guard let user = currentUser else { return }
         switch wantButton.titleLabel?.text {
@@ -214,7 +214,7 @@ extension SetProfileViewController {
         }
     }
     
-    //MARK: - choosePhoto
+    //MARK:  choosePhoto
     @objc func choosePhoto() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -225,16 +225,16 @@ extension SetProfileViewController {
         }
     }
     
-    //MARK: - goButtonPressed
+    //MARK:  goButtonPressed
     @objc func goButtonPressed() {
         guard let user = currentUser else { return }
         FirestoreService.shared.saveAdvertAndName(user: user,
                                                   userName: nameTextField.text ?? "",
                                                   advert: advertTextView.text,
-                                                  isActive: true) { result in
+                                                  isActive: true) {[weak self] result in
                                                     switch result {
                                                     case .success():
-                                                         break
+                                                        self?.tabBarController?.selectedIndex = 1
                                                     case .failure(let error):
                                                         fatalError(error.localizedDescription)
                                                     }
@@ -243,7 +243,7 @@ extension SetProfileViewController {
 }
 
 extension SetProfileViewController {
-    //MARK: - signOutAlert
+    //MARK:  signOutAlert
     private func signOutAlert() {
         let alert = UIAlertController(title: "Покинуть",
                                       message: "Точно прощаешься с нами?",
@@ -269,13 +269,13 @@ extension SetProfileViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    //MARK: - choosePhotoAlert
+    //MARK:  choosePhotoAlert
     private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerController.SourceType?) -> Void) {
         
         let photoAlert = UIAlertController(title: "Фоточка",
-                                           message: "Если сделать новую, остальным отобразится, что твое она настоящяя",
+                                           message: "На всех сделанных внутри приложения, есть отметка - подлинное фото",
                                            preferredStyle: .actionSheet)
-        let cameraAction = UIAlertAction(title: "Новая, открыть камеру",
+        let cameraAction = UIAlertAction(title: "Открыть камеру",
                                          style: .default) { _ in
                                             
                                             complition(UIImagePickerController.SourceType.camera)
@@ -295,16 +295,15 @@ extension SetProfileViewController {
         present(photoAlert, animated: true, completion: nil)
     }
 }
-
+//MARK:  UITextFieldDelegate
 extension SetProfileViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
         textField.resignFirstResponder()
         return false
     }
 }
-//MARK: - UITextViewDelegate
+//MARK:  UITextViewDelegate
 extension SetProfileViewController:UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
