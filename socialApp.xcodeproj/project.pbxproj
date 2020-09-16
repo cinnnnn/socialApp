@@ -31,7 +31,6 @@
 		FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB39F2D724F66EFE001B9C4F /* MPeople.swift */; };
 		FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B53D24FAB785002761ED /* UIViewExtension.swift */; };
 		FB61B54224FD3DDE002761ED /* RequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54124FD3DDD002761ED /* RequestViewController.swift */; };
-		FB61B54424FE5625002761ED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FB61B54324FE5625002761ED /* GoogleService-Info.plist */; };
 		FB61B54724FE7F23002761ED /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54624FE7F22002761ED /* AuthService.swift */; };
 		FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54824FE9581002761ED /* UIAlertExtension.swift */; };
 		FB66288124A93ADC00650820 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* SignUpViewController.swift */; };
@@ -58,6 +57,8 @@
 		FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF609024A90AEC0005F947 /* UILabelExtension.swift */; };
 		FBEF609324A90C840005F947 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF609224A90C840005F947 /* UIImageViewExtension.swift */; };
 		FBF2927D251281300090BA9E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FBF2927C251281300090BA9E /* GoogleService-Info.plist */; };
+		FBF2927F2512828C0090BA9E /* AdvertInactiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF2927E2512828C0090BA9E /* AdvertInactiveView.swift */; };
+		FBF29281251284E50090BA9E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FBF29280251284E50090BA9E /* GoogleService-Info.plist */; };
 		FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293D824FFB33300F7B5F1 /* Validators.swift */; };
 		FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */; };
 		FBF293DD25065E2800F7B5F1 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF293DC25065E2800F7B5F1 /* FirestoreService.swift */; };
@@ -93,7 +94,6 @@
 		FB39F2D724F66EFE001B9C4F /* MPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPeople.swift; sourceTree = "<group>"; };
 		FB61B53D24FAB785002761ED /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		FB61B54124FD3DDD002761ED /* RequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestViewController.swift; sourceTree = "<group>"; };
-		FB61B54324FE5625002761ED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FB61B54624FE7F22002761ED /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		FB61B54824FE9581002761ED /* UIAlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertExtension.swift; sourceTree = "<group>"; };
 		FB66288024A93ADC00650820 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
@@ -123,6 +123,8 @@
 		FBEF609024A90AEC0005F947 /* UILabelExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtension.swift; sourceTree = "<group>"; };
 		FBEF609224A90C840005F947 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
 		FBF2927C251281300090BA9E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FBF2927E2512828C0090BA9E /* AdvertInactiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertInactiveView.swift; sourceTree = "<group>"; };
+		FBF29280251284E50090BA9E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FBF293D824FFB33300F7B5F1 /* Validators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validators.swift; sourceTree = "<group>"; };
 		FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		FBF293DC25065E2800F7B5F1 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
@@ -316,8 +318,8 @@
 				FBEF608024A6020A0005F947 /* Assets.xcassets */,
 				FBEF608224A6020A0005F947 /* LaunchScreen.storyboard */,
 				FBEF608524A6020A0005F947 /* Info.plist */,
+				FBF29280251284E50090BA9E /* GoogleService-Info.plist */,
 				FBF2927C251281300090BA9E /* GoogleService-Info.plist */,
-				FB61B54324FE5625002761ED /* GoogleService-Info.plist */,
 			);
 			path = socialApp;
 			sourceTree = "<group>";
@@ -330,6 +332,7 @@
 				FBB3B262250A7CCC00440632 /* OneLineTextView.swift */,
 				FB21A1BC24E59A31000A2E91 /* GradientView.swift */,
 				FB1062DD24B0C8DF0012C4D4 /* ProfileImageView.swift */,
+				FBF2927E2512828C0090BA9E /* AdvertInactiveView.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
 				FB61B54524FE6921002761ED /* UIkit */,
 				FB21A1AE24C8A152000A2E91 /* activeChats.json */,
@@ -411,8 +414,8 @@
 				FB21A1AF24C8A152000A2E91 /* activeChats.json in Resources */,
 				FBEF608124A6020A0005F947 /* Assets.xcassets in Resources */,
 				FB21A1B324C8A2D1000A2E91 /* waitingChats.json in Resources */,
-				FB61B54424FE5625002761ED /* GoogleService-Info.plist in Resources */,
 				FBF2927D251281300090BA9E /* GoogleService-Info.plist in Resources */,
+				FBF29281251284E50090BA9E /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -509,6 +512,7 @@
 				FBB4F3562511261E00ACFE90 /* WantSelectionViewController.swift in Sources */,
 				FB21A1AD24C89F68000A2E91 /* BundleDecode.swift in Sources */,
 				FB1062DA24AE69250012C4D4 /* LoginViewController.swift in Sources */,
+				FBF2927F2512828C0090BA9E /* AdvertInactiveView.swift in Sources */,
 				FB61B54724FE7F23002761ED /* AuthService.swift in Sources */,
 				FB21A1BF24E5ADE5000A2E91 /* WaitingChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,

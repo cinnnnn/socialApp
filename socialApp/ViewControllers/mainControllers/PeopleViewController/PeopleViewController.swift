@@ -19,7 +19,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
             p1.advert < p2.advert
         }
     }
-
+    var inactiveView:AdvertInactiveView?
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     var currentUser: User!
@@ -44,12 +44,39 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         setupNavigationController()
         setupCollectionView()
         setupDiffebleDataSource()
+        setupButtonTarget()
+        setupConstraint()
         ListenerService.shared.addPeopleListener(delegate: self)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        checkActiveAdvert()
     }
     
     //MARK:  setup
     private func setup() {
         view.backgroundColor = .systemBackground
+        inactiveView = AdvertInactiveView(frame: view.bounds, isHidden: true)
+    }
+    
+    //MARK: setupButtonTarget
+    private func setupButtonTarget() {
+        inactiveView?.goToConfigButton.addTarget(self, action: #selector(touchGoToSetup), for: .touchUpInside)
+    }
+    
+    //MARK: checkActiveAdvert
+    private func checkActiveAdvert() {
+        
+        FirestoreService.shared.getUserData(user: currentUser) {[weak self] result in
+            switch result {
+                
+            case .success(let people):
+                self?.inactiveView?.isHidden = people.isActive
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
     //MARK:  setupNavigationController
@@ -169,6 +196,10 @@ extension PeopleViewController {
     @objc private func pressLikeButton() {
         reloadData()
     }
+    
+    @objc private func touchGoToSetup() {
+        tabBarController?.selectedIndex = 0
+    }
 }
 //MARK:  PeopleCellDelegate()
 extension PeopleViewController: PeopleCellDelegate {
@@ -184,6 +215,18 @@ extension PeopleViewController: PeopleCellDelegate {
     
 }
 
+extension PeopleViewController {
+    
+    private func setupConstraint(){
+        
+        guard let inactiveView = inactiveView else { fatalError("Advert view не инициализированно")}
+        
+        view.addSubview(inactiveView)
+        
+        inactiveView.autoresizingMask = [.flexibleHeight, .flexibleWidth ]
+        
+    }
+}
 //MARK:- SwiftUI
 
 struct PeopleViewControllerProvider: PreviewProvider {

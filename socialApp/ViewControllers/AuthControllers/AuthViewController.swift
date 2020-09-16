@@ -21,44 +21,29 @@ class AuthViewController: UIViewController {
                                isShadow: false)
     
     let appleButton = ASAuthorizationAppleIDButton()
-    
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupVC()
         setupConstraints()
         setupButtonAction()
     }
     
-}
-
-//MARK: - setupVC
-extension AuthViewController {
-    
+    //MARK:  setupVC
     private func setupVC() {
         view.backgroundColor = .systemBackground
-
     }
-}
-
-//MARK: - setupButtonAction
-extension AuthViewController {
     
+    //MARK:  setupButtonAction
     private func setupButtonAction() {
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
         appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
     }
-}
-
-//MARK: - objc func
-extension AuthViewController {
     
-    
+    //MARK:  objc func
     @objc func loginButtonPressed() {
         toLogin()
-        
     }
     
     @objc func appleButtonPressed() {
@@ -67,17 +52,16 @@ extension AuthViewController {
     }
 }
 
-//MARK: - ASWebAuthenticationPresentationContextProviding
+//MARK:  ASWebAuthenticationPresentationContextProviding
 extension AuthViewController: ASAuthorizationControllerPresentationContextProviding {
     
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         guard let window = self.view.window else { fatalError("can't get window")}
         return window
     }
-    
 }
 
-//MARK: - ASAuthorizationControllerDelegate
+//MARK:  ASAuthorizationControllerDelegate
 extension AuthViewController: ASAuthorizationControllerDelegate {
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
@@ -92,7 +76,6 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                     switch result {
                         
                     case .success(let user):
-                        
                         //if success Apple login renew or create base mPeople info
                         FirestoreService.shared.saveBaseProfile(id: user.uid,
                                                                 email: user.email!) { result in
@@ -114,18 +97,19 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                                                                         }
                                                                     }
                         }
-                        
+                    //Error Apple login
                     case .failure(_):
                         self?.appleSignInAlerController()
                     }
                 }
+                //Error get credential for Apple Auth
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
         }
     }
 }
-//MARK: - AuthNavigationDelegate
+//MARK:  AuthNavigationDelegate
 extension AuthViewController: AuthNavigationDelegate {
     func toGenderSelect(currentUser: User) {
         let genderVC = GenderSelectionViewController(currentUser: currentUser)
@@ -163,7 +147,7 @@ extension AuthViewController: AuthNavigationDelegate {
 }
 
 
-//MARK: -  alertController
+//MARK:   alertController
 extension AuthViewController {
     
     private func appleSignInAlerController() {
@@ -188,34 +172,34 @@ extension AuthViewController {
     }
 }
 
-// MARK: - Setup Constraints
-
+// MARK:  Setup Constraints
 extension AuthViewController {
     private func setupConstraints(){
-        
-        logoImage.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        appleButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(logoImage)
-        logoImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25).isActive = true
-        logoImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
-        logoImage.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25).isActive = true
-        logoImage.heightAnchor.constraint(equalTo: logoImage.widthAnchor, multiplier: 1.0/1.0).isActive = true
         
         let buttonStackView = UIStackView(arrangedSubviews: [ appleButton, loginButton ])
         buttonStackView.axis = .vertical
         buttonStackView.spacing = 10
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
         
+        logoImage.translatesAutoresizingMaskIntoConstraints = false
+        loginButton.translatesAutoresizingMaskIntoConstraints = false
+        appleButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(logoImage)
         view.addSubview(buttonStackView)
         
-        buttonStackView.topAnchor.constraint(equalTo: logoImage.bottomAnchor, constant: 30).isActive = true
-        buttonStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
-        buttonStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25).isActive = true
-        
-        appleButton.heightAnchor.constraint(equalTo: appleButton.widthAnchor, multiplier: 1.0/7.28).isActive = true
-        
+        NSLayoutConstraint.activate([
+            logoImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            logoImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            logoImage.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            logoImage.heightAnchor.constraint(equalTo: logoImage.widthAnchor, multiplier: 1.0/1.0),
+            
+            buttonStackView.topAnchor.constraint(equalTo: logoImage.bottomAnchor, constant: 30),
+            buttonStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            buttonStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            appleButton.heightAnchor.constraint(equalTo: appleButton.widthAnchor, multiplier: 1.0/7.28)
+        ])
     }
 }
 

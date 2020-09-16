@@ -10,8 +10,6 @@ import UIKit
 
 class OneLineTextView: UITextView {
     
-
-    
     convenience init(text: String = "",
                      isEditable: Bool = true) {
         self.init()
@@ -34,6 +32,5 @@ class OneLineTextView: UITextView {
             textContainer.maximumNumberOfLines = 5
             textContainer.lineBreakMode = .byClipping
         }
-        
     }
 }

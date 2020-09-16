@@ -28,13 +28,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         return photoImage
     }()
     
-    let distance: UILabel = {
-        let label = UILabel()
-        label.text = "0.0 km"
-        label.textColor = .myHeaderColor()
-        label.font = .systemFont(ofSize: 11)
-        return label
-    }()
+    let distance = UILabel(labelText: "0.0km", textFont: .systemFont(ofSize: 11, weight: .light))
     
     let likeButton: UIButton = {
         let button = UIButton()

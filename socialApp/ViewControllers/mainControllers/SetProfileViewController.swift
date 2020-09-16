@@ -433,11 +433,10 @@ extension SetProfileViewController {
             wantButton.bottomAnchor.constraint(equalTo: goButton.topAnchor, constant: -25),
             wantButton.heightAnchor.constraint(equalToConstant: 22),
             
-            
             goButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25),
             goButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             goButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            goButton.heightAnchor.constraint(equalTo: goButton.widthAnchor, multiplier: 1.0/7.28),
+            goButton.heightAnchor.constraint(equalTo: goButton.widthAnchor, multiplier: 1.0/7.28)
         ])
     }
 }

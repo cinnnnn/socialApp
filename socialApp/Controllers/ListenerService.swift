@@ -53,7 +53,8 @@ class ListenerService {
                             self?.delegate?.peopleNearby.remove(at: index)
                             self?.delegate?.reloadData()
                         }
-                    } else if user.isActive == true { //if user change to active profile add him to collection
+                        //if user change to active profile add him to collection
+                    } else if user.isActive == true, user.id != self?.currentUser?.uid { 
                         self?.delegate?.peopleNearby.append(user)
                         self?.delegate?.reloadData()
                     }
