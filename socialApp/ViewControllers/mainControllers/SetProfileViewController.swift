@@ -305,20 +305,20 @@ extension SetProfileViewController: UITextFieldDelegate {
 }
 //MARK:  UITextViewDelegate
 extension SetProfileViewController:UITextViewDelegate {
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.text == "Для просмотра обьявлений других пользователей, расскажи о своих желаниях..." {
-            textView.text = ""
-            textView.textColor = .label
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text == "" {
-            textView.text = "Для просмотра обьявлений других пользователей, расскажи о своих желаниях..."
-            textView.textColor = .lightGray
-        }
-    }
+//
+//    func textViewDidBeginEditing(_ textView: UITextView) {
+//        if textView.text == "Для просмотра обьявлений других пользователей, расскажи о своих желаниях..." {
+//            textView.text = ""
+//            textView.textColor = .label
+//        }
+//    }
+//
+//    func textViewDidEndEditing(_ textView: UITextView) {
+//        if textView.text == "" {
+//            textView.text = "Для просмотра обьявлений других пользователей, расскажи о своих желаниях..."
+//            textView.textColor = .lightGray
+//        }
+//    }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let maxSymbols = 120
