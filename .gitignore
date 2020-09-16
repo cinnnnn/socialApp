@@ -6,7 +6,7 @@
 xcuserdata/
 
 ##googleService. Firebase info
-GoogleService-Info.plist
+socialApp/GoogleService-Info.plist
 
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
 *.xcscmblueprint
