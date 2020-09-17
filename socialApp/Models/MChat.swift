@@ -12,7 +12,9 @@ struct MChat: Hashable, Decodable {
     var friendUserName: String
     var friendUserImageString: String
     var lastMessage: String
-    var friendId: Int
+    var friendId: String
+    var date: Date
+    
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(friendId)

@@ -175,9 +175,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     func updateData() {
         
         guard var snapshot = dataSource?.snapshot() else { return }
-        
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
-        
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
     //MARK:  reloadData

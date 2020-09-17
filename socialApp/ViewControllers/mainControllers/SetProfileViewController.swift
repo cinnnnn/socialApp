@@ -306,7 +306,8 @@ extension SetProfileViewController: UITextFieldDelegate {
 //MARK:  UITextViewDelegate
 extension SetProfileViewController:UITextViewDelegate {
 
-
+//
+//
 //    func textViewDidBeginEditing(_ textView: UITextView) {
 //        if textView.text == "Для просмотра обьявлений других пользователей, расскажи о своих желаниях..." {
 //            textView.text = ""
