@@ -192,7 +192,7 @@ extension LoginViewController: UITextFieldDelegate {
     }
 }
 
-//MARK: - showAlert
+//MARK:  showAlert
 extension LoginViewController {
     
     private func showAlert(title: String, text: String, buttonText: String) {
@@ -204,6 +204,13 @@ extension LoginViewController {
         
         present(alert, animated: true, completion: nil)
     }
+}
+
+//MARK touchBegan
+extension LoginViewController {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+            self.view.endEditing(true)
+        }
 }
 
 //MARK: - setupConstraints

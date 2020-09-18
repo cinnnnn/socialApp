@@ -13,7 +13,7 @@ import SDWebImage
 
 class SetProfileViewController: UIViewController {
     
-    let profileImage = ProfileImageView()
+    let profileImage = EditableProfileImageView()
     let nameLabel = UILabel(labelText: "Называй меня:",
                             textFont: .systemFont(ofSize: 16, weight: .bold))
     let aboutLabel = UILabel(labelText: "Мои желания на сегодня:",
@@ -25,8 +25,8 @@ class SetProfileViewController: UIViewController {
     let nameTextField = OneLineTextField(isSecureText: false,
                                          tag: 1,
                                          placeHoledText: "Ты можешь быть кем угодно...")
-    let advertTextView = OneLineTextView(text: "Для просмотра обьявлений других пользователей, расскажи о своих желаниях...",
-                                         isEditable: true)
+    let advertTextView = UITextView(text: "Для просмотра обьявлений других пользователей, расскажи о своих желаниях...",
+                                    isEditable: true)
     
     let sexButton = UIButton(newBackgroundColor: nil,
                              borderWidth: 0,
@@ -76,6 +76,7 @@ class SetProfileViewController: UIViewController {
         view.backgroundColor = .systemBackground
         advertTextView.delegate = self
         nameTextField.delegate = self
+        advertTextView.addDoneButton()
     }
 }
 //MARK:  setupNavigationController
@@ -367,6 +368,13 @@ extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigatio
             }
         }
     }
+}
+
+//MARK touchBegan
+extension SetProfileViewController {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+            self.view.endEditing(true)
+        }
 }
 
 //MARK: - setupConstraints

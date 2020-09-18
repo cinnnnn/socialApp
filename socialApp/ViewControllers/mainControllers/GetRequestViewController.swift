@@ -9,12 +9,15 @@
 import UIKit
 import SwiftUI
 
-class RequestViewController: UIViewController {
+class GetRequestViewController: UIViewController {
     
     let photo = UIImageView(image: #imageLiteral(resourceName: "Photo6"), contentMode: .scaleAspectFill)
     let container = UIView()
     let nameLabel = UILabel(labelText: "Оленька", textFont: .boldSystemFont(ofSize: 22))
-    let messageTextView = UITextView(text: "Твои планы на выходные?", isEditableText: false, delegate: nil)
+    let messageTextView = UILabel(labelText: "",
+                                  multiline: true,
+                                  textFont: .systemFont(ofSize: 16, weight: .bold),
+                                  textColor: .label)
     let acceptButton = UIButton(newBackgroundColor: .myPurpleColor(), newBorderColor: .myPurpleColor(), title: "Принять", titleColor: .systemBackground)
     let denyButton = UIButton(newBackgroundColor: .myPinkColor(), newBorderColor: .myPinkColor(), title: "Отклонить", titleColor: .systemBackground)
     let buttonStackView = UIStackView()
@@ -113,11 +116,11 @@ struct RequestViewControllerProvider: PreviewProvider {
     
     struct ContenerView: UIViewControllerRepresentable {
         
-        func makeUIViewController(context: Context) -> RequestViewController {
-            RequestViewController()
+        func makeUIViewController(context: Context) -> GetRequestViewController {
+            GetRequestViewController()
         }
         
-        func updateUIViewController(_ uiViewController: RequestViewController, context: Context) {
+        func updateUIViewController(_ uiViewController: GetRequestViewController, context: Context) {
             
         }
     }

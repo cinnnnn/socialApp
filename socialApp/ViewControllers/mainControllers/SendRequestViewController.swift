@@ -8,19 +8,24 @@
 
 import UIKit
 import SwiftUI
+import SDWebImage
 
 
-class UserViewController: UIViewController {
+class SendRequestViewController: UIViewController {
     
-    let photo = UIImageView(image: #imageLiteral(resourceName: "Photo3"), contentMode: .scaleAspectFill)
+    let photo = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
     let container = UIView()
-    let nameLabel = UILabel(labelText: "Зельда", textFont: .boldSystemFont(ofSize: 22))
-    let messageTextView = UITextView(text: "Легенды Зельды", isEditableText: false, delegate: nil)
+    let nameLabel = UILabel(labelText: "", textFont: .boldSystemFont(ofSize: 22))
+    let messageTextView = UILabel(labelText: "",
+                                  multiline: true,
+                                  textFont: .systemFont(ofSize: 16, weight: .bold),
+                                  textColor: .label)
     let unswerTextField = OneLineTextField(isSecureText: false,
                                            tag: 1,
                                            withButton: true,
                                            buttonText: "Отправить",
                                            placeHoledText: "Сообщение")
+    let people: MPeople!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +33,34 @@ class UserViewController: UIViewController {
         configure()
         setupConstraints()
         setupAction()
-
     }
     
-    //MARK: - setupAction()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        setData()
+    }
+    
+    init(for people: MPeople) {
+        self.people = people
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK:  setData
+    private func setData() {
+        
+        let imageURL = URL(string: people.userImage)
+        photo.sd_setImage(with: imageURL, completed: nil)
+        
+        nameLabel.text = people.userName
+        messageTextView.text = people.advert
+        
+    }
+    //MARK:  setupAction
     private func setupAction() {
         
         if let sendButton = unswerTextField.rightView as? UIButton {
@@ -43,18 +72,25 @@ class UserViewController: UIViewController {
         print("Olololo")
     }
     
-   
+    
     
     //MARK: - configure()
     private func configure(){
         
         container.backgroundColor = .myBackgroundColor()
         container.layer.cornerRadius = 30
-       
-        
     }
-    
-       //MARK: - setupConstraints()
+}
+
+//MARK touchBegan
+extension SendRequestViewController {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+}
+
+//MARK setupConstraints
+extension SendRequestViewController {
     private func setupConstraints() {
         
         photo.translatesAutoresizingMaskIntoConstraints = false
@@ -62,14 +98,14 @@ class UserViewController: UIViewController {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         messageTextView.translatesAutoresizingMaskIntoConstraints = false
         unswerTextField.translatesAutoresizingMaskIntoConstraints = false
-    
+        
         
         view.addSubview(photo)
         view.addSubview(container)
         container.addSubview(nameLabel)
         container.addSubview(messageTextView)
         container.addSubview(unswerTextField)
-      
+        
         NSLayoutConstraint.activate([
             
             //main constraints
@@ -97,27 +133,5 @@ class UserViewController: UIViewController {
             unswerTextField.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -60),
             unswerTextField.heightAnchor.constraint(equalToConstant: 40)
         ])
-    }
-}
-
-//MARK: - SwiftUI
-struct UserViewControllerProvider: PreviewProvider {
-   
-    static var previews: some View {
-        ContenerView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContenerView: UIViewControllerRepresentable {
-        
-        
-        typealias UIViewControllerType = UserViewController
-        
-        func makeUIViewController(context: Context) -> ContenerView.UIViewControllerType {
-            UserViewController()
-        }
-        
-        func updateUIViewController(_ uiViewController: UserViewController, context: Context) {
-            
-        }
     }
 }

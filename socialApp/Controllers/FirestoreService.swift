@@ -144,6 +144,10 @@ class FirestoreService {
             }
         }
     }
+    
+    func saveChatRequest(user: User, for frend:MPeople, text:String) {
+        
+    }
 }
 
 

@@ -17,31 +17,30 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     var person: MPeople?
     weak var delegate: PeopleCellDelegate?
     
-    let photo: UIImageView = {
-        let photoImage = UIImageView()
-        photoImage.clipsToBounds = true
-        photoImage.layer.cornerRadius = 4
-        photoImage.sd_imageTransition = .fade
-        
-        photoImage.contentMode = .scaleAspectFill
-        photoImage.translatesAutoresizingMaskIntoConstraints = false
-        return photoImage
-    }()
-    
+    let profileImage = ProfileImageView()
     let distance = UILabel(labelText: "0.0km", textFont: .systemFont(ofSize: 11, weight: .light))
-    
+    let topLine: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        view.backgroundColor = .label
+        return view
+    }()
+    let bottomLine: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        view.backgroundColor = .label
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     let likeButton: UIButton = {
         let button = UIButton()
         
-        button.backgroundColor = .systemBackground
-        
-        button.setImage(#imageLiteral(resourceName: "Heart"), for: .normal)
+        button.clipsToBounds = true
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.label.cgColor
-        button.layer.cornerRadius = 4
-        button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
-        
+        button.setTitle("L", for: .normal)
+        button.setTitleColor(.label, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 22, weight: .heavy)
+        button.backgroundColor = .systemBackground
         return button
     }()
     
@@ -49,8 +48,8 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         let myView = UIView()
         myView.backgroundColor = .systemBackground
         myView.layer.borderColor = UIColor.label.cgColor
-        myView.layer.borderWidth = 1
-        myView.layer.cornerRadius = 4
+        myView.layer.borderWidth = 0
+        myView.layer.cornerRadius = 0
         return myView
     }()
     
@@ -60,7 +59,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         textView.isSelectable = false
         textView.isScrollEnabled = false //for autosize height
         textView.backgroundColor = nil
-        textView.font = .systemFont(ofSize: 18, weight: .regular)
+        textView.font = .systemFont(ofSize: 18, weight: .bold)
         textView.textColor = .label
         return textView
     }()
@@ -70,7 +69,6 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         
         setup()
         setupConstraints()
-         
     }
     
     required init?(coder: NSCoder) {
@@ -96,6 +94,23 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         likeButton.addTarget(self, action: #selector(pressLike), for: .touchUpInside)
         
         backgroundColor = .systemBackground
+        backView.isUserInteractionEnabled = true
+        
+        backView.translatesAutoresizingMaskIntoConstraints = false
+        profileImage.translatesAutoresizingMaskIntoConstraints = false
+        messageBox.translatesAutoresizingMaskIntoConstraints = false
+        likeButton.translatesAutoresizingMaskIntoConstraints = false
+        distance.translatesAutoresizingMaskIntoConstraints = false
+        topLine.translatesAutoresizingMaskIntoConstraints = false
+        bottomLine.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(backView)
+        addSubview(topLine)
+        addSubview(bottomLine)
+        addSubview(distance)
+        addSubview(messageBox)
+        addSubview(likeButton)
+        addSubview(profileImage)
         
     }
     
@@ -106,7 +121,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         messageBox.text = value.advert
         
         let imageURL = URL(string: value.userImage)
-        photo.sd_setImage(with: imageURL, completed: nil)
+        profileImage.profileImage.sd_setImage(with: imageURL, completed: nil)
         
         //        let likeImage = value.like ? nil : #imageLiteral(resourceName: "Heart")
         //        likeButton.setImage(likeImage, for: .normal)
@@ -114,50 +129,53 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     }
     
     override func prepareForReuse() {
-       photo.image = nil
+        profileImage.profileImage.image = nil
     }
     private func setupConstraints(){
-    
-        backView.translatesAutoresizingMaskIntoConstraints = false
-        photo.translatesAutoresizingMaskIntoConstraints = false
-        messageBox.translatesAutoresizingMaskIntoConstraints = false
-        likeButton.translatesAutoresizingMaskIntoConstraints = false
-        distance.translatesAutoresizingMaskIntoConstraints = false
-        
-        addSubview(backView)
-        addSubview(photo)
-        addSubview(distance)
-        addSubview(messageBox)
-        addSubview(likeButton)
         
         NSLayoutConstraint.activate([
             bottomAnchor.constraint(equalTo: backView.bottomAnchor),
             
-            backView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            backView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            backView.topAnchor.constraint(equalTo: topAnchor, constant: 25),
-            backView.bottomAnchor.constraint(equalTo: messageBox.bottomAnchor, constant: 35),
+            profileImage.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 25),
+            profileImage.topAnchor.constraint(equalTo: topAnchor),
+            profileImage.widthAnchor.constraint(equalToConstant: 50),
+            profileImage.heightAnchor.constraint(equalToConstant: 50),
             
-            messageBox.leadingAnchor.constraint(equalTo: photo.trailingAnchor, constant: 5),
-            messageBox.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -55),
-            messageBox.topAnchor.constraint(equalTo: backView.topAnchor, constant: 6),
-    
-            
-            likeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -6),
-            likeButton.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -6),
+            messageBox.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor, constant: -6),
+            messageBox.trailingAnchor.constraint(equalTo: likeButton.trailingAnchor),
+            messageBox.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 6),
+           
+            likeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -25),
+            likeButton.topAnchor.constraint(equalTo: messageBox.bottomAnchor, constant: 6),
             likeButton.widthAnchor.constraint(equalToConstant: 50),
             likeButton.heightAnchor.constraint(equalToConstant: 50),
             
-            photo.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 6),
-            photo.topAnchor.constraint(equalTo: backView.topAnchor,constant: 6),
-            photo.widthAnchor.constraint(equalToConstant: 50),
-            photo.heightAnchor.constraint(equalToConstant: 50),
+            backView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            backView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            backView.topAnchor.constraint(equalTo: profileImage.centerYAnchor),
+            backView.bottomAnchor.constraint(equalTo: likeButton.centerYAnchor),
             
-            distance.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 6),
+            topLine.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
+            topLine.trailingAnchor.constraint(equalTo: backView.trailingAnchor),
+            topLine.topAnchor.constraint(equalTo: backView.topAnchor),
+            topLine.heightAnchor.constraint(equalToConstant: 1),
+            
+            bottomLine.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
+            bottomLine.trailingAnchor.constraint(equalTo: backView.trailingAnchor),
+            bottomLine.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
+            bottomLine.heightAnchor.constraint(equalToConstant: 1),
+            
+            distance.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
             distance.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -6)
             
         ])
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
+        likeButton.layer.cornerRadius = likeButton.frame.height / 2
+        setupConstraints()
     }
     
 }

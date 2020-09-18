@@ -10,25 +10,49 @@ import UIKit
 
 extension UITextView {
     
-    convenience init(text: String,
-                     isEditableText: Bool,
-                     delegate: UITextViewDelegate?) {
+    convenience init(text: String = "",
+                     isEditable: Bool = true) {
         self.init()
         
         self.text = text
-        isEditable = isEditableText
-        isSelectable = isEditableText
+        self.isEditable = isEditable
+        isSelectable = isEditable
         isScrollEnabled = false //for autosize height
         backgroundColor = nil
-        font = .systemFont(ofSize: 18, weight: .regular)
-        textColor = .label
+        font = .systemFont(ofSize: 16, weight: .regular)
+        textColor = .lightGray
+        translatesAutoresizingMaskIntoConstraints = false
         
+        layer.borderColor = UIColor.label.cgColor
+        layer.borderWidth = 0
+        layer.cornerRadius = 4
         
         //for setup maximum lines and symbols
-        if isEditableText {
-            textContainer.maximumNumberOfLines = 3
+        if isEditable {
+            textContainer.maximumNumberOfLines = 5
             textContainer.lineBreakMode = .byClipping
-            self.delegate = delegate
         }
+    }
+}
+
+//MARK: doneButton
+extension UITextView {
+    
+    func addDoneButton(onDone: (target: Any, action:(Selector))? = nil) {
+        
+        let onDone = onDone ?? (target: self, action: #selector(defaultDoneAction))
+        let toolBar = UIToolbar()
+        toolBar.barStyle = .default
+        toolBar.items = [
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
+            UIBarButtonItem(title: "Готово", style: .done, target: self, action: onDone.action)
+        ]
+        toolBar.sizeToFit()
+        
+        self.inputAccessoryView = toolBar
+    }
+    
+    @objc func defaultDoneAction() {
+        self.resignFirstResponder()
     }
 }

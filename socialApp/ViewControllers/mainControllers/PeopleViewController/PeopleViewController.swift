@@ -40,17 +40,18 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
+        
         setupNavigationController()
         setupCollectionView()
         setupDiffebleDataSource()
         setupButtonTarget()
+        setup()
         setupConstraint()
         ListenerService.shared.addPeopleListener(delegate: self)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         checkActiveAdvert()
     }
     
@@ -58,6 +59,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     private func setup() {
         view.backgroundColor = .systemBackground
         inactiveView = AdvertInactiveView(frame: view.bounds, isHidden: true)
+        collectionView.delegate = self
     }
     
     //MARK: setupButtonTarget
@@ -119,10 +121,10 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         
         let section = NSCollectionLayoutSection(group: group)
         
-        section.interGroupSpacing = 16
-        section.contentInsets = NSDirectionalEdgeInsets(top: 25,
+        section.interGroupSpacing = 50
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
                                                         leading: 0,
-                                                        bottom: 0,
+                                                        bottom: 25,
                                                         trailing: 0)
         return section
     }
@@ -198,6 +200,18 @@ extension PeopleViewController {
     @objc private func touchGoToSetup() {
         tabBarController?.selectedIndex = 0
     }
+}
+
+extension PeopleViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let user = dataSource?.itemIdentifier(for: indexPath) else { return }
+        let sendRequestVC = SendRequestViewController(for: user)
+        present(sendRequestVC, animated: true, completion: nil)
+        
+    }
+    
+   
 }
 //MARK:  PeopleCellDelegate()
 extension PeopleViewController: PeopleCellDelegate {
