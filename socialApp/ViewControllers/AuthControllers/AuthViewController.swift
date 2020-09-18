@@ -139,7 +139,7 @@ extension AuthViewController: AuthNavigationDelegate {
     }
     
     func toRegister(email: String?) {
-        let signUpVc = RegisterMailViewController(email: email)
+        let signUpVc = RegisterEmailViewController(email: email)
         signUpVc.delegate = self
         signUpVc.modalPresentationStyle = .fullScreen
         present(signUpVc, animated: true, completion: nil)

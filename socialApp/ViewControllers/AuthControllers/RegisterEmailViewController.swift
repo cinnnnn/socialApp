@@ -10,7 +10,7 @@ import UIKit
 import SwiftUI
 import FirebaseAuth
 
-class SignUpViewController: UIViewController {
+class RegisterEmailViewController: UIViewController {
     
     
     let signUpLogo = UIImageView(image: #imageLiteral(resourceName: "SignUpLogo"),
@@ -76,7 +76,7 @@ class SignUpViewController: UIViewController {
 }
 
 //MARK: - setupVC
-extension SignUpViewController {
+extension RegisterEmailViewController {
     
     private func setupVC() {
         view.backgroundColor = .systemBackground
@@ -92,7 +92,7 @@ extension SignUpViewController {
 }
 
 //MARK: - setupButtonAction
-extension SignUpViewController {
+extension RegisterEmailViewController {
     
     private func setupButtonAction() {
         
@@ -101,7 +101,7 @@ extension SignUpViewController {
 }
 
 //MARK: - objc action
-extension SignUpViewController {
+extension RegisterEmailViewController {
     
     @objc func signUpButtonPressed() {
         
@@ -147,7 +147,7 @@ extension SignUpViewController {
 }
 
 //MARK: - UITextFieldDelegate
-extension SignUpViewController: UITextFieldDelegate {
+extension RegisterEmailViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
@@ -162,7 +162,7 @@ extension SignUpViewController: UITextFieldDelegate {
     }
 }
 //MARK: - showAlert
-extension SignUpViewController {
+extension RegisterEmailViewController {
     
     private func showAlert(title: String,
                            text: String,
@@ -193,8 +193,15 @@ extension SignUpViewController {
     }
 }
 
+//MARK touchBegan
+extension RegisterEmailViewController {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+            self.view.endEditing(true)
+        }
+}
+
 //MARK: - setupConstraints
-extension SignUpViewController {
+extension RegisterEmailViewController {
     private func setupConstraints() {
         
         signUpLogo.translatesAutoresizingMaskIntoConstraints = false
@@ -277,11 +284,11 @@ struct SignUpViewControllerProvider: PreviewProvider {
     
     struct ContenerView: UIViewControllerRepresentable {
         
-        func makeUIViewController(context: Context) -> SignUpViewController {
-            SignUpViewController(email: "Foo")
+        func makeUIViewController(context: Context) -> RegisterEmailViewController {
+            RegisterEmailViewController(email: "Foo")
         }
         
-        func updateUIViewController(_ uiViewController: SignUpViewController, context: Context) {
+        func updateUIViewController(_ uiViewController: RegisterEmailViewController, context: Context) {
             
         }
     }
