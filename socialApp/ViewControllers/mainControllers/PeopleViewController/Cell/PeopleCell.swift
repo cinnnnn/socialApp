@@ -18,15 +18,16 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     weak var delegate: PeopleCellDelegate?
     
     let profileImage = ProfileImageView()
-    let distance = UILabel(labelText: "0.0km", textFont: .systemFont(ofSize: 11, weight: .light))
+    let nameLabel = UILabel(labelText: "", textFont: .systemFont(ofSize: 16, weight: .bold), textColor: .label)
+    let distanceLabel = UILabel(labelText: "0.0km", textFont: .systemFont(ofSize: 16, weight: .light), textColor: .myHeaderColor())
     let topLine: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        view.backgroundColor = .label
+        view.backgroundColor = .myCellColor()
         return view
     }()
     let bottomLine: UIView = {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        view.backgroundColor = .label
+        view.backgroundColor = .myCellColor()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -34,13 +35,9 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         let button = UIButton()
         
         button.clipsToBounds = true
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.label.cgColor
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("L", for: .normal)
-        button.setTitleColor(.label, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 22, weight: .heavy)
-        button.backgroundColor = .systemBackground
+        button.setTitle("Like", for: .normal)
+        button.setTitleColor(.myHeaderColor(), for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .light)
         return button
     }()
     
@@ -59,7 +56,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         textView.isSelectable = false
         textView.isScrollEnabled = false //for autosize height
         textView.backgroundColor = nil
-        textView.font = .systemFont(ofSize: 18, weight: .bold)
+        textView.font = .systemFont(ofSize: 16, weight: .regular)
         textView.textColor = .label
         return textView
     }()
@@ -100,17 +97,19 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         profileImage.translatesAutoresizingMaskIntoConstraints = false
         messageBox.translatesAutoresizingMaskIntoConstraints = false
         likeButton.translatesAutoresizingMaskIntoConstraints = false
-        distance.translatesAutoresizingMaskIntoConstraints = false
+        distanceLabel.translatesAutoresizingMaskIntoConstraints = false
         topLine.translatesAutoresizingMaskIntoConstraints = false
         bottomLine.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(backView)
-        addSubview(topLine)
-        addSubview(bottomLine)
-        addSubview(distance)
+        addSubview(distanceLabel)
         addSubview(messageBox)
         addSubview(likeButton)
         addSubview(profileImage)
+        addSubview(nameLabel)
+        addSubview(topLine)
+        addSubview(bottomLine)
         
     }
     
@@ -118,7 +117,9 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     func configure(with value: MPeople) {
         person = value
         
+        
         messageBox.text = value.advert
+        nameLabel.text = value.userName == "" ? "Анон" : value.userName
         
         let imageURL = URL(string: value.userImage)
         profileImage.profileImage.sd_setImage(with: imageURL, completed: nil)
@@ -137,36 +138,38 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
             bottomAnchor.constraint(equalTo: backView.bottomAnchor),
             
             profileImage.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 25),
-            profileImage.topAnchor.constraint(equalTo: topAnchor),
+            profileImage.topAnchor.constraint(equalTo: backView.topAnchor, constant: 8),
             profileImage.widthAnchor.constraint(equalToConstant: 50),
             profileImage.heightAnchor.constraint(equalToConstant: 50),
             
-            messageBox.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor, constant: -6),
-            messageBox.trailingAnchor.constraint(equalTo: likeButton.trailingAnchor),
-            messageBox.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 6),
+            nameLabel.leadingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: 8),
+            nameLabel.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -25),
+            nameLabel.topAnchor.constraint(equalTo: profileImage.topAnchor),
+            
+            messageBox.leadingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: 3),
+            messageBox.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -25),
+            messageBox.topAnchor.constraint(equalTo: nameLabel.bottomAnchor),
            
             likeButton.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -25),
-            likeButton.topAnchor.constraint(equalTo: messageBox.bottomAnchor, constant: 6),
-            likeButton.widthAnchor.constraint(equalToConstant: 50),
-            likeButton.heightAnchor.constraint(equalToConstant: 50),
+            likeButton.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -4),
             
-            backView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            backView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            backView.topAnchor.constraint(equalTo: profileImage.centerYAnchor),
-            backView.bottomAnchor.constraint(equalTo: likeButton.centerYAnchor),
+            backView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backView.topAnchor.constraint(equalTo: topAnchor, constant: -1),
+            backView.bottomAnchor.constraint(equalTo: messageBox.bottomAnchor, constant: 35),
             
-            topLine.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
-            topLine.trailingAnchor.constraint(equalTo: backView.trailingAnchor),
-            topLine.topAnchor.constraint(equalTo: backView.topAnchor),
-            topLine.heightAnchor.constraint(equalToConstant: 1),
+            distanceLabel.leadingAnchor.constraint(equalTo: messageBox.leadingAnchor, constant: 5),
+            distanceLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -8),
             
-            bottomLine.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
-            bottomLine.trailingAnchor.constraint(equalTo: backView.trailingAnchor),
-            bottomLine.bottomAnchor.constraint(equalTo: backView.bottomAnchor),
-            bottomLine.heightAnchor.constraint(equalToConstant: 1),
+            topLine.topAnchor.constraint(equalTo: topAnchor),
+            topLine.heightAnchor.constraint(equalToConstant: 0.5),
+            topLine.leadingAnchor.constraint(equalTo: leadingAnchor),
+            topLine.trailingAnchor.constraint(equalTo: trailingAnchor),
             
-            distance.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
-            distance.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -6)
+            bottomLine.bottomAnchor.constraint(equalTo: bottomAnchor),
+            bottomLine.heightAnchor.constraint(equalToConstant: 0.5),
+            bottomLine.leadingAnchor.constraint(equalTo: leadingAnchor),
+            bottomLine.trailingAnchor.constraint(equalTo: trailingAnchor),
             
         ])
     }

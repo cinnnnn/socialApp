@@ -15,8 +15,6 @@ class ProfileImageView: UIView {
         myImage.sd_imageTransition = .flipFromBottom
         myImage.image = #imageLiteral(resourceName: "avatar")
         myImage.clipsToBounds = true
-        myImage.layer.borderColor = UIColor.label.cgColor
-        myImage.layer.borderWidth = 1
         myImage.contentMode = .scaleAspectFill
         myImage.translatesAutoresizingMaskIntoConstraints = false
         
@@ -48,6 +46,5 @@ class ProfileImageView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         profileImage.layer.cornerRadius = profileImage.frame.width / 2
-        profileImage.layer.borderColor = UIColor.label.cgColor
     }
 }

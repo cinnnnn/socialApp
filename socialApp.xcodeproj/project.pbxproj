@@ -36,7 +36,7 @@
 		FB61B54224FD3DDE002761ED /* GetRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54124FD3DDD002761ED /* GetRequestViewController.swift */; };
 		FB61B54724FE7F23002761ED /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54624FE7F22002761ED /* AuthService.swift */; };
 		FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54824FE9581002761ED /* UIAlertExtension.swift */; };
-		FB66288124A93ADC00650820 /* RegisterMailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* RegisterMailViewController.swift */; };
+		FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
@@ -100,7 +100,7 @@
 		FB61B54124FD3DDD002761ED /* GetRequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRequestViewController.swift; sourceTree = "<group>"; };
 		FB61B54624FE7F22002761ED /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		FB61B54824FE9581002761ED /* UIAlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertExtension.swift; sourceTree = "<group>"; };
-		FB66288024A93ADC00650820 /* RegisterMailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterMailViewController.swift; sourceTree = "<group>"; };
+		FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterEmailViewController.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -169,7 +169,7 @@
 			children = (
 				FBEF607B24A602070005F947 /* AuthViewController.swift */,
 				FB1062D924AE69240012C4D4 /* LoginViewController.swift */,
-				FB66288024A93ADC00650820 /* RegisterMailViewController.swift */,
+				FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */,
 				FBB4F35125110BB200ACFE90 /* GenderSelectionViewController.swift */,
 				FBB4F3552511261E00ACFE90 /* WantSelectionViewController.swift */,
 			);
@@ -493,7 +493,7 @@
 				FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */,
 				FB09108024FA93E2006B72D5 /* UITextViewExtension.swift in Sources */,
 				FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */,
-				FB66288124A93ADC00650820 /* RegisterMailViewController.swift in Sources */,
+				FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */,
 				FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */,
 				FB61A7632514F05C005DCC78 /* ProfileImageView.swift in Sources */,
 				FB15FCF62513A72F00B765D3 /* MWaitingChat.swift in Sources */,
