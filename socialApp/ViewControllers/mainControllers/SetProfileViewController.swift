@@ -100,7 +100,7 @@ extension SetProfileViewController {
     private func getPeopleData() {
         
         guard let user = currentUser else { return }
-        FirestoreService.shared.getUserData(user: user) {[weak self] result in
+        FirestoreService.shared.getUserData(userID: user.uid) {[weak self] result in
             switch result {
             case .success(let mPeople):
                 self?.currentPeople = mPeople
@@ -247,8 +247,8 @@ extension SetProfileViewController {
                                                   isActive: true) {[weak self] result in
                                                     switch result {
                                                     case .success():
-                                                        self?.currentPeople?.advert = name
-                                                        self?.currentPeople?.userName = advert
+                                                        self?.currentPeople?.advert = advert
+                                                        self?.currentPeople?.userName = name
                                                         self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
                                                         self?.tabBarController?.selectedIndex = 1
                                                         

@@ -80,7 +80,7 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                         FirestoreService.shared.saveBaseProfile(id: user.uid,
                                                                 email: user.email!) { result in
                                                                     //check mPeople data for next VC
-                                                                    FirestoreService.shared.getUserData(user: user) { result in
+                            FirestoreService.shared.getUserData(userID: user.uid) { result in
                                                                         switch result {
                                                                         
                                                                         case .success(let mPeople):

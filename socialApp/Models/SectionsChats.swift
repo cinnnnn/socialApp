@@ -10,12 +10,12 @@ import Foundation
 
 
 enum SectionsChats: Int, CaseIterable {
-    case waitingChats
+    case requestChats
     case activeChats
     
     func description(count: Int) -> String {
         switch self {
-        case .waitingChats:
+        case .requestChats:
             return "Ожидают ответа \(count) "
         case .activeChats:
             return "Активных чатов \(count)"

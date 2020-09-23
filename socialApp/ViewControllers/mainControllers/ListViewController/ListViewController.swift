@@ -15,7 +15,7 @@ class ListViewController: UIViewController {
     
     var collectionView: UICollectionView!
     let activeChats: [MChat] = []
-    let waitingChats: [MChat] = []
+    var requestChats: [MChat] = []
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
     var currentUser: User!
     
@@ -28,13 +28,21 @@ class ListViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        ListenerService.shared.removeRequestChatsListener()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
         setupNavigationController()
         setupCollectionView()
         setupDataSource()
-        reloadData(searchText: nil)
+        setupListeners()
+    }
+    
+    private func setupListeners() {
+        ListenerService.shared.addRequestChatsListener(delegate: self)
     }
     
     private func setupCollectionView() {
@@ -47,7 +55,7 @@ class ListViewController: UIViewController {
         view.addSubview(collectionView)
         
         collectionView.register(ActiveChatsCell.self, forCellWithReuseIdentifier: ActiveChatsCell.reuseID)
-        collectionView.register(WaitingChatsCell.self, forCellWithReuseIdentifier: WaitingChatsCell.reuseID)
+        collectionView.register(RequestChatsCell.self, forCellWithReuseIdentifier: RequestChatsCell.reuseID)
         collectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeader.reuseId)
     }
     
@@ -82,25 +90,15 @@ extension ListViewController {
     private func setupCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             
-        //    guard let section = SectionsChats(rawValue: sectionIndex) else { fatalError("Unknown section")}
+            guard let section = SectionsChats(rawValue: sectionIndex) else { fatalError("Unknown section")}
             
-//            switch section {
-//            case .activeChats:
-//                return self.createActiveChatsLayout()
-//            case .waitingChats:
-//                return self.createWaitingChatsLayout()
-//            }
-            
-            switch sectionIndex {
-            case 1:
+            switch section {
+            case .activeChats:
                 return self.createActiveChatsLayout()
-    
-            default:
-               return  self.createWaitingChatsLayout()
+            case .requestChats:
+                return self.createWaitingChatsLayout()
             }
-            
         }
-        
         return layout
     }
     
@@ -111,8 +109,8 @@ extension ListViewController {
                                                  heightDimension: .estimated(1))
         
         let item = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sectionSize,
-                                                                        elementKind: UICollectionView.elementKindSectionHeader,
-                                                                        alignment: .top)
+                                                               elementKind: UICollectionView.elementKindSectionHeader,
+                                                               alignment: .top)
         
         return item
     }
@@ -140,12 +138,10 @@ extension ListViewController {
         
         
         let section = NSCollectionLayoutSection(group: group)
-        
         let sectionHeader = createSectionHeader()
-        section.boundarySupplementaryItems = [sectionHeader]
         
+        section.boundarySupplementaryItems = [sectionHeader]
         section.interGroupSpacing = 16
-
         section.contentInsets = NSDirectionalEdgeInsets(top: 11,
                                                         leading: 8,
                                                         bottom: 0,
@@ -179,10 +175,9 @@ extension ListViewController {
                                                       trailing: 0)
         
         let section = NSCollectionLayoutSection(group: group)
-        
         let sectionHeader = createSectionHeader()
-        section.boundarySupplementaryItems = [sectionHeader]
         
+        section.boundarySupplementaryItems = [sectionHeader]
         section.orthogonalScrollingBehavior = .groupPaging
         section.interGroupSpacing = 25
         section.contentInsets = NSDirectionalEdgeInsets(top: 11,
@@ -215,16 +210,14 @@ extension ListViewController {
                 
                 switch section {
                 case .activeChats:
-                    
                     return self?.configure(cellType: ActiveChatsCell.self, value: chat, indexPath: indexPath)
                     
-                case .waitingChats:
-                    
-                    return self?.configure(cellType: WaitingChatsCell.self, value: chat, indexPath: indexPath)
+                case .requestChats:
+                    return self?.configure(cellType: RequestChatsCell.self, value: chat, indexPath: indexPath)
                 }
         })
         
-            //MARK: - supplementaryViewProvider
+        //MARK: - supplementaryViewProvider
         dataSource?.supplementaryViewProvider = {
             collectionView, kind, indexPath in
             guard let reuseSectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeader.reuseId, for: indexPath) as? SectionHeader else { fatalError("Can't create new sectionHeader") }
@@ -250,13 +243,25 @@ extension ListViewController {
         }
         
         var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
-        snapshot.appendSections([.waitingChats, .activeChats])
+        snapshot.appendSections([.requestChats, .activeChats])
         snapshot.appendItems(filtredChats, toSection: .activeChats)
-        snapshot.appendItems(waitingChats, toSection: .waitingChats)
+        snapshot.appendItems(requestChats, toSection: .requestChats)
         
         dataSource?.apply(snapshot, animatingDifferences: true)
-        
     }
+}
+
+//MARK: RequestChatListenerDelegate
+extension ListViewController: RequestChatListenerDelegate {
+    func reloadRequestData() {
+        
+        var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
+        snapshot.appendSections([.requestChats, .activeChats])
+        snapshot.appendItems(activeChats, toSection: .activeChats)
+        snapshot.appendItems(requestChats, toSection: .requestChats)
+        
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    } 
 }
 
 //MARK: -UISearchBarDelegate

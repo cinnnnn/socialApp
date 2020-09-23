@@ -121,7 +121,7 @@ extension LoginViewController {
                                         switch result {
                                         case .success( let user):
                                             //if correct login user, than close LoginVC and check setProfile info
-                                            FirestoreService.shared.getUserData(user: user) { result in
+                                            FirestoreService.shared.getUserData(userID: user.uid) { result in
                                                 switch result {
                                                 
                                                 case .success(let mPeople):

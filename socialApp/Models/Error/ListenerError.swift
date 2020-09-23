@@ -11,6 +11,8 @@ import Foundation
 enum ListenerError {
     case snapshotNotExist
     case peopleCollectionNotExist
+    case chatsCollectionNotExist
+    case cantDeleteElementInCollection
 }
 
 extension ListenerError: LocalizedError {
@@ -21,6 +23,10 @@ extension ListenerError: LocalizedError {
             return NSLocalizedString("Snapshot слушателя не существует", comment: "")
         case .peopleCollectionNotExist:
             return NSLocalizedString("Коллекция текущих пользователей не существует", comment: "")
+        case .chatsCollectionNotExist:
+            return NSLocalizedString("Коллекция ожидающих чатов не существует", comment: "")
+        case .cantDeleteElementInCollection:
+            return NSLocalizedString("Невозможно удалить элемент коллекции", comment: "")
         }
     }
 }

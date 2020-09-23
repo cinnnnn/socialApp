@@ -40,7 +40,11 @@ protocol PeopleListenerDelegate: class {
     var peopleNearby: [MPeople] { get set }
     func updateData()
     func reloadData()
-    
+}
+
+protocol RequestChatListenerDelegate: class {
+    var requestChats: [MChat] { get set }
+    func reloadRequestData()
 }
 
 protocol updateCurrentMPeopleDelegate {
@@ -48,6 +52,3 @@ protocol updateCurrentMPeopleDelegate {
     func updatePeople(people: MPeople?)
 }
 
-protocol CurrentMPeopleDelegate {
-    var currentPeople: MPeople? { get set }
-}

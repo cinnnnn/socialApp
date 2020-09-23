@@ -7,14 +7,24 @@
 //
 
 import UIKit
+import SDWebImage
 
-class WaitingChatsCell: UICollectionViewCell,SelfConfiguringCell {
+class RequestChatsCell: UICollectionViewCell,SelfConfiguringCell {
     static var reuseID: String = "WaitingChatsCell"
     
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
     
     func configure(with value: MChat) {
-        frendImage.image = UIImage(named: value.friendUserImageString)
+        FirestoreService.shared.getUserData(userID: value.friendId) {[weak self] result in
+            switch result {
+            
+            case .success(let people):
+                let imageURL = URL(string: people.userImage )
+                self?.frendImage.sd_setImage(with: imageURL, completed: nil)
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
     

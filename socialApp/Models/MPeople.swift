@@ -42,7 +42,6 @@ struct MPeople: Hashable, Codable {
     //for get document from Firestore
     init?(documentSnap: DocumentSnapshot){
         guard let documet = documentSnap.data()  else { return nil }
-        print("3")
         if let userName = documet["userName"] as? String { self.userName = userName } else { userName = ""}
         if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
         if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }

@@ -11,7 +11,7 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController, PeopleListenerDelegate, CurrentMPeopleDelegate {
+class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     var peopleNearby: [MPeople] = []
     var sortedPeopleNearby: [MPeople] {
@@ -71,7 +71,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, CurrentMPe
     //MARK: checkActiveAdvert
     private func checkActiveAdvert() {
         
-        FirestoreService.shared.getUserData(user: currentUser) {[weak self] result in
+        FirestoreService.shared.getUserData(userID: currentUser.uid) {[weak self] result in
             switch result {
                 
             case .success(let people):

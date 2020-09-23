@@ -126,9 +126,9 @@ class FirestoreService {
     }
     
     //MARK:  getUserData
-    func getUserData(user: User, complition: @escaping (Result<MPeople,Error>) -> Void) {
+    func getUserData(userID: String, complition: @escaping (Result<MPeople,Error>) -> Void) {
         
-        let documentReference = usersReference.document(user.uid)
+        let documentReference = usersReference.document(userID)
         documentReference.getDocument { (snapshot, error) in
             
             if let snapshot = snapshot, snapshot.exists {

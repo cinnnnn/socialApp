@@ -40,6 +40,7 @@ class SendRequestViewController: UIViewController {
         super.viewWillAppear(animated)
         
         setData()
+        registerForKeyboardNotification()
     }
     
     init(requestForPeople: MPeople, from: MPeople) {
@@ -60,13 +61,33 @@ class SendRequestViewController: UIViewController {
         
         nameLabel.text = requestToPeople.userName
         messageTextView.text = requestToPeople.advert
-        
     }
+    
     //MARK:  setupAction
     private func setupAction() {
         
         if let sendButton = unswerTextField.rightView as? UIButton {
             sendButton.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
+        }
+    }
+    
+    //MARK:  configure()
+    private func configure(){
+        
+        container.backgroundColor = .myBackgroundColor()
+        container.layer.cornerRadius = 30
+    }
+    
+    @objc func updateView(notification: Notification) {
+        let userInfo = notification.userInfo
+        let keyboardSize = (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue  //размер клавиатуры
+        
+        if notification.name == UIResponder.keyboardWillHideNotification {
+            view.frame.origin.y = 0
+        }
+        
+        if notification.name == UIResponder.keyboardWillShowNotification {
+            view.frame.origin.y = -keyboardSize.height
         }
     }
     
@@ -79,6 +100,7 @@ class SendRequestViewController: UIViewController {
             switch result {
             
             case .success(_):
+                self?.removeKeyboadNotification()
                 self?.dismiss(animated: true, completion: nil)
             case .failure(let error):
                 self?.unswerTextField.rightView?.isHidden = false
@@ -86,12 +108,27 @@ class SendRequestViewController: UIViewController {
             }
         }
     }
-    
-    //MARK: - configure()
-    private func configure(){
+}
+
+//MARK: KeyboardNotification
+extension SendRequestViewController {
+
+    func registerForKeyboardNotification() {
         
-        container.backgroundColor = .myBackgroundColor()
-        container.layer.cornerRadius = 30
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateView(notification:)),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateView(notification: )),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    
+    func removeKeyboadNotification() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 }
 
@@ -102,7 +139,7 @@ extension SendRequestViewController {
     }
 }
 
-//MARK setupConstraints
+//MARK: setupConstraints
 extension SendRequestViewController {
     private func setupConstraints() {
         

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 struct MChat: Hashable, Codable {
     var friendUserName: String
@@ -15,6 +16,43 @@ struct MChat: Hashable, Codable {
     var friendId: String
     var date: Date
     
+    init(friendUserName: String,
+         friendUserImageString: String,
+         lastMessage: String,
+         friendId:String,
+         date:Date) {
+        self.friendUserName = friendUserName
+        self.friendUserImageString = friendUserImageString
+        self.lastMessage = lastMessage
+        self.friendId = friendId
+        self.date = date
+    }
+    
+    //for init with ListenerService
+    init?(documentSnap: QueryDocumentSnapshot){
+          let documet = documentSnap.data()
+          
+        if let friendUserName = documet["friendUserName"] as? String {
+            self.friendUserName = friendUserName
+        } else { return nil }
+        
+        if let friendUserImageString = documet["friendUserImageString"] as? String {
+            self.friendUserImageString = friendUserImageString
+        } else { return nil }
+        
+        if let lastMessage =  documet["lastMessage"] as? String {
+            self.lastMessage = lastMessage
+        } else { return nil }
+        
+        if let friendId = documet["friendId"] as? String {
+            self.friendId = friendId
+        } else { return nil }
+        
+        if let date = documet["date"] as? Timestamp {
+            self.date = date.dateValue()
+        } else { return nil }
+
+      }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(friendId)

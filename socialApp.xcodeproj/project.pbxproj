@@ -27,10 +27,11 @@
 		FB21A1B824E595CF000A2E91 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1B724E595CF000A2E91 /* Protocols.swift */; };
 		FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BA24E59705000A2E91 /* MChat.swift */; };
 		FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BC24E59A31000A2E91 /* GradientView.swift */; };
-		FB21A1BF24E5ADE5000A2E91 /* WaitingChatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BE24E5ADE5000A2E91 /* WaitingChatsCell.swift */; };
+		FB21A1BF24E5ADE5000A2E91 /* RequestChatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BE24E5ADE5000A2E91 /* RequestChatsCell.swift */; };
 		FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */; };
 		FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB39F2D724F66EFE001B9C4F /* MPeople.swift */; };
 		FB61A7632514F05C005DCC78 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A7622514F05C005DCC78 /* ProfileImageView.swift */; };
+		FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A76B251BA06D005DCC78 /* ChatError.swift */; };
 		FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B53D24FAB785002761ED /* UIViewExtension.swift */; };
 		FB61B54224FD3DDE002761ED /* GetRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54124FD3DDD002761ED /* GetRequestViewController.swift */; };
 		FB61B54724FE7F23002761ED /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54624FE7F22002761ED /* AuthService.swift */; };
@@ -90,10 +91,11 @@
 		FB21A1B724E595CF000A2E91 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		FB21A1BA24E59705000A2E91 /* MChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MChat.swift; sourceTree = "<group>"; };
 		FB21A1BC24E59A31000A2E91 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
-		FB21A1BE24E5ADE5000A2E91 /* WaitingChatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingChatsCell.swift; sourceTree = "<group>"; };
+		FB21A1BE24E5ADE5000A2E91 /* RequestChatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestChatsCell.swift; sourceTree = "<group>"; };
 		FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
 		FB39F2D724F66EFE001B9C4F /* MPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPeople.swift; sourceTree = "<group>"; };
 		FB61A7622514F05C005DCC78 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
+		FB61A76B251BA06D005DCC78 /* ChatError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatError.swift; sourceTree = "<group>"; };
 		FB61B53D24FAB785002761ED /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		FB61B54124FD3DDD002761ED /* GetRequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRequestViewController.swift; sourceTree = "<group>"; };
 		FB61B54624FE7F22002761ED /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
@@ -177,7 +179,6 @@
 		FB18217924B225C500FFFC87 /* mainControllers */ = {
 			isa = PBXGroup;
 			children = (
-				FB39F2D624F56E8E001B9C4F /* Header */,
 				FB18217A24B2261F00FFFC87 /* MainTabBarController.swift */,
 				FB1062DB24B09F6C0012C4D4 /* SetProfileViewController.swift */,
 				FB09107D24FA73B2006B72D5 /* SendRequestViewController.swift */,
@@ -191,8 +192,9 @@
 		FB21A1B424E55F53000A2E91 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */,
 				FB21A1B524E55F6C000A2E91 /* ActiveChatsCell.swift */,
-				FB21A1BE24E5ADE5000A2E91 /* WaitingChatsCell.swift */,
+				FB21A1BE24E5ADE5000A2E91 /* RequestChatsCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -228,14 +230,6 @@
 				FB2346E424F69B1000FEE1EF /* Cell */,
 			);
 			path = PeopleViewController;
-			sourceTree = "<group>";
-		};
-		FB39F2D624F56E8E001B9C4F /* Header */ = {
-			isa = PBXGroup;
-			children = (
-				FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */,
-			);
-			path = Header;
 			sourceTree = "<group>";
 		};
 		FB61B54524FE6921002761ED /* UIkit */ = {
@@ -283,6 +277,7 @@
 				FBF293DA24FFBA9F00F7B5F1 /* AuthError.swift */,
 				FBB3B266250D00CF00440632 /* StorageError.swift */,
 				FBF293DE250668CB00F7B5F1 /* UserError.swift */,
+				FB61A76B251BA06D005DCC78 /* ChatError.swift */,
 				FBB4F35E2512737400ACFE90 /* ListenerError.swift */,
 			);
 			path = Error;
@@ -480,6 +475,7 @@
 				FBB3B25F2509011200440632 /* StorageService.swift in Sources */,
 				FBB4F35F2512737400ACFE90 /* ListenerError.swift in Sources */,
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
+				FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */,
 				FBB3B269250F82B800440632 /* ListenerService.swift in Sources */,
 				FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,
@@ -514,7 +510,7 @@
 				FB1062DA24AE69250012C4D4 /* LoginViewController.swift in Sources */,
 				FBF2927F2512828C0090BA9E /* AdvertInactiveView.swift in Sources */,
 				FB61B54724FE7F23002761ED /* AuthService.swift in Sources */,
-				FB21A1BF24E5ADE5000A2E91 /* WaitingChatsCell.swift in Sources */,
+				FB21A1BF24E5ADE5000A2E91 /* RequestChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
 				FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */,
 				FB61B54224FD3DDE002761ED /* GetRequestViewController.swift in Sources */,
