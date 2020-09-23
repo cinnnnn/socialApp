@@ -11,9 +11,9 @@ import FirebaseAuth
 
 class MainTabBarController: UITabBarController {
     
-    private var currentPeople: MPeople?
+    var currentPeople: MPeople?
     var currentUser: User!
-
+    var peopleVC: UIViewController?
     
     init(currentUser: User) {
         self.currentUser = currentUser
@@ -39,8 +39,10 @@ class MainTabBarController: UITabBarController {
     private func setupControllers(){
         
         let listVC = ListViewController(currentUser: currentUser )
-        let peopleVC = PeopleViewController(currentUser: currentUser)
         let setProfileVC = SetProfileViewController(currentUser: currentUser)
+        setProfileVC.delegateCurrentPeople = self //for update current people without request to Firestore
+
+        peopleVC = PeopleViewController(currentUser: currentUser)
         
         guard let listImage = UIImage(systemName: "bubble.left.and.bubble.right.fill") else { return }
         guard let peopleImage = UIImage(systemName: "person.2.fill") else { return }
@@ -49,9 +51,8 @@ class MainTabBarController: UITabBarController {
         
         viewControllers = [
             generateNavigationController(rootViewController: setProfileVC, image: listImage, title: currentUser.email ?? "Netushki"),
-            generateNavigationController(rootViewController: peopleVC, image: peopleImage, title: "Объявления"),
+            generateNavigationController(rootViewController: peopleVC!, image: peopleImage, title: "Объявления"),
             generateNavigationController(rootViewController: listVC, image: listImage, title: "Чаты")
-            
         ]
     }
     
@@ -66,5 +67,16 @@ class MainTabBarController: UITabBarController {
         
         return navController
     }
+    
+}
+
+extension MainTabBarController:updateCurrentMPeopleDelegate {
+    
+    func updatePeople(people: MPeople?) {
+        guard let vc = peopleVC as? PeopleViewController else { fatalError("People VC not init")}
+        vc.currentPeople = people
+        currentPeople = people
+    }
+    
     
 }

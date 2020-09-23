@@ -145,8 +145,27 @@ class FirestoreService {
         }
     }
     
-    func saveChatRequest(user: User, for frend:MPeople, text:String) {
+    func sendChatRequest(fromUser: MPeople, forFrend: MPeople, text:String?, complition: @escaping(Result<MMessage,Error>)->Void) {
         
+        let textToSend = text ?? ""
+        let collectionRef = db.collection(["users", forFrend.id, "chatRequest"].joined(separator: "/"))
+        let messagesRef = collectionRef.document(fromUser.id).collection("messages")
+        let messageRef = messagesRef.document("requestMessage")
+        
+        let message = MMessage(user: fromUser, content: textToSend, id: messagesRef.path)
+        let chatMessage = MChat(friendUserName: fromUser.userName,
+                                friendUserImageString: fromUser.userImage,
+                                lastMessage: message.content,
+                                friendId: fromUser.id,
+                                date: Date())
+        
+        do { //add chat request document for reciever user
+            try collectionRef.document(fromUser.id).setData(from: chatMessage, merge: true)
+            do {//add message to collection messages in ChatRequest
+                try messageRef.setData(from: message)
+                complition(.success(message))
+            } catch {  complition(.failure(error)) }
+        } catch { complition(.failure(error)) }
     }
 }
 

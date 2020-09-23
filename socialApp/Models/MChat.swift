@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MChat: Hashable, Decodable {
+struct MChat: Hashable, Codable {
     var friendUserName: String
     var friendUserImageString: String
     var lastMessage: String

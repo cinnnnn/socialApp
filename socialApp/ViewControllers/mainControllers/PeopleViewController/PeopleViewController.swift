@@ -11,7 +11,7 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController, PeopleListenerDelegate {
+class PeopleViewController: UIViewController, PeopleListenerDelegate, CurrentMPeopleDelegate {
     
     var peopleNearby: [MPeople] = []
     var sortedPeopleNearby: [MPeople] {
@@ -23,6 +23,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     var currentUser: User!
+    var currentPeople: MPeople?
     
     init(currentUser: User) {
         self.currentUser = currentUser
@@ -206,9 +207,9 @@ extension PeopleViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let user = dataSource?.itemIdentifier(for: indexPath) else { return }
-        let sendRequestVC = SendRequestViewController(for: user)
+        guard let currentPeople = currentPeople else { fatalError("Current people is nil") }
+        let sendRequestVC = SendRequestViewController(requestForPeople: user, from: currentPeople)
         present(sendRequestVC, animated: true, completion: nil)
-        
     }
     
    
@@ -224,7 +225,6 @@ extension PeopleViewController: PeopleCellDelegate {
         guard let index = indexUser else { fatalError("Unknown index of MPeople")}
         peopleNearby[index] = user
     }
-    
 }
 
 extension PeopleViewController {

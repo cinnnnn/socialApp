@@ -42,3 +42,12 @@ protocol PeopleListenerDelegate: class {
     func reloadData()
     
 }
+
+protocol updateCurrentMPeopleDelegate {
+    var currentPeople: MPeople? { get set }
+    func updatePeople(people: MPeople?)
+}
+
+protocol CurrentMPeopleDelegate {
+    var currentPeople: MPeople? { get set }
+}

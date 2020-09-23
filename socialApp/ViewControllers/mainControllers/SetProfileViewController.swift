@@ -42,7 +42,8 @@ class SetProfileViewController: UIViewController {
                             title: "Начнем!",
                             titleColor: .systemBackground)
     
-    var delegate: AuthNavigationDelegate?
+    var delegateNavigation: AuthNavigationDelegate?
+    var delegateCurrentPeople: updateCurrentMPeopleDelegate?
     
     private var currentPeople: MPeople?
     private var currentUser: User?
@@ -100,10 +101,10 @@ extension SetProfileViewController {
         
         guard let user = currentUser else { return }
         FirestoreService.shared.getUserData(user: user) {[weak self] result in
-            print("1")
             switch result {
             case .success(let mPeople):
                 self?.currentPeople = mPeople
+                self?.delegateCurrentPeople?.updatePeople(people: mPeople)
                 self?.setPeopleData()
             case .failure(let error):
                 fatalError(error.localizedDescription)
@@ -170,16 +171,20 @@ extension SetProfileViewController {
                                                 switch result {
                                                 case .success():
                                                     self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
+                                                    self?.currentPeople?.sex = Sex.woman.rawValue
+                                                    self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
             }
         default:
             FirestoreService.shared.saveGender(user: user,
-                                               gender: Sex.woman.rawValue) {[weak self] result in
+                                               gender: Sex.man.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
-                                                    self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
+                                                    self?.sexButton.setTitle(Sex.man.rawValue, for: .normal)
+                                                    self?.currentPeople?.sex = Sex.man.rawValue
+                                                    self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -197,6 +202,8 @@ extension SetProfileViewController {
                                                 switch result {
                                                 case .success():
                                                     self?.wantButton.setTitle(Want.woman.rawValue, for: .normal)
+                                                    self?.currentPeople?.search = Want.woman.rawValue
+                                                    self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -208,6 +215,8 @@ extension SetProfileViewController {
                                                 switch result {
                                                 case .success():
                                                     self?.wantButton.setTitle(Want.man.rawValue, for: .normal)
+                                                    self?.currentPeople?.search = Want.man.rawValue
+                                                    self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -229,13 +238,20 @@ extension SetProfileViewController {
     //MARK:  goButtonPressed
     @objc func goButtonPressed() {
         guard let user = currentUser else { return }
+        let name = nameTextField.text ?? ""
+        //MARK: NEED ADD VALIDATE TO TEXT ADVERT
+        let advert = advertTextView.text ?? ""
         FirestoreService.shared.saveAdvertAndName(user: user,
-                                                  userName: nameTextField.text ?? "",
-                                                  advert: advertTextView.text,
+                                                  userName: name,
+                                                  advert: advert,
                                                   isActive: true) {[weak self] result in
                                                     switch result {
                                                     case .success():
+                                                        self?.currentPeople?.advert = name
+                                                        self?.currentPeople?.userName = advert
+                                                        self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
                                                         self?.tabBarController?.selectedIndex = 1
+                                                        
                                                     case .failure(let error):
                                                         fatalError(error.localizedDescription)
                                                     }
@@ -335,7 +351,6 @@ extension SetProfileViewController:UITextViewDelegate {
                 textView.resignFirstResponder()
                 return false
             }
-            
         }
         
         let newLine = (textView.text as NSString).replacingCharacters(in: range, with: text)
@@ -359,10 +374,11 @@ extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigatio
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
         profileImage.profileImage.image = image
         guard let user = currentUser else { fatalError("Cant get current user") }
-        FirestoreService.shared.saveAvatar(image: image, user: user) { result in
+        FirestoreService.shared.saveAvatar(image: image, user: user) {[weak self] result in
             switch result {
-            case .success(_):
-                return
+            case .success(let userImageString):
+                self?.currentPeople?.userImage = userImageString
+                self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

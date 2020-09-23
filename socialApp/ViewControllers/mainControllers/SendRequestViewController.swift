@@ -25,7 +25,8 @@ class SendRequestViewController: UIViewController {
                                            withButton: true,
                                            buttonText: "Отправить",
                                            placeHoledText: "Сообщение")
-    let people: MPeople!
+    let requestToPeople: MPeople!
+    let currentPeople: MPeople!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +42,9 @@ class SendRequestViewController: UIViewController {
         setData()
     }
     
-    init(for people: MPeople) {
-        self.people = people
+    init(requestForPeople: MPeople, from: MPeople) {
+        self.requestToPeople = requestForPeople
+        self.currentPeople = from
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -53,11 +55,11 @@ class SendRequestViewController: UIViewController {
     //MARK:  setData
     private func setData() {
         
-        let imageURL = URL(string: people.userImage)
+        let imageURL = URL(string: requestToPeople.userImage)
         photo.sd_setImage(with: imageURL, completed: nil)
         
-        nameLabel.text = people.userName
-        messageTextView.text = people.advert
+        nameLabel.text = requestToPeople.userName
+        messageTextView.text = requestToPeople.advert
         
     }
     //MARK:  setupAction
@@ -69,10 +71,21 @@ class SendRequestViewController: UIViewController {
     }
     
     @objc func sendMessage() {
-        print("Olololo")
+        let text = unswerTextField.text ?? ""
+        unswerTextField.rightView?.isHidden = true
+        FirestoreService.shared.sendChatRequest(fromUser: currentPeople,
+                                                forFrend: requestToPeople,
+                                                text: text) {[weak self] result in
+            switch result {
+            
+            case .success(_):
+                self?.dismiss(animated: true, completion: nil)
+            case .failure(let error):
+                self?.unswerTextField.rightView?.isHidden = false
+                fatalError(error.localizedDescription)
+            }
+        }
     }
-    
-    
     
     //MARK: - configure()
     private func configure(){
@@ -82,7 +95,7 @@ class SendRequestViewController: UIViewController {
     }
 }
 
-//MARK touchBegan
+//MARK: touchBegan
 extension SendRequestViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
