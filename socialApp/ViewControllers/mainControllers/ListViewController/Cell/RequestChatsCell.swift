@@ -15,16 +15,9 @@ class RequestChatsCell: UICollectionViewCell,SelfConfiguringCell {
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
     
     func configure(with value: MChat) {
-        FirestoreService.shared.getUserData(userID: value.friendId) {[weak self] result in
-            switch result {
-            
-            case .success(let people):
-                let imageURL = URL(string: people.userImage )
-                self?.frendImage.sd_setImage(with: imageURL, completed: nil)
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
-        }
+       
+        let imageURL = URL(string: value.friendUserImageString )
+        frendImage.sd_setImage(with: imageURL, completed: nil)
     }
     
     

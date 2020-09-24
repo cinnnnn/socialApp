@@ -38,6 +38,7 @@ class ListViewController: UIViewController {
         setupNavigationController()
         setupCollectionView()
         setupDataSource()
+        reloadSectionHedear()
         setupListeners()
     }
     
@@ -45,12 +46,15 @@ class ListViewController: UIViewController {
         ListenerService.shared.addRequestChatsListener(delegate: self)
     }
     
+    
+    //MARK:  setupCollectionView
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.bounds,
                                           collectionViewLayout: setupCompositionalLayout())
         
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .systemBackground
+        collectionView.delegate = self
         
         view.addSubview(collectionView)
         
@@ -60,7 +64,7 @@ class ListViewController: UIViewController {
     }
     
 
-    //MARK: - setupNavigationController
+    //MARK:  setupNavigationController
     private func setupNavigationController(){
         
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -216,23 +220,26 @@ extension ListViewController {
                     return self?.configure(cellType: RequestChatsCell.self, value: chat, indexPath: indexPath)
                 }
         })
-        
-        //MARK: - supplementaryViewProvider
-        dataSource?.supplementaryViewProvider = {
-            collectionView, kind, indexPath in
-            guard let reuseSectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeader.reuseId, for: indexPath) as? SectionHeader else { fatalError("Can't create new sectionHeader") }
-            
-            guard let section = SectionsChats(rawValue: indexPath.section) else { fatalError("Unknown section")}
-            
-            guard let itemsCount = self.dataSource?.snapshot().numberOfItems(inSection: section) else { fatalError("Unknow items count in section")}
-            
-            reuseSectionHeader.configure(text: section.description(count: itemsCount),
-                                         font: UIFont.boldSystemFont(ofSize: 11),
-                                         textColor: UIColor.myHeaderColor())
-           
-            return reuseSectionHeader
-        }
     }
+        //MARK: - supplementaryViewProvider
+        private func reloadSectionHedear() {
+            dataSource?.supplementaryViewProvider = {
+                collectionView, kind, indexPath in
+                guard let reuseSectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeader.reuseId, for: indexPath) as? SectionHeader else { fatalError("Can't create new sectionHeader") }
+                
+                guard let section = SectionsChats(rawValue: indexPath.section) else { fatalError("Unknown section")}
+                
+                guard let itemsCount = self.dataSource?.snapshot().numberOfItems(inSection: section) else { fatalError("Unknow items count in section")}
+                
+                reuseSectionHeader.configure(text: section.description(count: itemsCount),
+                                             font: UIFont.boldSystemFont(ofSize: 11),
+                                             textColor: UIColor.myHeaderColor())
+               
+                return reuseSectionHeader
+            }
+            
+        }
+    
     
     
     //MARK: - reloadData
@@ -260,11 +267,14 @@ extension ListViewController: RequestChatListenerDelegate {
         snapshot.appendItems(activeChats, toSection: .activeChats)
         snapshot.appendItems(requestChats, toSection: .requestChats)
         
+        reloadSectionHedear()
         dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        
     } 
 }
 
-//MARK: -UISearchBarDelegate
+//MARK: UISearchBarDelegate
 extension ListViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -272,7 +282,23 @@ extension ListViewController: UISearchBarDelegate {
     }
 }
 
-
+//MARK: CollectionViewDelegate
+extension ListViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let section = SectionsChats(rawValue: indexPath.section) else { fatalError("Unknow section index")}
+        
+        switch section {
+        case .requestChats:
+            guard let item = dataSource?.itemIdentifier(for: indexPath) else { fatalError(DataSourceError.unknownChatIdentificator.localizedDescription)}
+            let vc = GetRequestViewController(chatRequest: item, currentUser: currentUser)
+            present(vc, animated: true, completion: nil)
+        case .activeChats:
+            break
+        
+        }
+    }
+}
 //MARK:- SwiftUI
 
 struct ListViewControllerProvider: PreviewProvider {

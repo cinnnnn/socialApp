@@ -7,20 +7,21 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 struct MMessage: Hashable, Codable {
     var content: String
     var senderUserName: String
     var senderID: String
     var id: String?
-    var date: Date
+    var date: Timestamp
     
     init(user: MPeople, content: String, id: String? = nil) {
         self.content = content
         senderUserName = user.userName
         senderID = user.id
         self.id = id
-        date = Date()
+        date = Timestamp(date: Date())
     }
     
     enum CodingKeys: String, CodingKey {

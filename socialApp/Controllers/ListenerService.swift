@@ -13,7 +13,7 @@ import FirebaseAuth
 class ListenerService {
     
     static let shared = ListenerService()
-
+    
     private var currentUser: User? {
         Auth.auth().currentUser
     }
@@ -45,7 +45,7 @@ class ListenerService {
                 guard let user = MPeople(documentSnap: changes.document) else { fatalError(UserError.getUserData.localizedDescription) }
                 guard let people = self?.peopleDelegate?.peopleNearby else { fatalError(ListenerError.peopleCollectionNotExist.localizedDescription) }
                 switch changes.type {
-                    
+                
                 case .added:
                     guard !people.contains(user) else { return }
                     guard user.id != self?.currentUser?.uid else { return }
@@ -89,28 +89,42 @@ class ListenerService {
             
             
             snapshot.documentChanges.forEach { [weak self] changes in
-                guard let chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
-                print(chat)
-                guard let chats = self?.requestChatDelegate?.requestChats else { fatalError(ListenerError.chatsCollectionNotExist.localizedDescription) }
+                guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
+            
+                guard let chats = self?.requestChatDelegate?.requestChats else {
+                    fatalError(ListenerError.chatsCollectionNotExist.localizedDescription) }
                 
-                switch changes.type {
-                
-                case .added:
-                    self?.requestChatDelegate?.requestChats.append(chat)
-                    self?.requestChatDelegate?.reloadRequestData()
-                case .modified:
-                    if let index = chats.firstIndex(of: chat) {
-                        self?.requestChatDelegate?.requestChats[index] = chat
-                    } else {
-                        self?.requestChatDelegate?.requestChats.append(chat)
-                    }
-                    self?.requestChatDelegate?.reloadRequestData()
-                case .removed:
-                    if let index = chats.firstIndex(of: chat) {
-                        self?.requestChatDelegate?.requestChats.remove(at: index)
-                        self?.requestChatDelegate?.reloadRequestData()
-                    } else {
-                        fatalError(ListenerError.cantDeleteElementInCollection.localizedDescription)
+                //get actual information for user in chat
+                FirestoreService.shared.getUserData(userID: chat.friendId) { result in
+                    switch result {
+                    
+                    case .success(let people):
+                        chat.friendUserImageString = people.userImage
+                        chat.friendUserName = people.userName
+                        
+                        switch changes.type {
+                        
+                        case .added:
+                            self?.requestChatDelegate?.requestChats.append(chat)
+                            self?.requestChatDelegate?.reloadRequestData()
+                        case .modified:
+                            if let index = chats.firstIndex(of: chat) {
+                                self?.requestChatDelegate?.requestChats[index] = chat
+                            } else {
+                                self?.requestChatDelegate?.requestChats.append(chat)
+                            }
+                            self?.requestChatDelegate?.reloadRequestData()
+                        case .removed:
+                            if let index = chats.firstIndex(of: chat) {
+                                self?.requestChatDelegate?.requestChats.remove(at: index)
+                                self?.requestChatDelegate?.reloadRequestData()
+                            } else {
+                                fatalError(ListenerError.cantDeleteElementInCollection.localizedDescription)
+                            }
+                        }
+                    //failure get people info
+                    case .failure(let error):
+                        fatalError(error.localizedDescription)
                     }
                 }
             }
