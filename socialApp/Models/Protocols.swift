@@ -47,6 +47,12 @@ protocol RequestChatListenerDelegate: class {
     func reloadRequestData()
 }
 
+protocol ActiveChatListenerDelegate: class {
+    var activeChats: [MChat] { get set }
+    func reloadActiveData()
+    func updateActiveData()
+}
+
 protocol updateCurrentMPeopleDelegate {
     var currentPeople: MPeople? { get set }
     func updatePeople(people: MPeople?)

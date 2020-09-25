@@ -14,7 +14,7 @@ import FirebaseAuth
 class ListViewController: UIViewController {
     
     var collectionView: UICollectionView!
-    let activeChats: [MChat] = []
+    var activeChats: [MChat] = []
     var requestChats: [MChat] = []
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
     var currentUser: User!
@@ -30,6 +30,7 @@ class ListViewController: UIViewController {
     
     deinit {
         ListenerService.shared.removeRequestChatsListener()
+        ListenerService.shared.removeActiveChatsListener()
     }
     
     override func viewDidLoad() {
@@ -44,6 +45,7 @@ class ListViewController: UIViewController {
     
     private func setupListeners() {
         ListenerService.shared.addRequestChatsListener(delegate: self)
+        ListenerService.shared.addActiveChatsListener(delegate: self)
     }
     
     
@@ -259,7 +261,7 @@ extension ListViewController {
 }
 
 //MARK: RequestChatListenerDelegate
-extension ListViewController: RequestChatListenerDelegate {
+extension ListViewController: RequestChatListenerDelegate, ActiveChatListenerDelegate {
     func reloadRequestData() {
         
         var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
@@ -269,9 +271,24 @@ extension ListViewController: RequestChatListenerDelegate {
         
         reloadSectionHedear()
         dataSource?.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func reloadActiveData() {
         
+        var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
+        snapshot.appendSections([.requestChats, .activeChats])
+        snapshot.appendItems(activeChats, toSection: .activeChats)
+        snapshot.appendItems(requestChats, toSection: .requestChats)
         
-    } 
+        reloadSectionHedear()
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
+    
+    func updateActiveData() {
+        guard var snapshot = dataSource?.snapshot() else { return }
+        snapshot.appendItems(activeChats, toSection: .activeChats)
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
 }
 
 //MARK: UISearchBarDelegate
