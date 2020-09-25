@@ -43,7 +43,7 @@ class SetProfileViewController: UIViewController {
                             titleColor: .systemBackground)
     
     var delegateNavigation: AuthNavigationDelegate?
-    var delegateCurrentPeople: updateCurrentMPeopleDelegate?
+    var delegateCurrentPeople: UpdateCurrentMPeopleDelegate?
     
     private var currentPeople: MPeople?
     private var currentUser: User?
@@ -124,7 +124,7 @@ extension SetProfileViewController {
             profileImage.profileImage.sd_setImage(with: imageURL, completed: nil)
         }
         
-        nameTextField.text = people.userName
+        nameTextField.text = people.displayName
         advertTextView.text = people.advert
         advertTextView.textColor = .label
         
@@ -248,7 +248,7 @@ extension SetProfileViewController {
                                                     switch result {
                                                     case .success():
                                                         self?.currentPeople?.advert = advert
-                                                        self?.currentPeople?.userName = name
+                                                        self?.currentPeople?.displayName = name
                                                         self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
                                                         self?.tabBarController?.selectedIndex = 1
                                                         

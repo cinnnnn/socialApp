@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
 
 // configure cell of collectionView
 
@@ -53,8 +54,13 @@ protocol ActiveChatListenerDelegate: class {
     func updateActiveData()
 }
 
-protocol updateCurrentMPeopleDelegate {
+protocol UpdateCurrentMPeopleDelegate {
     var currentPeople: MPeople? { get set }
     func updatePeople(people: MPeople?)
 }
 
+protocol ReprasentationModel {
+    var reprasentation:[String : Any]{ get }
+    init?(documentSnap: DocumentSnapshot)
+    init?(documentSnap: QueryDocumentSnapshot)
+}

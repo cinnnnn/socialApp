@@ -70,15 +70,8 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     //MARK: checkActiveAdvert
     private func checkActiveAdvert() {
-        
-        FirestoreService.shared.getUserData(userID: currentUser.uid) {[weak self] result in
-            switch result {
-                
-            case .success(let people):
-                self?.inactiveView?.isHidden = people.isActive
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
+        if let state = currentPeople?.isActive {
+            inactiveView?.isHidden = state
         }
     }
     
@@ -219,7 +212,7 @@ extension PeopleViewController: PeopleCellDelegate {
     func likeTupped(user: MPeople) {
         
         let indexUser = peopleNearby.firstIndex { people -> Bool in
-            people.id == user.id
+            people.senderId == user.senderId
         }
         
         guard let index = indexUser else { fatalError("Unknown index of MPeople")}

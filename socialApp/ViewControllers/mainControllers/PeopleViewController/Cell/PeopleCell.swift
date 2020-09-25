@@ -119,7 +119,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         
         
         messageBox.text = value.advert
-        nameLabel.text = value.userName == "" ? "Анон" : value.userName
+        nameLabel.text = value.displayName == "" ? "Анон" : value.displayName
         
         let imageURL = URL(string: value.userImage)
         profileImage.profileImage.sd_setImage(with: imageURL, completed: nil)

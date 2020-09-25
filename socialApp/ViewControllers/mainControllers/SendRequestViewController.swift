@@ -59,7 +59,7 @@ class SendRequestViewController: UIViewController {
         let imageURL = URL(string: requestToPeople.userImage)
         photo.sd_setImage(with: imageURL, completed: nil)
         
-        nameLabel.text = requestToPeople.userName
+        nameLabel.text = requestToPeople.displayName
         messageTextView.text = requestToPeople.advert
     }
     

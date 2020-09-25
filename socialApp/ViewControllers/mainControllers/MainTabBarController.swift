@@ -70,7 +70,7 @@ class MainTabBarController: UITabBarController {
     
 }
 
-extension MainTabBarController:updateCurrentMPeopleDelegate {
+extension MainTabBarController:UpdateCurrentMPeopleDelegate {
     
     func updatePeople(people: MPeople?) {
         guard let vc = peopleVC as? PeopleViewController else { fatalError("People VC not init")}

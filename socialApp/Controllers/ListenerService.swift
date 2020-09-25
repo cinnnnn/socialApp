@@ -57,7 +57,7 @@ class ListenerService {
                 
                 case .added:
                     guard !people.contains(user) else { return }
-                    guard user.id != self?.currentUser?.uid else { return }
+                    guard user.senderId != self?.currentUser?.uid else { return }
                     guard user.isActive == true else { return }
                     self?.peopleDelegate?.peopleNearby.append(user)
                     self?.peopleDelegate?.reloadData()
@@ -72,7 +72,7 @@ class ListenerService {
                             self?.peopleDelegate?.reloadData()
                         }
                         //if user change to active profile add him to collection
-                    } else if user.isActive == true, user.id != self?.currentUser?.uid { 
+                    } else if user.isActive == true, user.senderId != self?.currentUser?.uid {
                         self?.peopleDelegate?.peopleNearby.append(user)
                         self?.peopleDelegate?.reloadData()
                     }
@@ -109,7 +109,7 @@ class ListenerService {
                     
                     case .success(let people):
                         chat.friendUserImageString = people.userImage
-                        chat.friendUserName = people.userName
+                        chat.friendUserName = people.displayName
                         
                         switch changes.type {
                         
@@ -162,7 +162,7 @@ class ListenerService {
                     
                     case .success(let people):
                         chat.friendUserImageString = people.userImage
-                        chat.friendUserName = people.userName
+                        chat.friendUserName = people.displayName
                         
                         switch changes.type {
                         

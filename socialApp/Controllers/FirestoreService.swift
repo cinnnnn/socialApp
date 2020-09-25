@@ -36,7 +36,7 @@ class FirestoreService {
                 case .success(let url):
                     let userImageString = url.absoluteString
                     //save user to FireStore
-                    self?.usersReference.document(user.uid).setData(["userImage" : userImageString], merge: true, completion: { error in
+                    self?.usersReference.document(user.uid).setData([MPeople.CodingKeys.userImage.rawValue : userImageString], merge: true, completion: { error in
                         if let error = error {
                             complition(.failure(error))
                         } else {
@@ -56,7 +56,7 @@ class FirestoreService {
                          complition: @escaping (Result<Void, Error>) -> Void){
         
         //save base user info to cloud FireStore
-        usersReference.document(id).setData([MPeople.CodingKeys.id.rawValue : id,
+        usersReference.document(id).setData([MPeople.CodingKeys.senderId.rawValue : id,
                                              MPeople.CodingKeys.mail.rawValue: email,
                                              MPeople.CodingKeys.isActive.rawValue: false],
                                             merge: true,
@@ -113,7 +113,7 @@ class FirestoreService {
                            advert: String,
                            isActive: Bool,
                            complition: @escaping (Result<Void, Error>) -> Void){
-        usersReference.document(user.uid).setData([MPeople.CodingKeys.userName.rawValue : userName,
+        usersReference.document(user.uid).setData([MPeople.CodingKeys.displayName.rawValue : userName,
                                                    MPeople.CodingKeys.advert.rawValue: advert,
                                                    MPeople.CodingKeys.isActive.rawValue: isActive],
                                                   merge: true,
@@ -149,23 +149,22 @@ class FirestoreService {
     func sendChatRequest(fromUser: MPeople, forFrend: MPeople, text:String?, complition: @escaping(Result<MMessage,Error>)->Void) {
         
         let textToSend = text ?? ""
-        let collectionRequestRef = db.collection(["users", forFrend.id, "requestChats"].joined(separator: "/"))
-        let messagesRef = collectionRequestRef.document(fromUser.id).collection("messages")
+        let collectionRequestRef = db.collection(["users", forFrend.senderId, "requestChats"].joined(separator: "/"))
+        let messagesRef = collectionRequestRef.document(fromUser.senderId).collection("messages")
         let messageRef = messagesRef.document("requestMessage")
         
         let message = MMessage(user: fromUser, content: textToSend, id: messagesRef.path)
-        let chatMessage = MChat(friendUserName: fromUser.userName,
+        let chatMessage = MChat(friendUserName: fromUser.displayName,
                                 friendUserImageString: fromUser.userImage,
                                 lastMessage: message.content,
-                                friendId: fromUser.id,
+                                friendId: fromUser.senderId,
                                 date: Date())
         
         do { //add chat request document for reciever user
-            try collectionRequestRef.document(fromUser.id).setData(from: chatMessage, merge: true)
-            do {//add message to collection messages in ChatRequest
-                try messageRef.setData(from: message)
-                complition(.success(message))
-            } catch {  complition(.failure(error)) }
+            try collectionRequestRef.document(fromUser.senderId).setData(from: chatMessage, merge: true)
+            //add message to collection messages in ChatRequest
+            messageRef.setData(message.reprasentation)
+            complition(.success(message))
         } catch { complition(.failure(error)) }
     }
     
@@ -212,30 +211,21 @@ class FirestoreService {
             //add all message to collection "messages" in  chat document
             allMessages.forEach { message in
                 var currentMessageRef: DocumentReference
-                do {
                     //add message to current user
-                    try currentMessageRef = activeMessageRef.addDocument(from: message)
+                currentMessageRef = activeMessageRef.addDocument(data: message.reprasentation)
                     //set current path to ID message
-                    currentMessageRef.setData([MMessage.CodingKeys.id.rawValue : currentMessageRef], merge: true)
-                } catch {
-                    fatalError("Cant convert from message data to FirestoreData")
-                }
-                
-                do {
+                currentMessageRef.setData([MMessage.CodingKeys.messageId.rawValue : currentMessageRef], merge: true)
                     //add message to friend user
-                    try currentMessageRef = friendActiveMessageRef.addDocument(from: message)
+                currentMessageRef = friendActiveMessageRef.addDocument(data: message.reprasentation)
                     //set current path to ID message
-                    currentMessageRef.setData([MMessage.CodingKeys.id.rawValue : currentMessageRef], merge: true)
-                } catch {
-                    fatalError("Cant convert from message data to FirestoreData")
-                }
+                currentMessageRef.setData([MMessage.CodingKeys.messageId.rawValue : currentMessageRef], merge: true)
             }
         }
     }
 }
 
 //MARK: getAlldocument
-private func getAlldocument<T:Codable>(type: T.Type ,collection: CollectionReference, complition:@escaping([T])-> Void) {
+private func getAlldocument<T:ReprasentationModel>(type: T.Type ,collection: CollectionReference, complition:@escaping([T])-> Void) {
     
     var elements = [T]()
     var element: T?
@@ -243,13 +233,9 @@ private func getAlldocument<T:Codable>(type: T.Type ,collection: CollectionRefer
         guard let snapshot = snapshot else { fatalError("Cant get collection snapshot")}
         
         snapshot.documents.forEach { document in
-            do {
-                try element = document.data(as: T.self)
+            element = T.init(documentSnap: document)
                 guard let message = element else { fatalError("message is nil")}
                 elements.append(message)
-            } catch {
-                fatalError("Cant convert data to MMessage")
-            }
         }
         complition(elements)
     }
