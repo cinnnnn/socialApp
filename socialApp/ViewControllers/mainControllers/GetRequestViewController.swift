@@ -23,12 +23,12 @@ class GetRequestViewController: UIViewController {
     let acceptButton = UIButton(newBackgroundColor: .myPurpleColor(), newBorderColor: .myPurpleColor(), title: "Принять", titleColor: .systemBackground)
     let denyButton = UIButton(newBackgroundColor: .myPinkColor(), newBorderColor: .myPinkColor(), title: "Отклонить", titleColor: .systemBackground)
     let buttonStackView = UIStackView()
-    var chatRequestPeople: MChat!
-    var currentUser: User!
+    var chatRequestPeople: MChat
+    var currentPeople: MPeople
     
-    init(chatRequest: MChat, currentUser: User){
+    init(chatRequest: MChat, currentPeople: MPeople){
         chatRequestPeople = chatRequest
-        self.currentUser = currentUser
+        self.currentPeople = currentPeople
         
         let imageURL = URL(string: chatRequest.friendUserImageString)
         photo.sd_setImage(with: imageURL, completed: nil)
@@ -73,13 +73,13 @@ class GetRequestViewController: UIViewController {
 extension GetRequestViewController {
     
     @objc private func touchAccept() {
-        FirestoreService.shared.changeToActive(chat: chatRequestPeople, forUser: currentUser)
+        FirestoreService.shared.changeToActive(chat: chatRequestPeople, forUser: currentPeople)
         dismiss(animated: true, completion: nil)
     }
     
     @objc private func touchDeny() {
         
-        FirestoreService.shared.deleteChatRequest(fromUser: chatRequestPeople, forUser: currentUser)
+        FirestoreService.shared.deleteChatRequest(fromUser: chatRequestPeople, forUser: currentPeople)
         dismiss(animated: true, completion: nil)
         
     }

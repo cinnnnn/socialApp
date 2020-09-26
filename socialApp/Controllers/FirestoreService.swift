@@ -169,9 +169,9 @@ class FirestoreService {
     }
     
     //MARK: deleteChatRequest
-    func deleteChatRequest(fromUser: MChat, forUser: User) {
+    func deleteChatRequest(fromUser: MChat, forUser: MPeople) {
         
-        let collectionRequestRef = db.collection(["users", forUser.uid, "requestChats"].joined(separator: "/"))
+        let collectionRequestRef = db.collection(["users", forUser.senderId, "requestChats"].joined(separator: "/"))
         let messagesRef = collectionRequestRef.document(fromUser.friendId).collection("messages")
         
         //delete all document in message collection for delete this collection
@@ -181,14 +181,14 @@ class FirestoreService {
     }
     
     //MARK: changeToActive
-    func changeToActive(chat: MChat, forUser: User) {
+    func changeToActive(chat: MChat, forUser: MPeople) {
         
-        let collectionRequestRef = db.collection(["users", forUser.uid, "requestChats"].joined(separator: "/"))
-        let collectionActiveRef = db.collection(["users", forUser.uid, "activeChats"].joined(separator: "/"))
+        let collectionRequestRef = db.collection(["users", forUser.senderId, "requestChats"].joined(separator: "/"))
+        let collectionActiveRef = db.collection(["users", forUser.senderId, "activeChats"].joined(separator: "/"))
         let collectionFriendActiveRef = db.collection(["users", chat.friendId, "activeChats"].joined(separator: "/"))
         let messagesRef = collectionRequestRef.document(chat.friendId).collection("messages")
         let activeMessageRef = collectionActiveRef.document(chat.friendId).collection("messages")
-        let friendActiveMessageRef = collectionFriendActiveRef.document(forUser.uid).collection("messages")
+        let friendActiveMessageRef = collectionFriendActiveRef.document(forUser.senderId).collection("messages")
         
         getAlldocument(type: MMessage.self, collection: messagesRef) { allMessages in
     
@@ -202,8 +202,12 @@ class FirestoreService {
                 fatalError("Cant convert from chat data to FirestoreData")
             }
             //add chat document to friend user
+            var chatForFriend = chat
+            chatForFriend.friendUserImageString = forUser.userImage
+            chatForFriend.friendUserName = forUser.displayName
+            chatForFriend.friendId = forUser.senderId
             do {
-                try collectionFriendActiveRef.document(forUser.uid).setData(from: chat)
+                try collectionFriendActiveRef.document(forUser.senderId).setData(from: chatForFriend)
             } catch {
                 fatalError("Cant convert from chat data to FirestoreData")
             }

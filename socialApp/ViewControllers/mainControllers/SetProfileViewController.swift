@@ -43,7 +43,6 @@ class SetProfileViewController: UIViewController {
                             titleColor: .systemBackground)
     
     var delegateNavigation: AuthNavigationDelegate?
-    var delegateCurrentPeople: UpdateCurrentMPeopleDelegate?
     
     private var currentPeople: MPeople?
     private var currentUser: User?
@@ -90,7 +89,6 @@ extension SetProfileViewController {
         let exitItem = UIBarButtonItem(title: "Выход", style: .plain, target: self, action: #selector(signOut))
         exitItem.tintColor = .label
         navigationItem.rightBarButtonItem = exitItem
-        
     }
 }
 
@@ -104,7 +102,7 @@ extension SetProfileViewController {
             switch result {
             case .success(let mPeople):
                 self?.currentPeople = mPeople
-                self?.delegateCurrentPeople?.updatePeople(people: mPeople)
+                UserDefaultsService.shared.saveMpeople(people: mPeople)
                 self?.setPeopleData()
             case .failure(let error):
                 fatalError(error.localizedDescription)
@@ -172,7 +170,7 @@ extension SetProfileViewController {
                                                 case .success():
                                                     self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
                                                     self?.currentPeople?.sex = Sex.woman.rawValue
-                                                    self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
+                                                    UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -184,7 +182,7 @@ extension SetProfileViewController {
                                                 case .success():
                                                     self?.sexButton.setTitle(Sex.man.rawValue, for: .normal)
                                                     self?.currentPeople?.sex = Sex.man.rawValue
-                                                    self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
+                                                    UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -203,7 +201,7 @@ extension SetProfileViewController {
                                                 case .success():
                                                     self?.wantButton.setTitle(Want.woman.rawValue, for: .normal)
                                                     self?.currentPeople?.search = Want.woman.rawValue
-                                                    self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
+                                                    UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -216,7 +214,7 @@ extension SetProfileViewController {
                                                 case .success():
                                                     self?.wantButton.setTitle(Want.man.rawValue, for: .normal)
                                                     self?.currentPeople?.search = Want.man.rawValue
-                                                    self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
+                                                    UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -249,7 +247,7 @@ extension SetProfileViewController {
                                                     case .success():
                                                         self?.currentPeople?.advert = advert
                                                         self?.currentPeople?.displayName = name
-                                                        self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
+                                                        UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                         self?.tabBarController?.selectedIndex = 1
                                                         
                                                     case .failure(let error):
@@ -378,7 +376,7 @@ extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigatio
             switch result {
             case .success(let userImageString):
                 self?.currentPeople?.userImage = userImageString
-                self?.delegateCurrentPeople?.updatePeople(people: self?.currentPeople)
+                UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

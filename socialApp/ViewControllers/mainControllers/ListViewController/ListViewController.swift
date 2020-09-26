@@ -17,7 +17,8 @@ class ListViewController: UIViewController {
     var activeChats: [MChat] = []
     var requestChats: [MChat] = []
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
-    var currentUser: User!
+    var currentUser: User
+    var currentPeople: MPeople?
     
     init(currentUser: User) {
         self.currentUser = currentUser
@@ -43,11 +44,16 @@ class ListViewController: UIViewController {
         setupListeners()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        currentPeople = UserDefaultsService.shared.getMpeople()
+    }
+    
     private func setupListeners() {
         ListenerService.shared.addRequestChatsListener(delegate: self)
         ListenerService.shared.addActiveChatsListener(delegate: self)
     }
-    
     
     //MARK:  setupCollectionView
     private func setupCollectionView() {
@@ -137,10 +143,10 @@ extension ListViewController {
         
        
         
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0,
+        group.contentInsets = NSDirectionalEdgeInsets(top: 8,
                                                       leading: 0,
                                                       bottom: 0,
-                                                      trailing: 0)
+                                                      trailing: 8)
         
         
         let section = NSCollectionLayoutSection(group: group)
@@ -148,7 +154,7 @@ extension ListViewController {
         
         section.boundarySupplementaryItems = [sectionHeader]
         section.interGroupSpacing = 16
-        section.contentInsets = NSDirectionalEdgeInsets(top: 11,
+        section.contentInsets = NSDirectionalEdgeInsets(top: 8,
                                                         leading: 8,
                                                         bottom: 0,
                                                         trailing: 8)
@@ -186,9 +192,9 @@ extension ListViewController {
         section.boundarySupplementaryItems = [sectionHeader]
         section.orthogonalScrollingBehavior = .groupPaging
         section.interGroupSpacing = 25
-        section.contentInsets = NSDirectionalEdgeInsets(top: 11,
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
                                                         leading: 8,
-                                                        bottom: 10,
+                                                        bottom: 0,
                                                         trailing: 8)
         
         return section
@@ -304,15 +310,18 @@ extension ListViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let section = SectionsChats(rawValue: indexPath.section) else { fatalError("Unknow section index")}
+        guard let item = dataSource?.itemIdentifier(for: indexPath) else { fatalError(DataSourceError.unknownChatIdentificator.localizedDescription)}
+        guard let currentPeople = currentPeople else { fatalError("Current people is nil")}
         
         switch section {
         case .requestChats:
-            guard let item = dataSource?.itemIdentifier(for: indexPath) else { fatalError(DataSourceError.unknownChatIdentificator.localizedDescription)}
-            let vc = GetRequestViewController(chatRequest: item, currentUser: currentUser)
-            present(vc, animated: true, completion: nil)
+            
+            let requestVC = GetRequestViewController(chatRequest: item, currentPeople: currentPeople)
+            present(requestVC, animated: true, completion: nil)
         case .activeChats:
-            break
-        
+            
+            let chatVC = ChatsViewController(user: currentPeople, chat: item)
+            navigationController?.pushViewController(chatVC, animated: true)
         }
     }
 }

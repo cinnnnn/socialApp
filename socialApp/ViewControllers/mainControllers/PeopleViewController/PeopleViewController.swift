@@ -60,6 +60,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     private func setup() {
         view.backgroundColor = .systemBackground
         inactiveView = AdvertInactiveView(frame: view.bounds, isHidden: true)
+        
         collectionView.delegate = self
     }
     
@@ -68,8 +69,10 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         inactiveView?.goToConfigButton.addTarget(self, action: #selector(touchGoToSetup), for: .touchUpInside)
     }
     
+    
     //MARK: checkActiveAdvert
     private func checkActiveAdvert() {
+        currentPeople = UserDefaultsService.shared.getMpeople()
         if let state = currentPeople?.isActive {
             inactiveView?.isHidden = state
         }

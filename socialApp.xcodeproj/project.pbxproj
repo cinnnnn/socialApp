@@ -35,6 +35,7 @@
 		FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A76E251CB97D005DCC78 /* DataSourceError.swift */; };
 		FB61A78C251E1342005DCC78 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A78B251E1342005DCC78 /* ChatsViewController.swift */; };
 		FB61A7F8251E3FE4005DCC78 /* MSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A7F7251E3FE4005DCC78 /* MSender.swift */; };
+		FB61A7FB251E6312005DCC78 /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A7FA251E6311005DCC78 /* UserDefaultsService.swift */; };
 		FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B53D24FAB785002761ED /* UIViewExtension.swift */; };
 		FB61B54224FD3DDE002761ED /* GetRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54124FD3DDD002761ED /* GetRequestViewController.swift */; };
 		FB61B54724FE7F23002761ED /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54624FE7F22002761ED /* AuthService.swift */; };
@@ -102,6 +103,7 @@
 		FB61A76E251CB97D005DCC78 /* DataSourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceError.swift; sourceTree = "<group>"; };
 		FB61A78B251E1342005DCC78 /* ChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
 		FB61A7F7251E3FE4005DCC78 /* MSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSender.swift; sourceTree = "<group>"; };
+		FB61A7FA251E6311005DCC78 /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
 		FB61B53D24FAB785002761ED /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
 		FB61B54124FD3DDD002761ED /* GetRequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRequestViewController.swift; sourceTree = "<group>"; };
 		FB61B54624FE7F22002761ED /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 				FBF293DC25065E2800F7B5F1 /* FirestoreService.swift */,
 				FBB3B268250F82B800440632 /* ListenerService.swift */,
 				FBF293D824FFB33300F7B5F1 /* Validators.swift */,
+				FB61A7FA251E6311005DCC78 /* UserDefaultsService.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -525,6 +528,7 @@
 				FB21A1BF24E5ADE5000A2E91 /* RequestChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
 				FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */,
+				FB61A7FB251E6312005DCC78 /* UserDefaultsService.swift in Sources */,
 				FB61B54224FD3DDE002761ED /* GetRequestViewController.swift in Sources */,
 				FBEF607A24A602070005F947 /* SceneDelegate.swift in Sources */,
 			);

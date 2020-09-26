@@ -73,6 +73,28 @@ struct MPeople: Hashable, Codable, SenderType {
         self.senderId = senderId
     }
     
+    //for init UserDefaults
+    init?(data: [String : Any]){
+        
+        guard let displayName = data["displayName"] as? String else { return nil }
+        guard let advert = data["advert"] as? String else { return nil }
+        guard let userImage = data["userImage"] as? String else { return nil }
+        guard let search = data["search"] as? String else { return nil }
+        guard let sex = data["sex"] as? String else { return nil }
+        guard let isActive = data["isActive"] as? Bool else { return nil }
+        guard let mail = data["mail"] as? String else { return nil }
+        guard let senderId = data["senderId"] as? String else { return nil }
+        
+        self.displayName = displayName
+        self.advert = advert
+        self.userImage = userImage
+        self.search = search
+        self.sex = sex
+        self.isActive = isActive
+        self.mail = mail
+        self.senderId = senderId
+    }
+    
     enum CodingKeys: String, CodingKey {
         case displayName
         case advert

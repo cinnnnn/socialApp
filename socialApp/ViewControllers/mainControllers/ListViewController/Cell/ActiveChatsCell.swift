@@ -13,7 +13,7 @@ import SDWebImage
 class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     static var reuseID: String = "ActiveChatCell"
     
-    let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
+    let frendImage = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
     let frendName = UILabel(labelText: "user1")
     let lastMessage = UILabel(labelText: "Whats ap!")
     let gradientView = GradientView(from: .topTrailing, to: .bottomLeading, startColor: #colorLiteral(red: 1, green: 0.6655073762, blue: 0.9930477738, alpha: 1), endColor: #colorLiteral(red: 0.5750052333, green: 0.5949758887, blue: 0.9911155105, alpha: 1))
@@ -23,20 +23,15 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         
         setup()
         setupConstraints()
-        
     }
     
       //MARK: - setup
     private func setup() {
         
         layer.cornerRadius = 4
-        backgroundColor = .systemBackground
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.label.cgColor
+        backgroundColor = .lightGray
         clipsToBounds = true
-        gradientView.layer.borderWidth = 1
-        gradientView.layer.borderColor = UIColor.label.cgColor
-        
+        frendImage.clipsToBounds = true
     }
     //MARK: - configure
     func configure(with value: MChat) {
@@ -46,11 +41,17 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         frendName.text = value.friendUserName
         lastMessage.text = value.lastMessage
         
+        print("\(frendImage.frame.width) \(frendImage.frame.height)")
     }
     
-
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupConstraints()
+        print("\(frendImage.frame.width) \(frendImage.frame.height)")
     }
 }
 
@@ -63,20 +64,18 @@ extension ActiveChatsCell {
         lastMessage.translatesAutoresizingMaskIntoConstraints = false
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         
-       
-        
         addSubview(frendImage)
         addSubview(frendName)
         addSubview(lastMessage)
         addSubview(gradientView)
         
         NSLayoutConstraint.activate([
-            frendImage.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            frendImage.topAnchor.constraint(equalTo: self.topAnchor),
-            frendImage.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            frendImage.leadingAnchor.constraint(equalTo: leadingAnchor),
+            frendImage.topAnchor.constraint(equalTo: topAnchor),
+            frendImage.bottomAnchor.constraint(equalTo: bottomAnchor),
             frendImage.widthAnchor.constraint(equalTo: frendImage.heightAnchor),
             
-            frendName.leadingAnchor.constraint(equalTo: frendImage.trailingAnchor, constant: 16),
+            frendName.leadingAnchor.constraint(equalTo: frendImage.trailingAnchor, constant: 10),
             frendName.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
             
             lastMessage.leadingAnchor.constraint(equalTo: frendName.leadingAnchor),

@@ -11,7 +11,6 @@ import FirebaseAuth
 
 class MainTabBarController: UITabBarController {
     
-    var currentPeople: MPeople?
     var currentUser: User!
     var peopleVC: UIViewController?
     
@@ -40,7 +39,6 @@ class MainTabBarController: UITabBarController {
         
         let listVC = ListViewController(currentUser: currentUser )
         let setProfileVC = SetProfileViewController(currentUser: currentUser)
-        setProfileVC.delegateCurrentPeople = self //for update current people without request to Firestore
 
         peopleVC = PeopleViewController(currentUser: currentUser)
         
@@ -67,16 +65,4 @@ class MainTabBarController: UITabBarController {
         
         return navController
     }
-    
-}
-
-extension MainTabBarController:UpdateCurrentMPeopleDelegate {
-    
-    func updatePeople(people: MPeople?) {
-        guard let vc = peopleVC as? PeopleViewController else { fatalError("People VC not init")}
-        vc.currentPeople = people
-        currentPeople = people
-    }
-    
-    
 }

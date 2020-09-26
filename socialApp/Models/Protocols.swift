@@ -54,10 +54,10 @@ protocol ActiveChatListenerDelegate: class {
     func updateActiveData()
 }
 
-protocol UpdateCurrentMPeopleDelegate {
-    var currentPeople: MPeople? { get set }
-    func updatePeople(people: MPeople?)
-}
+//protocol UpdateCurrentMPeopleDelegate {
+//    var currentPeople: MPeople? { get set }
+//    func updatePeople(people: MPeople?)
+//}
 
 protocol ReprasentationModel {
     var reprasentation:[String : Any]{ get }
