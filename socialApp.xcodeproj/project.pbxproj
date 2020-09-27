@@ -20,6 +20,7 @@
 		FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217A24B2261F00FFFC87 /* MainTabBarController.swift */; };
 		FB18217D24B2268E00FFFC87 /* PeopleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217C24B2268E00FFFC87 /* PeopleViewController.swift */; };
 		FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217E24B2442800FFFC87 /* UIColorExtension.swift */; };
+		FB207CB42520C544007AA232 /* MessageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB207CB32520C544007AA232 /* MessageError.swift */; };
 		FB21A1AD24C89F68000A2E91 /* BundleDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1AC24C89F68000A2E91 /* BundleDecode.swift */; };
 		FB21A1AF24C8A152000A2E91 /* activeChats.json in Resources */ = {isa = PBXBuildFile; fileRef = FB21A1AE24C8A152000A2E91 /* activeChats.json */; };
 		FB21A1B324C8A2D1000A2E91 /* waitingChats.json in Resources */ = {isa = PBXBuildFile; fileRef = FB21A1B224C8A2D1000A2E91 /* waitingChats.json */; };
@@ -88,6 +89,7 @@
 		FB18217A24B2261F00FFFC87 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		FB18217C24B2268E00FFFC87 /* PeopleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleViewController.swift; sourceTree = "<group>"; };
 		FB18217E24B2442800FFFC87 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		FB207CB32520C544007AA232 /* MessageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageError.swift; sourceTree = "<group>"; };
 		FB21A1AC24C89F68000A2E91 /* BundleDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleDecode.swift; sourceTree = "<group>"; };
 		FB21A1AE24C8A152000A2E91 /* activeChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = activeChats.json; sourceTree = "<group>"; };
 		FB21A1B224C8A2D1000A2E91 /* waitingChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = waitingChats.json; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				FBB3B266250D00CF00440632 /* StorageError.swift */,
 				FBF293DE250668CB00F7B5F1 /* UserError.swift */,
 				FB61A76B251BA06D005DCC78 /* ChatError.swift */,
+				FB207CB32520C544007AA232 /* MessageError.swift */,
 				FBB4F35E2512737400ACFE90 /* ListenerError.swift */,
 				FB61A76E251CB97D005DCC78 /* DataSourceError.swift */,
 			);
@@ -486,6 +489,7 @@
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
 				FBB3B25F2509011200440632 /* StorageService.swift in Sources */,
 				FBB4F35F2512737400ACFE90 /* ListenerError.swift in Sources */,
+				FB207CB42520C544007AA232 /* MessageError.swift in Sources */,
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
 				FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */,
 				FB61A7F8251E3FE4005DCC78 /* MSender.swift in Sources */,

@@ -8,6 +8,7 @@
 
 import UIKit
 import MessageKit
+import InputBarAccessoryView
 
 class ChatsViewController: MessagesViewController  {
     
@@ -17,7 +18,13 @@ class ChatsViewController: MessagesViewController  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        messagesCollectionView.messagesDataSource = self
+        messagesCollectionView.messagesLayoutDelegate = self
+        messagesCollectionView.messagesDisplayDelegate = self
+        
         configureInputBar()
+        configure()
+        
     }
     
     init(user:MPeople, chat:MChat) {
@@ -25,28 +32,77 @@ class ChatsViewController: MessagesViewController  {
         self.chat = chat
         
         super.init(nibName: nil, bundle: nil)
-        
         title = chat.friendUserName
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        addMessageListener()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        ListenerService.shared.removeMessageListener()
+    }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        
+    }
+    
+    private func configure() {
+        //delete avatar from message
+        if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {
+            layout.textMessageSizeCalculator.outgoingAvatarSize = .zero
+        }
+        navigationController?.navigationBar.tintColor = .label
+    }
+    
+    private func addMessageListener() {
+        ListenerService.shared.messageListener(chat: chat) {[weak self] result in
+            switch result {
+            
+            case .success(let message):
+                self?.newMessage(message: message)
+                
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func newMessage(message: MMessage) {
+        
+        guard !messages.contains(message) else { return }
+        messages.append(message)
+        messages.sort { lhs, rhs -> Bool in
+            lhs.sentDate < rhs.sentDate
+        }
+        messagesCollectionView.reloadData()
+        
+        DispatchQueue.main.async {
+            self.messagesCollectionView.scrollToBottom(animated: true)
+        }
+        
+    }
+    
     private func configureInputBar() {
+        messageInputBar.delegate = self
         messageInputBar.isTranslucent = false
         messageInputBar.backgroundView.backgroundColor = .systemBackground
         messageInputBar.separatorLine.isHidden = true
         messageInputBar.middleContentView?.backgroundColor = .systemBackground
         
         messageInputBar.sendButton.image = #imageLiteral(resourceName: "sendMessage")
-       // messageInputBar.sendButton.setImage(#imageLiteral(resourceName: "sendMessage"), for: .normal)
-      //  messageInputBar.sendButton.setImage(#imageLiteral(resourceName: "sendMessageDisable"), for: .disabled)
         messageInputBar.sendButton.title = nil
         messageInputBar.sendButton.setSize(CGSize(width: 36 , height: 36), animated: false)
         messageInputBar.sendButton.imageView?.contentMode = .scaleAspectFit
         messageInputBar.sendButton.imageView?.sizeToFit()
-        messageInputBar.sendButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 2, bottom: 2, right: 2)
+        messageInputBar.sendButton.contentEdgeInsets = UIEdgeInsets(top: 3, left: 5, bottom: 5, right: 5)
         messageInputBar.setStackViewItems([messageInputBar.sendButton], forStack: .right, animated: false)
         messageInputBar.setRightStackViewWidthConstant(to: 36, animated: false)
         messageInputBar.inputTextView.placeholder = "Начни общение..."
@@ -75,4 +131,52 @@ extension ChatsViewController: MessagesDataSource {
         messages.count
     }
     
+}
+
+extension ChatsViewController: MessagesLayoutDelegate {
+    
+    func footerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
+        CGSize(width: 0, height: 9)
+    }
+}
+
+extension ChatsViewController: MessagesDisplayDelegate {
+    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        isFromCurrentSender(message: message) ? .myMessageColor() : .friendMessageColor()
+    }
+    
+    func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        isFromCurrentSender(message: message) ? .systemBackground : .label
+    }
+    
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        avatarView.isHidden = true
+    }
+    
+    
+    
+    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+        .bubble
+    }
+}
+
+extension ChatsViewController: InputBarAccessoryViewDelegate {
+    
+    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+        let message = MMessage(user: user, content: text)
+        
+        FirestoreService.shared.sendMessage(chat: chat,
+                                            currentUser: user,
+                                            message: message) { result in
+            switch result {
+            
+            case .success():
+                break
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+        inputBar.inputTextView.text = ""
+        
+    }
 }

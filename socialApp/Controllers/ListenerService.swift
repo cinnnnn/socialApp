@@ -35,6 +35,7 @@ class ListenerService {
     private var peopleListner: ListenerRegistration?
     private var requestChatsListner: ListenerRegistration?
     private var activeChatsListner: ListenerRegistration?
+    private var messageListner: ListenerRegistration?
     
     private weak var peopleDelegate: PeopleListenerDelegate?
     private weak var requestChatDelegate: RequestChatListenerDelegate?
@@ -193,5 +194,33 @@ class ListenerService {
     
     func removeActiveChatsListener() {
         activeChatsListner?.remove()
+    }
+    
+    func messageListener(chat:MChat, complition: @escaping (Result<MMessage,Error>)->Void) {
+        
+        messageListner = activeChatsRef.document(chat.friendId).collection("messages").addSnapshotListener({ snapshot, error in
+            guard let snapshot = snapshot else { fatalError("Cant get snapshot of message")}
+            
+            snapshot.documentChanges.forEach { document in
+                
+                guard let message = MMessage(documentSnap: document.document) else {
+                    complition(.failure(MessageError.getMessageData))
+                    return
+                }
+                switch document.type {
+                
+                case .added:
+                    complition(.success(message))
+                case .modified:
+                    break
+                case .removed:
+                    break
+                }
+            }
+        })
+    }
+    
+    func removeMessageListener() {
+        messageListner?.remove()
     }
 }

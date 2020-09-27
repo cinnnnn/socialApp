@@ -190,9 +190,9 @@ class FirestoreService {
         let activeMessageRef = collectionActiveRef.document(chat.friendId).collection("messages")
         let friendActiveMessageRef = collectionFriendActiveRef.document(forUser.senderId).collection("messages")
         
-        getAlldocument(type: MMessage.self, collection: messagesRef) { allMessages in
-    
-            deleteCollection(collection: messagesRef)
+        getAlldocument(type: MMessage.self, collection: messagesRef) {[weak self] allMessages in
+            
+            self?.deleteCollection(collection: messagesRef)
             collectionRequestRef.document(chat.friendId).delete()
             
             //add chat document to current user
@@ -215,53 +215,77 @@ class FirestoreService {
             //add all message to collection "messages" in  chat document
             allMessages.forEach { message in
                 var currentMessageRef: DocumentReference
-                    //add message to current user
+                //add message to current user
                 currentMessageRef = activeMessageRef.addDocument(data: message.reprasentation)
-                    //set current path to ID message
-                currentMessageRef.setData([MMessage.CodingKeys.messageId.rawValue : currentMessageRef], merge: true)
-                    //add message to friend user
+                //set current path to ID message
+                currentMessageRef.setData([MMessage.CodingKeys.messageId.rawValue : currentMessageRef.path], merge: true)
+                //add message to friend user
                 currentMessageRef = friendActiveMessageRef.addDocument(data: message.reprasentation)
-                    //set current path to ID message
-                currentMessageRef.setData([MMessage.CodingKeys.messageId.rawValue : currentMessageRef], merge: true)
+                //set current path to ID message
+                currentMessageRef.setData([MMessage.CodingKeys.messageId.rawValue : currentMessageRef.path], merge: true)
+            }
+        }
+    }
+    
+    func sendMessage(chat: MChat,
+                     currentUser: MPeople,
+                     message: MMessage,
+                     complition: @escaping(Result<Void, Error>)-> Void) {
+        
+        let refFriendChat = db.collection(["users", chat.friendId, "activeChats"].joined(separator: "/"))
+        let refSenderChat = db.collection(["users", currentUser.senderId, "activeChats"].joined(separator: "/"))
+        let refFriendMessage = refFriendChat.document(currentUser.senderId).collection("messages")
+        let refSenderMessage = refSenderChat.document(chat.friendId).collection("messages")
+        
+        refFriendMessage.addDocument(data: message.reprasentation) { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                refSenderMessage.addDocument(data: message.reprasentation) { error in
+                    if let error = error {
+                        complition(.failure(error))
+                    } else {
+                        complition(.success(()))
+                    }
+                }
+            }
+        }  
+    }
+}
+
+extension FirestoreService {
+    //MARK: getAlldocument
+    private func getAlldocument<T:ReprasentationModel>(type: T.Type ,collection: CollectionReference, complition:@escaping([T])-> Void) {
+        var elements = [T]()
+        var element: T?
+        collection.getDocuments { snapshot, error in
+            guard let snapshot = snapshot else { fatalError("Cant get collection snapshot")}
+            
+            snapshot.documents.forEach { document in
+                element = T.init(documentSnap: document)
+                guard let message = element else { fatalError("message is nil")}
+                elements.append(message)
+            }
+            complition(elements)
+        }
+    }
+    
+    //MARK: deleteCollection
+    //with inside document
+    private func  deleteCollection(collection: CollectionReference, batchSize: Int = 100) {
+        // Limit query to avoid out-of-memory errors on large collections.
+        // When deleting a collection guaranteed to fit in memory, batching can be avoided entirely.
+        collection.limit(to: batchSize).getDocuments { docset, error in
+            // An error occurred.
+            guard let docset = docset else { fatalError("Cant get collection") }
+            
+            let batch = collection.firestore.batch()
+            docset.documents.forEach { batch.deleteDocument($0.reference) }
+            
+            batch.commit {_ in
+                //   self.deleteCollection(collection: collection, batchSize: batchSize)
             }
         }
     }
 }
-
-//MARK: getAlldocument
-private func getAlldocument<T:ReprasentationModel>(type: T.Type ,collection: CollectionReference, complition:@escaping([T])-> Void) {
-    
-    var elements = [T]()
-    var element: T?
-    collection.getDocuments { snapshot, error in
-        guard let snapshot = snapshot else { fatalError("Cant get collection snapshot")}
-        
-        snapshot.documents.forEach { document in
-            element = T.init(documentSnap: document)
-                guard let message = element else { fatalError("message is nil")}
-                elements.append(message)
-        }
-        complition(elements)
-    }
-}
-
-//MARK: deleteCollection
-//with inside document
-private func  deleteCollection(collection: CollectionReference, batchSize: Int = 100) {
-    // Limit query to avoid out-of-memory errors on large collections.
-    // When deleting a collection guaranteed to fit in memory, batching can be avoided entirely.
-    collection.limit(to: batchSize).getDocuments { docset, error in
-        // An error occurred.
-        guard let docset = docset else { fatalError("Cant get collection") }
-        
-        let batch = collection.firestore.batch()
-        docset.documents.forEach { batch.deleteDocument($0.reference) }
-        
-        batch.commit {_ in
-            //   self.deleteCollection(collection: collection, batchSize: batchSize)
-        }
-    }
-}
-
-
 

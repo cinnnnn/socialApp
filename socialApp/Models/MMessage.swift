@@ -83,11 +83,11 @@ struct MMessage: Hashable, ReprasentationModel, MessageType{
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(content)
+        hasher.combine(messageId)
     }
     
     static func == (lhs: MMessage, rhs: MMessage) -> Bool {
-        return lhs.content == rhs.content
+        return lhs.messageId == rhs.messageId
     }
     
 

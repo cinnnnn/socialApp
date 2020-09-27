@@ -247,6 +247,7 @@ extension SetProfileViewController {
                                                     case .success():
                                                         self?.currentPeople?.advert = advert
                                                         self?.currentPeople?.displayName = name
+                                                        self?.currentPeople?.isActive = true
                                                         UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                         self?.tabBarController?.selectedIndex = 1
                                                         
