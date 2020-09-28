@@ -45,13 +45,12 @@ protocol PeopleListenerDelegate: class {
 
 protocol RequestChatListenerDelegate: class {
     var requestChats: [MChat] { get set }
-    func reloadRequestData()
+    func reloadData(changeType: TypeOfListenerChanges)
 }
 
 protocol ActiveChatListenerDelegate: class {
     var activeChats: [MChat] { get set }
-    func reloadActiveData()
-    func updateActiveData()
+    func reloadData(changeType: TypeOfListenerChanges)
 }
 
 //protocol UpdateCurrentMPeopleDelegate {

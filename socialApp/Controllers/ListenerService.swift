@@ -116,18 +116,18 @@ class ListenerService {
                         
                         case .added:
                             self?.requestChatDelegate?.requestChats.append(chat)
-                            self?.requestChatDelegate?.reloadRequestData()
+                            self?.requestChatDelegate?.reloadData(changeType: .addOrDelete)
                         case .modified:
                             if let index = chats.firstIndex(of: chat) {
                                 self?.requestChatDelegate?.requestChats[index] = chat
                             } else {
                                 self?.requestChatDelegate?.requestChats.append(chat)
                             }
-                            self?.requestChatDelegate?.reloadRequestData()
+                            self?.requestChatDelegate?.reloadData(changeType: .update)
                         case .removed:
                             if let index = chats.firstIndex(of: chat) {
                                 self?.requestChatDelegate?.requestChats.remove(at: index)
-                                self?.requestChatDelegate?.reloadRequestData()
+                                self?.requestChatDelegate?.reloadData(changeType: .addOrDelete)
                             } else {
                                 fatalError(ListenerError.cantDeleteElementInCollection.localizedDescription)
                             }
@@ -169,16 +169,16 @@ class ListenerService {
                         
                         case .added:
                             self?.activeChatDelegate?.activeChats.append(chat)
-                            self?.activeChatDelegate?.reloadActiveData()
+                            self?.activeChatDelegate?.reloadData(changeType: .addOrDelete)
                         case .modified:
                             if let index = chats.firstIndex(of: chat) {
                                 self?.activeChatDelegate?.activeChats[index] = chat
-                                self?.activeChatDelegate?.updateActiveData()
+                                self?.activeChatDelegate?.reloadData(changeType: .update)
                             }
                         case .removed:
                             if let index = chats.firstIndex(of: chat) {
                                 self?.activeChatDelegate?.activeChats.remove(at: index)
-                                self?.activeChatDelegate?.reloadActiveData()
+                                self?.activeChatDelegate?.reloadData(changeType: .addOrDelete)
                             } else {
                                 fatalError(ListenerError.cantDeleteElementInCollection.localizedDescription)
                             }
@@ -196,6 +196,7 @@ class ListenerService {
         activeChatsListner?.remove()
     }
     
+    //MARK: messageListener
     func messageListener(chat:MChat, complition: @escaping (Result<MMessage,Error>)->Void) {
         
         messageListner = activeChatsRef.document(chat.friendId).collection("messages").addSnapshotListener({ snapshot, error in

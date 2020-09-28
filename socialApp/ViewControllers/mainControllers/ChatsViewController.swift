@@ -25,6 +25,7 @@ class ChatsViewController: MessagesViewController  {
         configureInputBar()
         configure()
         
+        addMessageListener()
     }
     
     init(user:MPeople, chat:MChat) {
@@ -37,12 +38,12 @@ class ChatsViewController: MessagesViewController  {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        addMessageListener()
+       
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        ListenerService.shared.removeMessageListener()
+        
     }
     
     
@@ -51,7 +52,7 @@ class ChatsViewController: MessagesViewController  {
     }
     
     deinit {
-        
+        ListenerService.shared.removeMessageListener()
     }
     
     private func configure() {

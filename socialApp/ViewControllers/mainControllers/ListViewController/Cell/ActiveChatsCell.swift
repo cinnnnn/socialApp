@@ -40,8 +40,6 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         frendImage.sd_setImage(with: imageURL, completed: nil)
         frendName.text = value.friendUserName
         lastMessage.text = value.lastMessage
-        
-        print("\(frendImage.frame.width) \(frendImage.frame.height)")
     }
     
     required init?(coder: NSCoder) {
@@ -51,7 +49,6 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         setupConstraints()
-        print("\(frendImage.frame.width) \(frendImage.frame.height)")
     }
 }
 

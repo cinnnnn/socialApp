@@ -42,6 +42,7 @@
 		FB61B54724FE7F23002761ED /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54624FE7F22002761ED /* AuthService.swift */; };
 		FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54824FE9581002761ED /* UIAlertExtension.swift */; };
 		FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */; };
+		FB79DA42252209E100A7AA56 /* TypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
@@ -111,6 +112,7 @@
 		FB61B54624FE7F22002761ED /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		FB61B54824FE9581002761ED /* UIAlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertExtension.swift; sourceTree = "<group>"; };
 		FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterEmailViewController.swift; sourceTree = "<group>"; };
+		FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeOfListenerChanges.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
 				FB61A7F7251E3FE4005DCC78 /* MSender.swift */,
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
+				FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */,
 				FBB4F35925116D7300ACFE90 /* DefaultImage.swift */,
 				FBB3B264250ACA0700440632 /* Sex.swift */,
 				FBF6289424F678C300DCD4AC /* SectionsChats.swift */,
@@ -499,6 +502,7 @@
 				FB61A78C251E1342005DCC78 /* ChatsViewController.swift in Sources */,
 				FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */,
 				FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */,
+				FB79DA42252209E100A7AA56 /* TypeOfListenerChanges.swift in Sources */,
 				FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */,
 				FBB4F354251110AE00ACFE90 /* RadioButton.swift in Sources */,
 				FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */,
