@@ -54,6 +54,14 @@ struct MChat: Hashable, Codable {
 
       }
     
+    enum CodingKeys: String, CodingKey {
+        case friendUserName
+        case friendUserImageString
+        case lastMessage
+        case friendId
+        case date
+    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(friendId)
     }

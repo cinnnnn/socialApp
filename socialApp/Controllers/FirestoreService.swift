@@ -245,6 +245,11 @@ class FirestoreService {
                     if let error = error {
                         complition(.failure(error))
                     } else {
+                        //set new lastMessage to activeChats
+                        refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: message.content],
+                                                                             merge: true)
+                        refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: message.content],
+                                                                      merge: true)
                         complition(.success(()))
                     }
                 }
