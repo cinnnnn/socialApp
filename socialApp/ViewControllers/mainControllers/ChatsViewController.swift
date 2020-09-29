@@ -47,10 +47,12 @@ class ChatsViewController: MessagesViewController  {
         ListenerService.shared.removeMessageListener()
     }
     
+    //MARK: configure
     private func configure() {
         //delete avatar from message
         if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {
             layout.textMessageSizeCalculator.outgoingAvatarSize = .zero
+            layout.textMessageSizeCalculator.incomingAvatarSize = .zero
         }
         navigationController?.navigationBar.tintColor = .label
     }
@@ -117,22 +119,18 @@ class ChatsViewController: MessagesViewController  {
         messageInputBar.separatorLine.isHidden = true
         messageInputBar.middleContentView?.backgroundColor = .systemBackground
         
-        messageInputBar.sendButton.image = #imageLiteral(resourceName: "sendMessage")
+        messageInputBar.sendButton.setImage(#imageLiteral(resourceName: "sendMessage"), for: .normal)
         messageInputBar.sendButton.title = nil
         messageInputBar.sendButton.setSize(CGSize(width: 36 , height: 36), animated: false)
-        messageInputBar.sendButton.imageView?.contentMode = .scaleAspectFit
-        messageInputBar.sendButton.imageView?.sizeToFit()
         messageInputBar.sendButton.contentEdgeInsets = UIEdgeInsets(top: 3, left: 5, bottom: 5, right: 5)
         messageInputBar.setStackViewItems([messageInputBar.sendButton], forStack: .right, animated: false)
         messageInputBar.setRightStackViewWidthConstant(to: 36, animated: false)
+        messageInputBar.rightStackView.axis = .horizontal
         messageInputBar.inputTextView.placeholder = "Начни общение..."
         messageInputBar.inputTextView.textContainerInset = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 36)
         messageInputBar.inputTextView.placeholderLabelInsets = UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 36)
         messageInputBar.inputTextView.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         messageInputBar.inputTextView.backgroundColor = .systemBackground
-        messageInputBar.inputTextView.layer.cornerRadius = 18
-        messageInputBar.inputTextView.layer.borderWidth = 0.2
-        messageInputBar.inputTextView.layer.borderColor = UIColor.myHeaderColor().cgColor
         messageInputBar.middleContentViewPadding.right = -38
         messageInputBar.middleContentViewPadding.top = 20
     }
@@ -146,8 +144,8 @@ class ChatsViewController: MessagesViewController  {
         cameraItem.addTarget(self, action: #selector(tuppedSendImage), for: .primaryActionTriggered)
         
         
-        //messageInputBar.leftStackView.alignment = .leading
-        messageInputBar.setLeftStackViewWidthConstant(to: 50, animated: false)
+        messageInputBar.leftStackView.axis = .horizontal
+        messageInputBar.setLeftStackViewWidthConstant(to: 36, animated: false)
       //  messageInputBar.leftStackView.
         messageInputBar.setStackViewItems([cameraItem], forStack: .left, animated: false)
     }
@@ -169,11 +167,11 @@ extension ChatsViewController {
 }
 
 extension ChatsViewController {
-    
+    //MARK: choosePhotoAlert
     private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerController.SourceType?) -> Void) {
         
-        let photoAlert = UIAlertController(title: "Отправить фото",
-                                           message: "Новую или выберем из галереи?",
+        let photoAlert = UIAlertController(title: nil,
+                                           message: nil,
                                            preferredStyle: .actionSheet)
         let cameraAction = UIAlertAction(title: "Открыть камеру",
                                          style: .default) { _ in
@@ -185,9 +183,12 @@ extension ChatsViewController {
                                             complition(UIImagePickerController.SourceType.photoLibrary)
         }
         let cancelAction = UIAlertAction(title: "Отмена",
-                                         style: .destructive) { _ in
-                                            complition(nil)
+                                         style: .default) { _ in
+            complition(nil)
         }
+        
+        photoAlert.setBackgroudColor(color: .label)
+        photoAlert.setTint(color: .myWhiteColor())
         photoAlert.addAction(cameraAction)
         photoAlert.addAction(libraryAction)
         photoAlert.addAction(cancelAction)
@@ -247,7 +248,7 @@ extension ChatsViewController: MessagesDisplayDelegate {
     }
     
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
-        .bubble
+        .bubbleTail(isFromCurrentSender(message: message) ? MessageStyle.TailCorner.bottomRight : MessageStyle.TailCorner.bottomLeft, MessageStyle.TailStyle.pointedEdge)
     }
     
     func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {

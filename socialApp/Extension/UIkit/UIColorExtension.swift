@@ -19,18 +19,22 @@ extension UIColor {
     
     
     static func myBackgroundColor() -> UIColor {
-        
         dynamicColor(light: #colorLiteral(red: 0.8748111129, green: 0.8696112037, blue: 0.8788084388, alpha: 1), dark: #colorLiteral(red: 0.1263937652, green: 0.1256497502, blue: 0.1269704401, alpha: 1))
     }
     
-    static func myCellColor() -> UIColor {
-        
-        dynamicColor(light: #colorLiteral(red: 0.8933141828, green: 0.9015570283, blue: 0.9222311974, alpha: 1), dark: #colorLiteral(red: 0.2421294749, green: 0.2432564199, blue: 0.2459884286, alpha: 1))
-    }
-    
-    static func myHeaderColor() -> UIColor {
+    static func myGrayColor() -> UIColor {
         
         dynamicColor(light: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1), dark: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
+    }
+    
+    static func myWhiteColor() -> UIColor {
+        
+        dynamicColor(light: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), dark: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
+    }
+    
+    static func myLightGrayColor() -> UIColor {
+        
+        dynamicColor(light: #colorLiteral(red: 0.8166387677, green: 0.8117852211, blue: 0.8203702569, alpha: 1), dark: #colorLiteral(red: 0.1485573351, green: 0.1485895813, blue: 0.1485531032, alpha: 1))
     }
     
     static func myMessageColor() -> UIColor {
@@ -39,7 +43,6 @@ extension UIColor {
     }
     
     static func friendMessageColor() -> UIColor {
-        
         dynamicColor(light: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1), dark: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1))
     }
     

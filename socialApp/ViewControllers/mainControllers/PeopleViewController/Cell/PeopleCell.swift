@@ -19,24 +19,13 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     let profileImage = ProfileImageView()
     let nameLabel = UILabel(labelText: "", textFont: .systemFont(ofSize: 16, weight: .bold), textColor: .label)
-    let distanceLabel = UILabel(labelText: "0.0km", textFont: .systemFont(ofSize: 16, weight: .light), textColor: .myHeaderColor())
-    let topLine: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        view.backgroundColor = .myCellColor()
-        return view
-    }()
-    let bottomLine: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        view.backgroundColor = .myCellColor()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    let distanceLabel = UILabel(labelText: "0.0km", textFont: .systemFont(ofSize: 16, weight: .light), textColor: .myGrayColor())
     let likeButton: UIButton = {
         let button = UIButton()
         
         button.clipsToBounds = true
         button.setTitle("Like", for: .normal)
-        button.setTitleColor(.myHeaderColor(), for: .normal)
+        button.setTitleColor(.myGrayColor(), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .light)
         return button
     }()
@@ -98,8 +87,6 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         messageBox.translatesAutoresizingMaskIntoConstraints = false
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         distanceLabel.translatesAutoresizingMaskIntoConstraints = false
-        topLine.translatesAutoresizingMaskIntoConstraints = false
-        bottomLine.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(backView)
@@ -108,8 +95,6 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         addSubview(likeButton)
         addSubview(profileImage)
         addSubview(nameLabel)
-        addSubview(topLine)
-        addSubview(bottomLine)
         
     }
     
@@ -160,17 +145,6 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
             
             distanceLabel.leadingAnchor.constraint(equalTo: messageBox.leadingAnchor, constant: 5),
             distanceLabel.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -8),
-            
-            topLine.topAnchor.constraint(equalTo: topAnchor),
-            topLine.heightAnchor.constraint(equalToConstant: 0.5),
-            topLine.leadingAnchor.constraint(equalTo: leadingAnchor),
-            topLine.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
-            bottomLine.bottomAnchor.constraint(equalTo: bottomAnchor),
-            bottomLine.heightAnchor.constraint(equalToConstant: 0.5),
-            bottomLine.leadingAnchor.constraint(equalTo: leadingAnchor),
-            bottomLine.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
         ])
     }
     

@@ -16,7 +16,7 @@ class AuthViewController: UIViewController {
     let loginButton = UIButton(newBackgroundColor: .systemBackground,
                                borderWidth: 0,
                                title: "Войти с Email",
-                               titleColor: .myHeaderColor(),
+                               titleColor: .myGrayColor(),
                                font: .systemFont(ofSize: 16, weight: .regular),
                                isShadow: false)
     
