@@ -101,7 +101,7 @@ class ListenerService {
             
             snapshot.documentChanges.forEach { [weak self] changes in
                 guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
-            
+                
                 guard let chats = self?.requestChatDelegate?.requestChats else {
                     fatalError(ListenerError.chatsCollectionNotExist.localizedDescription) }
                 
@@ -154,7 +154,7 @@ class ListenerService {
             
             snapshot.documentChanges.forEach { [weak self] changes in
                 guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
-            
+                
                 guard let chats = self?.activeChatDelegate?.activeChats else {
                     fatalError(ListenerError.chatsCollectionNotExist.localizedDescription) }
                 
@@ -210,35 +210,20 @@ class ListenerService {
                     return
                 }
                 //if message has URL download image and put the message
+                
                 //message type change to .photo
-                if let imageURL = message.imageURL {
-                    SDWebImageManager.shared.loadImage(with: imageURL,
-                                                       options: .highPriority,
-                                                       progress: nil) { (image, data, error, cache, bool, url) in
-                        guard error == nil else { fatalError("Cant download image from url")}
-                        guard let image = image else { fatalError("Image is nil")}
-                        message.image = image
-                        
-                        switch document.type {
-                        
-                        case .added:
-                            complition(.success(message))
-                        case .modified:
-                            break
-                        case .removed:
-                            break
-                        }
-                    }
-                } else  { //message type .text
-                    switch document.type {
-                    
-                    case .added:
-                        complition(.success(message))
-                    case .modified:
-                        break
-                    case .removed:
-                        break
-                    }
+                if message.imageURL != nil {
+                    message.image = #imageLiteral(resourceName: "imageSend")
+                }
+                //message type .text
+                switch document.type {
+                
+                case .added:
+                    complition(.success(message))
+                case .modified:
+                    break
+                case .removed:
+                    break
                 }
             }
         })

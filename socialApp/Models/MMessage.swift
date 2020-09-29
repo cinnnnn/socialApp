@@ -26,10 +26,10 @@ struct MMessage: Hashable, ReprasentationModel, MessageType{
     var sender: SenderType
     var kind: MessageKind {
         if let image = image {
-            let mediaItem = MMediaItem(url: nil,
+            let mediaItem = MMediaItem(url: imageURL,
                                        image: nil,
                                        placeholderImage: image,
-                                       size: image.size)
+                                       size: CGSize(width: 400, height: 400))
             return .photo(mediaItem)
         } else {
             return .text(content ?? "")

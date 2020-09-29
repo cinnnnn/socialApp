@@ -246,10 +246,20 @@ extension ChatsViewController: MessagesDisplayDelegate {
         avatarView.isHidden = true
     }
     
-    
-    
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         .bubble
+    }
+    
+    func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+
+        switch message.kind {
+        case .photo(let photoItem):
+            if let url = photoItem.url {
+                imageView.sd_setImage(with: url)
+            }
+        default:
+            break
+        }
     }
 }
 
