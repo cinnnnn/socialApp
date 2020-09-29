@@ -52,7 +52,7 @@ class ListViewController: UIViewController {
         setupNavigationController()
         setupCollectionView()
         setupDataSource()
-        reloadSectionHedear()
+        loadSectionHedear()
         reloadDataSource(searchText: nil)
         setupListeners()
         
@@ -264,7 +264,7 @@ extension ListViewController {
                                                                               })
     }
     //MARK: - supplementaryViewProvider
-    private func reloadSectionHedear() {
+    private func loadSectionHedear() {
         dataSource?.supplementaryViewProvider = {
             collectionView, kind, indexPath in
             guard let reuseSectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeader.reuseId, for: indexPath) as? SectionHeader else { fatalError("Can't create new sectionHeader") }

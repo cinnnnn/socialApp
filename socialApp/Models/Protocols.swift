@@ -53,11 +53,6 @@ protocol ActiveChatListenerDelegate: class {
     func reloadData(changeType: TypeOfListenerChanges)
 }
 
-//protocol UpdateCurrentMPeopleDelegate {
-//    var currentPeople: MPeople? { get set }
-//    func updatePeople(people: MPeople?)
-//}
-
 protocol ReprasentationModel {
     var reprasentation:[String : Any]{ get }
     init?(documentSnap: DocumentSnapshot)

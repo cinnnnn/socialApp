@@ -156,7 +156,7 @@ class FirestoreService {
         let message = MMessage(user: fromUser, content: textToSend, id: messagesRef.path)
         let chatMessage = MChat(friendUserName: fromUser.displayName,
                                 friendUserImageString: fromUser.userImage,
-                                lastMessage: message.content,
+                                lastMessage: message.content ?? "",
                                 friendId: fromUser.senderId,
                                 date: Date())
         
@@ -246,12 +246,21 @@ class FirestoreService {
                         complition(.failure(error))
                     } else {
                         //set new lastMessage to activeChats
-                        refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: message.content,
-                                                                              MChat.CodingKeys.date.rawValue: message.sentDate],
-                                                                             merge: true)
-                        refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: message.content,
-                                                                       MChat.CodingKeys.date.rawValue: message.sentDate],
-                                                                      merge: true)
+                        if let messageContent = message.content {
+                            refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
+                                                                                  MChat.CodingKeys.date.rawValue: message.sentDate],
+                                                                                 merge: true)
+                            refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
+                                                                           MChat.CodingKeys.date.rawValue: message.sentDate],
+                                                                          merge: true)
+                        } else if let url = message.imageURL {
+                            refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: url.absoluteString,
+                                                                                  MChat.CodingKeys.date.rawValue: message.sentDate],
+                                                                                 merge: true)
+                            refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: url.absoluteString,
+                                                                           MChat.CodingKeys.date.rawValue: message.sentDate],
+                                                                          merge: true)
+                        }
                         complition(.success(()))
                     }
                 }

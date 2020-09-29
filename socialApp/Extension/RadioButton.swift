@@ -19,8 +19,6 @@ class RadioButton: NSObject {
                 button.setImage(UIImage(named: "radio_filled"), for: .selected)
                 button.setTitleColor(newTitleSelectedColor, for: .selected)
                 button.tintColor = .systemBackground
-                
-                
             }
         }
     }

@@ -43,6 +43,8 @@
 		FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54824FE9581002761ED /* UIAlertExtension.swift */; };
 		FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */; };
 		FB79DA42252209E100A7AA56 /* TypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */; };
+		FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4825234EDA00A7AA56 /* DateExtension.swift */; };
+		FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4B2523577100A7AA56 /* MMediaItem.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
@@ -113,6 +115,8 @@
 		FB61B54824FE9581002761ED /* UIAlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertExtension.swift; sourceTree = "<group>"; };
 		FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterEmailViewController.swift; sourceTree = "<group>"; };
 		FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeOfListenerChanges.swift; sourceTree = "<group>"; };
+		FB79DA4825234EDA00A7AA56 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		FB79DA4B2523577100A7AA56 /* MMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMediaItem.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -220,6 +224,7 @@
 				FB15FCF22513A71F00B765D3 /* MMessage.swift */,
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
 				FB61A7F7251E3FE4005DCC78 /* MSender.swift */,
+				FB79DA4B2523577100A7AA56 /* MMediaItem.swift */,
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */,
 				FBB4F35925116D7300ACFE90 /* DefaultImage.swift */,
@@ -347,6 +352,7 @@
 				FB61A7622514F05C005DCC78 /* ProfileImageView.swift */,
 				FBF2927E2512828C0090BA9E /* AdvertInactiveView.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
+				FB79DA4825234EDA00A7AA56 /* DateExtension.swift */,
 				FB61B54524FE6921002761ED /* UIkit */,
 				FB21A1AE24C8A152000A2E91 /* activeChats.json */,
 				FB21A1B224C8A2D1000A2E91 /* waitingChats.json */,
@@ -481,6 +487,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */,
+				FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */,
 				FBB3B265250ACA0700440632 /* Sex.swift in Sources */,
 				FBF293DD25065E2800F7B5F1 /* FirestoreService.swift in Sources */,
 				FBB4F35A25116D7300ACFE90 /* DefaultImage.swift in Sources */,
@@ -495,6 +502,7 @@
 				FB207CB42520C544007AA232 /* MessageError.swift in Sources */,
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
 				FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */,
+				FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */,
 				FB61A7F8251E3FE4005DCC78 /* MSender.swift in Sources */,
 				FBB3B269250F82B800440632 /* ListenerService.swift in Sources */,
 				FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */,
