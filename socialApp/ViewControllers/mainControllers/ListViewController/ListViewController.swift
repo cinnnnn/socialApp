@@ -362,6 +362,8 @@ extension ListViewController: UICollectionViewDelegate {
             navigationController?.pushViewController(chatVC, animated: true)
         }
     }
+    
+    
 }
 //MARK: SwiftUI
 

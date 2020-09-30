@@ -11,8 +11,21 @@ import UIKit
 
 extension UIFont {
     
-    static func avenir(size: CGFloat) -> UIFont {
-        guard let font = UIFont.init(name: "avenirBold", size: size) else { fatalError("Unknown Font")}
+    static func avenirBold(size: CGFloat) -> UIFont {
+        guard let font = UIFont.init(name: "AvenirNext-Bold", size: size) else { fatalError("Unknown Font")}
+
+        return font
+    }
+    
+    static func avenirRegular(size: CGFloat) -> UIFont {
+        guard let font = UIFont.init(name: "AvenirNext-Regular", size: size) else { fatalError("Unknown Font")}
+
+        return font
+    }
+    
+    static func avenirUltraLight(size: CGFloat) -> UIFont {
+        guard let font = UIFont.init(name: "AvenirNext-UltraLight", size: size) else { fatalError("Unknown Font")}
+
         return font
     }
 }

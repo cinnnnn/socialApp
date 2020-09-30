@@ -31,7 +31,6 @@
 		FB21A1BF24E5ADE5000A2E91 /* RequestChatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BE24E5ADE5000A2E91 /* RequestChatsCell.swift */; };
 		FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */; };
 		FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB39F2D724F66EFE001B9C4F /* MPeople.swift */; };
-		FB61A7632514F05C005DCC78 /* ProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A7622514F05C005DCC78 /* ProfileImageView.swift */; };
 		FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A76B251BA06D005DCC78 /* ChatError.swift */; };
 		FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A76E251CB97D005DCC78 /* DataSourceError.swift */; };
 		FB61A78C251E1342005DCC78 /* ChatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A78B251E1342005DCC78 /* ChatsViewController.swift */; };
@@ -45,6 +44,9 @@
 		FB79DA42252209E100A7AA56 /* TypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */; };
 		FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4825234EDA00A7AA56 /* DateExtension.swift */; };
 		FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4B2523577100A7AA56 /* MMediaItem.swift */; };
+		FB79DA4F2524D1FB00A7AA56 /* UIScrollViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4E2524D1FA00A7AA56 /* UIScrollViewExtension.swift */; };
+		FB79DA56252501E100A7AA56 /* UIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA55252501E100A7AA56 /* UIApplicationExtension.swift */; };
+		FB79DA5925251AAE00A7AA56 /* PeopleCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA5825251AAE00A7AA56 /* PeopleCellView.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
@@ -103,7 +105,6 @@
 		FB21A1BE24E5ADE5000A2E91 /* RequestChatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestChatsCell.swift; sourceTree = "<group>"; };
 		FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
 		FB39F2D724F66EFE001B9C4F /* MPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPeople.swift; sourceTree = "<group>"; };
-		FB61A7622514F05C005DCC78 /* ProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageView.swift; sourceTree = "<group>"; };
 		FB61A76B251BA06D005DCC78 /* ChatError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatError.swift; sourceTree = "<group>"; };
 		FB61A76E251CB97D005DCC78 /* DataSourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceError.swift; sourceTree = "<group>"; };
 		FB61A78B251E1342005DCC78 /* ChatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewController.swift; sourceTree = "<group>"; };
@@ -117,6 +118,9 @@
 		FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeOfListenerChanges.swift; sourceTree = "<group>"; };
 		FB79DA4825234EDA00A7AA56 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		FB79DA4B2523577100A7AA56 /* MMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMediaItem.swift; sourceTree = "<group>"; };
+		FB79DA4E2524D1FA00A7AA56 /* UIScrollViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewExtension.swift; sourceTree = "<group>"; };
+		FB79DA55252501E100A7AA56 /* UIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtension.swift; sourceTree = "<group>"; };
+		FB79DA5825251AAE00A7AA56 /* PeopleCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCellView.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -256,8 +260,10 @@
 			isa = PBXGroup;
 			children = (
 				FB61B53D24FAB785002761ED /* UIViewExtension.swift */,
+				FB79DA4E2524D1FA00A7AA56 /* UIScrollViewExtension.swift */,
 				FB61B54824FE9581002761ED /* UIAlertExtension.swift */,
 				FBEF608B24A8F3FF0005F947 /* UIButtonExtension.swift */,
+				FB79DA55252501E100A7AA56 /* UIApplicationExtension.swift */,
 				FBEF608D24A9073E0005F947 /* UIFontExtension.swift */,
 				FB09107F24FA93E2006B72D5 /* UITextViewExtension.swift */,
 				FBEF609024A90AEC0005F947 /* UILabelExtension.swift */,
@@ -349,7 +355,7 @@
 				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
 				FB21A1BC24E59A31000A2E91 /* GradientView.swift */,
 				FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */,
-				FB61A7622514F05C005DCC78 /* ProfileImageView.swift */,
+				FB79DA5825251AAE00A7AA56 /* PeopleCellView.swift */,
 				FBF2927E2512828C0090BA9E /* AdvertInactiveView.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
 				FB79DA4825234EDA00A7AA56 /* DateExtension.swift */,
@@ -505,6 +511,7 @@
 				FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */,
 				FB61A7F8251E3FE4005DCC78 /* MSender.swift in Sources */,
 				FBB3B269250F82B800440632 /* ListenerService.swift in Sources */,
+				FB79DA4F2524D1FB00A7AA56 /* UIScrollViewExtension.swift in Sources */,
 				FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,
 				FB61A78C251E1342005DCC78 /* ChatsViewController.swift in Sources */,
@@ -518,7 +525,7 @@
 				FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */,
 				FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */,
 				FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */,
-				FB61A7632514F05C005DCC78 /* ProfileImageView.swift in Sources */,
+				FB79DA56252501E100A7AA56 /* UIApplicationExtension.swift in Sources */,
 				FB1062D824AE494A0012C4D4 /* OneLineTextField.swift in Sources */,
 				FBB3B267250D00D000440632 /* StorageError.swift in Sources */,
 				FB18217724B21F5100FFFC87 /* ListViewController.swift in Sources */,
@@ -531,6 +538,7 @@
 				FBEF608C24A8F4000005F947 /* UIButtonExtension.swift in Sources */,
 				FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */,
 				FBF6289524F678C300DCD4AC /* SectionsChats.swift in Sources */,
+				FB79DA5925251AAE00A7AA56 /* PeopleCellView.swift in Sources */,
 				FB09107E24FA73B2006B72D5 /* SendRequestViewController.swift in Sources */,
 				FBEF607824A602070005F947 /* AppDelegate.swift in Sources */,
 				FB1062DC24B09F6C0012C4D4 /* SetProfileViewController.swift in Sources */,

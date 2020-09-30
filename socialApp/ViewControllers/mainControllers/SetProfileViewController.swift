@@ -261,8 +261,8 @@ extension SetProfileViewController {
 extension SetProfileViewController {
     //MARK:  signOutAlert
     private func signOutAlert() {
-        let alert = UIAlertController(title: "Покинуть",
-                                      message: "Точно прощаешься с нами?",
+        let alert = UIAlertController(title: nil,
+                                      message: nil,
                                       preferredStyle: .actionSheet)
         
         let okAction = UIAlertAction(title: "Выйду, но вернусь",
@@ -278,7 +278,9 @@ extension SetProfileViewController {
             }
         }
         let cancelAction = UIAlertAction(title: "Продолжу общение",
-                                         style: .cancel)
+                                         style: .default)
+        
+        alert.setMyStyle()
         alert.addAction(okAction)
         alert.addAction(cancelAction)
         
@@ -288,8 +290,8 @@ extension SetProfileViewController {
     //MARK:  choosePhotoAlert
     private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerController.SourceType?) -> Void) {
         
-        let photoAlert = UIAlertController(title: "Фоточка",
-                                           message: "На всех сделанных внутри приложения, есть отметка - подлинное фото",
+        let photoAlert = UIAlertController(title: nil,
+                                           message: nil,
                                            preferredStyle: .actionSheet)
         let cameraAction = UIAlertAction(title: "Открыть камеру",
                                          style: .default) { _ in
@@ -301,9 +303,11 @@ extension SetProfileViewController {
                                             complition(UIImagePickerController.SourceType.photoLibrary)
         }
         let cancelAction = UIAlertAction(title: "Отмена",
-                                         style: .destructive) { _ in
+                                         style: .default) { _ in
                                             complition(nil)
         }
+        
+        photoAlert.setMyStyle()
         photoAlert.addAction(cameraAction)
         photoAlert.addAction(libraryAction)
         photoAlert.addAction(cancelAction)
@@ -339,7 +343,7 @@ extension SetProfileViewController:UITextViewDelegate {
 //    }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let maxSymbols = 120
+        let maxSymbols = 2000
         let existingLines = textView.text.components(separatedBy: CharacterSet.newlines)
         let newLines = text.components(separatedBy: CharacterSet.newlines)
         let linesAfterChange = existingLines.count + newLines.count - 1
@@ -436,7 +440,7 @@ extension SetProfileViewController {
             nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
             advertTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 45),
-            advertTextView.heightAnchor.constraint(equalToConstant: 100),
+            advertTextView.bottomAnchor.constraint(equalTo: sexLabel.topAnchor, constant: 20),
             advertTextView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             advertTextView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             

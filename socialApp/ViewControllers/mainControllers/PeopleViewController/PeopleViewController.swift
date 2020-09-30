@@ -19,7 +19,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
             p1.advert < p2.advert
         }
     }
-    var inactiveView:AdvertInactiveView?
+    var inactiveView = AdvertInactiveView(isHidden: true)
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     var currentUser: User!
@@ -42,12 +42,11 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationController()
         setupCollectionView()
         setupDiffebleDataSource()
-        setupButtonTarget()
         setup()
-        setupConstraint()
+        setupConstraints()
+
         ListenerService.shared.addPeopleListener(delegate: self)
     }
     
@@ -58,32 +57,22 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     //MARK:  setup
     private func setup() {
-        view.backgroundColor = .systemBackground
-        inactiveView = AdvertInactiveView(frame: view.bounds, isHidden: true)
         
-        collectionView.delegate = self
+        navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.backgroundColor = .systemBackground
+        navigationItem.title = "Объявления"
+        
+        view.backgroundColor = .systemBackground
+        
     }
-    
-    //MARK: setupButtonTarget
-    private func setupButtonTarget() {
-        inactiveView?.goToConfigButton.addTarget(self, action: #selector(touchGoToSetup), for: .touchUpInside)
-    }
-    
     
     //MARK: checkActiveAdvert
     private func checkActiveAdvert() {
         currentPeople = UserDefaultsService.shared.getMpeople()
         if let state = currentPeople?.isActive {
-            inactiveView?.isHidden = state
+            inactiveView.isHidden = state
+            inactiveView.goToConfigButton.addTarget(self, action: #selector(touchGoToSetup), for: .touchUpInside)
         }
-    }
-    
-    //MARK:  setupNavigationController
-    private func setupNavigationController(){
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.backgroundColor = .systemBackground
-        navigationItem.title = "Объявления"
     }
     
     //MARK: setupCollectionView
@@ -92,9 +81,9 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         collectionView = UICollectionView(frame: view.bounds,
                                           collectionViewLayout: setupCompositionLayout())
         
-        collectionView.autoresizingMask = [.flexibleWidth,.flexibleHeight]
-        collectionView.backgroundColor = .systemBackground
-        view.addSubview(collectionView)
+        collectionView.backgroundColor = nil
+        collectionView.delegate = self
+        collectionView.alwaysBounceVertical = false
         
         collectionView.register(PeopleCell.self,
                                 forCellWithReuseIdentifier: PeopleCell.reuseID)
@@ -105,24 +94,28 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     //MARK: setupMainSection
     private func setupMainSection() -> NSCollectionLayoutSection {
+//        let statusBarHeight = UIApplication.statusBarHeight
+//        let tabBarHeight = tabBarController?.tabBar.frame.height ?? 0
+//        let sectionHeight = view.frame.height - statusBarHeight - tabBarHeight
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .estimated(200))
+                                              heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                               heightDimension: .estimated(200))
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize,
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9),
+                                               heightDimension: .fractionalHeight(0.9))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                      subitems: [item])
         
-        
+    
         let section = NSCollectionLayoutSection(group: group)
         
-        section.interGroupSpacing = 0
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                        leading: 0,
-                                                        bottom: 0,
-                                                        trailing: 0)
+        section.orthogonalScrollingBehavior = .groupPaging
+        section.interGroupSpacing = 12.5
+        section.contentInsets = NSDirectionalEdgeInsets(top: 12.5,
+                                                        leading: 12.5,
+                                                        bottom: 12.5,
+                                                        trailing: 12.5)
         return section
     }
     
@@ -138,18 +131,17 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
                 return self?.setupMainSection()
             }
         }
-        
         return layout
     }
     
     //MARK: configureCell
     private func configureCell<T:PeopleConfigurationCell>(cellType: T.Type, value: MPeople, indexPath: IndexPath) -> T {
         
-        guard var cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)")}
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)")}
         
         cell.configure(with: value)
-        cell.likeButton.addTarget(self, action: #selector(pressLikeButton), for: .touchUpInside)
-        cell.delegate = self
+      //  cell.likeButton.addTarget(self, action: #selector(pressLikeButton), for: .touchUpInside)
+      //  cell.delegate = self
         return cell
     }
     
@@ -199,6 +191,7 @@ extension PeopleViewController {
     }
 }
 
+//MARK:  UICollectionViewDelegate
 extension PeopleViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -208,9 +201,19 @@ extension PeopleViewController: UICollectionViewDelegate {
         present(sendRequestVC, animated: true, completion: nil)
     }
     
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        var visibleRect = CGRect()
+
+            visibleRect.origin = collectionView.contentOffset
+            visibleRect.size = collectionView.bounds.size
+
+            let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
+        print(indexPath)
+    }
    
 }
-//MARK:  PeopleCellDelegate()
+//MARK:  PeopleCellDelegate
 extension PeopleViewController: PeopleCellDelegate {
     func likeTupped(user: MPeople) {
         
@@ -224,15 +227,20 @@ extension PeopleViewController: PeopleCellDelegate {
 }
 
 extension PeopleViewController {
+    private func setupConstraints() {
     
-    private func setupConstraint(){
+        inactiveView.autoresizingMask = [.flexibleHeight, .flexibleWidth ]
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
-        guard let inactiveView = inactiveView else { fatalError("Advert view не инициализированно")}
-        
+        view.addSubview(collectionView)
         view.addSubview(inactiveView)
         
-        inactiveView.autoresizingMask = [.flexibleHeight, .flexibleWidth ]
-        
+        NSLayoutConstraint.activate([
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }
 //MARK:- SwiftUI

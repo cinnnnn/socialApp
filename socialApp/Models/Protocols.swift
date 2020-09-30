@@ -19,8 +19,6 @@ protocol SelfConfiguringCell {
 
 protocol PeopleConfigurationCell {
     static var reuseID: String { get }
-    var delegate: PeopleCellDelegate? { get set}
-    var likeButton: UIButton { get }
     func configure(with value: MPeople)
     
 }

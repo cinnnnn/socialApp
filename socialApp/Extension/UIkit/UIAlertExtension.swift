@@ -27,6 +27,10 @@ extension UIAlertController {
 }
 
 extension UIAlertController {
+    func setMyStyle() {
+        setBackgroudColor(color: .label )
+        setTint(color: .myWhiteColor())
+    }
     
     //Set background color of UIAlertController
       func setBackgroudColor(color: UIColor) {

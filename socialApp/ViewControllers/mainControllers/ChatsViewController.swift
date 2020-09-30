@@ -55,6 +55,7 @@ class ChatsViewController: MessagesViewController  {
             layout.textMessageSizeCalculator.incomingAvatarSize = .zero
         }
         navigationController?.navigationBar.tintColor = .label
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     //MARK: addMessageListener
@@ -82,7 +83,7 @@ class ChatsViewController: MessagesViewController  {
         messagesCollectionView.reloadData()
         
         DispatchQueue.main.async {
-            self.messagesCollectionView.scrollToBottom(animated: true)
+            self.messagesCollectionView.scrollToBottom(animated: false)
         }
     }
     
@@ -101,7 +102,7 @@ class ChatsViewController: MessagesViewController  {
                     switch result {
                     
                     case .success():
-                        self.messagesCollectionView.scrollToBottom(animated: true)
+                       break
                     case .failure(let error):
                         fatalError(error.localizedDescription)
                     }
@@ -187,8 +188,7 @@ extension ChatsViewController {
             complition(nil)
         }
         
-        photoAlert.setBackgroudColor(color: .label)
-        photoAlert.setTint(color: .myWhiteColor())
+        photoAlert.setMyStyle()
         photoAlert.addAction(cameraAction)
         photoAlert.addAction(libraryAction)
         photoAlert.addAction(cancelAction)

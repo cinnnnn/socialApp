@@ -21,8 +21,8 @@ class AdvertInactiveView: UIView {
         super.init(frame: frame)
     }
     
-    convenience init(frame: CGRect, isHidden: Bool) {
-        self.init(frame: frame)
+    convenience init(isHidden: Bool) {
+        self.init()
         
         self.isHidden = isHidden
         

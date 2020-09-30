@@ -29,7 +29,7 @@ extension UITextView {
         
         //for setup maximum lines and symbols
         if isEditable {
-            textContainer.maximumNumberOfLines = 5
+            textContainer.maximumNumberOfLines = 100
             textContainer.lineBreakMode = .byClipping
         }
     }
