@@ -17,9 +17,9 @@ class GetRequestViewController: UIViewController {
     let container = UIView()
     let nameLabel = UILabel(labelText: "Оленька", textFont: .boldSystemFont(ofSize: 22))
     let messageTextView = UILabel(labelText: "",
-                                  multiline: true,
                                   textFont: .systemFont(ofSize: 16, weight: .bold),
-                                  textColor: .label)
+                                  textColor: .label,
+                                  linesCount: 5)
     let acceptButton = UIButton(newBackgroundColor: .myPurpleColor(), newBorderColor: .myPurpleColor(), title: "Принять", titleColor: .systemBackground)
     let denyButton = UIButton(newBackgroundColor: .myPinkColor(), newBorderColor: .myPinkColor(), title: "Отклонить", titleColor: .systemBackground)
     let buttonStackView = UIStackView()

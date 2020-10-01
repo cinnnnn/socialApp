@@ -36,31 +36,29 @@ class MainTabBarController: UITabBarController {
     }
     
     private func setupControllers(){
+        tabBar.barTintColor = .myWhiteColor()
         
-        tabBarController?.tabBar.barTintColor = .myWhiteColor()
         let listVC = ListViewController(currentUser: currentUser )
         let setProfileVC = SetProfileViewController(currentUser: currentUser)
 
         peopleVC = PeopleViewController(currentUser: currentUser)
         
-        guard let listImage = UIImage(systemName: "bubble.left.and.bubble.right.fill") else { return }
-        guard let peopleImage = UIImage(systemName: "person.2.fill") else { return }
-        
         tabBar.tintColor = .label
         
         viewControllers = [
-            generateNavigationController(rootViewController: setProfileVC, image: listImage, title: currentUser.email ?? "Netushki"),
-            generateNavigationController(rootViewController: peopleVC!, image: peopleImage, title: "Объявления"),
-            generateNavigationController(rootViewController: listVC, image: listImage, title: "Чаты")
+            generateNavigationController(rootViewController: setProfileVC, image: #imageLiteral(resourceName: "profile"), title: nil),
+            generateNavigationController(rootViewController: peopleVC!, image: #imageLiteral(resourceName: "people"), title: nil),
+            generateNavigationController(rootViewController: listVC, image: #imageLiteral(resourceName: "chats"), title: nil)
         ]
     }
     
     
     private func generateNavigationController(rootViewController: UIViewController,
                                               image: UIImage,
-                                              title: String) -> UIViewController {
+                                              title: String?) -> UIViewController {
         
         let navController = UINavigationController(rootViewController: rootViewController)
+        navController.tabBarItem.imageInsets = UIEdgeInsets(top: 15, left: 0, bottom: 0, right: 0)
         navController.tabBarItem.image = image
         navController.tabBarItem.title = title
         

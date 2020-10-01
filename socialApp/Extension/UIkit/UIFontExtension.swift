@@ -28,4 +28,10 @@ extension UIFont {
 
         return font
     }
+    
+    static func avenirHeavy(size: CGFloat) -> UIFont {
+        guard let font = UIFont.init(name: "AvenirNext-Heavy", size: size) else { fatalError("Unknown Font")}
+
+        return font
+    }
 }

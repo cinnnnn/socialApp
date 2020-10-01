@@ -21,13 +21,14 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
             p1.advert < p2.advert
         }
     }
+    var visibleIndexPath: IndexPath?
     var inactiveView = AdvertInactiveView(isHidden: true)
-    var nameLabel = UILabel(labelText: "Name", textFont: .avenirBold(size: 42))
+    var nameLabel = UILabel(labelText: "Name", textFont: .avenirBold(size: 38))
     var distanceLabel = UILabel(labelText: "0.00KM", textFont: .avenirBold(size: 16))
     var advertLabel = UILabel(labelText: "Test one more and more",
-                              multiline: true,
                               textFont: .avenirRegular(size: 16),
-                              aligment: .center)
+                              aligment: .center,
+                              linesCount: 5)
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
@@ -90,6 +91,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         
         collectionView.backgroundColor = nil
         collectionView.delegate = self
+        
         collectionView.alwaysBounceVertical = false
         
         collectionView.register(PeopleCell.self,
@@ -123,6 +125,11 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
                                                         leading: 40,
                                                         bottom: 0,
                                                         trailing: 40)
+        
+        section.visibleItemsInvalidationHandler = { [weak self]visibleItems, point, environment in
+
+            self?.setDataForVisibleCell()
+        }
         return section
     }
     
@@ -175,6 +182,8 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         guard var snapshot = dataSource?.snapshot() else { return }
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        setDataForVisibleCell()
     }
     //MARK:  reloadData
     func reloadData() {
@@ -183,9 +192,57 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         snapshot.appendSections([.main])
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        setDataForVisibleCell()
     }
 }
 
+//MARK:setDataForVisibleCell
+extension PeopleViewController {
+    
+    private func setDataForVisibleCell()  {
+        var visibleRect = CGRect()
+        
+        visibleRect.origin = collectionView.contentOffset
+        visibleRect.size = collectionView.bounds.size
+        
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
+        
+        //set only when index path change to new value
+        if visibleIndexPath != indexPath {
+            
+            let item = dataSource?.itemIdentifier(for: indexPath)
+            
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineHeightMultiple = 0.8
+            paragraph.alignment = .center
+            
+            let attributes: [NSAttributedString.Key : Any] = [
+                .paragraphStyle : paragraph
+            ]
+            
+            UIView.animate(withDuration: 0.2) {[weak self] in
+                self?.advertLabel.layer.opacity = 0
+                self?.nameLabel.layer.opacity = 0
+                self?.distanceLabel.layer.opacity = 0
+            } completion: {[weak self] isComplite in
+                if isComplite {
+                    self?.advertLabel.attributedText = NSMutableAttributedString(string: item?.advert ?? "", attributes: attributes)
+                    self?.nameLabel.text = item?.displayName
+                    self?.distanceLabel.text = "0.00KM"
+                    UIView.animate(withDuration: 0.5) {[weak self] in
+                        self?.advertLabel.layer.opacity = 1
+                        self?.nameLabel.layer.opacity = 1
+                        self?.distanceLabel.layer.opacity = 1
+                    }
+                }
+            }
+            //set new current visible indexPath
+            visibleIndexPath = indexPath
+        }
+    }
+}
 //MARK:  objc
 extension PeopleViewController {
     
@@ -201,6 +258,7 @@ extension PeopleViewController {
 //MARK:  UICollectionViewDelegate
 extension PeopleViewController: UICollectionViewDelegate {
     
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let user = dataSource?.itemIdentifier(for: indexPath) else { return }
         guard let currentPeople = currentPeople else { fatalError("Current people is nil") }
@@ -208,31 +266,22 @@ extension PeopleViewController: UICollectionViewDelegate {
         present(sendRequestVC, animated: true, completion: nil)
     }
     
+   
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         var visibleRect = CGRect()
-
-            visibleRect.origin = collectionView.contentOffset
-            visibleRect.size = collectionView.bounds.size
-
-            let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        print(#function)
+        
+        visibleRect.origin = collectionView.contentOffset
+        visibleRect.size = collectionView.bounds.size
+        
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
         print(indexPath)
     }
    
 }
-//MARK:  PeopleCellDelegate
-extension PeopleViewController: PeopleCellDelegate {
-    func likeTupped(user: MPeople) {
-        
-        let indexUser = peopleNearby.firstIndex { people -> Bool in
-            people.senderId == user.senderId
-        }
-        
-        guard let index = indexUser else { fatalError("Unknown index of MPeople")}
-        peopleNearby[index] = user
-    }
-}
 
+//MARK: setupConstraints
 extension PeopleViewController {
     private func setupConstraints() {
     
@@ -265,24 +314,5 @@ extension PeopleViewController {
             advertLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
             advertLabel.topAnchor.constraint(equalTo: distanceLabel.bottomAnchor, constant: 5),
         ])
-    }
-}
-//MARK:- SwiftUI
-
-struct PeopleViewControllerProvider: PreviewProvider {
-    
-    static var previews: some View {
-        ContenerView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContenerView: UIViewControllerRepresentable {
-        
-        func makeUIViewController(context: Context) -> MainTabBarController {
-            MainTabBarController()
-        }
-        
-        func updateUIViewController(_ uiViewController: MainTabBarController, context: Context) {
-            
-        }
     }
 }

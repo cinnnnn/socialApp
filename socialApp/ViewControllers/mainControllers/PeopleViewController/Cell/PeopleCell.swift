@@ -29,10 +29,6 @@ class PeopleCell: UICollectionViewCell,PeopleConfigurationCell, UIScrollViewDele
     }
     
     func configure(with value: MPeople) {
-        
-        cellView.nameLabel.text = value.displayName
-        cellView.distanceLabel.text = "0.0km"
-        
         let imageURL = URL(string: value.userImage)
         cellView.profileImage.sd_setImage(with: imageURL, completed: nil)
         

@@ -17,9 +17,9 @@ class SendRequestViewController: UIViewController {
     let container = UIView()
     let nameLabel = UILabel(labelText: "", textFont: .boldSystemFont(ofSize: 22))
     let messageTextView = UILabel(labelText: "",
-                                  multiline: true,
                                   textFont: .systemFont(ofSize: 16, weight: .bold),
-                                  textColor: .label)
+                                  textColor: .label,
+                                  linesCount: 5)
     let unswerTextField = OneLineTextField(isSecureText: false,
                                            tag: 1,
                                            withButton: true,

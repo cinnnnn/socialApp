@@ -12,9 +12,9 @@ class AdvertInactiveView: UIView {
     
     let goToConfigButton = UIButton(newBackgroundColor: .label, title: "Добавить объявление", titleColor: .systemBackground)
     let infoLabel = UILabel(labelText: "Ты можешь посмотреть, что написали остальные, только когда опубликуешь свое объявление",
-                            multiline: true,
                             textFont: .systemFont(ofSize: 16, weight: .regular),
-                            textColor: .label)
+                            textColor: .label,
+                            linesCount: 5)
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "advertLogo"))
     
     override init(frame: CGRect) {

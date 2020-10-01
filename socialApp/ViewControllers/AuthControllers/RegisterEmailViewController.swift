@@ -20,9 +20,9 @@ class RegisterEmailViewController: UIViewController {
                              textFont: .boldSystemFont(ofSize: 16),
                              opacity: 0)
     let emailInstructionLabel = UILabel(labelText: "Пройди по ссылке в письме для активации",
-                                        multiline: true,
                                         textFont: .systemFont(ofSize: 12, weight: .thin),
-                                        opacity:  0)
+                                        opacity:  0,
+                                        linesCount: 5)
     let emailLabel = UILabel(labelText: "Твоя почта ",
                              textFont: .systemFont(ofSize: 16, weight: .light),
                              opacity: 1)

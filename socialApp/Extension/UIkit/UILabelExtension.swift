@@ -11,18 +11,19 @@ import UIKit
 extension UILabel {
     
     convenience init(labelText: String,
-                     multiline: Bool = false,
                      textFont: UIFont = .systemFont(ofSize: 12),
                      textColor: UIColor = .label,
                      opacity: Float = 1,
-                     aligment: NSTextAlignment = .left) {
+                     aligment: NSTextAlignment = .left,
+                     linesCount: Int = 1) {
         self.init()
         self.textColor = textColor
         font = textFont
         layer.opacity = opacity
-        numberOfLines = multiline ? 0 : 1
+        numberOfLines = linesCount
         text = labelText
         textAlignment = aligment
+        
 
     }
     
