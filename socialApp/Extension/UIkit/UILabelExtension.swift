@@ -14,13 +14,15 @@ extension UILabel {
                      multiline: Bool = false,
                      textFont: UIFont = .systemFont(ofSize: 12),
                      textColor: UIColor = .label,
-                     opacity: Float = 1) {
+                     opacity: Float = 1,
+                     aligment: NSTextAlignment = .left) {
         self.init()
         self.textColor = textColor
         font = textFont
         layer.opacity = opacity
         numberOfLines = multiline ? 0 : 1
         text = labelText
+        textAlignment = aligment
 
     }
     

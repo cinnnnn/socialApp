@@ -106,7 +106,7 @@ extension LoginViewController {
                     self?.loginButton.isEnabled = true
                 }
             case .failure(_):
-                fatalError("Cant fetch Email registration status")
+                self?.showAlert(title: "Проблемы с подключением", text: "Повтори чуть позже", buttonText: "OK")
             }
         }
     }

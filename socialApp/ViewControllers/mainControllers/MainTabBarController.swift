@@ -37,6 +37,7 @@ class MainTabBarController: UITabBarController {
     
     private func setupControllers(){
         
+        tabBarController?.tabBar.barTintColor = .myWhiteColor()
         let listVC = ListViewController(currentUser: currentUser )
         let setProfileVC = SetProfileViewController(currentUser: currentUser)
 

@@ -13,6 +13,8 @@ import FirebaseFirestore
 
 class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
+    var currentUser: User!
+    var currentPeople: MPeople?
     var peopleNearby: [MPeople] = []
     var sortedPeopleNearby: [MPeople] {
         peopleNearby.sorted { p1, p2  in
@@ -20,10 +22,15 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         }
     }
     var inactiveView = AdvertInactiveView(isHidden: true)
+    var nameLabel = UILabel(labelText: "Name", textFont: .avenirBold(size: 42))
+    var distanceLabel = UILabel(labelText: "0.00KM", textFont: .avenirBold(size: 16))
+    var advertLabel = UILabel(labelText: "Test one more and more",
+                              multiline: true,
+                              textFont: .avenirRegular(size: 16),
+                              aligment: .center)
+    
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
-    var currentUser: User!
-    var currentPeople: MPeople?
     
     init(currentUser: User) {
         self.currentUser = currentUser
@@ -102,8 +109,8 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9),
-                                               heightDimension: .fractionalHeight(0.9))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8),
+                                               heightDimension: .fractionalHeight(1))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                      subitems: [item])
         
@@ -111,11 +118,11 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         let section = NSCollectionLayoutSection(group: group)
         
         section.orthogonalScrollingBehavior = .groupPaging
-        section.interGroupSpacing = 12.5
-        section.contentInsets = NSDirectionalEdgeInsets(top: 12.5,
-                                                        leading: 12.5,
-                                                        bottom: 12.5,
-                                                        trailing: 12.5)
+        section.interGroupSpacing = 40
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                        leading: 40,
+                                                        bottom: 0,
+                                                        trailing: 40)
         return section
     }
     
@@ -231,15 +238,32 @@ extension PeopleViewController {
     
         inactiveView.autoresizingMask = [.flexibleHeight, .flexibleWidth ]
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        distanceLabel.translatesAutoresizingMaskIntoConstraints = false
+        advertLabel.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(collectionView)
+        view.addSubview(nameLabel)
+        view.addSubview(distanceLabel)
+        view.addSubview(advertLabel)
         view.addSubview(inactiveView)
         
         NSLayoutConstraint.activate([
+            nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            nameLabel.bottomAnchor.constraint(equalTo: collectionView.topAnchor, constant: -10),
+            
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
+            collectionView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
+            
+            distanceLabel.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+            distanceLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 10),
+            
+            advertLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            advertLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
+            advertLabel.topAnchor.constraint(equalTo: distanceLabel.bottomAnchor, constant: 5),
         ])
     }
 }
