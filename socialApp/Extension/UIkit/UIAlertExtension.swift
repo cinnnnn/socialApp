@@ -32,6 +32,11 @@ extension UIAlertController {
         setTint(color: .myWhiteColor())
     }
     
+    func setMyLightStyle() {
+        setBackgroudColor(color: .myWhiteColor() )
+        setTint(color: .label)
+    }
+    
     //Set background color of UIAlertController
       func setBackgroudColor(color: UIColor) {
         if let bgView = self.view.subviews.first,

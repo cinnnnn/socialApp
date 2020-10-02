@@ -27,7 +27,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     AuthService.shared.signOut { result in
                         switch result {
                         case .success(_):
-                            self?.window?.rootViewController = AuthViewController()
+                            self?.window?.rootViewController = self?.makeRootVC(viewController: AuthViewController(), withNavContoller: true)
+                            
                         case .failure(let error):
                             fatalError(error.localizedDescription)
                         }
@@ -37,11 +38,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 }
             }
         } else {
-            window?.rootViewController = AuthViewController()
+           
+            window?.rootViewController = makeRootVC(viewController: AuthViewController(), withNavContoller: true)
         }
         
         window?.makeKeyAndVisible()
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -73,5 +74,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
+}
+
+extension SceneDelegate {
+    
+    private func makeRootVC(viewController: UIViewController, withNavContoller: Bool = false) -> UIViewController {
+        
+        if withNavContoller {
+            let navVC = UINavigationController(rootViewController: viewController)
+            navVC.navigationBar.isHidden = true
+            navVC.navigationItem.backButtonTitle = "Войти с Apple ID"
+            return navVC
+        }
+        return viewController
+    }
+    
+    private func checkProfileInfo(user: User, complition:@escaping(Result<Bool,Error>) -> Void){
+        
+        FirestoreService.shared.getUserData(userID: user.uid) { result in
+            switch result {
+            
+            case .success(let mPeople):
+                if mPeople.sex == "" || mPeople.search == "" {
+                    complition(.success(true))
+                } else {
+                    complition(.success(false))
+                }
+                
+            //error of getUserData
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
 }
 

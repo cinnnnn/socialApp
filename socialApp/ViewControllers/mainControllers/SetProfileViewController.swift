@@ -97,15 +97,29 @@ extension SetProfileViewController {
     
     private func getPeopleData() {
         
-        guard let user = currentUser else { return }
-        FirestoreService.shared.getUserData(userID: user.uid) {[weak self] result in
+        guard let email = currentUser?.email else { return }
+        FirestoreService.shared.getUserData(userID: email) {[weak self] result in
             switch result {
             case .success(let mPeople):
                 self?.currentPeople = mPeople
                 UserDefaultsService.shared.saveMpeople(people: mPeople)
                 self?.setPeopleData()
-            case .failure(let error):
-                fatalError(error.localizedDescription)
+            case .failure(_):
+                //if get incorrect info from mPeople profile, logOut and go to authVC
+                AuthService.shared.signOut { result in
+                    switch result {
+                    case .success(_):
+                        self?.dismiss(animated: true) {
+                            let navVC = UINavigationController(rootViewController: AuthViewController())
+                            navVC.navigationBar.isHidden = true
+                            navVC.navigationItem.backButtonTitle = "Войти с Apple ID"
+                            self?.present(navVC, animated: false, completion: nil)
+                        }
+                        
+                    case .failure(let error):
+                        fatalError(error.localizedDescription)
+                    }
+                }
             }
         }
     }

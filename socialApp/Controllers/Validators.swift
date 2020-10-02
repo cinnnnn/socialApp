@@ -71,4 +71,6 @@ class Validators {
         return textCheck.evaluate(with: text)
     }
     
+    
+    
 }

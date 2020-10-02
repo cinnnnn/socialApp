@@ -24,4 +24,49 @@ extension UIView {
         }
     }
     
+    func anchor(leading: NSLayoutXAxisAnchor?,
+                trailing: NSLayoutXAxisAnchor?,
+                top: NSLayoutYAxisAnchor?,
+                bottom:NSLayoutYAxisAnchor?,
+                height: NSLayoutDimension? = nil,
+                width: NSLayoutDimension? = nil,
+                multiplier: CGSize = .init(width: 1, height: 1),
+                padding: UIEdgeInsets = .zero,
+                size: CGSize = .zero) {
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let leading = leading {
+            leadingAnchor.constraint(equalTo: leading, constant: padding.left).isActive = true
+        }
+        
+        if let trailing = trailing {
+            trailingAnchor.constraint(equalTo: trailing, constant: -padding.right).isActive = true
+        }
+        
+        if let bottom = bottom {
+            bottomAnchor.constraint(equalTo: bottom, constant: -padding.bottom).isActive = true
+        }
+        
+        if let top = top {
+            topAnchor.constraint(equalTo: top, constant: padding.top).isActive = true
+        }
+        
+        if let height = height, size.height == 0 {
+            heightAnchor.constraint(equalTo: height, multiplier: multiplier.height).isActive = true
+        }
+        
+        if let width = width, size.width == 0 {
+            widthAnchor.constraint(equalTo: width, multiplier: multiplier.width).isActive = true
+        }
+        
+        if size.width != 0 && width == nil {
+            widthAnchor.constraint(equalToConstant: size.width).isActive = true
+        }
+        
+        if size.height != 0 && height == nil {
+            heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        }
+    }
+    
 }

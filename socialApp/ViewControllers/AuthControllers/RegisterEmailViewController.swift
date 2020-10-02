@@ -67,8 +67,6 @@ class RegisterEmailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         setupVC()
         setupConstraints()
         setupButtonAction()
@@ -79,8 +77,10 @@ class RegisterEmailViewController: UIViewController {
 extension RegisterEmailViewController {
     
     private func setupVC() {
-        view.backgroundColor = .systemBackground
         
+        view.backgroundColor = .systemBackground
+        navigationController?.navigationBar.isHidden = false        
+       
         if let email = email {
             loginLabel.text = "Проверь \(email) почту, пройди по ссылке в письме для активации"
             emailLabel.text = "Твоя почта \(email)"
@@ -89,14 +89,18 @@ extension RegisterEmailViewController {
         passwordTextField.delegate = self
         confirmPasswordTextField.delegate = self
     }
-}
 
-//MARK: - setupButtonAction
-extension RegisterEmailViewController {
-    
     private func setupButtonAction() {
         
         signUpButton.addTarget(self, action: #selector(signUpButtonPressed), for: .touchUpInside)
+    }
+    
+    private func toGenderSelect(user: User){
+        let navController = UINavigationController.init(rootViewController: GenderSelectionViewController(currentUser: user))
+        navController.modalPresentationStyle = .fullScreen
+        navController.navigationBar.backgroundColor = .systemBackground
+        navController.navigationBar.prefersLargeTitles = true
+        present(navController, animated: true, completion: nil)
     }
 }
 
@@ -106,7 +110,6 @@ extension RegisterEmailViewController {
     @objc func signUpButtonPressed() {
         
         //check activation mail before next VC
-        
         AuthService.shared.register(
             email: email,
             password: passwordTextField.text,
@@ -116,16 +119,14 @@ extension RegisterEmailViewController {
             case .success(let user):
                 guard let email = user.email else { fatalError("cant get email")}
                 //if user create in auth, then create current user in cloud Firestore
-                FirestoreService.shared.saveBaseProfile(id: user.uid,
+                FirestoreService.shared.saveBaseProfile(id: email,
                                                         email: email ) { result in
-                                                            switch result {
-                                                            case .success():
-                                                                self?.dismiss(animated: true) {
-                                                                    self?.delegate?.toGenderSelect(currentUser: user)
-                                                                }
-                                                            case .failure(let error):
-                                                                fatalError(error.localizedDescription)
-                                                            }
+                    switch result {
+                    case .success():
+                        self?.toGenderSelect(user: user)
+                    case .failure(let error):
+                        fatalError(error.localizedDescription)
+                    }
                 }
                 
             case .failure(let error):
@@ -134,15 +135,12 @@ extension RegisterEmailViewController {
                                 text: myError,
                                 buttonText: "Понятно")
                 self?.signUpButton.isEnabled = true
-                
             }
         }
     }
     
     @objc func loginButtonPressed() {
-        dismiss(animated: true) {
-            self.delegate?.toLogin()
-        }
+        
     }
 }
 
@@ -176,11 +174,13 @@ extension RegisterEmailViewController {
                                       buttonHandler: complition)
         
         present(alert, animated: true, completion: nil)
+        
+        alert.setMyLightStyle()
     }
     
     private func showSexAlert(user: User) {
-       let alert = UIAlertController(title: "Нужно знать твой пол",
-                                     message: "Не ошибись, изменить пол будет невозможно",
+       let alert = UIAlertController(title: "Небхдимо указать свой поол",
+                                     message: nil,
                                      preferredStyle: .actionSheet)
         let saveAction = UIAlertAction(title: "Продолжить", style: .default) {[weak self] _ in
             self?.dismiss(animated: true,
@@ -189,7 +189,7 @@ extension RegisterEmailViewController {
             })
         }
         alert.addAction(saveAction)
-        
+        alert.setMyLightStyle()
     }
 }
 

@@ -23,14 +23,14 @@ class ListenerService {
         db.collection("users")
     }
     private var requestChatsRef: CollectionReference {
-        guard let user = currentUser else { fatalError("Cant get current user")}
-        let collection = db.collection(["users", user.uid, "requestChats"].joined(separator: "/"))
+        guard let email = currentUser?.email else { fatalError("Cant get current user")}
+        let collection = db.collection(["users", email, "requestChats"].joined(separator: "/"))
         return collection
     }
     
     private var activeChatsRef: CollectionReference {
-        guard let user = currentUser else { fatalError("Cant get current user")}
-        let collection = db.collection(["users", user.uid, "activeChats"].joined(separator: "/"))
+        guard let email = currentUser?.email else { fatalError("Cant get current user")}
+        let collection = db.collection(["users", email, "activeChats"].joined(separator: "/"))
         return collection
     }
     private var peopleListner: ListenerRegistration?
@@ -59,7 +59,7 @@ class ListenerService {
                 
                 case .added:
                     guard !people.contains(user) else { return }
-                    guard user.senderId != self?.currentUser?.uid else { return }
+                    guard user.senderId != self?.currentUser?.email else { return }
                     guard user.isActive == true else { return }
                     self?.peopleDelegate?.peopleNearby.append(user)
                     self?.peopleDelegate?.reloadData()

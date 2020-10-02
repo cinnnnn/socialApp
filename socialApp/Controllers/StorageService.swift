@@ -27,7 +27,7 @@ class StorageService {
     }
     
     private var currentUserID: String? {
-        Auth.auth().currentUser?.uid
+        Auth.auth().currentUser?.email
     }
     
     //MARK:  getImage

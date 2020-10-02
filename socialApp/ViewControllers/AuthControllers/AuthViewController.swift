@@ -41,9 +41,26 @@ class AuthViewController: UIViewController {
         appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
     }
     
+    private func toGenderSelect(user: User){
+        let navController = UINavigationController.init(rootViewController: GenderSelectionViewController(currentUser: user))
+        navController.modalPresentationStyle = .fullScreen
+        navController.navigationBar.backgroundColor = .systemBackground
+        navController.navigationBar.prefersLargeTitles = true
+        present(navController, animated: true, completion: nil)
+    }
+    
+    private func toMainTabBar(user: User){
+        let mainTabBarVC = MainTabBarController(currentUser: user)
+        mainTabBarVC.modalPresentationStyle = .fullScreen
+        present(mainTabBarVC, animated: true, completion: nil)
+    }
+    
     //MARK:  objc func
     @objc func loginButtonPressed() {
-        toLogin()
+        let navController = UINavigationController.init(rootViewController: LoginViewController())
+        navController.modalPresentationStyle = .fullScreen
+        navController.navigationBar.isHidden = true
+        present(navController, animated: true, completion: nil)
     }
     
     @objc func appleButtonPressed() {
@@ -77,20 +94,18 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                         
                     case .success(let user):
                         //if success Apple login renew or create base mPeople info
-                        FirestoreService.shared.saveBaseProfile(id: user.uid,
+                        FirestoreService.shared.saveBaseProfile(id: user.email!,
                                                                 email: user.email!) { result in
                                                                     //check mPeople data for next VC
-                            FirestoreService.shared.getUserData(userID: user.uid) { result in
+                            FirestoreService.shared.getUserData(userID: user.email!) { result in
                                                                         switch result {
                                                                         
                                                                         case .success(let mPeople):
                                                                             //check gender and want data in mPeople
-                                                                            if mPeople.sex == "" {
-                                                                                self?.toGenderSelect(currentUser: user)
-                                                                            } else if mPeople.search == "" {
-                                                                                self?.toWantSelect(currentUser: user)
+                                                                            if mPeople.sex == "" || mPeople.search == "" {
+                                                                                self?.toGenderSelect(user: user)
                                                                             } else {
-                                                                                self?.toMainTabBar(currentUser: user)
+                                                                                self?.toMainTabBar(user: user)
                                                                             }
                                                                         case .failure(_):
                                                                              break
@@ -109,43 +124,6 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
         }
     }
 }
-//MARK:  AuthNavigationDelegate
-extension AuthViewController: AuthNavigationDelegate {
-    func toGenderSelect(currentUser: User) {
-        let genderVC = GenderSelectionViewController(currentUser: currentUser)
-        genderVC.delegate = self
-        genderVC.modalPresentationStyle = .fullScreen
-        present(genderVC, animated: true, completion: nil)
-    }
-    
-    func toWantSelect(currentUser: User) {
-        let wantVC = WantSelectionViewController(currentUser: currentUser)
-        wantVC.delegate = self
-        wantVC.modalPresentationStyle = .fullScreen
-        present(wantVC, animated: true, completion: nil)
-    }
-    
-    func toMainTabBar(currentUser: User) {
-        let mainTabBarCont = MainTabBarController(currentUser: currentUser)
-        mainTabBarCont.modalPresentationStyle = .fullScreen
-        present(mainTabBarCont, animated: true, completion: nil)
-    }
-    
-    func toLogin() {
-        let loginVC = LoginViewController()
-        loginVC.delegate = self
-        loginVC.modalPresentationStyle = .fullScreen
-        present(loginVC, animated: true, completion: nil)
-    }
-    
-    func toRegister(email: String?) {
-        let signUpVc = RegisterEmailViewController(email: email)
-        signUpVc.delegate = self
-        signUpVc.modalPresentationStyle = .fullScreen
-        present(signUpVc, animated: true, completion: nil)
-    }
-}
-
 
 //MARK:   alertController
 extension AuthViewController {
@@ -180,26 +158,32 @@ extension AuthViewController {
         buttonStackView.axis = .vertical
         buttonStackView.spacing = 10
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        logoImage.translatesAutoresizingMaskIntoConstraints = false
+      
         loginButton.translatesAutoresizingMaskIntoConstraints = false
-        appleButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(logoImage)
         view.addSubview(buttonStackView)
         
-        NSLayoutConstraint.activate([
-            logoImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            logoImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            logoImage.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            logoImage.heightAnchor.constraint(equalTo: logoImage.widthAnchor, multiplier: 1.0/1.0),
-            
-            buttonStackView.topAnchor.constraint(equalTo: logoImage.bottomAnchor, constant: 30),
-            buttonStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            buttonStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            
-            appleButton.heightAnchor.constraint(equalTo: appleButton.widthAnchor, multiplier: 1.0/7.28)
-        ])
+        logoImage.anchor(leading: view.leadingAnchor,
+                         trailing: view.trailingAnchor,
+                         top: view.safeAreaLayoutGuide.topAnchor,
+                         bottom: nil,
+                         height: logoImage.widthAnchor,
+                         padding: .init(top: 25, left: 25, bottom: 0, right: 25))
+        
+        buttonStackView.anchor(leading: logoImage.leadingAnchor,
+                               trailing: logoImage.trailingAnchor,
+                               top: logoImage.bottomAnchor,
+                               bottom: nil,
+                               padding: .init(top: 25, left: 0, bottom: 0, right: 0))
+        
+        appleButton.anchor(leading: nil,
+                           trailing: nil,
+                           top: nil,
+                           bottom: nil,
+                           height: appleButton.widthAnchor,
+                           multiplier: .init(width: 0, height: 1.0/7.28))
+        
     }
 }
 

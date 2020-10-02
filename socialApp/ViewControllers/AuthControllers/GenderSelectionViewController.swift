@@ -53,7 +53,9 @@ class GenderSelectionViewController: UIViewController {
     }
     
     private func setup() {
-         view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemBackground
+        navigationController?.navigationBar.tintColor = .label
+        navigationItem.backButtonTitle = "Сменить пол"
         
         radioButton.buttonsArray = [manButton,womanButton]
         radioButton.defaultButton = manButton
@@ -80,9 +82,8 @@ class GenderSelectionViewController: UIViewController {
         FirestoreService.shared.saveGender(user: user, gender: gender) {[weak self] result in
             switch result {
             case .success():
-                self?.dismiss(animated: true) {
-                    self?.delegate?.toWantSelect(currentUser: user)
-                }
+                self?.navigationController?.pushViewController(WantSelectionViewController(currentUser: user), animated: true)
+                
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

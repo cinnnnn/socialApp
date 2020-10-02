@@ -62,6 +62,13 @@ class WantSelectionViewController: UIViewController {
         signUpButton.addTarget(self, action: #selector(touchSignUpButton), for: .touchUpInside)
     }
     
+    //MARK: toMainTabBar
+    private func toMainTabBar(user: User){
+       let mainTabBarVC = MainTabBarController(currentUser: user)
+        mainTabBarVC.modalPresentationStyle = .fullScreen
+        present(mainTabBarVC, animated: true, completion: nil)
+    }
+    
     @objc private func touchManButton() {
         radioButton.buttonArrayUpdated(buttonSelected: manButton)
     }
@@ -83,9 +90,7 @@ class WantSelectionViewController: UIViewController {
                                                             switch result {
                                                                 
                                                             case .success():
-                                                                self?.dismiss(animated: true) {
-                                                                    self?.delegate?.toMainTabBar(currentUser: user)
-                                                                }
+                                                                self?.toMainTabBar(user: user)
                                                             case .failure(let error):
                                                                 fatalError(error.localizedDescription)
                                                             }

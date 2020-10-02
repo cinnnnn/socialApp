@@ -66,10 +66,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     //MARK:  setup
     private func setup() {
         
-        navigationController?.navigationBar.isHidden = true
-        navigationController?.navigationBar.backgroundColor = .systemBackground
-        navigationItem.title = "Объявления"
-        
         view.backgroundColor = .systemBackground
         
     }
@@ -222,22 +218,26 @@ extension PeopleViewController {
                 .paragraphStyle : paragraph
             ]
             
-            UIView.animate(withDuration: 0.2) {[weak self] in
-                self?.advertLabel.layer.opacity = 0
-                self?.nameLabel.layer.opacity = 0
-                self?.distanceLabel.layer.opacity = 0
-            } completion: {[weak self] isComplite in
-                if isComplite {
-                    self?.advertLabel.attributedText = NSMutableAttributedString(string: item?.advert ?? "", attributes: attributes)
-                    self?.nameLabel.text = item?.displayName
-                    self?.distanceLabel.text = "0.00KM"
-                    UIView.animate(withDuration: 0.5) {[weak self] in
-                        self?.advertLabel.layer.opacity = 1
-                        self?.nameLabel.layer.opacity = 1
-                        self?.distanceLabel.layer.opacity = 1
-                    }
-                }
-            }
+            advertLabel.attributedText = NSMutableAttributedString(string: item?.advert ?? "", attributes: attributes)
+            nameLabel.text = item?.displayName
+            distanceLabel.text = "0.00KM"
+            
+//            UIView.animate(withDuration: 0.2) {[weak self] in
+//                self?.advertLabel.layer.opacity = 0
+//                self?.nameLabel.layer.opacity = 0
+//                self?.distanceLabel.layer.opacity = 0
+//            } completion: {[weak self] isComplite in
+//                if isComplite {
+//                    self?.advertLabel.attributedText = NSMutableAttributedString(string: item?.advert ?? "", attributes: attributes)
+//                    self?.nameLabel.text = item?.displayName
+//                    self?.distanceLabel.text = "0.00KM"
+//                    UIView.animate(withDuration: 0.5) {[weak self] in
+//                        self?.advertLabel.layer.opacity = 1
+//                        self?.nameLabel.layer.opacity = 1
+//                        self?.distanceLabel.layer.opacity = 1
+//                    }
+//                }
+//            }
             //set new current visible indexPath
             visibleIndexPath = indexPath
         }

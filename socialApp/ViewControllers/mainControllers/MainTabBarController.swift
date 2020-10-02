@@ -47,20 +47,24 @@ class MainTabBarController: UITabBarController {
         
         viewControllers = [
             generateNavigationController(rootViewController: setProfileVC, image: #imageLiteral(resourceName: "profile"), title: nil),
-            generateNavigationController(rootViewController: peopleVC!, image: #imageLiteral(resourceName: "people"), title: nil),
-            generateNavigationController(rootViewController: listVC, image: #imageLiteral(resourceName: "chats"), title: nil)
+            generateNavigationController(rootViewController: peopleVC!, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
+            generateNavigationController(rootViewController: listVC, image: #imageLiteral(resourceName: "chats"), title: nil, isHidden: true)
         ]
     }
     
     
     private func generateNavigationController(rootViewController: UIViewController,
                                               image: UIImage,
-                                              title: String?) -> UIViewController {
+                                              title: String?,
+                                              isHidden: Bool = false) -> UIViewController {
         
         let navController = UINavigationController(rootViewController: rootViewController)
         navController.tabBarItem.imageInsets = UIEdgeInsets(top: 15, left: 0, bottom: 0, right: 0)
         navController.tabBarItem.image = image
-        navController.tabBarItem.title = title
+
+        navController.navigationBar.isHidden = isHidden
+        navController.navigationBar.backgroundColor = .systemBackground
+        navController.navigationItem.title = title
         
         return navController
     }

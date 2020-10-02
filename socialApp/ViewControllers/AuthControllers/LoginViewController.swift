@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
     
@@ -48,19 +49,29 @@ extension LoginViewController {
     
     private func setupVC() {
         view.backgroundColor = .systemBackground
+        navigationItem.backButtonTitle = "Указать другой email"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.backgroundColor = .myWhiteColor()
+        navigationController?.navigationBar.tintColor = .label
+        
         loginButton.isEnabled = false
         
         emailTextField.delegate = self
         passwordTextField.delegate = self
     }
-}
-//MARK: - setupButtonAction
-extension LoginViewController {
     
     private func setupButtonAction() {
         
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
         emailTextField.addTarget(self, action: #selector(emailEnterComplite), for: .editingDidEnd)
+    }
+    
+    private func toGenderSelect(user: User){
+        let navController = UINavigationController.init(rootViewController: GenderSelectionViewController(currentUser: user))
+        navController.modalPresentationStyle = .fullScreen
+        navController.navigationBar.backgroundColor = .systemBackground
+        navController.navigationBar.prefersLargeTitles = true
+        present(navController, animated: true, completion: nil)
     }
 }
 
@@ -84,7 +95,7 @@ extension LoginViewController {
         
         AuthService.shared.isEmailAlreadyRegister(email: email) {[weak self] result in
             switch result {
-                
+            
             case .success(let isRegister):
                 if isRegister {
                     self?.passwordTextField.isEnabled = true
@@ -118,41 +129,40 @@ extension LoginViewController {
         case true:
             AuthService.shared.signIn(email: emailTextField.text,
                                       password: passwordTextField.text) {[weak self] result in
-                                        switch result {
-                                        case .success( let user):
-                                            //if correct login user, than close LoginVC and check setProfile info
-                                            FirestoreService.shared.getUserData(userID: user.uid) { result in
-                                                switch result {
-                                                
-                                                case .success(let mPeople):
-                                                    self?.dismiss(animated: true) {
-                                                        if mPeople.sex == "" {
-                                                            self?.delegate?.toGenderSelect(currentUser: user)
-                                                        } else if mPeople.search == "" {
-                                                            self?.delegate?.toWantSelect(currentUser: user)
-                                                        } else {
-                                                            self?.delegate?.toMainTabBar(currentUser: user)
-                                                        }
-                                                    }
-                                                    //error of getUserData
-                                                case .failure(let error):
-                                                    fatalError(error.localizedDescription)
-                                                }
-                                            }
-                                        //error of logIn
-                                        case .failure(let eror):
-                                            let myError = eror.localizedDescription
-                                            print(myError)
-                                            self?.showAlert(title: "Ошибка",
-                                                            text: myError,
-                                                            buttonText: "Понятно")
-                                        }
+                switch result {
+                case .success( let user):
+                    //if correct login user, than close LoginVC and check setProfile info
+                    
+                    FirestoreService.shared.getUserData(userID: user.email! ) { result in
+                        switch result {
+                        
+                        case .success(let mPeople):
+                            if mPeople.sex == "" || mPeople.search == "" {
+                                self?.toGenderSelect(user: user)
+                            } else {
+                                let mainVC = MainTabBarController(currentUser: user)
+                                mainVC.modalPresentationStyle = .fullScreen
+                                self?.present(mainVC, animated: true, completion: nil)
+                            }
+                            
+                        //error of getUserData
+                        case .failure(let error):
+                            fatalError(error.localizedDescription)
+                        }
+                    }
+                //error of logIn
+                case .failure(let eror):
+                    let myError = eror.localizedDescription
+                    print(myError)
+                    self?.showAlert(title: "Ошибка входа",
+                                    text: "Некорректная комбинация email/пароль",
+                                    buttonText: "Попробую еще")
+                }
             }
-            //if passwordTextField is disable go to RegisterVC
+        //if passwordTextField is disable go to RegisterVC
         default:
-            dismiss(animated: true) {
-                self.delegate?.toRegister(email: self.emailTextField.text)
-            }
+            let registerEmailVC = RegisterEmailViewController(email: emailTextField.text)
+            navigationController?.pushViewController(registerEmailVC, animated: true)
         }
     }
 }
@@ -199,9 +209,10 @@ extension LoginViewController {
         
         let alert = UIAlertController(title: title,
                                       text: text,
-                                      buttonText: "",
+                                      buttonText: buttonText,
                                       style: .alert)
         
+        alert.setMyLightStyle()
         present(alert, animated: true, completion: nil)
     }
 }
@@ -209,22 +220,14 @@ extension LoginViewController {
 //MARK touchBegan
 extension LoginViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-            self.view.endEditing(true)
-        }
+        self.view.endEditing(true)
+    }
 }
 
 //MARK: - setupConstraints
 
 extension LoginViewController {
     private func setupConstraints() {
-        
-        signInLogo.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        correctEmailLabel.translatesAutoresizingMaskIntoConstraints = false
-        emailLabel.translatesAutoresizingMaskIntoConstraints = false
-        passwordLabel.translatesAutoresizingMaskIntoConstraints = false
-        emailTextField.translatesAutoresizingMaskIntoConstraints = false
-        passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(signInLogo)
         view.addSubview(loginButton)
@@ -234,39 +237,49 @@ extension LoginViewController {
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
         
-        NSLayoutConstraint.activate([
-            signInLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
-            signInLogo.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            signInLogo.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            
-            
-            emailTextField.topAnchor.constraint(equalTo: signInLogo.bottomAnchor, constant: 58),
-            emailTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            emailTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            
-            emailLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -5),
-            emailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            emailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            
-            correctEmailLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 5),
-            correctEmailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            correctEmailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            
-            
-            passwordTextField.topAnchor.constraint(equalTo: correctEmailLabel.bottomAnchor, constant: 38),
-            passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            
-            passwordLabel.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -5),
-            passwordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            passwordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            
-            loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25),
-            loginButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            loginButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            loginButton.heightAnchor.constraint(equalTo: loginButton.widthAnchor, multiplier: 1.0/7.28),
-            
-        ])
+        signInLogo.anchor(leading: view.leadingAnchor,
+                          trailing: view.trailingAnchor,
+                          top: view.safeAreaLayoutGuide.topAnchor,
+                          bottom: nil,
+                          padding: .init(top: 80, left: 25, bottom: 0, right: 25))
+        
+        emailTextField.anchor(leading: view.leadingAnchor,
+                              trailing: view.trailingAnchor,
+                              top: signInLogo.bottomAnchor,
+                              bottom: nil,
+                              padding: .init(top: 60, left: 25, bottom: 0, right: 25))
+        
+        emailLabel.anchor(leading: view.leadingAnchor,
+                          trailing: view.trailingAnchor,
+                          top: emailTextField.topAnchor,
+                          bottom: nil,
+                          padding: .init(top: -15, left: 25, bottom: 0, right: 25))
+        
+        correctEmailLabel.anchor(leading: view.leadingAnchor,
+                                 trailing: view.trailingAnchor,
+                                 top: emailTextField.bottomAnchor,
+                                 bottom: nil,
+                                 padding: .init(top: 5, left: 25, bottom: 0, right: 25))
+        
+        passwordTextField.anchor(leading: view.leadingAnchor,
+                                 trailing: view.trailingAnchor,
+                                 top: correctEmailLabel.topAnchor,
+                                 bottom: nil,
+                                 padding: .init(top: 40, left: 25, bottom: 0, right: 25))
+        
+        passwordLabel.anchor(leading: view.leadingAnchor,
+                             trailing: view.trailingAnchor,
+                             top: passwordTextField.topAnchor,
+                             bottom: nil,
+                             padding: .init(top: -15, left: 25, bottom: 0, right: 25))
+        
+        loginButton.anchor(leading: view.leadingAnchor,
+                           trailing: view.trailingAnchor,
+                           top: nil,
+                           bottom: view.safeAreaLayoutGuide.bottomAnchor,
+                           height: loginButton.widthAnchor,
+                           multiplier: .init(width: 0, height: 1.0/7.28),
+                           padding: .init(top: 0, left: 25, bottom: 25, right: 25))
     }
 }
 

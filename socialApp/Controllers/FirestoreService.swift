@@ -36,7 +36,8 @@ class FirestoreService {
                 case .success(let url):
                     let userImageString = url.absoluteString
                     //save user to FireStore
-                    self?.usersReference.document(user.uid).setData([MPeople.CodingKeys.userImage.rawValue : userImageString], merge: true, completion: { error in
+                    guard let email = user.email else { fatalError("Cant get email from User")}
+                    self?.usersReference.document(email).setData([MPeople.CodingKeys.userImage.rawValue : userImageString], merge: true, completion: { error in
                         if let error = error {
                             complition(.failure(error))
                         } else {
@@ -70,7 +71,8 @@ class FirestoreService {
     }
     //MARK:  saveGender
     func saveGender(user: User, gender: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        usersReference.document(user.uid).setData([MPeople.CodingKeys.sex.rawValue : gender],
+        guard let email = user.email else { fatalError("Cant get email from User")}
+        usersReference.document(email).setData([MPeople.CodingKeys.sex.rawValue : gender],
                                                   merge: true,
                                                   completion: { (error) in
                                                     if let error = error {
@@ -83,7 +85,8 @@ class FirestoreService {
     
     //MARK:  saveWant
     func saveWant(user: User, want: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        usersReference.document(user.uid).setData([MPeople.CodingKeys.search.rawValue : want],
+        guard let email = user.email else { fatalError("Cant get email from User")}
+        usersReference.document(email).setData([MPeople.CodingKeys.search.rawValue : want],
                                                   merge: true,
                                                   completion: { (error) in
                                                     if let error = error {
@@ -96,7 +99,8 @@ class FirestoreService {
     
     //MARK:  saveDefaultImage
     func saveDefaultImage(user: User, defaultImageString: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        usersReference.document(user.uid).setData([MPeople.CodingKeys.userImage.rawValue : defaultImageString],
+        guard let email = user.email else { fatalError("Cant get email from User")}
+        usersReference.document(email).setData([MPeople.CodingKeys.userImage.rawValue : defaultImageString],
                                                   merge: true,
                                                   completion: { (error) in
                                                     if let error = error {
@@ -113,7 +117,8 @@ class FirestoreService {
                            advert: String,
                            isActive: Bool,
                            complition: @escaping (Result<Void, Error>) -> Void){
-        usersReference.document(user.uid).setData([MPeople.CodingKeys.displayName.rawValue : userName,
+        guard let email = user.email else { fatalError("Cant get email from User")}
+        usersReference.document(email).setData([MPeople.CodingKeys.displayName.rawValue : userName,
                                                    MPeople.CodingKeys.advert.rawValue: advert,
                                                    MPeople.CodingKeys.isActive.rawValue: isActive],
                                                   merge: true,
@@ -278,9 +283,9 @@ extension FirestoreService {
             guard let snapshot = snapshot else { fatalError("Cant get collection snapshot")}
             
             snapshot.documents.forEach { document in
-                element = T.init(documentSnap: document)
-                guard let message = element else { fatalError("message is nil")}
-                elements.append(message)
+                element = T(documentSnap: document)
+                guard let elementTType = element else { fatalError("Cant convert doc to T type")}
+                elements.append(elementTType)
             }
             complition(elements)
         }
