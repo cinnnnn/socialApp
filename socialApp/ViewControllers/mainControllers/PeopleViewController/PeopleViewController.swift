@@ -179,7 +179,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         dataSource?.apply(snapshot, animatingDifferences: true)
         
-        setDataForVisibleCell()
+        setDataForVisibleCell(firstLoad: true)
     }
     //MARK:  reloadData
     func reloadData() {
@@ -189,14 +189,14 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         dataSource?.apply(snapshot, animatingDifferences: true)
         
-        setDataForVisibleCell()
+        setDataForVisibleCell(firstLoad: true)
     }
 }
 
 //MARK:setDataForVisibleCell
 extension PeopleViewController {
     
-    private func setDataForVisibleCell()  {
+    private func setDataForVisibleCell(firstLoad: Bool = false)  {
         var visibleRect = CGRect()
         
         visibleRect.origin = collectionView.contentOffset
@@ -206,7 +206,7 @@ extension PeopleViewController {
         guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
         
         //set only when index path change to new value
-        if visibleIndexPath != indexPath {
+        if visibleIndexPath != indexPath || firstLoad {
             
             let item = dataSource?.itemIdentifier(for: indexPath)
             
