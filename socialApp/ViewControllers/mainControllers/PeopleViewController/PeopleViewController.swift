@@ -11,7 +11,7 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController, PeopleListenerDelegate {
+class PeopleViewController: UIViewController, PeopleListenerDelegate, PeopleCellDelegate {
     
     var currentUser: User!
     var currentPeople: MPeople?
@@ -61,6 +61,12 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkActiveAdvert()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        collectionView.layoutIfNeeded()
+
     }
     
     //MARK:  setup
@@ -145,13 +151,17 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     }
     
     //MARK: configureCell
-    private func configureCell<T:PeopleConfigurationCell>(cellType: T.Type, value: MPeople, indexPath: IndexPath) -> T {
+    private  func configureCell(value: MPeople, indexPath: IndexPath) -> PeopleCell {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)")}
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleCell.reuseID, for: indexPath) as? PeopleCell else { fatalError("Can't dequeue cell type PeopleCell")}
+        cell.delegate = self
         
-        cell.configure(with: value)
-      //  cell.likeButton.addTarget(self, action: #selector(pressLikeButton), for: .touchUpInside)
-      //  cell.delegate = self
+        
+        cell.configure(with: value) {
+            cell.layoutIfNeeded()
+        }
+        
+        
         return cell
     }
     
@@ -165,18 +175,25 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
                 
                 switch section {
                 case .main:
-                    return self?.configureCell(cellType: PeopleCell.self,
-                                               value: people,
+                    return self?.configureCell(value: people,
                                                indexPath: indexPath)
                 }
         })
     }
 
+    //MARK:  updateCell
+    func updateCell(user: MPeople) {
+        
+        collectionView.layoutIfNeeded()
+        collectionView.layoutSubviews()
+     
+    }
     //MARK:  updateData
     func updateData() {
         
         guard var snapshot = dataSource?.snapshot() else { return }
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
+        
         dataSource?.apply(snapshot, animatingDifferences: true)
         
         setDataForVisibleCell(firstLoad: true)
@@ -264,19 +281,6 @@ extension PeopleViewController: UICollectionViewDelegate {
         guard let currentPeople = currentPeople else { fatalError("Current people is nil") }
         let sendRequestVC = SendRequestViewController(requestForPeople: user, from: currentPeople)
         present(sendRequestVC, animated: true, completion: nil)
-    }
-    
-   
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        var visibleRect = CGRect()
-        print(#function)
-        
-        visibleRect.origin = collectionView.contentOffset
-        visibleRect.size = collectionView.bounds.size
-        
-        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
-        print(indexPath)
     }
    
 }

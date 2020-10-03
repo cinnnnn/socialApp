@@ -46,7 +46,6 @@
 		FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4B2523577100A7AA56 /* MMediaItem.swift */; };
 		FB79DA4F2524D1FB00A7AA56 /* UIScrollViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4E2524D1FA00A7AA56 /* UIScrollViewExtension.swift */; };
 		FB79DA56252501E100A7AA56 /* UIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA55252501E100A7AA56 /* UIApplicationExtension.swift */; };
-		FB79DA5925251AAE00A7AA56 /* PeopleCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA5825251AAE00A7AA56 /* PeopleCellView.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
@@ -120,7 +119,6 @@
 		FB79DA4B2523577100A7AA56 /* MMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMediaItem.swift; sourceTree = "<group>"; };
 		FB79DA4E2524D1FA00A7AA56 /* UIScrollViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewExtension.swift; sourceTree = "<group>"; };
 		FB79DA55252501E100A7AA56 /* UIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtension.swift; sourceTree = "<group>"; };
-		FB79DA5825251AAE00A7AA56 /* PeopleCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCellView.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -355,7 +353,6 @@
 				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
 				FB21A1BC24E59A31000A2E91 /* GradientView.swift */,
 				FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */,
-				FB79DA5825251AAE00A7AA56 /* PeopleCellView.swift */,
 				FBF2927E2512828C0090BA9E /* AdvertInactiveView.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
 				FB79DA4825234EDA00A7AA56 /* DateExtension.swift */,
@@ -538,7 +535,6 @@
 				FBEF608C24A8F4000005F947 /* UIButtonExtension.swift in Sources */,
 				FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */,
 				FBF6289524F678C300DCD4AC /* SectionsChats.swift in Sources */,
-				FB79DA5925251AAE00A7AA56 /* PeopleCellView.swift in Sources */,
 				FB09107E24FA73B2006B72D5 /* SendRequestViewController.swift in Sources */,
 				FBEF607824A602070005F947 /* AppDelegate.swift in Sources */,
 				FB1062DC24B09F6C0012C4D4 /* SetProfileViewController.swift in Sources */,

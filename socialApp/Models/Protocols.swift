@@ -19,12 +19,11 @@ protocol SelfConfiguringCell {
 
 protocol PeopleConfigurationCell {
     static var reuseID: String { get }
-    func configure(with value: MPeople)
-    
+    func configure(with value: MPeople, complition:@escaping()->Void)
 }
 
 protocol PeopleCellDelegate: class {
-    func likeTupped(user: MPeople)
+    func updateCell(user: MPeople)
 }
 
 protocol AuthNavigationDelegate: class {
