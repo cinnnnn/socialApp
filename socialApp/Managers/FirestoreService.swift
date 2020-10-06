@@ -111,7 +111,7 @@ class FirestoreService {
                                                   })
     }
     
-    //MARK: - saveAdvertAndName
+    //MARK:  saveAdvertAndName
     func saveAdvertAndName(user: User,
                            userName: String,
                            advert: String,
@@ -122,12 +122,24 @@ class FirestoreService {
                                                    MPeople.CodingKeys.advert.rawValue: advert,
                                                    MPeople.CodingKeys.isActive.rawValue: isActive],
                                                   merge: true,
-                                                  completion: { (error) in
+                                                  completion: { error in
                                                     if let error = error {
                                                         complition(.failure(error))
                                                     } else {
                                                         complition(.success(()))                                                    }
                                                   })
+    }
+    
+    func saveLocation(userID: String, longitude: Double, latitude: Double, complition: @escaping (Result<[String:Double],Error>) -> Void) {
+        usersReference.document(userID).setData([MPeople.CodingKeys.location.rawValue : ["longitude":longitude, "latitude":latitude]],
+                                                merge: true) { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                complition(.success([MLocation.longitude.rawValue:longitude,
+                                     MLocation.latitude.rawValue:latitude]))
+            }
+        }
     }
     
     //MARK:  getUserData

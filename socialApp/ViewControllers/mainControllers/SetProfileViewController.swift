@@ -10,6 +10,7 @@ import UIKit
 import SwiftUI
 import FirebaseAuth
 import SDWebImage
+import MapKit
 
 class SetProfileViewController: UIViewController {
     
@@ -45,15 +46,10 @@ class SetProfileViewController: UIViewController {
     var delegateNavigation: AuthNavigationDelegate?
     
     private var currentPeople: MPeople?
-    private var currentUser: User?
+    private var currentUser: User
     
     init(currentUser: User) {
         self.currentUser = currentUser
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    //init for SwiftUI canvas
-    init(){
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -69,7 +65,12 @@ class SetProfileViewController: UIViewController {
         setupButtonAction()
         getPeopleData()
         setupVC()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
+        getLocation()
     }
     
     private func setupVC() {
@@ -78,9 +79,8 @@ class SetProfileViewController: UIViewController {
         nameTextField.delegate = self
         advertTextView.addDoneButton()
     }
-}
-//MARK:  setupNavigationController
-extension SetProfileViewController {
+    
+    //MARK:  setupNavigationController
     private func setupNavigationController(){
         
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -90,14 +90,21 @@ extension SetProfileViewController {
         exitItem.tintColor = .label
         navigationItem.rightBarButtonItem = exitItem
     }
+    
+    //MARK:  setupButtonAction
+    private func setupButtonAction() {
+        goButton.addTarget(self, action: #selector(goButtonPressed), for: .touchUpInside)
+        sexButton.addTarget(self, action: #selector(touchSexButton), for: .touchUpInside)
+        wantButton.addTarget(self, action: #selector(touchWantButton), for: .touchUpInside)
+        profileImage.plusButton.addTarget(self, action: #selector(choosePhoto), for: .touchUpInside)
+    }
 }
 
 //MARK:  getPeopleData
 extension SetProfileViewController {
     
     private func getPeopleData() {
-        
-        guard let email = currentUser?.email else { return }
+        guard let email = currentUser.email else { return }
         FirestoreService.shared.getUserData(userID: email) {[weak self] result in
             switch result {
             case .success(let mPeople):
@@ -129,7 +136,6 @@ extension SetProfileViewController {
 extension SetProfileViewController {
     
     private func setPeopleData() {
-        
         guard let people = currentPeople else { return }
         
         if let imageURL = URL(string: people.userImage) {
@@ -154,18 +160,6 @@ extension SetProfileViewController {
         }
     }
 }
-//MARK:  setupButtonAction
-extension SetProfileViewController {
-    
-    private func setupButtonAction() {
-        
-        goButton.addTarget(self, action: #selector(goButtonPressed), for: .touchUpInside)
-        sexButton.addTarget(self, action: #selector(touchSexButton), for: .touchUpInside)
-        wantButton.addTarget(self, action: #selector(touchWantButton), for: .touchUpInside)
-        profileImage.plusButton.addTarget(self, action: #selector(choosePhoto), for: .touchUpInside)
-    }
-}
-
 
 extension SetProfileViewController {
     //MARK:  signOut
@@ -175,10 +169,9 @@ extension SetProfileViewController {
     
     //MARK:  touchSexButton
     @objc func touchSexButton() {
-        guard let user = currentUser else { return }
         switch sexButton.titleLabel?.text {
         case Sex.man.rawValue:
-            FirestoreService.shared.saveGender(user: user,
+            FirestoreService.shared.saveGender(user: currentUser,
                                                gender: Sex.woman.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
@@ -190,7 +183,7 @@ extension SetProfileViewController {
                                                 }
             }
         default:
-            FirestoreService.shared.saveGender(user: user,
+            FirestoreService.shared.saveGender(user: currentUser,
                                                gender: Sex.man.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
@@ -206,10 +199,9 @@ extension SetProfileViewController {
     
     //MARK:  touchWantButton
     @objc func touchWantButton() {
-        guard let user = currentUser else { return }
         switch wantButton.titleLabel?.text {
         case Want.man.rawValue:
-            FirestoreService.shared.saveWant(user: user,
+            FirestoreService.shared.saveWant(user: currentUser,
                                              want: Want.woman.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
@@ -222,7 +214,7 @@ extension SetProfileViewController {
             }
             
         default:
-            FirestoreService.shared.saveWant(user: user,
+            FirestoreService.shared.saveWant(user: currentUser,
                                              want: Want.man.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
@@ -249,11 +241,11 @@ extension SetProfileViewController {
     
     //MARK:  goButtonPressed
     @objc func goButtonPressed() {
-        guard let user = currentUser else { return }
         let name = nameTextField.text ?? ""
-        //MARK: NEED ADD VALIDATE TO TEXT ADVERT
+        //MARK: NEED ADD VALIDATE zTO TEXT ADVERT
         let advert = advertTextView.text ?? ""
-        FirestoreService.shared.saveAdvertAndName(user: user,
+
+        FirestoreService.shared.saveAdvertAndName(user: currentUser,
                                                   userName: name,
                                                   advert: advert,
                                                   isActive: true) {[weak self] result in
@@ -268,6 +260,20 @@ extension SetProfileViewController {
                                                     case .failure(let error):
                                                         fatalError(error.localizedDescription)
                                                     }
+        }
+    }
+}
+
+extension SetProfileViewController {
+    //MARK: getLocation
+    private func getLocation() {
+        if let userID = currentUser.email {
+            LocationService.shared.getCoordinate(userID: userID) {[weak self] isAllowPermission in
+                //if geo is denied, show alert and go to settings
+                if isAllowPermission == false {
+                    self?.openSettingsAlert()
+                }
+            }
         }
     }
 }
@@ -328,6 +334,21 @@ extension SetProfileViewController {
         
         present(photoAlert, animated: true, completion: nil)
     }
+    
+    //MARK: openSettingsAlert
+    private func openSettingsAlert(){
+        let alert = UIAlertController(title: "Нет доступа к геопозиции",
+                                      text: "Необходимо разрешить доступ к геопозиции в настройках",
+                                      buttonText: "Перейти в настройки",
+                                      style: .alert) {
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+            
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl)
+            }
+        }
+        present(alert, animated: true, completion: nil)
+    }
 }
 //MARK:  UITextFieldDelegate
 extension SetProfileViewController: UITextFieldDelegate {
@@ -340,22 +361,6 @@ extension SetProfileViewController: UITextFieldDelegate {
 //MARK:  UITextViewDelegate
 extension SetProfileViewController:UITextViewDelegate {
 
-//
-//
-//    func textViewDidBeginEditing(_ textView: UITextView) {
-//        if textView.text == "Для просмотра обьявлений других пользователей, расскажи о своих желаниях..." {
-//            textView.text = ""
-//            textView.textColor = .label
-//        }
-//    }
-//
-//    func textViewDidEndEditing(_ textView: UITextView) {
-//        if textView.text == "" {
-//            textView.text = "Для просмотра обьявлений других пользователей, расскажи о своих желаниях..."
-//            textView.textColor = .lightGray
-//        }
-//    }
-    
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let maxSymbols = 2000
         let existingLines = textView.text.components(separatedBy: CharacterSet.newlines)
@@ -381,7 +386,7 @@ extension SetProfileViewController:UITextViewDelegate {
     }
 }
 
-//MARK: - UIImagePickerControllerDelegate
+//MARK:  UIImagePickerControllerDelegate
 
 extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigationControllerDelegate{
     
@@ -390,8 +395,7 @@ extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigatio
         picker.dismiss(animated: true, completion: nil)
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
         profileImage.profileImage.image = image
-        guard let user = currentUser else { fatalError("Cant get current user") }
-        FirestoreService.shared.saveAvatar(image: image, user: user) {[weak self] result in
+        FirestoreService.shared.saveAvatar(image: image, user: currentUser) {[weak self] result in
             switch result {
             case .success(let userImageString):
                 self?.currentPeople?.userImage = userImageString
@@ -403,14 +407,14 @@ extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigatio
     }
 }
 
-//MARK touchBegan
+//MARK: touchBegan
 extension SetProfileViewController {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
             self.view.endEditing(true)
         }
 }
 
-//MARK: - setupConstraints
+//MARK:  setupConstraints
 extension SetProfileViewController {
     
     private func setupConstraints() {
@@ -484,22 +488,3 @@ extension SetProfileViewController {
     }
 }
 
-//MARK: - SwiftUI
-struct SetupProfileViewControllerProvider: PreviewProvider {
-    
-    static var previews: some View {
-        ContenerView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContenerView: UIViewControllerRepresentable {
-        
-        func makeUIViewController(context: Context) -> SetProfileViewController {
-            
-            return SetProfileViewController()
-        }
-        
-        func updateUIViewController(_ uiViewController: SetProfileViewController, context: Context) {
-            
-        }
-    }
-}
