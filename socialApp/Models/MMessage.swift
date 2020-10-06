@@ -94,7 +94,7 @@ struct MMessage: Hashable, ReprasentationModel, MessageType{
       }
     
     var reprasentation: [String:Any] {
-        var rep:[ String: Any ] = [
+        var rep:[String: Any] = [
             "displayName": sender.displayName,
             "senderId": sender.senderId,
             "messageId": messageId,

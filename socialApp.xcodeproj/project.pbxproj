@@ -48,6 +48,7 @@
 		FB79DA56252501E100A7AA56 /* UIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA55252501E100A7AA56 /* UIApplicationExtension.swift */; };
 		FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA6A252C834C00A7AA56 /* LocationService.swift */; };
 		FB79DA6E252C942B00A7AA56 /* MLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA6D252C942B00A7AA56 /* MLocation.swift */; };
+		FB79DA78252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA77252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
@@ -123,6 +124,7 @@
 		FB79DA55252501E100A7AA56 /* UIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtension.swift; sourceTree = "<group>"; };
 		FB79DA6A252C834C00A7AA56 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		FB79DA6D252C942B00A7AA56 /* MLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLocation.swift; sourceTree = "<group>"; };
+		FB79DA77252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2DExtension.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -268,6 +270,7 @@
 				FBEF608B24A8F3FF0005F947 /* UIButtonExtension.swift */,
 				FB79DA55252501E100A7AA56 /* UIApplicationExtension.swift */,
 				FBEF608D24A9073E0005F947 /* UIFontExtension.swift */,
+				FB79DA77252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift */,
 				FB09107F24FA93E2006B72D5 /* UITextViewExtension.swift */,
 				FBEF609024A90AEC0005F947 /* UILabelExtension.swift */,
 				FBB3B260250905D800440632 /* UIImageExtension.swift */,
@@ -553,6 +556,7 @@
 				FB1062DA24AE69250012C4D4 /* LoginViewController.swift in Sources */,
 				FBF2927F2512828C0090BA9E /* AdvertInactiveView.swift in Sources */,
 				FB61B54724FE7F23002761ED /* AuthService.swift in Sources */,
+				FB79DA78252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift in Sources */,
 				FB21A1BF24E5ADE5000A2E91 /* RequestChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
 				FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */,

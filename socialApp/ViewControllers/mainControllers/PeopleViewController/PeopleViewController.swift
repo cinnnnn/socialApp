@@ -18,7 +18,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     var peopleNearby: [MPeople] = []
     var sortedPeopleNearby: [MPeople] {
         peopleNearby.sorted { p1, p2  in
-            p1.advert < p2.advert
+            p1.distance < p2.distance
         }
     }
     var visibleIndexPath: IndexPath?
@@ -55,8 +55,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         setupDiffebleDataSource()
         setup()
         setupConstraints()
-
-        ListenerService.shared.addPeopleListener(delegate: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,17 +62,12 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         checkActiveAdvert()
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        collectionView.layoutIfNeeded()
-
-    }
-    
     //MARK:  setup
     private func setup() {
         
-        view.backgroundColor = .systemBackground
+        ListenerService.shared.addPeopleListener(delegate: self)
         
+        view.backgroundColor = .systemBackground
     }
     
     //MARK: checkActiveAdvert
@@ -105,9 +98,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     //MARK: setupMainSection
     private func setupMainSection() -> NSCollectionLayoutSection {
-//        let statusBarHeight = UIApplication.statusBarHeight
-//        let tabBarHeight = tabBarController?.tabBar.frame.height ?? 0
-//        let sectionHeight = view.frame.height - statusBarHeight - tabBarHeight
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                               heightDimension: .fractionalHeight(1))
@@ -171,13 +161,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
                 }
         })
     }
-
-    //MARK:  updateCell
-    func updateCell(user: MPeople) {
-        collectionView.layoutIfNeeded()
-        collectionView.layoutSubviews()
-     
-    }
+    
     //MARK:  updateData
     func updateData() {
         guard var snapshot = dataSource?.snapshot() else { return }
@@ -224,7 +208,7 @@ extension PeopleViewController {
             
             advertLabel.attributedText = NSMutableAttributedString(string: item?.advert ?? "", attributes: attributes)
             nameLabel.text = item?.displayName
-            distanceLabel.text = "0.00KM"
+            distanceLabel.text = "\(item?.distance ?? Int.random(in: 0...30)) Km"
         
             //set new current visible indexPath
             visibleIndexPath = indexPath

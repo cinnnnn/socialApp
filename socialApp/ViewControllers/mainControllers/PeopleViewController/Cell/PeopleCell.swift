@@ -50,11 +50,9 @@ class PeopleCell: UICollectionViewCell,PeopleConfigurationCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        print(scrollView.subviews.count)
         var countOfView = 0
         for view in scrollView.subviews {
             if let view = view as? UIImageView {
-                print("Count of view \(countOfView)")
                 
                 view.frame = CGRect(x: 0,
                                     y: scrollView.frame.height * CGFloat(countOfView),

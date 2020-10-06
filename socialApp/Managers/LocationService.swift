@@ -7,6 +7,7 @@
 //
 
 import MapKit
+import CoreLocation
 
 class LocationService: UIResponder {
     
@@ -47,6 +48,15 @@ class LocationService: UIResponder {
             return false
         }
     }
+    
+    func getDistance(currentPeople:MPeople, newPeople: MPeople) -> Int {
+        let currentCoordinate = CLLocation(latitude: currentPeople.location.latitude,
+                                           longitude: currentPeople.location.longitude)
+        let peopleCoordinate = CLLocation(latitude: newPeople.location.latitude,
+                                          longitude: newPeople.location.longitude)
+        
+        return Int(currentCoordinate.distance(from: peopleCoordinate) / 1000)
+    }
 }
 
 //MARK: CLLocationManagerDelegate
@@ -60,10 +70,10 @@ extension LocationService: CLLocationManagerDelegate {
                                                  latitude: coordinate.latitude) {[weak self] result in
                 switch result {
                 
-                case .success(let location):
+                case .success(_):
                     self?.userID = nil
                     var people = UserDefaultsService.shared.getMpeople()
-                    people?.location = location
+                    people?.location = coordinate
                     UserDefaultsService.shared.saveMpeople(people: people)
                 case .failure(let error):
                     fatalError(error.localizedDescription)

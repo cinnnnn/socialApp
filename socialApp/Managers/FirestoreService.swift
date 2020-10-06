@@ -130,8 +130,10 @@ class FirestoreService {
                                                   })
     }
     
+    //MARK: saveLocation
     func saveLocation(userID: String, longitude: Double, latitude: Double, complition: @escaping (Result<[String:Double],Error>) -> Void) {
-        usersReference.document(userID).setData([MPeople.CodingKeys.location.rawValue : ["longitude":longitude, "latitude":latitude]],
+        usersReference.document(userID).setData([MPeople.CodingKeys.location.rawValue : [MLocation.longitude.rawValue:longitude,
+                                                                                         MLocation.latitude.rawValue:latitude]],
                                                 merge: true) { error in
             if let error = error {
                 complition(.failure(error))

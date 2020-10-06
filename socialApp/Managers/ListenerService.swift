@@ -53,8 +53,16 @@ class ListenerService {
             guard let snapshot = snapshot else { fatalError(ListenerError.snapshotNotExist.localizedDescription) }
             
             snapshot.documentChanges.forEach {[weak self] changes in
-                guard let user = MPeople(documentSnap: changes.document) else { fatalError(UserError.getUserData.localizedDescription) }
+                guard var user = MPeople(documentSnap: changes.document) else { fatalError(UserError.getUserData.localizedDescription) }
                 guard let people = self?.peopleDelegate?.peopleNearby else { fatalError(ListenerError.peopleCollectionNotExist.localizedDescription) }
+                
+                if let currentPeople = UserDefaultsService.shared.getMpeople() {
+                    user.distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: user)
+                    print(user.distance)
+                } else {
+                    user.distance = Int.random(in: 0...30)
+                }
+                
                 switch changes.type {
                 
                 case .added:
@@ -74,7 +82,7 @@ class ListenerService {
                             self?.peopleDelegate?.reloadData()
                         }
                         //if user change to active profile add him to collection
-                    } else if user.isActive == true, user.senderId != self?.currentUser?.uid {
+                    } else if user.isActive == true, user.senderId != self?.currentUser?.email {
                         self?.peopleDelegate?.peopleNearby.append(user)
                         self?.peopleDelegate?.reloadData()
                     }
