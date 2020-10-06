@@ -87,7 +87,7 @@ class StorageService {
         
         guard let userID = currentUserID else { fatalError("Cant get current user ID for upload image")}
         let currentDate = Date().getFormattedDate(format: "yyyy-MM-dd HH:mm:ss")
-        let currentChatRef = chatsImageRef.child([chat.friendId,userID].joined(separator: "_"))
+        let currentChatRef = chatsImageRef.child([userID,chat.friendId].joined(separator: "_"))
         let currentImageRef = currentChatRef.child([currentDate,"chatImage",userID].joined(separator: "_"))
         
         let metadata = StorageMetadata()

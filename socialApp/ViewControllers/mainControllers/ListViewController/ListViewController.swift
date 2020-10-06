@@ -93,7 +93,6 @@ class ListViewController: UIViewController {
     
     //MARK:  setupNavigationController
     private func setupNavigationController(){
-        
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.backgroundColor = .systemBackground
         navigationController?.navigationBar.barTintColor = .systemBackground
@@ -119,7 +118,7 @@ extension ListViewController {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             
             guard let section = SectionsChats(rawValue: sectionIndex) else { fatalError("Unknown section")}
-   
+            
             switch section {
             case .activeChats:
                 return self.createActiveChatsLayout()
@@ -132,7 +131,6 @@ extension ListViewController {
     
     //MARK:  createSectionHeader
     private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-        
         let sectionSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                  heightDimension: .estimated(1))
         
@@ -145,7 +143,6 @@ extension ListViewController {
     
     //MARK:  createActiveChatsLayout
     private func createActiveChatsLayout() -> NSCollectionLayoutSection {
-        
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                               heightDimension: .fractionalHeight(1))
         
@@ -179,7 +176,6 @@ extension ListViewController {
     
     //MARK:  createWaitingChatsLayout
     private func createWaitingChatsLayout(isEmpty: Bool ) -> NSCollectionLayoutSection {
-        
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                               heightDimension: .fractionalHeight(1))
         
@@ -220,7 +216,6 @@ extension ListViewController {
 
 //MARK:  DiffableDataSource
 extension ListViewController {
-    
     //MARK:  configure  cell
     private func configure<T: SelfConfiguringCell>(cellType: T.Type, value: MChat, indexPath: IndexPath) -> T {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)") }
@@ -233,7 +228,6 @@ extension ListViewController {
     private func setupDataSource(){
         dataSource = UICollectionViewDiffableDataSource<SectionsChats, MChat>(collectionView: collectionView,
                                                                               cellProvider: { [weak self] (collectionView, indexPath, chat) -> UICollectionViewCell? in
-                                                                                
                                                                                 
                                                                                 guard let section = SectionsChats(rawValue: indexPath.section) else {
                                                                                     fatalError("Unknown Section")
@@ -264,16 +258,14 @@ extension ListViewController {
             
             return reuseSectionHeader
         }
-        
     }
     
     //MARK:  reloadData
     private func reloadDataSource(searchText: String?){
-
         let filtredChats = sortedActiveChats.filter { activeChat -> Bool in
             activeChat.contains(element: searchText)
         }
-
+        
         var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
         snapshot.appendSections([.requestChats,.activeChats])
         snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
@@ -294,13 +286,9 @@ extension ListViewController {
 
 
 extension ListViewController: RequestChatListenerDelegate, ActiveChatListenerDelegate {
-    
     //MARK: reloadRequestData
     func reloadData(changeType: TypeOfListenerChanges) {
-        
-        
         switch changeType {
-        
         case .addOrDelete:
             if sortedRequestChats.isEmpty  {
                 collectionView.setCollectionViewLayout(setupCompositionalLayout(isEmptyRequestSection: true),
@@ -325,7 +313,7 @@ extension ListViewController: RequestChatListenerDelegate, ActiveChatListenerDel
                     reloadDataSource(searchText: nil)
                 }
             }
-
+            
         case .update:
             //for correct update cell data in collectionView
             guard var snapshot = dataSource?.snapshot() else { fatalError("Cant get snapshot")}
@@ -345,7 +333,6 @@ extension ListViewController: UISearchBarDelegate {
 
 //MARK: CollectionViewDelegate
 extension ListViewController: UICollectionViewDelegate {
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let section = SectionsChats(rawValue: indexPath.section) else { fatalError("Unknow section index")}
         guard let item = dataSource?.itemIdentifier(for: indexPath) else { fatalError(DataSourceError.unknownChatIdentificator.localizedDescription)}
@@ -362,13 +349,10 @@ extension ListViewController: UICollectionViewDelegate {
             navigationController?.pushViewController(chatVC, animated: true)
         }
     }
-    
-    
 }
-//MARK: SwiftUI
 
+//MARK: SwiftUI
 struct ListViewControllerProvider: PreviewProvider {
-    
     static var previews: some View {
         ContenerView().edgesIgnoringSafeArea(.all)
     }

@@ -11,7 +11,7 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController, PeopleListenerDelegate, PeopleCellDelegate {
+class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     var currentUser: User!
     var currentPeople: MPeople?
@@ -47,6 +47,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, PeopleCell
         ListenerService.shared.removePeopleListener()
     }
     
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -87,7 +88,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, PeopleCell
     
     //MARK: setupCollectionView
     private func setupCollectionView() {
-        
         collectionView = UICollectionView(frame: view.bounds,
                                           collectionViewLayout: setupCompositionLayout())
         
@@ -137,9 +137,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, PeopleCell
     
     //MARK: setupCompositionLayout
     private func setupCompositionLayout() -> UICollectionViewLayout {
-        
         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment -> NSCollectionLayoutSection? in
-            
             guard let section = SectionsPeople(rawValue: sectionIndex) else { fatalError("Unknown people section")}
             
             switch section {
@@ -149,25 +147,18 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, PeopleCell
         }
         return layout
     }
-    
     //MARK: configureCell
     private  func configureCell(value: MPeople, indexPath: IndexPath) -> PeopleCell {
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleCell.reuseID, for: indexPath) as? PeopleCell else { fatalError("Can't dequeue cell type PeopleCell")}
-        cell.delegate = self
-        
         
         cell.configure(with: value) {
             cell.layoutIfNeeded()
         }
-        
-        
         return cell
     }
     
     //MARK: setupDiffebleDataSource
     private func setupDiffebleDataSource() {
-        
         dataSource = UICollectionViewDiffableDataSource<SectionsPeople,MPeople>(
             collectionView: collectionView,
             cellProvider: { [weak self] (collectionView, indexPath, people) -> UICollectionViewCell? in
@@ -183,24 +174,21 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, PeopleCell
 
     //MARK:  updateCell
     func updateCell(user: MPeople) {
-        
         collectionView.layoutIfNeeded()
         collectionView.layoutSubviews()
      
     }
     //MARK:  updateData
     func updateData() {
-        
         guard var snapshot = dataSource?.snapshot() else { return }
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
-        
         dataSource?.apply(snapshot, animatingDifferences: true)
         
         setDataForVisibleCell(firstLoad: true)
     }
+    
     //MARK:  reloadData
     func reloadData() {
-        
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
@@ -212,7 +200,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, PeopleCell
 
 //MARK:setDataForVisibleCell
 extension PeopleViewController {
-    
     private func setDataForVisibleCell(firstLoad: Bool = false)  {
         var visibleRect = CGRect()
         
@@ -238,23 +225,7 @@ extension PeopleViewController {
             advertLabel.attributedText = NSMutableAttributedString(string: item?.advert ?? "", attributes: attributes)
             nameLabel.text = item?.displayName
             distanceLabel.text = "0.00KM"
-            
-//            UIView.animate(withDuration: 0.2) {[weak self] in
-//                self?.advertLabel.layer.opacity = 0
-//                self?.nameLabel.layer.opacity = 0
-//                self?.distanceLabel.layer.opacity = 0
-//            } completion: {[weak self] isComplite in
-//                if isComplite {
-//                    self?.advertLabel.attributedText = NSMutableAttributedString(string: item?.advert ?? "", attributes: attributes)
-//                    self?.nameLabel.text = item?.displayName
-//                    self?.distanceLabel.text = "0.00KM"
-//                    UIView.animate(withDuration: 0.5) {[weak self] in
-//                        self?.advertLabel.layer.opacity = 1
-//                        self?.nameLabel.layer.opacity = 1
-//                        self?.distanceLabel.layer.opacity = 1
-//                    }
-//                }
-//            }
+        
             //set new current visible indexPath
             visibleIndexPath = indexPath
         }
@@ -262,7 +233,6 @@ extension PeopleViewController {
 }
 //MARK:  objc
 extension PeopleViewController {
-    
     @objc private func pressLikeButton() {
         reloadData()
     }
@@ -275,14 +245,12 @@ extension PeopleViewController {
 //MARK:  UICollectionViewDelegate
 extension PeopleViewController: UICollectionViewDelegate {
     
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let user = dataSource?.itemIdentifier(for: indexPath) else { return }
         guard let currentPeople = currentPeople else { fatalError("Current people is nil") }
         let sendRequestVC = SendRequestViewController(requestForPeople: user, from: currentPeople)
         present(sendRequestVC, animated: true, completion: nil)
     }
-   
 }
 
 //MARK: setupConstraints

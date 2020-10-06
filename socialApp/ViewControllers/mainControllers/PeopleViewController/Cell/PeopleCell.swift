@@ -9,16 +9,14 @@
 import UIKit
 import SDWebImage
 
-class PeopleCell: UICollectionViewCell,PeopleConfigurationCell, UIScrollViewDelegate {
+class PeopleCell: UICollectionViewCell,PeopleConfigurationCell {
 
     static var reuseID = "PeopleCell"
     
-    let profileImage = UIImageView()
     var person: MPeople?
     weak var delegate: PeopleCellDelegate?
     let scrollView = UIScrollView()
-    var imagesURL:[URL]?
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -76,7 +74,6 @@ extension PeopleCell {
             let imageView = UIImageView()
             imageView.contentMode = .scaleAspectFill
             imageView.sd_setImage(with: imageURL, completed: nil)
-            imageView.backgroundColor = .yellow
             scrollView.addSubview(imageView)
         }
     }

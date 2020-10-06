@@ -273,7 +273,7 @@
 			path = UIkit;
 			sourceTree = "<group>";
 		};
-		FBA94D1C24F55AC2000DA5D5 /* Controllers */ = {
+		FBA94D1C24F55AC2000DA5D5 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
 				FB61B54624FE7F22002761ED /* AuthService.swift */,
@@ -284,7 +284,7 @@
 				FBF293D824FFB33300F7B5F1 /* Validators.swift */,
 				FB61A7FA251E6311005DCC78 /* UserDefaultsService.swift */,
 			);
-			path = Controllers;
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		FBA94D1F24F55D54000DA5D5 /* ListViewController */ = {
@@ -334,7 +334,7 @@
 				FBB3B25D2507C3BB00440632 /* socialApp.entitlements */,
 				FBEF607724A602070005F947 /* AppDelegate.swift */,
 				FBEF607924A602070005F947 /* SceneDelegate.swift */,
-				FBA94D1C24F55AC2000DA5D5 /* Controllers */,
+				FBA94D1C24F55AC2000DA5D5 /* Managers */,
 				FB21A1B924E596E3000A2E91 /* Models */,
 				FBEF609424A90DD60005F947 /* ViewControllers */,
 				FBEF608F24A908100005F947 /* Extension */,
