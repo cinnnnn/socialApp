@@ -9,18 +9,11 @@
 import UIKit
 
 class EditableProfileImageView: UIView {
-
-    let backgroundView: UIView = {
-        let myView = UIView()
-        myView.backgroundColor = .label
-        myView.translatesAutoresizingMaskIntoConstraints = false
-        return myView
-    }()
     
     let profileImage: UIImageView = {
         let myImage = UIImageView()
-        myImage.sd_imageTransition = .flipFromBottom
-        myImage.image = #imageLiteral(resourceName: "avatar")
+        myImage.sd_imageTransition = .fade
+        myImage.image = #imageLiteral(resourceName: "userPhoto")
         myImage.clipsToBounds = true
         myImage.contentMode = .scaleAspectFill
         myImage.translatesAutoresizingMaskIntoConstraints = false
@@ -40,10 +33,8 @@ class EditableProfileImageView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        addSubview(backgroundView)
         addSubview(profileImage)
         addSubview(plusButton)
-        
         setupConstraints()
     }
     
@@ -57,16 +48,11 @@ class EditableProfileImageView: UIView {
             
             profileImage.topAnchor.constraint(equalTo: self.topAnchor),
             profileImage.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            profileImage.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.75),
-            profileImage.widthAnchor.constraint(equalTo: profileImage.heightAnchor, multiplier: 1),
+            profileImage.heightAnchor.constraint(equalTo: self.heightAnchor),
+            profileImage.widthAnchor.constraint(equalTo: profileImage.heightAnchor),
             
-            backgroundView.topAnchor.constraint(equalTo: self.topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            backgroundView.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.75),
-            backgroundView.widthAnchor.constraint(equalTo: backgroundView.heightAnchor, multiplier: 1),
-            
-            plusButton.topAnchor.constraint(equalTo: profileImage.bottomAnchor),
-            plusButton.leadingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+            plusButton.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor),
+            plusButton.leadingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: 25),
             plusButton.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.25),
             plusButton.widthAnchor.constraint(equalTo: plusButton.heightAnchor, multiplier: 1),
         ])
@@ -75,6 +61,5 @@ class EditableProfileImageView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         profileImage.layer.cornerRadius = profileImage.frame.width / 2
-    
     }
 }

@@ -9,8 +9,8 @@
 import Foundation
 
 enum Sex: String, CaseIterable {
-    case man = "парень,"
-    case woman = "девушка,"
+    case man = "парень"
+    case woman = "девушка"
 }
 
 enum Want: String, CaseIterable {

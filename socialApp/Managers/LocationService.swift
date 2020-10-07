@@ -97,7 +97,7 @@ extension LocationService: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("error")
+       
         let authorizationStatus = CLLocationManager.authorizationStatus()
             if (authorizationStatus == CLAuthorizationStatus.notDetermined) {
                 locationManager.requestWhenInUseAuthorization()

@@ -67,7 +67,6 @@ class PeopleCell: UICollectionViewCell,PeopleConfigurationCell {
 
 extension PeopleCell {
     private func setupImages(images:[URL]) {
-        
         for imageURL in images {
             let imageView = UIImageView()
             imageView.contentMode = .scaleAspectFill
@@ -77,18 +76,8 @@ extension PeopleCell {
     }
 }
 
-//MARK: objc
 extension PeopleCell {
-    
-    @objc func pressLike() {
-        
-    }
-}
-
-extension PeopleCell {
-    
     private func setupConstraints() {
-        
         addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -98,6 +87,5 @@ extension PeopleCell {
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
     }
 }

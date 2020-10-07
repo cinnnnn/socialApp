@@ -39,15 +39,14 @@ class MainTabBarController: UITabBarController {
         tabBar.barTintColor = .myWhiteColor()
         
         let listVC = ListViewController(currentUser: currentUser )
-        let setProfileVC = SetProfileViewController(currentUser: currentUser)
-
-        peopleVC = PeopleViewController(currentUser: currentUser)
+        let profileVC = ProfileViewController(currentUser: currentUser)
+        let peopleVC = PeopleViewController(currentUser: currentUser)
         
         tabBar.tintColor = .label
         
         viewControllers = [
-            generateNavigationController(rootViewController: setProfileVC, image: #imageLiteral(resourceName: "profile"), title: nil),
-            generateNavigationController(rootViewController: peopleVC!, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
+            generateNavigationController(rootViewController: profileVC, image: #imageLiteral(resourceName: "profile"), title: nil),
+            generateNavigationController(rootViewController: peopleVC, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
             generateNavigationController(rootViewController: listVC, image: #imageLiteral(resourceName: "chats"), title: nil, isHidden: true)
         ]
     }

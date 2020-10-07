@@ -226,22 +226,24 @@ extension ListViewController {
     
     //MARK:  setupDataSource
     private func setupDataSource(){
-        dataSource = UICollectionViewDiffableDataSource<SectionsChats, MChat>(collectionView: collectionView,
-                                                                              cellProvider: { [weak self] (collectionView, indexPath, chat) -> UICollectionViewCell? in
-                                                                                
-                                                                                guard let section = SectionsChats(rawValue: indexPath.section) else {
-                                                                                    fatalError("Unknown Section")
-                                                                                }
-                                                                                
-                                                                                switch section {
-                                                                                case .activeChats:
-                                                                                    return self?.configure(cellType: ActiveChatsCell.self, value: chat, indexPath: indexPath)
-                                                                                    
-                                                                                case .requestChats:
-                                                                                    return self?.configure(cellType: RequestChatsCell.self, value: chat, indexPath: indexPath)
-                                                                                }
-                                                                              })
+        dataSource = UICollectionViewDiffableDataSource<SectionsChats, MChat>(
+            collectionView: collectionView,
+            cellProvider: { [weak self] (collectionView, indexPath, chat) -> UICollectionViewCell? in
+                
+                guard let section = SectionsChats(rawValue: indexPath.section) else {
+                    fatalError("Unknown Section")
+                }
+                
+                switch section {
+                case .activeChats:
+                    return self?.configure(cellType: ActiveChatsCell.self, value: chat, indexPath: indexPath)
+                    
+                case .requestChats:
+                    return self?.configure(cellType: RequestChatsCell.self, value: chat, indexPath: indexPath)
+                }
+            })
     }
+    
     //MARK:  supplementaryViewProvider
     private func loadSectionHedear() {
         dataSource?.supplementaryViewProvider = {

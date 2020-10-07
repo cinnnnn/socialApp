@@ -15,9 +15,9 @@ import MapKit
 class SetProfileViewController: UIViewController {
     
     let profileImage = EditableProfileImageView()
-    let nameLabel = UILabel(labelText: "Называй меня:",
+    let nameLabel = UILabel(labelText: "Вымышленное имя:",
                             textFont: .systemFont(ofSize: 16, weight: .bold))
-    let aboutLabel = UILabel(labelText: "Мои желания на сегодня:",
+    let aboutLabel = UILabel(labelText: "Обо мне:",
                              textFont: .systemFont(ofSize: 16, weight: .bold))
     let sexLabel = UILabel(labelText: "Я",
                            textFont: .systemFont(ofSize: 16, weight: .regular))
@@ -26,7 +26,7 @@ class SetProfileViewController: UIViewController {
     let nameTextField = OneLineTextField(isSecureText: false,
                                          tag: 1,
                                          placeHoledText: "Ты можешь быть кем угодно...")
-    let advertTextView = UITextView(text: "Для просмотра обьявлений других пользователей, расскажи о своих желаниях...",
+    let advertTextView = UITextView(text: "Для просмотра обьявлений других пользователей, расскажи о себе...",
                                     isEditable: true)
     
     let sexButton = UIButton(newBackgroundColor: nil,
