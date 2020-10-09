@@ -32,7 +32,6 @@ class GenderSelectionViewController: UIViewController {
                                 title: "Продолжить",
                                 titleColor: .systemBackground)
     let radioButton = RadioButton()
-    weak var delegate: AuthNavigationDelegate?
     var currentUser: User?
     
     init(currentUser: User?){
@@ -79,7 +78,8 @@ class GenderSelectionViewController: UIViewController {
         let gender = radioButton.selectedButton == manButton ? Sex.man.rawValue : Sex.woman.rawValue
         guard let user = currentUser else { fatalError("Cant get current user")}
         
-        FirestoreService.shared.saveGender(user: user, gender: gender) {[weak self] result in
+        guard let uid = currentUser?.uid else { fatalError("cant get UID")}
+        FirestoreService.shared.saveGender(id: uid, gender: gender) {[weak self] result in
             switch result {
             case .success():
                 self?.navigationController?.pushViewController(WantSelectionViewController(currentUser: user), animated: true)

@@ -26,14 +26,6 @@ protocol PeopleCellDelegate: class {
     func updateCell(user: MPeople)
 }
 
-protocol AuthNavigationDelegate: class {
-    func toLogin()
-    func toRegister(email:String?)
-    func toGenderSelect(currentUser: User)
-    func toWantSelect(currentUser: User)
-    func toMainTabBar(currentUser: User)
-}
-
 protocol PeopleListenerDelegate: class {
     var peopleNearby: [MPeople] { get set }
     func updateData()

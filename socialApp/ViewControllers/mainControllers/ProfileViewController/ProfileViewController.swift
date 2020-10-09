@@ -37,11 +37,27 @@ class ProfileViewController:UIViewController {
     
     private func setup() {
         navigationController?.navigationBar.isHidden = true
+        navigationItem.backButtonTitle = "Профиль"
+        navigationController?.navigationBar.tintColor = .label
+        
     }
 }
 
+//MARK: getLocation
 extension ProfileViewController {
-    
+    private func getLocation() {
+        guard let people = currentPeople else { return }
+        LocationService.shared.getCoordinate(userID: people.senderId) {[weak self] isAllowPermission in
+            //if geo is denied, show alert and go to settings
+            if isAllowPermission == false {
+                self?.openSettingsAlert()
+            }
+        }
+    }
+}
+
+//MARK: getPeopleData
+extension ProfileViewController {
     private func getPeopleData() {
         guard let email = currentUser.email else { return }
         FirestoreService.shared.getUserData(userID: email) {[weak self] result in
@@ -50,6 +66,7 @@ extension ProfileViewController {
                 self?.currentPeople = mPeople
                 UserDefaultsService.shared.saveMpeople(people: mPeople)
                 self?.updateProfileSection()
+                self?.getLocation()
             case .failure(_):
                 //if get incorrect info from mPeople profile, logOut and go to authVC
                 AuthService.shared.signOut { result in
@@ -180,11 +197,48 @@ extension ProfileViewController {
 extension ProfileViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        guard let section = SectionsProfile(rawValue: indexPath.section) else { return }
         
+        if section == .settings {
+            guard let cell = MSettings(rawValue: indexPath.row + 1) else { fatalError("unknown cell")}
+            
+            switch cell {
+            
+            case .setupProfile:
+                guard let currentPeople = currentPeople else { return }
+                let setupVC = SetProfileViewController(currentPeople: currentPeople)
+                setupVC.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(setupVC, animated: true)
+                collectionView.deselectItem(at: indexPath, animated: true)
+            case .setupSearch:
+                break
+            case .about:
+                break
+            default:
+                break
+            }
+        }
         
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         
+    }
+}
+
+extension ProfileViewController {
+    //MARK: openSettingsAlert
+    private func openSettingsAlert(){
+        let alert = UIAlertController(title: "Нет доступа к геопозиции",
+                                      text: "Необходимо разрешить доступ к геопозиции в настройках",
+                                      buttonText: "Перейти в настройки",
+                                      style: .alert) {
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+            
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl)
+            }
+        }
+        present(alert, animated: true, completion: nil)
     }
 }

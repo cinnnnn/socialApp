@@ -64,9 +64,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     //MARK:  setup
     private func setup() {
-        
         ListenerService.shared.addPeopleListener(delegate: self)
-        
         view.backgroundColor = .systemBackground
     }
     

@@ -34,7 +34,6 @@ class LoginViewController: UIViewController {
     let passwordLabel = UILabel(labelText: "Пароль",
                                 opacity: 0)
     
-    weak var delegate: AuthNavigationDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -280,25 +279,5 @@ extension LoginViewController {
                            height: loginButton.widthAnchor,
                            multiplier: .init(width: 0, height: 1.0/7.28),
                            padding: .init(top: 0, left: 25, bottom: 25, right: 25))
-    }
-}
-
-
-//MARK: - SwiftUI
-struct LoginViewControllerProvider: PreviewProvider {
-    
-    static var previews: some View {
-        ContenerView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContenerView: UIViewControllerRepresentable {
-        
-        func makeUIViewController(context: Context) -> LoginViewController {
-            LoginViewController()
-        }
-        
-        func updateUIViewController(_ uiViewController: LoginViewController, context: Context) {
-            
-        }
     }
 }

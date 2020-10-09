@@ -14,12 +14,13 @@ import MapKit
 
 class SetProfileViewController: UIViewController {
     
-    let profileImage = EditableProfileImageView()
+    let scrollView = UIScrollView()
+    let gelleryScrollView = GalleryScrollView(imagesURL: [])
     let nameLabel = UILabel(labelText: "Вымышленное имя:",
                             textFont: .systemFont(ofSize: 16, weight: .bold))
     let aboutLabel = UILabel(labelText: "Обо мне:",
                              textFont: .systemFont(ofSize: 16, weight: .bold))
-    let sexLabel = UILabel(labelText: "Я",
+    let sexLabel = UILabel(labelText: "Пол",
                            textFont: .systemFont(ofSize: 16, weight: .regular))
     let wantLabel = UILabel(labelText: "ищу",
                             textFont: .systemFont(ofSize: 16, weight: .regular))
@@ -38,18 +39,16 @@ class SetProfileViewController: UIViewController {
                               borderWidth: 0,
                               title: Want.woman.rawValue,
                               titleColor: .myPurpleColor())
-    let goButton = UIButton(newBackgroundColor: .label,
+    let editPhotoButton = UIButton(newBackgroundColor: .label,
                             newBorderColor: .label,
-                            title: "Начнем!",
+                            title: "Редактировать фото",
                             titleColor: .systemBackground)
+
     
-    var delegateNavigation: AuthNavigationDelegate?
+    private var currentPeople: MPeople
     
-    private var currentPeople: MPeople?
-    private var currentUser: User
-    
-    init(currentUser: User) {
-        self.currentUser = currentUser
+    init(currentPeople: MPeople) {
+        self.currentPeople = currentPeople
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -63,18 +62,21 @@ class SetProfileViewController: UIViewController {
         setupNavigationController()
         setupConstraints()
         setupButtonAction()
-        getPeopleData()
         setupVC()
+        setPeopleData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        getLocation()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        scrollView.updateContentView()
+
     }
     
+   
     private func setupVC() {
         view.backgroundColor = .systemBackground
+        scrollView.alwaysBounceVertical = true
+        
         advertTextView.delegate = self
         nameTextField.delegate = self
         advertTextView.addDoneButton()
@@ -83,52 +85,20 @@ class SetProfileViewController: UIViewController {
     //MARK:  setupNavigationController
     private func setupNavigationController(){
         
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.backgroundColor = .systemBackground
-        navigationItem.title = "Профиль"
-        let exitItem = UIBarButtonItem(title: "Выход", style: .plain, target: self, action: #selector(signOut))
-        exitItem.tintColor = .label
+        navigationController?.navigationBar.barTintColor = .myWhiteColor()
+        navigationController?.navigationBar.isHidden = false
+        navigationItem.title = "Редактирование"
+        let exitItem = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(signOut))
+        exitItem.image = #imageLiteral(resourceName: "exit")
+        exitItem.imageInsets = UIEdgeInsets(top: 0, left: 5, bottom: -10, right: -10)
         navigationItem.rightBarButtonItem = exitItem
     }
     
     //MARK:  setupButtonAction
     private func setupButtonAction() {
-        goButton.addTarget(self, action: #selector(goButtonPressed), for: .touchUpInside)
+        editPhotoButton.addTarget(self, action: #selector(goButtonPressed), for: .touchUpInside)
         sexButton.addTarget(self, action: #selector(touchSexButton), for: .touchUpInside)
         wantButton.addTarget(self, action: #selector(touchWantButton), for: .touchUpInside)
-        profileImage.plusButton.addTarget(self, action: #selector(choosePhoto), for: .touchUpInside)
-    }
-}
-
-//MARK:  getPeopleData
-extension SetProfileViewController {
-    
-    private func getPeopleData() {
-        guard let email = currentUser.email else { return }
-        FirestoreService.shared.getUserData(userID: email) {[weak self] result in
-            switch result {
-            case .success(let mPeople):
-                self?.currentPeople = mPeople
-                UserDefaultsService.shared.saveMpeople(people: mPeople)
-                self?.setPeopleData()
-            case .failure(_):
-                //if get incorrect info from mPeople profile, logOut and go to authVC
-                AuthService.shared.signOut { result in
-                    switch result {
-                    case .success(_):
-                        self?.dismiss(animated: true) {
-                            let navVC = UINavigationController(rootViewController: AuthViewController())
-                            navVC.navigationBar.isHidden = true
-                            navVC.navigationItem.backButtonTitle = "Войти с Apple ID"
-                            self?.present(navVC, animated: false, completion: nil)
-                        }
-                        
-                    case .failure(let error):
-                        fatalError(error.localizedDescription)
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -136,27 +106,28 @@ extension SetProfileViewController {
 extension SetProfileViewController {
     
     private func setPeopleData() {
-        guard let people = currentPeople else { return }
         
-        if let imageURL = URL(string: people.userImage) {
-            profileImage.profileImage.sd_setImage(with: imageURL, completed: nil)
+        if let imageURL = URL(string: currentPeople.userImage) {
+            gelleryScrollView.setupImages(imagesURL: [imageURL]) {
+                self.gelleryScrollView.layoutSubviews()
+            }
         }
         
-        nameTextField.text = people.displayName
-        advertTextView.text = people.advert
+        nameTextField.text = currentPeople.displayName
+        advertTextView.text = currentPeople.advert
         advertTextView.textColor = .label
         
-        if people.sex == "" {
+        if currentPeople.sex == "" {
             sexButton.isEnabled = true
             sexButton.setTitle(Sex.man.rawValue, for: .normal)
         } else {
-            sexButton.setTitle(people.sex, for: .normal)
+            sexButton.setTitle(currentPeople.sex, for: .normal)
         }
         
-        if people.search == "" {
+        if currentPeople.search == "" {
             wantButton.setTitle(Want.woman.rawValue, for: .normal)
         } else {
-            wantButton.setTitle(people.search, for: .normal)
+            wantButton.setTitle(currentPeople.search, for: .normal)
         }
     }
 }
@@ -171,24 +142,24 @@ extension SetProfileViewController {
     @objc func touchSexButton() {
         switch sexButton.titleLabel?.text {
         case Sex.man.rawValue:
-            FirestoreService.shared.saveGender(user: currentUser,
+            FirestoreService.shared.saveGender(id: currentPeople.senderId,
                                                gender: Sex.woman.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
                                                     self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
-                                                    self?.currentPeople?.sex = Sex.woman.rawValue
+                                                    self?.currentPeople.sex = Sex.woman.rawValue
                                                     UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
             }
         default:
-            FirestoreService.shared.saveGender(user: currentUser,
+            FirestoreService.shared.saveGender(id: currentPeople.senderId,
                                                gender: Sex.man.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
                                                     self?.sexButton.setTitle(Sex.man.rawValue, for: .normal)
-                                                    self?.currentPeople?.sex = Sex.man.rawValue
+                                                    self?.currentPeople.sex = Sex.man.rawValue
                                                     UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
@@ -201,12 +172,12 @@ extension SetProfileViewController {
     @objc func touchWantButton() {
         switch wantButton.titleLabel?.text {
         case Want.man.rawValue:
-            FirestoreService.shared.saveWant(user: currentUser,
+            FirestoreService.shared.saveWant(id: currentPeople.senderId,
                                              want: Want.woman.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
                                                     self?.wantButton.setTitle(Want.woman.rawValue, for: .normal)
-                                                    self?.currentPeople?.search = Want.woman.rawValue
+                                                    self?.currentPeople.search = Want.woman.rawValue
                                                     UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
@@ -214,12 +185,12 @@ extension SetProfileViewController {
             }
             
         default:
-            FirestoreService.shared.saveWant(user: currentUser,
+            FirestoreService.shared.saveWant(id: currentPeople.senderId,
                                              want: Want.man.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
                                                     self?.wantButton.setTitle(Want.man.rawValue, for: .normal)
-                                                    self?.currentPeople?.search = Want.man.rawValue
+                                                    self?.currentPeople.search = Want.man.rawValue
                                                     UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
@@ -228,55 +199,44 @@ extension SetProfileViewController {
         }
     }
     
-    //MARK:  choosePhoto
-    @objc func choosePhoto() {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        choosePhotoAlert {[weak self] sourceType in
-            guard let type = sourceType else { return }
-            imagePicker.sourceType = type
-            self?.present(imagePicker, animated: true, completion: nil)
-        }
-    }
+//    //MARK:  choosePhoto
+//    @objc func choosePhoto() {
+//        let imagePicker = UIImagePickerController()
+//        imagePicker.delegate = self
+//        choosePhotoAlert {[weak self] sourceType in
+//            guard let type = sourceType else { return }
+//            imagePicker.sourceType = type
+//            self?.present(imagePicker, animated: true, completion: nil)
+//        }
+//    }
     
     //MARK:  goButtonPressed
     @objc func goButtonPressed() {
         let name = nameTextField.text ?? ""
         //MARK: NEED ADD VALIDATE zTO TEXT ADVERT
         let advert = advertTextView.text ?? ""
+        
 
-        FirestoreService.shared.saveAdvertAndName(user: currentUser,
-                                                  userName: name,
-                                                  advert: advert,
-                                                  isActive: true) {[weak self] result in
-                                                    switch result {
-                                                    case .success():
-                                                        self?.currentPeople?.advert = advert
-                                                        self?.currentPeople?.displayName = name
-                                                        self?.currentPeople?.isActive = true
-                                                        UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
-                                                        self?.tabBarController?.selectedIndex = 1
-                                                        
-                                                    case .failure(let error):
-                                                        fatalError(error.localizedDescription)
-                                                    }
+//        FirestoreService.shared.saveAdvertAndName(id: currentPeople.senderId,
+//                                                  userName: name,
+//                                                  advert: advert,
+//                                                  isActive: true) {[weak self] result in
+//                                                    switch result {
+//                                                    case .success():
+//                                                        self?.currentPeople.advert = advert
+//                                                        self?.currentPeople.displayName = name
+//                                                        self?.currentPeople.isActive = true
+//                                                        UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
+//                                                        self?.tabBarController?.selectedIndex = 1
+//
+//                                                    case .failure(let error):
+//                                                        fatalError(error.localizedDescription)
+//                                                    }
         }
     }
-}
 
-extension SetProfileViewController {
-    //MARK: getLocation
-    private func getLocation() {
-        if let userID = currentUser.email {
-            LocationService.shared.getCoordinate(userID: userID) {[weak self] isAllowPermission in
-                //if geo is denied, show alert and go to settings
-                if isAllowPermission == false {
-                    self?.openSettingsAlert()
-                }
-            }
-        }
-    }
-}
+
+
 
 extension SetProfileViewController {
     //MARK:  signOutAlert
@@ -335,20 +295,7 @@ extension SetProfileViewController {
         present(photoAlert, animated: true, completion: nil)
     }
     
-    //MARK: openSettingsAlert
-    private func openSettingsAlert(){
-        let alert = UIAlertController(title: "Нет доступа к геопозиции",
-                                      text: "Необходимо разрешить доступ к геопозиции в настройках",
-                                      buttonText: "Перейти в настройки",
-                                      style: .alert) {
-            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
-            
-            if UIApplication.shared.canOpenURL(settingsUrl) {
-                UIApplication.shared.open(settingsUrl)
-            }
-        }
-        present(alert, animated: true, completion: nil)
-    }
+    
 }
 //MARK:  UITextFieldDelegate
 extension SetProfileViewController: UITextFieldDelegate {
@@ -384,28 +331,32 @@ extension SetProfileViewController:UITextViewDelegate {
             return false
         }
     }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        
+    }
 }
 
 //MARK:  UIImagePickerControllerDelegate
 
-extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigationControllerDelegate{
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        picker.dismiss(animated: true, completion: nil)
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-        profileImage.profileImage.image = image
-        FirestoreService.shared.saveAvatar(image: image, user: currentUser) {[weak self] result in
-            switch result {
-            case .success(let userImageString):
-                self?.currentPeople?.userImage = userImageString
-                UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
-        }
-    }
-}
+//extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigationControllerDelegate{
+//
+//    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+//
+//        picker.dismiss(animated: true, completion: nil)
+//        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+//        profileImage.profileImage.image = image
+//        FirestoreService.shared.saveAvatar(image: image, id: currentPeople.senderId) {[weak self] result in
+//            switch result {
+//            case .success(let userImageString):
+//                self?.currentPeople.userImage = userImageString
+//                UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
+//            case .failure(let error):
+//                fatalError(error.localizedDescription)
+//            }
+//        }
+//    }
+//}
 
 //MARK: touchBegan
 extension SetProfileViewController {
@@ -419,7 +370,8 @@ extension SetProfileViewController {
     
     private func setupConstraints() {
         
-        profileImage.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        gelleryScrollView.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         aboutLabel.translatesAutoresizingMaskIntoConstraints = false
         sexLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -428,37 +380,47 @@ extension SetProfileViewController {
         advertTextView.translatesAutoresizingMaskIntoConstraints = false
         sexButton.translatesAutoresizingMaskIntoConstraints = false
         wantButton.translatesAutoresizingMaskIntoConstraints = false
-        goButton.translatesAutoresizingMaskIntoConstraints = false
+        editPhotoButton.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(profileImage)
-        view.addSubview(nameLabel)
-        view.addSubview(aboutLabel)
-        view.addSubview(sexLabel)
-        view.addSubview(wantLabel)
-        view.addSubview(nameTextField)
-        view.addSubview(advertTextView)
-        view.addSubview(sexButton)
-        view.addSubview(wantButton)
-        view.addSubview(goButton)
+        view.addSubview(scrollView)
+        scrollView.addSubview(gelleryScrollView)
+        scrollView.addSubview(nameLabel)
+        scrollView.addSubview(aboutLabel)
+        scrollView.addSubview(sexLabel)
+        scrollView.addSubview(wantLabel)
+        scrollView.addSubview(nameTextField)
+        scrollView.addSubview(advertTextView)
+        scrollView.addSubview(sexButton)
+        scrollView.addSubview(wantButton)
+        scrollView.addSubview(editPhotoButton)
         
         NSLayoutConstraint.activate([
             
-            profileImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            profileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            profileImage.widthAnchor.constraint(equalToConstant: self.view.frame.width / 4),
-            profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor, multiplier: 1/1),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            nameTextField.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 45),
+            gelleryScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            gelleryScrollView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 25),
+            gelleryScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            gelleryScrollView.heightAnchor.constraint(equalTo: gelleryScrollView.widthAnchor),
+            
+            editPhotoButton.topAnchor.constraint(equalTo: gelleryScrollView.bottomAnchor, constant: 25),
+            editPhotoButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            editPhotoButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            editPhotoButton.heightAnchor.constraint(equalTo: editPhotoButton.widthAnchor, multiplier: 1.0/7.28),
+            
+            nameTextField.topAnchor.constraint(equalTo: editPhotoButton.bottomAnchor, constant: 45),
             nameTextField.heightAnchor.constraint(equalToConstant: 25),
-            nameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            nameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            nameTextField.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
+            nameTextField.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
             
             nameLabel.bottomAnchor.constraint(equalTo: nameTextField.topAnchor, constant: -5),
             nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
             advertTextView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 45),
-            advertTextView.bottomAnchor.constraint(equalTo: sexLabel.topAnchor, constant: 20),
             advertTextView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             advertTextView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
@@ -467,23 +429,18 @@ extension SetProfileViewController {
             aboutLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
             sexLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            sexLabel.bottomAnchor.constraint(equalTo: goButton.topAnchor, constant: -25),
+            sexLabel.topAnchor.constraint(equalTo: advertTextView.bottomAnchor, constant: 25),
             
-            sexButton.leadingAnchor.constraint(equalTo: sexLabel.trailingAnchor, constant: 5),
-            sexButton.bottomAnchor.constraint(equalTo: goButton.topAnchor, constant: -25),
+            sexButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            sexButton.topAnchor.constraint(equalTo: sexLabel.bottomAnchor, constant: 5),
             sexButton.heightAnchor.constraint(equalToConstant: 22),
             
-            wantLabel.leadingAnchor.constraint(equalTo: sexButton.trailingAnchor, constant: 5),
-            wantLabel.bottomAnchor.constraint(equalTo: goButton.topAnchor, constant: -25),
+            wantLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            wantLabel.topAnchor.constraint(equalTo: sexButton.bottomAnchor, constant: 25),
             
-            wantButton.leadingAnchor.constraint(equalTo: wantLabel.trailingAnchor, constant: 5),
-            wantButton.bottomAnchor.constraint(equalTo: goButton.topAnchor, constant: -25),
+            wantButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            wantButton.topAnchor.constraint(equalTo: wantLabel.bottomAnchor, constant: 5),
             wantButton.heightAnchor.constraint(equalToConstant: 22),
-            
-            goButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25),
-            goButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            goButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            goButton.heightAnchor.constraint(equalTo: goButton.widthAnchor, multiplier: 1.0/7.28)
         ])
     }
 }

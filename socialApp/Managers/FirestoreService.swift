@@ -25,7 +25,7 @@ class FirestoreService {
     }
     
     //MARK:  saveAvatar
-    func saveAvatar(image: UIImage?, user: User, complition: @escaping (Result<String, Error>) -> Void) {
+    func saveAvatar(image: UIImage?, id: String, complition: @escaping (Result<String, Error>) -> Void) {
         
         guard let avatar = image else { fatalError("cant get userProfile image") }
         //if user choose photo, than upload new photo to Storage
@@ -36,8 +36,7 @@ class FirestoreService {
                 case .success(let url):
                     let userImageString = url.absoluteString
                     //save user to FireStore
-                    guard let email = user.email else { fatalError("Cant get email from User")}
-                    self?.usersReference.document(email).setData([MPeople.CodingKeys.userImage.rawValue : userImageString], merge: true, completion: { error in
+                    self?.usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : userImageString], merge: true, completion: { error in
                         if let error = error {
                             complition(.failure(error))
                         } else {
@@ -70,9 +69,8 @@ class FirestoreService {
                                             })
     }
     //MARK:  saveGender
-    func saveGender(user: User, gender: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        guard let email = user.email else { fatalError("Cant get email from User")}
-        usersReference.document(email).setData([MPeople.CodingKeys.sex.rawValue : gender],
+    func saveGender(id: String, gender: String, complition: @escaping (Result<Void, Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.sex.rawValue : gender],
                                                   merge: true,
                                                   completion: { (error) in
                                                     if let error = error {
@@ -84,9 +82,8 @@ class FirestoreService {
     }
     
     //MARK:  saveWant
-    func saveWant(user: User, want: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        guard let email = user.email else { fatalError("Cant get email from User")}
-        usersReference.document(email).setData([MPeople.CodingKeys.search.rawValue : want],
+    func saveWant(id: String, want: String, complition: @escaping (Result<Void, Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.search.rawValue : want],
                                                   merge: true,
                                                   completion: { (error) in
                                                     if let error = error {
@@ -98,9 +95,8 @@ class FirestoreService {
     }
     
     //MARK:  saveDefaultImage
-    func saveDefaultImage(user: User, defaultImageString: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        guard let email = user.email else { fatalError("Cant get email from User")}
-        usersReference.document(email).setData([MPeople.CodingKeys.userImage.rawValue : defaultImageString],
+    func saveDefaultImage(id: String, defaultImageString: String, complition: @escaping (Result<Void, Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : defaultImageString],
                                                   merge: true,
                                                   completion: { (error) in
                                                     if let error = error {
@@ -112,13 +108,12 @@ class FirestoreService {
     }
     
     //MARK:  saveAdvertAndName
-    func saveAdvertAndName(user: User,
+    func saveAdvertAndName(id: String,
                            userName: String,
                            advert: String,
                            isActive: Bool,
                            complition: @escaping (Result<Void, Error>) -> Void){
-        guard let email = user.email else { fatalError("Cant get email from User")}
-        usersReference.document(email).setData([MPeople.CodingKeys.displayName.rawValue : userName,
+        usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : userName,
                                                    MPeople.CodingKeys.advert.rawValue: advert,
                                                    MPeople.CodingKeys.isActive.rawValue: isActive],
                                                   merge: true,

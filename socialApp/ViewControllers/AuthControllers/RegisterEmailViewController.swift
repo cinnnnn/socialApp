@@ -52,8 +52,7 @@ class RegisterEmailViewController: UIViewController {
                                    title: "Проверить активацию",
                                    titleColor: .systemBackground,
                                    isHidden: true)
-    
-    weak var delegate: AuthNavigationDelegate?
+
     var email:String?
     
     init(email: String?){
@@ -175,20 +174,6 @@ extension RegisterEmailViewController {
         
         present(alert, animated: true, completion: nil)
         
-        alert.setMyLightStyle()
-    }
-    
-    private func showSexAlert(user: User) {
-       let alert = UIAlertController(title: "Небхдимо указать свой поол",
-                                     message: nil,
-                                     preferredStyle: .actionSheet)
-        let saveAction = UIAlertAction(title: "Продолжить", style: .default) {[weak self] _ in
-            self?.dismiss(animated: true,
-                          completion: {
-                            self?.delegate?.toMainTabBar(currentUser: user)
-            })
-        }
-        alert.addAction(saveAction)
         alert.setMyLightStyle()
     }
 }
