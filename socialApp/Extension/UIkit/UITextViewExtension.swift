@@ -19,7 +19,7 @@ extension UITextView {
         isSelectable = isEditable
         isScrollEnabled = false //for autosize height
         backgroundColor = nil
-        font = .systemFont(ofSize: 16, weight: .regular)
+        font = .avenirRegular(size: 16)
         textColor = .lightGray
         translatesAutoresizingMaskIntoConstraints = false
         
@@ -43,6 +43,9 @@ extension UITextView {
         let onDone = onDone ?? (target: self, action: #selector(defaultDoneAction))
         let toolBar = UIToolbar()
         toolBar.barStyle = .default
+        toolBar.barTintColor = .myWhiteColor()
+        toolBar.backgroundColor = .myWhiteColor()
+        toolBar.tintColor = .label
         toolBar.items = [
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
             UIBarButtonItem(title: "Готово", style: .done, target: self, action: onDone.action)

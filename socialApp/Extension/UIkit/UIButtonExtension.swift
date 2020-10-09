@@ -16,7 +16,7 @@ extension UIButton {
                      borderWidth: CGFloat = 1,
                      title: String,
                      titleColor: UIColor,
-                     font: UIFont? = .boldSystemFont(ofSize: 18),
+                     font: UIFont? = .avenirBold(size: 16),
                      cornerRadius: CGFloat = 4,
                      isShadow: Bool = false,
                      isEnable: Bool = true,
@@ -26,6 +26,7 @@ extension UIButton {
         
         isEnabled = isEnable
         self.isHidden = isHidden
+        
         setTitle(title, for: .normal)
         setTitle(title, for: .selected)
         setTitleColor(titleColor, for: .normal)

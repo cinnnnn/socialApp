@@ -14,16 +14,21 @@ import MapKit
 
 class SetProfileViewController: UIViewController {
     
+    var editPhotoVC: EditPhotoViewController?
     let scrollView = UIScrollView()
     let gelleryScrollView = GalleryScrollView(imagesURL: [])
     let nameLabel = UILabel(labelText: "Вымышленное имя:",
-                            textFont: .systemFont(ofSize: 16, weight: .bold))
+                            textFont: .avenirRegular(size: 16),
+                            textColor: .myGrayColor())
     let aboutLabel = UILabel(labelText: "Обо мне:",
-                             textFont: .systemFont(ofSize: 16, weight: .bold))
-    let sexLabel = UILabel(labelText: "Пол",
-                           textFont: .systemFont(ofSize: 16, weight: .regular))
-    let wantLabel = UILabel(labelText: "ищу",
-                            textFont: .systemFont(ofSize: 16, weight: .regular))
+                             textFont: .avenirRegular(size: 16),
+                             textColor: .myGrayColor())
+    let sexLabel = UILabel(labelText: "Пол:",
+                           textFont: .avenirRegular(size: 16),
+                           textColor: .myGrayColor())
+    let wantLabel = UILabel(labelText: "Ищу:",
+                            textFont: .avenirRegular(size: 16),
+                            textColor: .myGrayColor())
     let nameTextField = OneLineTextField(isSecureText: false,
                                          tag: 1,
                                          placeHoledText: "Ты можешь быть кем угодно...")
@@ -39,22 +44,13 @@ class SetProfileViewController: UIViewController {
                               borderWidth: 0,
                               title: Want.woman.rawValue,
                               titleColor: .myPurpleColor())
-    let editPhotoButton = UIButton(newBackgroundColor: .label,
+    let editPhotosButton = UIButton(newBackgroundColor: .label,
                             newBorderColor: .label,
                             title: "Редактировать фото",
                             titleColor: .systemBackground)
 
     
-    private var currentPeople: MPeople
-    
-    init(currentPeople: MPeople) {
-        self.currentPeople = currentPeople
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    private var currentPeople: MPeople?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,19 +59,35 @@ class SetProfileViewController: UIViewController {
         setupConstraints()
         setupButtonAction()
         setupVC()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        registerNotificationForKeyboard()
         setPeopleData()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        removeNotificationForKeyboard()
+        savePeopleData()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        gelleryScrollView.prepareReuseScrollView()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.updateContentView()
-
     }
     
    
     private func setupVC() {
         view.backgroundColor = .systemBackground
         scrollView.alwaysBounceVertical = true
+        scrollView.addSingleTapRecognizer(target: self, selector: #selector(endEditing))
         
         advertTextView.delegate = self
         nameTextField.delegate = self
@@ -90,77 +102,153 @@ class SetProfileViewController: UIViewController {
         navigationItem.title = "Редактирование"
         let exitItem = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(signOut))
         exitItem.image = #imageLiteral(resourceName: "exit")
-        exitItem.imageInsets = UIEdgeInsets(top: 0, left: 5, bottom: -10, right: -10)
+        exitItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: -10, right: -10)
         navigationItem.rightBarButtonItem = exitItem
     }
     
     //MARK:  setupButtonAction
     private func setupButtonAction() {
-        editPhotoButton.addTarget(self, action: #selector(goButtonPressed), for: .touchUpInside)
+        editPhotosButton.addTarget(self, action: #selector(editPhotosButtonTap), for: .touchUpInside)
         sexButton.addTarget(self, action: #selector(touchSexButton), for: .touchUpInside)
         wantButton.addTarget(self, action: #selector(touchWantButton), for: .touchUpInside)
     }
 }
 
-//MARK:  setPeopleData
+
 extension SetProfileViewController {
-    
+    //MARK:  setPeopleData
     private func setPeopleData() {
         
-        if let imageURL = URL(string: currentPeople.userImage) {
+        guard let people = UserDefaultsService.shared.getMpeople() else { return }
+        currentPeople = people
+        
+        if let imageURL = URL(string: people.userImage) {
             gelleryScrollView.setupImages(imagesURL: [imageURL]) {
                 self.gelleryScrollView.layoutSubviews()
             }
         }
         
-        nameTextField.text = currentPeople.displayName
-        advertTextView.text = currentPeople.advert
+        nameTextField.text = people.displayName
+        advertTextView.text = people.advert
         advertTextView.textColor = .label
         
-        if currentPeople.sex == "" {
+        if people.sex == "" {
             sexButton.isEnabled = true
             sexButton.setTitle(Sex.man.rawValue, for: .normal)
         } else {
-            sexButton.setTitle(currentPeople.sex, for: .normal)
+            sexButton.setTitle(people.sex, for: .normal)
         }
         
-        if currentPeople.search == "" {
+        if people.search == "" {
             wantButton.setTitle(Want.woman.rawValue, for: .normal)
         } else {
-            wantButton.setTitle(currentPeople.search, for: .normal)
+            wantButton.setTitle(people.search, for: .normal)
+        }
+    }
+    
+    //MARK:  savePeopleData
+    private func savePeopleData() {
+        let name = nameTextField.text ?? ""
+        let advert = advertTextView.text ?? ""
+        
+        guard var people = currentPeople else { return }
+        
+        FirestoreService.shared.saveAdvertAndName(id: people.senderId,
+                                                  userName: name,
+                                                  advert: advert,
+                                                  isActive: true) { result in
+            switch result {
+            case .success():
+                people.advert = advert
+                people.displayName = name
+                people.isActive = true
+                UserDefaultsService.shared.saveMpeople(people: people)
+                
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
         }
     }
 }
 
+
+//MARK: NotificationCenter
 extension SetProfileViewController {
+    private func registerNotificationForKeyboard() {
+        NotificationCenter.default.addObserver(self, selector: #selector(updateView(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateView(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func removeNotificationForKeyboard() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+}
+
+//MARK: objc extension
+extension SetProfileViewController {
+    
+    @objc func editPhotosButtonTap() {
+        if let editPhotoVC = editPhotoVC {
+            navigationController?.pushViewController(editPhotoVC, animated: true)
+        } else {
+            editPhotoVC = EditPhotoViewController()
+            if let editPhotoVC = editPhotoVC {
+                navigationController?.pushViewController(editPhotoVC, animated: true)
+            }
+        }
+    }
     //MARK:  signOut
     @objc func signOut() {
         signOutAlert()
     }
     
+    //MARK: endEditing
+    @objc func endEditing() {
+        view.endEditing(true)
+    }
+    
+    //MARK: updateView
+    @objc func updateView(notification: Notification) {
+        let info = notification.userInfo
+        guard let keyboardSize = info?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let size = keyboardSize.cgRectValue
+        
+        if notification.name == UIResponder.keyboardWillShowNotification {
+            view.frame.origin.y = -size.height
+        }
+        
+        if notification.name == UIResponder.keyboardWillHideNotification {
+            view.frame.origin.y = 0
+        }
+        
+    }
+    
     //MARK:  touchSexButton
     @objc func touchSexButton() {
+        
+        guard var people = currentPeople else { return }
         switch sexButton.titleLabel?.text {
         case Sex.man.rawValue:
-            FirestoreService.shared.saveGender(id: currentPeople.senderId,
+            FirestoreService.shared.saveGender(id: people.senderId,
                                                gender: Sex.woman.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
                                                     self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
-                                                    self?.currentPeople.sex = Sex.woman.rawValue
-                                                    UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
+                                                    people.sex = Sex.woman.rawValue
+                                                    UserDefaultsService.shared.saveMpeople(people: people)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
             }
         default:
-            FirestoreService.shared.saveGender(id: currentPeople.senderId,
+            FirestoreService.shared.saveGender(id: people.senderId,
                                                gender: Sex.man.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
                                                     self?.sexButton.setTitle(Sex.man.rawValue, for: .normal)
-                                                    self?.currentPeople.sex = Sex.man.rawValue
-                                                    UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
+                                                    people.sex = Sex.man.rawValue
+                                                    UserDefaultsService.shared.saveMpeople(people: people)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -170,28 +258,31 @@ extension SetProfileViewController {
     
     //MARK:  touchWantButton
     @objc func touchWantButton() {
+        
+        guard var people = currentPeople else { return }
+        
         switch wantButton.titleLabel?.text {
         case Want.man.rawValue:
-            FirestoreService.shared.saveWant(id: currentPeople.senderId,
+            FirestoreService.shared.saveWant(id: people.senderId,
                                              want: Want.woman.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
                                                     self?.wantButton.setTitle(Want.woman.rawValue, for: .normal)
-                                                    self?.currentPeople.search = Want.woman.rawValue
-                                                    UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
+                                                    people.search = Want.woman.rawValue
+                                                    UserDefaultsService.shared.saveMpeople(people: people)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
             }
             
         default:
-            FirestoreService.shared.saveWant(id: currentPeople.senderId,
+            FirestoreService.shared.saveWant(id: people.senderId,
                                              want: Want.man.rawValue) {[weak self] result in
                                                 switch result {
                                                 case .success():
                                                     self?.wantButton.setTitle(Want.man.rawValue, for: .normal)
-                                                    self?.currentPeople.search = Want.man.rawValue
-                                                    UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
+                                                    people.search = Want.man.rawValue
+                                                    UserDefaultsService.shared.saveMpeople(people: people)
                                                 case .failure(let error):
                                                     fatalError(error.localizedDescription)
                                                 }
@@ -210,31 +301,7 @@ extension SetProfileViewController {
 //        }
 //    }
     
-    //MARK:  goButtonPressed
-    @objc func goButtonPressed() {
-        let name = nameTextField.text ?? ""
-        //MARK: NEED ADD VALIDATE zTO TEXT ADVERT
-        let advert = advertTextView.text ?? ""
-        
-
-//        FirestoreService.shared.saveAdvertAndName(id: currentPeople.senderId,
-//                                                  userName: name,
-//                                                  advert: advert,
-//                                                  isActive: true) {[weak self] result in
-//                                                    switch result {
-//                                                    case .success():
-//                                                        self?.currentPeople.advert = advert
-//                                                        self?.currentPeople.displayName = name
-//                                                        self?.currentPeople.isActive = true
-//                                                        UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
-//                                                        self?.tabBarController?.selectedIndex = 1
-//
-//                                                    case .failure(let error):
-//                                                        fatalError(error.localizedDescription)
-//                                                    }
-        }
-    }
-
+}
 
 
 
@@ -358,13 +425,6 @@ extension SetProfileViewController:UITextViewDelegate {
 //    }
 //}
 
-//MARK: touchBegan
-extension SetProfileViewController {
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-            self.view.endEditing(true)
-        }
-}
-
 //MARK:  setupConstraints
 extension SetProfileViewController {
     
@@ -380,7 +440,7 @@ extension SetProfileViewController {
         advertTextView.translatesAutoresizingMaskIntoConstraints = false
         sexButton.translatesAutoresizingMaskIntoConstraints = false
         wantButton.translatesAutoresizingMaskIntoConstraints = false
-        editPhotoButton.translatesAutoresizingMaskIntoConstraints = false
+        editPhotosButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(scrollView)
         scrollView.addSubview(gelleryScrollView)
@@ -392,7 +452,7 @@ extension SetProfileViewController {
         scrollView.addSubview(advertTextView)
         scrollView.addSubview(sexButton)
         scrollView.addSubview(wantButton)
-        scrollView.addSubview(editPhotoButton)
+        scrollView.addSubview(editPhotosButton)
         
         NSLayoutConstraint.activate([
             
@@ -406,15 +466,15 @@ extension SetProfileViewController {
             gelleryScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
             gelleryScrollView.heightAnchor.constraint(equalTo: gelleryScrollView.widthAnchor),
             
-            editPhotoButton.topAnchor.constraint(equalTo: gelleryScrollView.bottomAnchor, constant: 25),
-            editPhotoButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            editPhotoButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            editPhotoButton.heightAnchor.constraint(equalTo: editPhotoButton.widthAnchor, multiplier: 1.0/7.28),
+            editPhotosButton.topAnchor.constraint(equalTo: gelleryScrollView.bottomAnchor, constant: 25),
+            editPhotosButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            editPhotosButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            editPhotosButton.heightAnchor.constraint(equalTo: editPhotosButton.widthAnchor, multiplier: 1.0/7.28),
             
-            nameTextField.topAnchor.constraint(equalTo: editPhotoButton.bottomAnchor, constant: 45),
+            nameTextField.topAnchor.constraint(equalTo: editPhotosButton.bottomAnchor, constant: 45),
             nameTextField.heightAnchor.constraint(equalToConstant: 25),
-            nameTextField.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 25),
-            nameTextField.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -25),
+            nameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            nameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
             nameLabel.bottomAnchor.constraint(equalTo: nameTextField.topAnchor, constant: -5),
             nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),

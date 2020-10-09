@@ -11,6 +11,7 @@ import FirebaseAuth
 
 class ProfileViewController:UIViewController {
     
+    private var setupProfileVC:SetProfileViewController?
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MSettings>?
     private var currentPeople: MPeople?
@@ -23,6 +24,11 @@ class ProfileViewController:UIViewController {
         setupCollectionView()
         setupDataSource()
         updateDataSource()
+        getPeopleData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
         getPeopleData()
     }
     
@@ -205,10 +211,14 @@ extension ProfileViewController: UICollectionViewDelegate {
             switch cell {
             
             case .setupProfile:
-                guard let currentPeople = currentPeople else { return }
-                let setupVC = SetProfileViewController(currentPeople: currentPeople)
-                setupVC.hidesBottomBarWhenPushed = true
-                navigationController?.pushViewController(setupVC, animated: true)
+                
+                if let setupVC = setupProfileVC {
+                    navigationController?.pushViewController(setupVC, animated: true)
+                } else {
+                    setupProfileVC = SetProfileViewController()
+                    setupProfileVC?.hidesBottomBarWhenPushed = true
+                    navigationController?.pushViewController(setupProfileVC!, animated: true)
+                }
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .setupSearch:
                 break

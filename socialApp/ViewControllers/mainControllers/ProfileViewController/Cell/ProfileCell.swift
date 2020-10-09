@@ -15,8 +15,8 @@ class ProfileCell: UICollectionViewCell {
     
     let profileImage = UIImageView()
     let profileName = UILabel(labelText: "Профиль",textFont: .avenirBold(size: 38), linesCount: 0)
-    let profileInfo = UILabel(labelText: "", textFont: .avenirUltraLight(size: 16),textColor: .myGrayColor(), linesCount: 0)
-    let profileSex = UILabel(labelText: "", textFont: .avenirUltraLight(size: 16),textColor: .myGrayColor(), linesCount: 0)
+    let profileInfo = UILabel(labelText: "", textFont: .avenirRegular(size: 16),textColor: .myGrayColor(), linesCount: 0)
+    let profileSex = UILabel(labelText: "", textFont: .avenirRegular(size: 16),textColor: .myGrayColor(), linesCount: 0)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

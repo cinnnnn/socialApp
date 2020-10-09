@@ -23,7 +23,19 @@ extension UIView {
             self.layer.addSublayer(gradientLayer)
         }
     }
-    
+}
+
+extension UIView {
+    func addSingleTapRecognizer(target: Any?, selector: Selector?) {
+        let singleTapGestureRecognizer = UITapGestureRecognizer(target: target, action: selector)
+            singleTapGestureRecognizer.numberOfTapsRequired = 1
+            singleTapGestureRecognizer.isEnabled = true
+            singleTapGestureRecognizer.cancelsTouchesInView = false
+            self.addGestureRecognizer(singleTapGestureRecognizer)
+    }
+}
+
+extension UIView {
     func anchor(leading: NSLayoutXAxisAnchor?,
                 trailing: NSLayoutXAxisAnchor?,
                 top: NSLayoutYAxisAnchor?,
@@ -68,5 +80,4 @@ extension UIView {
             heightAnchor.constraint(equalToConstant: size.height).isActive = true
         }
     }
-    
 }
