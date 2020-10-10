@@ -45,10 +45,10 @@ class SetProfileViewController: UIViewController {
                               title: Want.woman.rawValue,
                               titleColor: .myPurpleColor())
     let editPhotosButton = UIButton(newBackgroundColor: .label,
-                            newBorderColor: .label,
-                            title: "Редактировать фото",
-                            titleColor: .systemBackground)
-
+                                    newBorderColor: .label,
+                                    title: "Редактировать фото",
+                                    titleColor: .systemBackground)
+    
     
     private var currentPeople: MPeople?
     
@@ -83,7 +83,6 @@ class SetProfileViewController: UIViewController {
         scrollView.updateContentView()
     }
     
-   
     private func setupVC() {
         view.backgroundColor = .systemBackground
         scrollView.alwaysBounceVertical = true
@@ -232,26 +231,26 @@ extension SetProfileViewController {
         case Sex.man.rawValue:
             FirestoreService.shared.saveGender(id: people.senderId,
                                                gender: Sex.woman.rawValue) {[weak self] result in
-                                                switch result {
-                                                case .success():
-                                                    self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
-                                                    people.sex = Sex.woman.rawValue
-                                                    UserDefaultsService.shared.saveMpeople(people: people)
-                                                case .failure(let error):
-                                                    fatalError(error.localizedDescription)
-                                                }
+                switch result {
+                case .success():
+                    self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
+                    people.sex = Sex.woman.rawValue
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                }
             }
         default:
             FirestoreService.shared.saveGender(id: people.senderId,
                                                gender: Sex.man.rawValue) {[weak self] result in
-                                                switch result {
-                                                case .success():
-                                                    self?.sexButton.setTitle(Sex.man.rawValue, for: .normal)
-                                                    people.sex = Sex.man.rawValue
-                                                    UserDefaultsService.shared.saveMpeople(people: people)
-                                                case .failure(let error):
-                                                    fatalError(error.localizedDescription)
-                                                }
+                switch result {
+                case .success():
+                    self?.sexButton.setTitle(Sex.man.rawValue, for: .normal)
+                    people.sex = Sex.man.rawValue
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                }
             }
         }
     }
@@ -265,45 +264,31 @@ extension SetProfileViewController {
         case Want.man.rawValue:
             FirestoreService.shared.saveWant(id: people.senderId,
                                              want: Want.woman.rawValue) {[weak self] result in
-                                                switch result {
-                                                case .success():
-                                                    self?.wantButton.setTitle(Want.woman.rawValue, for: .normal)
-                                                    people.search = Want.woman.rawValue
-                                                    UserDefaultsService.shared.saveMpeople(people: people)
-                                                case .failure(let error):
-                                                    fatalError(error.localizedDescription)
-                                                }
+                switch result {
+                case .success():
+                    self?.wantButton.setTitle(Want.woman.rawValue, for: .normal)
+                    people.search = Want.woman.rawValue
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                }
             }
             
         default:
             FirestoreService.shared.saveWant(id: people.senderId,
                                              want: Want.man.rawValue) {[weak self] result in
-                                                switch result {
-                                                case .success():
-                                                    self?.wantButton.setTitle(Want.man.rawValue, for: .normal)
-                                                    people.search = Want.man.rawValue
-                                                    UserDefaultsService.shared.saveMpeople(people: people)
-                                                case .failure(let error):
-                                                    fatalError(error.localizedDescription)
-                                                }
+                switch result {
+                case .success():
+                    self?.wantButton.setTitle(Want.man.rawValue, for: .normal)
+                    people.search = Want.man.rawValue
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                }
             }
         }
     }
-    
-//    //MARK:  choosePhoto
-//    @objc func choosePhoto() {
-//        let imagePicker = UIImagePickerController()
-//        imagePicker.delegate = self
-//        choosePhotoAlert {[weak self] sourceType in
-//            guard let type = sourceType else { return }
-//            imagePicker.sourceType = type
-//            self?.present(imagePicker, animated: true, completion: nil)
-//        }
-//    }
-    
 }
-
-
 
 extension SetProfileViewController {
     //MARK:  signOutAlert
@@ -334,35 +319,6 @@ extension SetProfileViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    //MARK:  choosePhotoAlert
-    private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerController.SourceType?) -> Void) {
-        
-        let photoAlert = UIAlertController(title: nil,
-                                           message: nil,
-                                           preferredStyle: .actionSheet)
-        let cameraAction = UIAlertAction(title: "Открыть камеру",
-                                         style: .default) { _ in
-                                            
-                                            complition(UIImagePickerController.SourceType.camera)
-        }
-        let libraryAction = UIAlertAction(title: "Выбрать из галереи",
-                                          style: .default) { _ in
-                                            complition(UIImagePickerController.SourceType.photoLibrary)
-        }
-        let cancelAction = UIAlertAction(title: "Отмена",
-                                         style: .default) { _ in
-                                            complition(nil)
-        }
-        
-        photoAlert.setMyStyle()
-        photoAlert.addAction(cameraAction)
-        photoAlert.addAction(libraryAction)
-        photoAlert.addAction(cancelAction)
-        
-        present(photoAlert, animated: true, completion: nil)
-    }
-    
-    
 }
 //MARK:  UITextFieldDelegate
 extension SetProfileViewController: UITextFieldDelegate {
@@ -372,9 +328,10 @@ extension SetProfileViewController: UITextFieldDelegate {
         return false
     }
 }
+
 //MARK:  UITextViewDelegate
 extension SetProfileViewController:UITextViewDelegate {
-
+    
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         let maxSymbols = 2000
         let existingLines = textView.text.components(separatedBy: CharacterSet.newlines)
@@ -398,32 +355,7 @@ extension SetProfileViewController:UITextViewDelegate {
             return false
         }
     }
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        
-    }
 }
-
-//MARK:  UIImagePickerControllerDelegate
-
-//extension SetProfileViewController:UIImagePickerControllerDelegate , UINavigationControllerDelegate{
-//
-//    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//
-//        picker.dismiss(animated: true, completion: nil)
-//        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-//        profileImage.profileImage.image = image
-//        FirestoreService.shared.saveAvatar(image: image, id: currentPeople.senderId) {[weak self] result in
-//            switch result {
-//            case .success(let userImageString):
-//                self?.currentPeople.userImage = userImageString
-//                UserDefaultsService.shared.saveMpeople(people: self?.currentPeople)
-//            case .failure(let error):
-//                fatalError(error.localizedDescription)
-//            }
-//        }
-//    }
-//}
 
 //MARK:  setupConstraints
 extension SetProfileViewController {

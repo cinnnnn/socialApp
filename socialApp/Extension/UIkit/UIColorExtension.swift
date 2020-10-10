@@ -34,7 +34,7 @@ extension UIColor {
     
     static func myLightGrayColor() -> UIColor {
         
-        dynamicColor(light: #colorLiteral(red: 0.8166387677, green: 0.8117852211, blue: 0.8203702569, alpha: 1), dark: #colorLiteral(red: 0.1485573351, green: 0.1485895813, blue: 0.1485531032, alpha: 1))
+        dynamicColor(light: #colorLiteral(red: 0.8850732446, green: 0.8891695142, blue: 0.8991813064, alpha: 1), dark: #colorLiteral(red: 0.1024033502, green: 0.1037172154, blue: 0.103666164, alpha: 1))
     }
     
     static func myMessageColor() -> UIColor {

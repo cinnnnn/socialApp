@@ -50,6 +50,87 @@ class FirestoreService {
         }
     }
     
+    //MARK: updateAvatar
+    func updateAvatar(imageURLString: String, currentAvatarURL: String, id: String, complition:@escaping(Result<String, Error>) -> Void) {
+        //get current user from UserDefaults for save request to server
+        guard var people = UserDefaultsService.shared.getMpeople() else { return }
+        //set current image to profile image
+        usersReference.document(id).setData(
+            [MPeople.CodingKeys.userImage.rawValue : imageURLString],
+            merge: true,
+            completion: {[weak self] error in
+                
+                if let error = error {
+                    complition(.failure(error))
+                } else {
+                    people.userImage = imageURLString
+                    //if success, delete current image from gallery
+                    self?.deleteFromGallery(imageURLString: imageURLString, id: id) { result in
+                        switch result {
+                        
+                        case .success(_):
+                            guard let indexOfImage = people.gallery.firstIndex(of: imageURLString) else { return }
+                            people.gallery.remove(at: indexOfImage)
+                            //if delete is success, append old profile image to gallery
+                            self?.usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayUnion([currentAvatarURL])],
+                                                                      merge: true,
+                                                                      completion: { error in
+                                                                        if let error = error {
+                                                                            complition(.failure(error))
+                                                                        } else {
+                                                                            people.gallery.append(currentAvatarURL)
+                                                                            UserDefaultsService.shared.saveMpeople(people: people)
+                                                                            complition(.success(imageURLString))
+                                                                        }
+                                                                      })
+                        case .failure(_):
+                            break
+                        }
+                    }
+                }
+            }
+        )
+    }
+    
+    //MARK:  saveImageToGallery
+    func saveImageToGallery(image: UIImage?, id: String, complition: @escaping (Result<String, Error>) -> Void) {
+        
+        guard let avatar = image else { fatalError("cant get userProfile image") }
+        
+        StorageService.shared.uploadImage(image: avatar) {[weak self] result in
+            switch result {
+            
+            case .success(let url):
+                let userImageString = url.absoluteString
+                //save user to FireStore
+                self?.usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayUnion([userImageString])],
+                                                          merge: true,
+                                                          completion: { error in
+                    if let error = error {
+                        complition(.failure(error))
+                    } else {
+                        complition(.success(userImageString))
+                    }
+                })
+            case .failure(_):
+                fatalError("Cant upload Image")
+            }
+        }
+    }
+    
+    //MARK: deleteFromGallery
+    func deleteFromGallery(imageURLString: String, id: String, complition:@escaping(Result<String, Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayRemove([imageURLString])],
+                                                  merge: true,
+                                                  completion: { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                complition(.success(imageURLString))
+            }
+        })
+    }
+    
     //MARK:  saveBaseProfile
     func saveBaseProfile(id: String,
                          email: String,
