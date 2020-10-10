@@ -52,6 +52,20 @@ class StorageService {
         }
     }
     
+    //MARK: deleteImage
+    func deleteImage(link: String, complition:@escaping(Result<String, Error>) -> Void ) {
+        let ref = Storage.storage().reference(forURL: link)
+        print(link)
+        print(ref)
+        ref.delete { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                complition(.success(link))
+            }
+        }
+    }
+    
     //MARK:  uploadImage
     func uploadImage(image: UIImage, complition: @escaping (Result<URL,Error>)->Void ) {
         

@@ -28,8 +28,7 @@ class PeopleCell: UICollectionViewCell,PeopleConfigurationCell {
     
 
     func configure(with value: MPeople, complition: @escaping()-> Void) {
-        guard let imageURL = URL(string: value.userImage) else { fatalError("Incorrect URL")}
-        galleryScrollView.setupImages(imagesURL: [imageURL]) {
+        galleryScrollView.setupImages(imagesURL: [value.userImage] + value.gallery) {
             complition()
         }
     }

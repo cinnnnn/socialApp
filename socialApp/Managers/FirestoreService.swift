@@ -16,120 +16,14 @@ class FirestoreService {
     
     static let shared = FirestoreService()
     
-    private init() {}
-    
     private let db = Firestore.firestore()
-    
     private var usersReference: CollectionReference {
         db.collection("users")
     }
     
-    //MARK:  saveAvatar
-    func saveAvatar(image: UIImage?, id: String, complition: @escaping (Result<String, Error>) -> Void) {
-        
-        guard let avatar = image else { fatalError("cant get userProfile image") }
-        //if user choose photo, than upload new photo to Storage
-        if  image != #imageLiteral(resourceName: "avatar")  {
-            StorageService.shared.uploadImage(image: avatar) {[weak self] result in
-                switch result {
-                
-                case .success(let url):
-                    let userImageString = url.absoluteString
-                    //save user to FireStore
-                    self?.usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : userImageString], merge: true, completion: { error in
-                        if let error = error {
-                            complition(.failure(error))
-                        } else {
-                            complition(.success(userImageString))
-                        }
-                    })
-                case .failure(_):
-                    fatalError("Cant upload Image")
-                }
-            }
-        }
-    }
+    private init() {}
     
-    //MARK: updateAvatar
-    func updateAvatar(imageURLString: String, currentAvatarURL: String, id: String, complition:@escaping(Result<String, Error>) -> Void) {
-        //get current user from UserDefaults for save request to server
-        guard var people = UserDefaultsService.shared.getMpeople() else { return }
-        //set current image to profile image
-        usersReference.document(id).setData(
-            [MPeople.CodingKeys.userImage.rawValue : imageURLString],
-            merge: true,
-            completion: {[weak self] error in
-                
-                if let error = error {
-                    complition(.failure(error))
-                } else {
-                    people.userImage = imageURLString
-                    //if success, delete current image from gallery
-                    self?.deleteFromGallery(imageURLString: imageURLString, id: id) { result in
-                        switch result {
-                        
-                        case .success(_):
-                            guard let indexOfImage = people.gallery.firstIndex(of: imageURLString) else { return }
-                            people.gallery.remove(at: indexOfImage)
-                            //if delete is success, append old profile image to gallery
-                            self?.usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayUnion([currentAvatarURL])],
-                                                                      merge: true,
-                                                                      completion: { error in
-                                                                        if let error = error {
-                                                                            complition(.failure(error))
-                                                                        } else {
-                                                                            people.gallery.append(currentAvatarURL)
-                                                                            UserDefaultsService.shared.saveMpeople(people: people)
-                                                                            complition(.success(imageURLString))
-                                                                        }
-                                                                      })
-                        case .failure(_):
-                            break
-                        }
-                    }
-                }
-            }
-        )
-    }
-    
-    //MARK:  saveImageToGallery
-    func saveImageToGallery(image: UIImage?, id: String, complition: @escaping (Result<String, Error>) -> Void) {
-        
-        guard let avatar = image else { fatalError("cant get userProfile image") }
-        
-        StorageService.shared.uploadImage(image: avatar) {[weak self] result in
-            switch result {
-            
-            case .success(let url):
-                let userImageString = url.absoluteString
-                //save user to FireStore
-                self?.usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayUnion([userImageString])],
-                                                          merge: true,
-                                                          completion: { error in
-                    if let error = error {
-                        complition(.failure(error))
-                    } else {
-                        complition(.success(userImageString))
-                    }
-                })
-            case .failure(_):
-                fatalError("Cant upload Image")
-            }
-        }
-    }
-    
-    //MARK: deleteFromGallery
-    func deleteFromGallery(imageURLString: String, id: String, complition:@escaping(Result<String, Error>) -> Void) {
-        usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayRemove([imageURLString])],
-                                                  merge: true,
-                                                  completion: { error in
-            if let error = error {
-                complition(.failure(error))
-            } else {
-                complition(.success(imageURLString))
-            }
-        })
-    }
+   
     
     //MARK:  saveBaseProfile
     func saveBaseProfile(id: String,
@@ -322,6 +216,7 @@ class FirestoreService {
         }
     }
     
+    //MARK: sendMessage
     func sendMessage(chat: MChat,
                      currentUser: MPeople,
                      message: MMessage,
@@ -400,3 +295,163 @@ extension FirestoreService {
     }
 }
 
+//MARK: - work with image
+extension FirestoreService {
+    
+    
+    //MARK:  saveAvatar
+    func saveAvatar(image: UIImage?, id: String, complition: @escaping (Result<String, Error>) -> Void) {
+        
+        guard let avatar = image else { fatalError("cant get userProfile image") }
+        //if user choose photo, than upload new photo to Storage
+        if  image != #imageLiteral(resourceName: "avatar")  {
+            StorageService.shared.uploadImage(image: avatar) {[weak self] result in
+                switch result {
+                
+                case .success(let url):
+                    let userImageString = url.absoluteString
+                    //save user to FireStore
+                    self?.usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : userImageString], merge: true, completion: { error in
+                        if let error = error {
+                            complition(.failure(error))
+                        } else {
+                            //edit current user from UserDefaults for save request to server
+                            guard var people = UserDefaultsService.shared.getMpeople() else { return }
+                            people.userImage = userImageString
+                            UserDefaultsService.shared.saveMpeople(people: people)
+                            
+                            complition(.success(userImageString))
+                        }
+                    })
+                case .failure(_):
+                    fatalError("Cant upload Image")
+                }
+            }
+        }
+    }
+    
+    //MARK: updateAvatar
+    func updateAvatar(imageURLString: String, currentAvatarURL: String, id: String, complition:@escaping(Result<String, Error>) -> Void) {
+
+        //set current image to profile image
+        usersReference.document(id).setData(
+            [MPeople.CodingKeys.userImage.rawValue : imageURLString],
+            merge: true,
+            completion: {[weak self] error in
+                
+                if let error = error {
+                    complition(.failure(error))
+                } else {
+                    //edit current user from UserDefaults for save request to server
+                    guard var people = UserDefaultsService.shared.getMpeople() else { return }
+                    people.userImage = imageURLString
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                    //if success, delete current image from gallery, but save in storage, for use in profileImage
+                    self?.deleteFromGallery(imageURLString: imageURLString, deleteInStorage: false, id: id) { result in
+                        switch result {
+                        
+                        case .success(_):
+                            //if delete is success, append old profile image to gallery
+                            self?.saveImageToGallery(image: nil, uploadedImageLink: currentAvatarURL, id: id) { result in
+                                switch result {
+                                
+                                case .success(_):
+                                    complition(.success(imageURLString))
+                                case .failure(let error):
+                                    complition(.failure(error))
+                                }
+                            }
+                        case .failure(_):
+                            break
+                        }
+                    }
+                }
+            }
+        )
+    }
+    
+    //MARK:  saveImageToGallery
+    func saveImageToGallery(image: UIImage?, uploadedImageLink: String? = nil, id: String, complition: @escaping (Result<String, Error>) -> Void) {
+        
+        //if new image, than upload to Storage
+        if uploadedImageLink == nil {
+            guard let image = image else { return }
+            StorageService.shared.uploadImage(image: image) {[weak self] result in
+                switch result {
+                
+                case .success(let url):
+                    let userImageString = url.absoluteString
+                    //save user to FireStore
+                    self?.usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayUnion([userImageString])],
+                                                              merge: true,
+                                                              completion: { error in
+                                                                if let error = error {
+                                                                    complition(.failure(error))
+                                                                } else {
+                                                                    //edit current user from UserDefaults for save request to server
+                                                                    guard var people = UserDefaultsService.shared.getMpeople() else { return }
+                                                                    people.gallery.append(userImageString)
+                                                                    UserDefaultsService.shared.saveMpeople(people: people)
+                                                                    
+                                                                    complition(.success(userImageString))
+                                                                }
+                                                              })
+                case .failure(_):
+                    fatalError("Cant upload Image")
+                }
+            }
+        } else {
+            //if image already upload, append link to gallery array
+            guard let imageLink = uploadedImageLink else { return }
+            usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayUnion([imageLink])],
+                                                merge: true,
+                                                completion: { error in
+                                                    if let error = error {
+                                                        complition(.failure(error))
+                                                    } else {
+                                                        //edit current user from UserDefaults for save request to server
+                                                        guard var people = UserDefaultsService.shared.getMpeople() else { return }
+                                                        people.gallery.append(imageLink)
+                                                        UserDefaultsService.shared.saveMpeople(people: people)
+                                                        
+                                                        complition(.success(imageLink))
+                                                    }
+                                                })
+        }
+    }
+    
+    //MARK: deleteFromGallery
+    func deleteFromGallery(imageURLString: String, deleteInStorage:Bool = true,  id: String, complition:@escaping(Result<String, Error>) -> Void) {
+        
+        //delete image from array in Firestore
+        usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayRemove([imageURLString])],
+                                                  merge: true,
+                                                  completion: { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                //edit current user from UserDefaults for save request to server
+                guard var people = UserDefaultsService.shared.getMpeople() else { return }
+                guard let indexOfImage = people.gallery.firstIndex(of: imageURLString) else { return }
+                people.gallery.remove(at: indexOfImage)
+                UserDefaultsService.shared.saveMpeople(people: people)
+                
+                if deleteInStorage {
+                    //delete image from storage
+                    StorageService.shared.deleteImage(link: imageURLString) { result in
+                        switch result {
+            
+                        case .success(_):
+                            complition(.success(imageURLString))
+                        case .failure(let error):
+                            complition(.failure(error))
+                        }
+                    }
+                } else {
+                    complition(.success(imageURLString))
+                }
+               
+            }
+        })
+    }
+}

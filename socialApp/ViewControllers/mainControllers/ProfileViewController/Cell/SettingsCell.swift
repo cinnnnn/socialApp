@@ -13,7 +13,7 @@ class SettingsCell: UICollectionViewCell {
     static let reuseID = "SettingsCell"
     
     let settingsImage = UIImageView()
-    let settingslabel = UILabel(labelText: "", textFont: .avenirRegular(size: 16))
+    let settingslabel = UILabel(labelText: "", textFont: .avenirBold(size: 16))
     let settingsArrow = UIImageView(image: #imageLiteral(resourceName: "arrow"))
     
     override init(frame: CGRect) {
@@ -47,21 +47,21 @@ class SettingsCell: UICollectionViewCell {
     
     private func setupConstraints(){
         
-        addSubview(settingsImage)
+       // addSubview(settingsImage)
         addSubview(settingslabel)
         addSubview(settingsArrow)
         
-        settingsImage.translatesAutoresizingMaskIntoConstraints = false
+      //  settingsImage.translatesAutoresizingMaskIntoConstraints = false
         settingslabel.translatesAutoresizingMaskIntoConstraints = false
         settingsArrow.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            settingsImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25),
-            settingsImage.centerYAnchor.constraint(equalTo: centerYAnchor),
-            settingsImage.heightAnchor.constraint(equalToConstant: 20),
-            settingsImage.widthAnchor.constraint(equalToConstant: 20),
+//            settingsImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25),
+//            settingsImage.centerYAnchor.constraint(equalTo: centerYAnchor),
+//            settingsImage.heightAnchor.constraint(equalToConstant: 20),
+//            settingsImage.widthAnchor.constraint(equalToConstant: 20),
             
-            settingslabel.leadingAnchor.constraint(equalTo: settingsImage.trailingAnchor, constant: 10),
+            settingslabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25),
             settingslabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             
             settingsArrow.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25),

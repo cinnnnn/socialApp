@@ -12,8 +12,13 @@ import SDWebImage
 class EditPhotoViewController: UIViewController {
     
     let profileImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
+    let scrollView = UIScrollView()
     var collectionView: UICollectionView!
     let addImageButton = UIButton(image: #imageLiteral(resourceName: "plus"))
+    let tipsHeader = UILabel(labelText: "Советы", textFont: .avenirRegular(size: 16))
+    let tips = UILabel(labelText: "Необходимо опубликовать минимум одно фото, если ты застенчив либо обеспокоен приватностью, опубликуй то, что тебя представляет. Для выбора главного фото/удаления нажми на иконку изображения.", textFont: .avenirRegular(size: 16), textColor: .myGrayColor(),linesCount: 0)
+    let legalHeader = UILabel(labelText: "Юридическая информация", textFont: .avenirRegular(size: 16))
+    let legal = UILabel(labelText: "Только свои фото. Без наготы, оружия, детей (включая семейные фото), насилия любого типа. Загружая незаконный контент, мы будем вынуждены заблокировать твой аккаунт навсегда.", textFont: .avenirRegular(size: 16), textColor: .myGrayColor(),linesCount: 0)
     var dataSource: UICollectionViewDiffableDataSource<SectionEditPhotos, String>?
     var images: [String] = []
     var currentPeople: MPeople?
@@ -30,11 +35,17 @@ class EditPhotoViewController: UIViewController {
         updateProfileData()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        scrollView.updateContentView()
+    }
+    
     //MARK: setup
     private func setup() {
         addImageButton.backgroundColor = .myLightGrayColor()
         profileImage.clipsToBounds = true
         view.backgroundColor = .myWhiteColor()
+        scrollView.alwaysBounceHorizontal = false
         
         addImageButton.addTarget(self, action: #selector(addImageButtonTap), for: .touchUpInside)
     }
@@ -80,13 +91,13 @@ extension EditPhotoViewController {
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(70),
-                                               heightDimension: .absolute(70))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.4),
+                                               heightDimension: .fractionalWidth(0.4))
         
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .groupPaging
+        section.orthogonalScrollingBehavior = .paging
         section.interGroupSpacing = 10
         return section
     }
@@ -149,8 +160,16 @@ extension EditPhotoViewController {
         
         let libraryAction = UIAlertAction(title: "Удалить",
                                           style: .default) { _ in
-                                     
-            complition()
+            FirestoreService.shared.deleteFromGallery(imageURLString: imageURLString,
+                                                      id: people.senderId) { result in
+                switch result {
+                
+                case .success(_):
+                    complition()
+                case .failure(let errror):
+                    fatalError(errror.localizedDescription)
+                }
+            }
         }
         let cancelAction = UIAlertAction(title: "Отмена",
                                          style: .default) { _ in
@@ -219,11 +238,11 @@ extension EditPhotoViewController:UIImagePickerControllerDelegate , UINavigation
         if people.userImage == "" {
             FirestoreService.shared.saveAvatar(image: image, id: people.senderId) {[weak self] result in
                 switch result {
-                case .success(let userImageString):
-                    people.userImage = userImageString
-                    self?.currentPeople = people
-                    UserDefaultsService.shared.saveMpeople(people: people)
+                case .success(_):
+                    
+                    self?.currentPeople = UserDefaultsService.shared.getMpeople()
                     self?.profileImage.image = image
+                    
                 case .failure(let error):
                     fatalError(error.localizedDescription)
                 }
@@ -246,32 +265,63 @@ extension EditPhotoViewController:UIImagePickerControllerDelegate , UINavigation
     }
 }
 
+//MARK: setupConstraints
 extension EditPhotoViewController {
     private func setupConstraints() {
-        view.addSubview(profileImage)
-        view.addSubview(addImageButton)
-        view.addSubview(collectionView)
- 
+        view.addSubview(scrollView)
+        scrollView.addSubview(profileImage)
+        scrollView.addSubview(addImageButton)
+        scrollView.addSubview(collectionView)
+        scrollView.addSubview(tipsHeader)
+        scrollView.addSubview(tips)
+        scrollView.addSubview(legalHeader)
+        scrollView.addSubview(legal)
         
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         profileImage.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         addImageButton.translatesAutoresizingMaskIntoConstraints = false
+        tipsHeader.translatesAutoresizingMaskIntoConstraints = false
+        tips.translatesAutoresizingMaskIntoConstraints = false
+        legalHeader.translatesAutoresizingMaskIntoConstraints = false
+        legal.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             profileImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            profileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
             profileImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            profileImage.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 25),
             profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor),
             
             addImageButton.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
             addImageButton.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 10),
-            addImageButton.widthAnchor.constraint(equalToConstant: 70),
+            addImageButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.25),
             addImageButton.heightAnchor.constraint(equalTo: addImageButton.widthAnchor),
             
             collectionView.leadingAnchor.constraint(equalTo: addImageButton.trailingAnchor, constant: 10),
             collectionView.topAnchor.constraint(equalTo: addImageButton.topAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.heightAnchor.constraint(equalToConstant: 70)
+            collectionView.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.25),
+            
+            tipsHeader.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+            tipsHeader.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+            tipsHeader.topAnchor.constraint(equalTo: addImageButton.bottomAnchor, constant: 25),
+            
+            tips.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+            tips.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+            tips.topAnchor.constraint(equalTo: tipsHeader.bottomAnchor, constant: 10),
+            
+            legalHeader.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+            legalHeader.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+            legalHeader.topAnchor.constraint(equalTo: tips.bottomAnchor, constant: 25),
+            
+            legal.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+            legal.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+            legal.topAnchor.constraint(equalTo: legalHeader.bottomAnchor, constant: 10),
         ])
     }
 }

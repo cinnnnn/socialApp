@@ -10,9 +10,9 @@ import UIKit
 
 class GalleryScrollView: UIScrollView {
     
-    var images: [URL] = []
+    var images: [String] = []
     
-    convenience init(imagesURL: [URL]) {
+    convenience init(imagesURL: [String]) {
         self.init()
         self.images = images
         setup()
@@ -24,13 +24,15 @@ class GalleryScrollView: UIScrollView {
         backgroundColor = .red
     }
     
-    func setupImages(imagesURL: [URL], complition:(()->Void)?) {
-        for imageURL in imagesURL {
-            let imageView = UIImageView()
-            imageView.contentMode = .scaleAspectFill
-            imageView.clipsToBounds = true
-            imageView.sd_setImage(with: imageURL, completed: nil)
-            addSubview(imageView)
+    func setupImages(imagesURL: [String], complition:(()->Void)?) {
+        for imageStringURL in imagesURL {
+            if let url = URL(string: imageStringURL) {
+                let imageView = UIImageView()
+                imageView.contentMode = .scaleAspectFill
+                imageView.clipsToBounds = true
+                imageView.sd_setImage(with: url, completed: nil)
+                addSubview(imageView)
+            }
         }
         if let complition = complition {
             complition()
@@ -58,7 +60,7 @@ class GalleryScrollView: UIScrollView {
                 countOfView += 1
             }
         }
-        contentSize.height = frame.height * CGFloat(countOfView + 1)
+        contentSize.height = frame.height * CGFloat(countOfView)
     }
 }
 

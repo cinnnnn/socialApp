@@ -121,11 +121,10 @@ extension SetProfileViewController {
         guard let people = UserDefaultsService.shared.getMpeople() else { return }
         currentPeople = people
         
-        if let imageURL = URL(string: people.userImage) {
-            gelleryScrollView.setupImages(imagesURL: [imageURL]) {
-                self.gelleryScrollView.layoutSubviews()
-            }
+        gelleryScrollView.setupImages(imagesURL: [people.userImage] + people.gallery) {
+            self.gelleryScrollView.layoutSubviews()
         }
+        
         
         nameTextField.text = people.displayName
         advertTextView.text = people.advert
