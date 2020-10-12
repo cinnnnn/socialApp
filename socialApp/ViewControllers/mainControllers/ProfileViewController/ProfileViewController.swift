@@ -221,7 +221,11 @@ extension ProfileViewController: UICollectionViewDelegate {
                 }
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .setupSearch:
-                break
+                    let newVC = GenderSelectionViewController(currentUser: currentUser)
+                    newVC.hidesBottomBarWhenPushed = true
+                    navigationController?.pushViewController(newVC, animated: true)
+                
+                collectionView.deselectItem(at: indexPath, animated: true)
             case .about:
                 break
             default:

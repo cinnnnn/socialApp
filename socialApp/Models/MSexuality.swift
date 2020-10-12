@@ -29,3 +29,12 @@ enum MSexuality: String, CaseIterable {
     case scoliosexual = "Scoliosexual"
 }
 
+extension MSexuality {
+    static let description = "Сексуальность"
+    
+    static var modelStringAllCases: [String] {
+        allCases.map { gender -> String in
+             gender.rawValue
+        }
+    }
+}

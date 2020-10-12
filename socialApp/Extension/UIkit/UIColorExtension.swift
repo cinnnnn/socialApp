@@ -27,14 +27,19 @@ extension UIColor {
         dynamicColor(light: #colorLiteral(red: 0.310331881, green: 0.3371494412, blue: 0.3730729818, alpha: 1), dark: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
     }
     
+    static func myLightGrayColor() -> UIColor {
+        
+        dynamicColor(light: #colorLiteral(red: 0.8850732446, green: 0.8891695142, blue: 0.8991813064, alpha: 1), dark: #colorLiteral(red: 0.1024033502, green: 0.1037172154, blue: 0.103666164, alpha: 1))
+    }
+    
     static func myWhiteColor() -> UIColor {
         
         dynamicColor(light: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), dark: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
     }
     
-    static func myLightGrayColor() -> UIColor {
+    static func myLabelColor() -> UIColor {
         
-        dynamicColor(light: #colorLiteral(red: 0.8850732446, green: 0.8891695142, blue: 0.8991813064, alpha: 1), dark: #colorLiteral(red: 0.1024033502, green: 0.1037172154, blue: 0.103666164, alpha: 1))
+        dynamicColor(light: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), dark: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))
     }
     
     static func myMessageColor() -> UIColor {

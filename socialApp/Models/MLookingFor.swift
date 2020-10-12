@@ -9,14 +9,14 @@
 import Foundation
 
 enum MLookingFor: String, CaseIterable {
-    case man = "Man"
-    case woman = "Woman"
+    case male = "Male"
+    case female = "Female"
     case agender = "Agender"
     case androgyne = "Androgyne"
     case androgynous = "Androgynous"
     case bigender = "Bigender"
     case genderFluid = "Gender Fluid"
-    case genderNonconforming = "Gender Non Conforming"
+    case genderNonconforming = "Gender non conforming"
     case genderVariant = "Gender Variant"
     case genderqueer = "Genderqueer"
     case intersex = "Intersex"
@@ -33,3 +33,16 @@ enum MLookingFor: String, CaseIterable {
     case twoSpirit = "Two-spirit"
     case other = "Other"
 }
+
+extension MLookingFor {
+    static let description = "Укажи свой гендер"
+    
+    static var modelStringAllCases: [String] {
+        allCases.map { gender -> String in
+             gender.rawValue
+        }
+    }
+}
+
+
+

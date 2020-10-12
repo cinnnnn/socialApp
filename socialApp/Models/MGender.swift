@@ -35,7 +35,7 @@ enum MGender: String, CaseIterable {
 }
 
 extension MGender {
-    static let description = "Укажи свой гендер" 
+    static let description = "Гендер" 
     
     static var modelStringAllCases: [String] {
         allCases.map { gender -> String in

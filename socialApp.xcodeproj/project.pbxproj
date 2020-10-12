@@ -63,7 +63,9 @@
 		FB8C3D3F25339DE200184FB5 /* GenderSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D3E25339DE200184FB5 /* GenderSelectionViewController.swift */; };
 		FB8C3D432533A22800184FB5 /* SelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D422533A22800184FB5 /* SelectionTableViewCell.swift */; };
 		FB8C3D502533DF0800184FB5 /* SexualitySelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D4F2533DF0800184FB5 /* SexualitySelectionViewController.swift */; };
-		FB8C3D552533E09900184FB5 /* SelectionTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D542533E09900184FB5 /* SelectionTableView.swift */; };
+		FB8C3D552533E09900184FB5 /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D542533E09900184FB5 /* SelectionViewController.swift */; };
+		FB8C3D5F25348F4900184FB5 /* OneLineButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D5E25348F4900184FB5 /* OneLineButton.swift */; };
+		FB8C3D652534A74900184FB5 /* SelectionTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D642534A74900184FB5 /* SelectionTableViewHeader.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
@@ -153,7 +155,9 @@
 		FB8C3D3E25339DE200184FB5 /* GenderSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelectionViewController.swift; sourceTree = "<group>"; };
 		FB8C3D422533A22800184FB5 /* SelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewCell.swift; sourceTree = "<group>"; };
 		FB8C3D4F2533DF0800184FB5 /* SexualitySelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SexualitySelectionViewController.swift; sourceTree = "<group>"; };
-		FB8C3D542533E09900184FB5 /* SelectionTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableView.swift; sourceTree = "<group>"; };
+		FB8C3D542533E09900184FB5 /* SelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionViewController.swift; sourceTree = "<group>"; };
+		FB8C3D5E25348F4900184FB5 /* OneLineButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneLineButton.swift; sourceTree = "<group>"; };
+		FB8C3D642534A74900184FB5 /* SelectionTableViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewHeader.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -265,8 +269,8 @@
 				FB79DA4B2523577100A7AA56 /* MMediaItem.swift */,
 				FB79DA8A252DF0D600A7AA56 /* MSettings.swift */,
 				FBB3B264250ACA0700440632 /* MGender.swift */,
-				FB8C3D382533958900184FB5 /* MLookingFor.swift */,
 				FB8C3D3B2533961800184FB5 /* MSexuality.swift */,
+				FB8C3D382533958900184FB5 /* MLookingFor.swift */,
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */,
 				FBB4F35925116D7300ACFE90 /* DefaultImage.swift */,
@@ -354,6 +358,7 @@
 			isa = PBXGroup;
 			children = (
 				FB8C3D422533A22800184FB5 /* SelectionTableViewCell.swift */,
+				FB8C3D642534A74900184FB5 /* SelectionTableViewHeader.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -371,7 +376,7 @@
 		FB8C3D582533E0C400184FB5 /* SelectionTableView */ = {
 			isa = PBXGroup;
 			children = (
-				FB8C3D542533E09900184FB5 /* SelectionTableView.swift */,
+				FB8C3D542533E09900184FB5 /* SelectionViewController.swift */,
 				FB8C3D452533A22C00184FB5 /* Cell */,
 			);
 			path = SelectionTableView;
@@ -457,6 +462,7 @@
 				FB8C3D582533E0C400184FB5 /* SelectionTableView */,
 				FB21A1AC24C89F68000A2E91 /* BundleDecode.swift */,
 				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
+				FB8C3D5E25348F4900184FB5 /* OneLineButton.swift */,
 				FB21A1BC24E59A31000A2E91 /* GradientView.swift */,
 				FB79DA9125307FF200A7AA56 /* GalleryScrollView.swift */,
 				FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */,
@@ -605,6 +611,7 @@
 				FB79DA7C252DE64900A7AA56 /* ProfileViewController.swift in Sources */,
 				FB79DA962530E69400A7AA56 /* EditPhotoViewController.swift in Sources */,
 				FB8C3D392533958900184FB5 /* MLookingFor.swift in Sources */,
+				FB8C3D652534A74900184FB5 /* SelectionTableViewHeader.swift in Sources */,
 				FB79DA9D2530E9C500A7AA56 /* EditPhotoCell.swift in Sources */,
 				FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */,
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
@@ -624,7 +631,7 @@
 				FBB3B269250F82B800440632 /* ListenerService.swift in Sources */,
 				FB79DA4F2524D1FB00A7AA56 /* UIScrollViewExtension.swift in Sources */,
 				FB79DA88252DEDB900A7AA56 /* SettingsCell.swift in Sources */,
-				FB8C3D552533E09900184FB5 /* SelectionTableView.swift in Sources */,
+				FB8C3D552533E09900184FB5 /* SelectionViewController.swift in Sources */,
 				FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,
 				FB61A78C251E1342005DCC78 /* ChatViewController.swift in Sources */,
@@ -632,6 +639,7 @@
 				FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */,
 				FB79DA42252209E100A7AA56 /* TypeOfListenerChanges.swift in Sources */,
 				FB79DA9225307FF200A7AA56 /* GalleryScrollView.swift in Sources */,
+				FB8C3D5F25348F4900184FB5 /* OneLineButton.swift in Sources */,
 				FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */,
 				FBB4F354251110AE00ACFE90 /* RadioButton.swift in Sources */,
 				FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */,

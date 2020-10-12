@@ -12,14 +12,13 @@ import FirebaseAuth
 class GenderSelectionViewController: UIViewController {
 
     var currentUser: User?
-    let tableView = SelectionTableView(elements: MGender.modelStringAllCases,
-                                       description: MGender.description,
-                                       frame: .zero,
-                                       style: .grouped)
     
-    //for swiftUI
-    init() {super.init(nibName: nil, bundle: nil)}
-    
+    let headerLabel = UILabel(labelText: "Немного больше о тебе", textFont: .avenirBold(size: 24))
+    let genderSelectionButton = OneLineButton(header: "Гендер", info: "Man")
+    let sexualitySelectionButton = OneLineButton(header: "Сексуальность", info: "Straight")
+    let nameLabel = UILabel(labelText: "Вымышленное имя", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
+    let nameTextField = OneLineTextField(isSecureText: false, tag: 1)
+
     init(currentUser: User){
         self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)
@@ -32,6 +31,7 @@ class GenderSelectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+        setupConstraints()
     }
     
     private func setup() {
@@ -39,43 +39,86 @@ class GenderSelectionViewController: UIViewController {
         view.backgroundColor = .myWhiteColor()
         navigationController?.navigationBar.tintColor = .label
         navigationController?.navigationBar.shadowImage = nil
-        navigationController?.navigationBar.backgroundColor = .myWhiteColor()
+        navigationController?.navigationBar.barTintColor = .myWhiteColor()
         
-        navigationItem.backButtonTitle = "Выбрать гендер"
+        navigationItem.backButtonTitle = "Назад"
         navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .save,
                                                          target: self,
                                                          action: #selector(saveButtonTapped)),
                                          animated: false)
         
-        view.addSubview(tableView)
-        tableView.frame = view.frame
-        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        genderSelectionButton.addTarget(self, action: #selector(genderSelectTapped), for: .touchUpInside)
+        sexualitySelectionButton.addTarget(self, action: #selector(sexualitySelectTapped), for: .touchUpInside)
     }
     
     @objc private func saveButtonTapped() {
         let nextViewController = SexualitySelectionViewController()
         navigationController?.pushViewController(nextViewController, animated: true)
     }
+    
+    @objc private func genderSelectTapped() {
+        let vc = SelectionViewController(elements: MGender.modelStringAllCases,
+                                         description: MGender.description,
+                                         selectedValue: genderSelectionButton.infoLabel.text ?? "",
+                                         complition: {[weak self] selected in
+                                            self?.genderSelectionButton.infoLabel.text = selected
+                                         })
+        vc.modalPresentationStyle = .overCurrentContext
+        
+        present(vc, animated: true, completion: nil)
+        
+    }
+
+
+    @objc private func sexualitySelectTapped() {
+        let vc = SelectionViewController(elements: MSexuality.modelStringAllCases,
+                                         description: MSexuality.description,
+                                         selectedValue: sexualitySelectionButton.infoLabel.text ?? "",
+                                         complition: { [weak self] selected in
+                                            self?.sexualitySelectionButton.infoLabel.text = selected
+                                         })
+        vc.modalPresentationStyle = .overCurrentContext
+        
+        present(vc, animated: true, completion: nil)
+    }
 }
 
-
-//MARK: - SwiftUI
-import SwiftUI
-
-struct GenderViewControllerProvider: PreviewProvider {
-    
-    static var previews: some View {
-        ContenerView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContenerView: UIViewControllerRepresentable {
+extension GenderSelectionViewController {
+    private func setupConstraints() {
+        view.addSubview(headerLabel)
+        view.addSubview(nameLabel)
+        view.addSubview(nameTextField)
+        view.addSubview(genderSelectionButton)
+        view.addSubview(sexualitySelectionButton)
         
-        func makeUIViewController(context: Context) -> GenderSelectionViewController {
-            GenderSelectionViewController()
-        }
+        headerLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameTextField.translatesAutoresizingMaskIntoConstraints = false
+        genderSelectionButton.translatesAutoresizingMaskIntoConstraints = false
+        sexualitySelectionButton.translatesAutoresizingMaskIntoConstraints = false
         
-        func updateUIViewController(_ uiViewController: GenderSelectionViewController, context: Context) {
+        NSLayoutConstraint.activate([
+            headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            headerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            headerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
             
-        }
+            nameLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 25),
+            nameLabel.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor),
+            nameLabel.trailingAnchor.constraint(equalTo: headerLabel.trailingAnchor),
+            
+            nameTextField.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10),
+            nameTextField.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor),
+            nameTextField.trailingAnchor.constraint(equalTo: headerLabel.trailingAnchor),
+            
+            genderSelectionButton.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 25),
+            genderSelectionButton.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor),
+            genderSelectionButton.trailingAnchor.constraint(equalTo: headerLabel.trailingAnchor),
+            genderSelectionButton.heightAnchor.constraint(equalToConstant: 70),
+            
+            sexualitySelectionButton.topAnchor.constraint(equalTo: genderSelectionButton.bottomAnchor, constant: 25),
+            sexualitySelectionButton.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor),
+            sexualitySelectionButton.trailingAnchor.constraint(equalTo: headerLabel.trailingAnchor),
+            sexualitySelectionButton.heightAnchor.constraint(equalToConstant: 70),
+        ])
     }
 }
