@@ -14,7 +14,6 @@ class PeopleCell: UICollectionViewCell,PeopleConfigurationCell {
     static var reuseID = "PeopleCell"
     
     var person: MPeople?
-    weak var delegate: PeopleCellDelegate?
     let galleryScrollView = GalleryScrollView(imagesURL: [])
 
     override init(frame: CGRect) {

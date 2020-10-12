@@ -78,28 +78,28 @@ class WantSelectionViewController: UIViewController {
     
     //MARK: touchSignUpButton
     @objc private func touchSignUpButton() {
-        let want = radioButton.selectedButton == manButton ? Want.man.rawValue : Want.woman.rawValue
-        guard let user = currentUser else { fatalError("cant get user")}
-        guard let uid = currentUser?.uid else { fatalError("cant get UID")}
-        
-        FirestoreService.shared.saveWant(id: uid, want: want, complition: {[weak self] result in
-            switch result {
-            case .success():
-                FirestoreService.shared.saveDefaultImage(id: uid,
-                                                         defaultImageString: DefaultImage.userAvatar.rawValue) { result in
-                                                            switch result {
-                                                                
-                                                            case .success():
-                                                                self?.toMainTabBar(user: user)
-                                                            case .failure(let error):
-                                                                fatalError(error.localizedDescription)
-                                                            }
-                }
-            //failure to incorrect save Want
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
-        })
+//        let want = Look
+//        guard let user = currentUser else { fatalError("cant get user")}
+//        guard let uid = currentUser?.uid else { fatalError("cant get UID")}
+//
+//        FirestoreService.shared.saveWant(id: uid, want: want, complition: {[weak self] result in
+//            switch result {
+//            case .success():
+//                FirestoreService.shared.saveDefaultImage(id: uid,
+//                                                         defaultImageString: DefaultImage.userAvatar.rawValue) { result in
+//                                                            switch result {
+//
+//                                                            case .success():
+//                                                                self?.toMainTabBar(user: user)
+//                                                            case .failure(let error):
+//                                                                fatalError(error.localizedDescription)
+//                                                            }
+//                }
+//            //failure to incorrect save Want
+//            case .failure(let error):
+//                fatalError(error.localizedDescription)
+//            }
+//        })
     }
     
     //MARK:  setupConstraints

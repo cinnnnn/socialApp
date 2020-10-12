@@ -35,15 +35,7 @@ class SetProfileViewController: UIViewController {
     let advertTextView = UITextView(text: "Для просмотра обьявлений других пользователей, расскажи о себе...",
                                     isEditable: true)
     
-    let sexButton = UIButton(newBackgroundColor: nil,
-                             borderWidth: 0,
-                             title: Sex.man.rawValue,
-                             titleColor: .myPurpleColor(),
-                             isEnable: false)
-    let wantButton = UIButton(newBackgroundColor: nil,
-                              borderWidth: 0,
-                              title: Want.woman.rawValue,
-                              titleColor: .myPurpleColor())
+  
     let editPhotosButton = UIButton(newBackgroundColor: .label,
                                     newBorderColor: .label,
                                     title: "Редактировать фото",
@@ -108,8 +100,7 @@ class SetProfileViewController: UIViewController {
     //MARK:  setupButtonAction
     private func setupButtonAction() {
         editPhotosButton.addTarget(self, action: #selector(editPhotosButtonTap), for: .touchUpInside)
-        sexButton.addTarget(self, action: #selector(touchSexButton), for: .touchUpInside)
-        wantButton.addTarget(self, action: #selector(touchWantButton), for: .touchUpInside)
+      
     }
 }
 
@@ -130,18 +121,7 @@ extension SetProfileViewController {
         advertTextView.text = people.advert
         advertTextView.textColor = .label
         
-        if people.sex == "" {
-            sexButton.isEnabled = true
-            sexButton.setTitle(Sex.man.rawValue, for: .normal)
-        } else {
-            sexButton.setTitle(people.sex, for: .normal)
-        }
-        
-        if people.search == "" {
-            wantButton.setTitle(Want.woman.rawValue, for: .normal)
-        } else {
-            wantButton.setTitle(people.search, for: .normal)
-        }
+
     }
     
     //MARK:  savePeopleData
@@ -221,72 +201,7 @@ extension SetProfileViewController {
         }
         
     }
-    
-    //MARK:  touchSexButton
-    @objc func touchSexButton() {
-        
-        guard var people = currentPeople else { return }
-        switch sexButton.titleLabel?.text {
-        case Sex.man.rawValue:
-            FirestoreService.shared.saveGender(id: people.senderId,
-                                               gender: Sex.woman.rawValue) {[weak self] result in
-                switch result {
-                case .success():
-                    self?.sexButton.setTitle(Sex.woman.rawValue, for: .normal)
-                    people.sex = Sex.woman.rawValue
-                    UserDefaultsService.shared.saveMpeople(people: people)
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                }
-            }
-        default:
-            FirestoreService.shared.saveGender(id: people.senderId,
-                                               gender: Sex.man.rawValue) {[weak self] result in
-                switch result {
-                case .success():
-                    self?.sexButton.setTitle(Sex.man.rawValue, for: .normal)
-                    people.sex = Sex.man.rawValue
-                    UserDefaultsService.shared.saveMpeople(people: people)
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                }
-            }
-        }
-    }
-    
-    //MARK:  touchWantButton
-    @objc func touchWantButton() {
-        
-        guard var people = currentPeople else { return }
-        
-        switch wantButton.titleLabel?.text {
-        case Want.man.rawValue:
-            FirestoreService.shared.saveWant(id: people.senderId,
-                                             want: Want.woman.rawValue) {[weak self] result in
-                switch result {
-                case .success():
-                    self?.wantButton.setTitle(Want.woman.rawValue, for: .normal)
-                    people.search = Want.woman.rawValue
-                    UserDefaultsService.shared.saveMpeople(people: people)
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                }
-            }
-            
-        default:
-            FirestoreService.shared.saveWant(id: people.senderId,
-                                             want: Want.man.rawValue) {[weak self] result in
-                switch result {
-                case .success():
-                    self?.wantButton.setTitle(Want.man.rawValue, for: .normal)
-                    people.search = Want.man.rawValue
-                    UserDefaultsService.shared.saveMpeople(people: people)
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                }
-            }
-        }
-    }
+
 }
 
 extension SetProfileViewController {
@@ -369,8 +284,6 @@ extension SetProfileViewController {
         wantLabel.translatesAutoresizingMaskIntoConstraints = false
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
         advertTextView.translatesAutoresizingMaskIntoConstraints = false
-        sexButton.translatesAutoresizingMaskIntoConstraints = false
-        wantButton.translatesAutoresizingMaskIntoConstraints = false
         editPhotosButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(scrollView)
@@ -381,8 +294,6 @@ extension SetProfileViewController {
         scrollView.addSubview(wantLabel)
         scrollView.addSubview(nameTextField)
         scrollView.addSubview(advertTextView)
-        scrollView.addSubview(sexButton)
-        scrollView.addSubview(wantButton)
         scrollView.addSubview(editPhotosButton)
         
         NSLayoutConstraint.activate([
@@ -422,16 +333,6 @@ extension SetProfileViewController {
             sexLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             sexLabel.topAnchor.constraint(equalTo: advertTextView.bottomAnchor, constant: 25),
             
-            sexButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            sexButton.topAnchor.constraint(equalTo: sexLabel.bottomAnchor, constant: 5),
-            sexButton.heightAnchor.constraint(equalToConstant: 22),
-            
-            wantLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            wantLabel.topAnchor.constraint(equalTo: sexButton.bottomAnchor, constant: 25),
-            
-            wantButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            wantButton.topAnchor.constraint(equalTo: wantLabel.bottomAnchor, constant: 5),
-            wantButton.heightAnchor.constraint(equalToConstant: 22),
         ])
     }
 }

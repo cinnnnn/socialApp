@@ -11,7 +11,7 @@ import MessageKit
 import SDWebImage
 import InputBarAccessoryView
 
-class ChatsViewController: MessagesViewController  {
+class ChatViewController: MessagesViewController  {
     
     private let user:MPeople
     private let chat:MChat
@@ -152,7 +152,7 @@ class ChatsViewController: MessagesViewController  {
     }
 }
 
-extension ChatsViewController {
+extension ChatViewController {
     //MARK: sendImage
     @objc private func tuppedSendImage() {
         let picker = UIImagePickerController()
@@ -167,7 +167,7 @@ extension ChatsViewController {
     }
 }
 
-extension ChatsViewController {
+extension ChatViewController {
     //MARK: choosePhotoAlert
     private func choosePhotoAlert(complition: @escaping (_ sourceType:UIImagePickerController.SourceType?) -> Void) {
         
@@ -198,7 +198,7 @@ extension ChatsViewController {
 }
 
 //MARK: pickerControllerDelegate
-extension ChatsViewController: UIImagePickerControllerDelegate {
+extension ChatViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         guard let image = info[.originalImage] as? UIImage else { fatalError("Cant get image")}
@@ -206,11 +206,11 @@ extension ChatsViewController: UIImagePickerControllerDelegate {
     }
 }
 
-extension ChatsViewController: UINavigationControllerDelegate {
+extension ChatViewController: UINavigationControllerDelegate {
     
 }
 //MARK: MessagesDataSource
-extension ChatsViewController: MessagesDataSource {
+extension ChatViewController: MessagesDataSource {
     func currentSender() -> SenderType {
         user
     }
@@ -226,7 +226,7 @@ extension ChatsViewController: MessagesDataSource {
 }
 
 //MARK: MessagesLayoutDelegate
-extension ChatsViewController: MessagesLayoutDelegate {
+extension ChatViewController: MessagesLayoutDelegate {
     
     func footerViewSize(for section: Int, in messagesCollectionView: MessagesCollectionView) -> CGSize {
         CGSize(width: 0, height: 9)
@@ -234,7 +234,7 @@ extension ChatsViewController: MessagesLayoutDelegate {
 }
 
 //MARK: MessagesDisplayDelegate
-extension ChatsViewController: MessagesDisplayDelegate {
+extension ChatViewController: MessagesDisplayDelegate {
     func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
         isFromCurrentSender(message: message) ? .myMessageColor() : .friendMessageColor()
     }
@@ -265,7 +265,7 @@ extension ChatsViewController: MessagesDisplayDelegate {
 }
 
 //MARK: InputBarAccessoryViewDelegate
-extension ChatsViewController: InputBarAccessoryViewDelegate {
+extension ChatViewController: InputBarAccessoryViewDelegate {
     
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         let message = MMessage(user: user, content: text)

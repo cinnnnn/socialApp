@@ -22,10 +22,6 @@ protocol PeopleConfigurationCell {
     func configure(with value: MPeople, complition:@escaping()->Void)
 }
 
-protocol PeopleCellDelegate: class {
-    func updateCell(user: MPeople)
-}
-
 protocol PeopleListenerDelegate: class {
     var peopleNearby: [MPeople] { get set }
     func updateData()
@@ -47,3 +43,5 @@ protocol ReprasentationModel {
     init?(documentSnap: DocumentSnapshot)
     init?(documentSnap: QueryDocumentSnapshot)
 }
+
+

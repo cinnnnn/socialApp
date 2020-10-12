@@ -11,7 +11,7 @@ import SwiftUI
 import FirebaseAuth
 
 
-class ListViewController: UIViewController {
+class ChatsViewController: UIViewController {
     
     var collectionView: UICollectionView!
     var activeChats: [MChat] = []
@@ -112,7 +112,7 @@ class ListViewController: UIViewController {
 }
 
 //MARK:  setupCompositionLayout
-extension ListViewController {
+extension ChatsViewController {
     
     private func setupCompositionalLayout(isEmptyRequestSection: Bool) -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
@@ -215,7 +215,7 @@ extension ListViewController {
 }
 
 //MARK:  DiffableDataSource
-extension ListViewController {
+extension ChatsViewController {
     //MARK:  configure  cell
     private func configure<T: SelfConfiguringCell>(cellType: T.Type, value: MChat, indexPath: IndexPath) -> T {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)") }
@@ -287,7 +287,7 @@ extension ListViewController {
 }
 
 
-extension ListViewController: RequestChatListenerDelegate, ActiveChatListenerDelegate {
+extension ChatsViewController: RequestChatListenerDelegate, ActiveChatListenerDelegate {
     //MARK: reloadRequestData
     func reloadData(changeType: TypeOfListenerChanges) {
         switch changeType {
@@ -326,7 +326,7 @@ extension ListViewController: RequestChatListenerDelegate, ActiveChatListenerDel
 }
 
 //MARK: UISearchBarDelegate
-extension ListViewController: UISearchBarDelegate {
+extension ChatsViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         reloadDataSource(searchText: searchText)
@@ -334,7 +334,7 @@ extension ListViewController: UISearchBarDelegate {
 }
 
 //MARK: CollectionViewDelegate
-extension ListViewController: UICollectionViewDelegate {
+extension ChatsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let section = SectionsChats(rawValue: indexPath.section) else { fatalError("Unknow section index")}
         guard let item = dataSource?.itemIdentifier(for: indexPath) else { fatalError(DataSourceError.unknownChatIdentificator.localizedDescription)}
@@ -347,7 +347,7 @@ extension ListViewController: UICollectionViewDelegate {
             present(requestVC, animated: true, completion: nil)
         case .activeChats:
             
-            let chatVC = ChatsViewController(user: currentPeople, chat: item)
+            let chatVC = ChatViewController(user: currentPeople, chat: item)
             navigationController?.pushViewController(chatVC, animated: true)
         }
     }
