@@ -9,8 +9,8 @@
 import Foundation
 
 enum MLookingFor: String, CaseIterable {
-    case male = "Male"
-    case female = "Female"
+    case female = "Девушку"
+    case male = "Парня"
     case agender = "Agender"
     case androgyne = "Androgyne"
     case androgynous = "Androgynous"

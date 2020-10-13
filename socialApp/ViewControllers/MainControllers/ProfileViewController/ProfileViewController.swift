@@ -11,7 +11,6 @@ import FirebaseAuth
 
 class ProfileViewController:UIViewController {
     
-    weak private var setupProfileVC:SetProfileViewController?
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MSettings>?
     private var currentPeople: MPeople?

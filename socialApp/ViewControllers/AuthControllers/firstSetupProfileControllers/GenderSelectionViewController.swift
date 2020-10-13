@@ -14,9 +14,9 @@ class GenderSelectionViewController: UIViewController {
     var currentUser: User
     
     let headerLabel = UILabel(labelText: "Немного больше о тебе", textFont: .avenirBold(size: 24),linesCount: 0)
-    let genderSelectionButton = OneLineButton(header: "Гендер", info: "Man")
-    let sexualitySelectionButton = OneLineButton(header: "Сексуальность", info: "Straight")
-    let lookingForSelectionButton = OneLineButton(header: "Кого ты ищешь", info: "Female")
+    let genderSelectionButton = OneLineButton(header: "Гендер", info: "Парень")
+    let sexualitySelectionButton = OneLineButton(header: "Сексуальность", info: "Гетеро")
+    let lookingForSelectionButton = OneLineButton(header: "Кого ты ищешь", info: "Девушку")
     let nameLabel = UILabel(labelText: "Вымышленное имя", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let nameTextField = OneLineTextField(isSecureText: false, tag: 1)
 
@@ -118,7 +118,7 @@ extension GenderSelectionViewController {
             headerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
             headerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
             
-            nameLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 25),
+            nameLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
             nameLabel.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor),
             nameLabel.trailingAnchor.constraint(equalTo: headerLabel.trailingAnchor),
             

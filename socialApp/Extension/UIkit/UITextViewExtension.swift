@@ -20,7 +20,7 @@ extension UITextView {
         isScrollEnabled = false //for autosize height
         backgroundColor = nil
         font = .avenirRegular(size: 16)
-        textColor = .lightGray
+        textColor = .myLabelColor()
         translatesAutoresizingMaskIntoConstraints = false
         
         layer.borderColor = UIColor.label.cgColor
@@ -32,6 +32,19 @@ extension UITextView {
             textContainer.maximumNumberOfLines = 100
             textContainer.lineBreakMode = .byClipping
         }
+        
+        let bottomView =  UIView.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        bottomView.backgroundColor = .myLabelColor()
+        bottomView.translatesAutoresizingMaskIntoConstraints = false
+        
+        textInputView.addSubview(bottomView)
+        
+        NSLayoutConstraint.activate([
+            bottomView.bottomAnchor.constraint(equalTo: textInputView.bottomAnchor),
+            bottomView.heightAnchor.constraint(equalToConstant: 1),
+            bottomView.leadingAnchor.constraint(equalTo: textInputView.leadingAnchor),
+            bottomView.trailingAnchor.constraint(equalTo: textInputView.trailingAnchor)
+        ])
     }
 }
 

@@ -9,8 +9,8 @@
 import Foundation
 
 enum MGender: String, CaseIterable {
-    case man = "Man"
-    case woman = "Woman"
+    case man = "Парень"
+    case woman = "Девушка"
     case agender = "Agender"
     case androgyne = "Androgyne"
     case androgynous = "Androgynous"
