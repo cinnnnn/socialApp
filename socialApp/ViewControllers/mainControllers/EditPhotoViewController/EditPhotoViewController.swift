@@ -97,7 +97,7 @@ extension EditPhotoViewController {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .paging
+        section.orthogonalScrollingBehavior = .continuous
         section.interGroupSpacing = 10
         return section
     }
@@ -109,7 +109,7 @@ extension EditPhotoViewController {
             
             switch section {
             case .photos:
-            return self?.setupPhotosSection()
+                return self?.setupPhotosSection()
             }
         }
         return layout
@@ -120,8 +120,8 @@ extension EditPhotoViewController {
             collectionView: collectionView,
             cellProvider: { (collectionView, indexPath, element) -> UICollectionViewCell? in
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EditPhotoCell.reuseID, for: indexPath) as? EditPhotoCell else { fatalError("Cant cast EditPhotoCell") }
-                    cell.configure(imageStringURL: element) {
-                        cell.layoutIfNeeded()
+                cell.configure(imageStringURL: element) {
+                    cell.layoutIfNeeded()
                 }
                 return cell
             })
@@ -156,7 +156,7 @@ extension EditPhotoViewController {
                     break
                 }
             }
-        }
+                                         }
         
         let libraryAction = UIAlertAction(title: "Удалить",
                                           style: .default) { _ in
@@ -170,7 +170,7 @@ extension EditPhotoViewController {
                     fatalError(errror.localizedDescription)
                 }
             }
-        }
+                                          }
         let cancelAction = UIAlertAction(title: "Отмена",
                                          style: .default) { _ in
             
@@ -192,16 +192,16 @@ extension EditPhotoViewController {
                                            preferredStyle: .actionSheet)
         let cameraAction = UIAlertAction(title: "Открыть камеру",
                                          style: .default) { _ in
-                                            
-                                            complition(UIImagePickerController.SourceType.camera)
+            
+            complition(UIImagePickerController.SourceType.camera)
         }
         let libraryAction = UIAlertAction(title: "Выбрать из галереи",
                                           style: .default) { _ in
-                                            complition(UIImagePickerController.SourceType.photoLibrary)
+            complition(UIImagePickerController.SourceType.photoLibrary)
         }
         let cancelAction = UIAlertAction(title: "Отмена",
                                          style: .default) { _ in
-                                            complition(nil)
+            complition(nil)
         }
         
         photoAlert.setMyStyle()

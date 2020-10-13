@@ -31,10 +31,6 @@ class SelectionViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    deinit {
-        print(#function)
-    }
-    
     private func setup() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -111,7 +107,6 @@ extension SelectionViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
     }
 }
 

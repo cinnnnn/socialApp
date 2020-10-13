@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Необхдимо разрешить использование геолокации, для поиска ближайших к вам людей</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Необхдимо разрешить использование геолокации, для поиска ближайших к вам людей</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -36,7 +32,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>&quot;Получения изображения с камеры&quot;</string>
+	<string>"Получения изображения с камеры"</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Необхдимо разрешить использование геолокации, для поиска ближайших к вам людей</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Необхдимо разрешить использование геолокации, для поиска ближайших к вам людей</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -63,8 +63,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>

@@ -11,11 +11,12 @@ import FirebaseAuth
 
 class GenderSelectionViewController: UIViewController {
 
-    var currentUser: User?
+    var currentUser: User
     
-    let headerLabel = UILabel(labelText: "Немного больше о тебе", textFont: .avenirBold(size: 24))
+    let headerLabel = UILabel(labelText: "Немного больше о тебе", textFont: .avenirBold(size: 24),linesCount: 0)
     let genderSelectionButton = OneLineButton(header: "Гендер", info: "Man")
     let sexualitySelectionButton = OneLineButton(header: "Сексуальность", info: "Straight")
+    let lookingForSelectionButton = OneLineButton(header: "Кого ты ищешь", info: "Female")
     let nameLabel = UILabel(labelText: "Вымышленное имя", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let nameTextField = OneLineTextField(isSecureText: false, tag: 1)
 
@@ -49,10 +50,11 @@ class GenderSelectionViewController: UIViewController {
         
         genderSelectionButton.addTarget(self, action: #selector(genderSelectTapped), for: .touchUpInside)
         sexualitySelectionButton.addTarget(self, action: #selector(sexualitySelectTapped), for: .touchUpInside)
+        lookingForSelectionButton.addTarget(self, action: #selector(lookingForSelectTapped), for: .touchUpInside)
     }
     
     @objc private func saveButtonTapped() {
-        let nextViewController = SexualitySelectionViewController()
+        let nextViewController = InterestsSelectionViewController(currentUser: currentUser)
         navigationController?.pushViewController(nextViewController, animated: true)
     }
     
@@ -81,6 +83,18 @@ class GenderSelectionViewController: UIViewController {
         
         present(vc, animated: true, completion: nil)
     }
+    
+    @objc private func lookingForSelectTapped() {
+        let vc = SelectionViewController(elements: MLookingFor.modelStringAllCases,
+                                         description: MLookingFor.description,
+                                         selectedValue: lookingForSelectionButton.infoLabel.text ?? "",
+                                         complition: { [weak self] selected in
+                                            self?.lookingForSelectionButton.infoLabel.text = selected
+                                         })
+        vc.modalPresentationStyle = .overCurrentContext
+        
+        present(vc, animated: true, completion: nil)
+    }
 }
 
 extension GenderSelectionViewController {
@@ -90,12 +104,14 @@ extension GenderSelectionViewController {
         view.addSubview(nameTextField)
         view.addSubview(genderSelectionButton)
         view.addSubview(sexualitySelectionButton)
+        view.addSubview(lookingForSelectionButton)
         
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
         genderSelectionButton.translatesAutoresizingMaskIntoConstraints = false
         sexualitySelectionButton.translatesAutoresizingMaskIntoConstraints = false
+        lookingForSelectionButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
@@ -119,6 +135,11 @@ extension GenderSelectionViewController {
             sexualitySelectionButton.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor),
             sexualitySelectionButton.trailingAnchor.constraint(equalTo: headerLabel.trailingAnchor),
             sexualitySelectionButton.heightAnchor.constraint(equalToConstant: 70),
+            
+            lookingForSelectionButton.topAnchor.constraint(equalTo: sexualitySelectionButton.bottomAnchor, constant: 25),
+            lookingForSelectionButton.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor),
+            lookingForSelectionButton.trailingAnchor.constraint(equalTo: headerLabel.trailingAnchor),
+            lookingForSelectionButton.heightAnchor.constraint(equalToConstant: 70),
         ])
     }
 }

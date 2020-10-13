@@ -14,7 +14,6 @@ import MapKit
 
 class SetProfileViewController: UIViewController {
     
-    var editPhotoVC: EditPhotoViewController?
     let scrollView = UIScrollView()
     let gelleryScrollView = GalleryScrollView(imagesURL: [])
     let nameLabel = UILabel(labelText: "Вымышленное имя:",
@@ -44,6 +43,9 @@ class SetProfileViewController: UIViewController {
     
     private var currentPeople: MPeople?
     
+    deinit {
+        print(#function)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -167,15 +169,10 @@ extension SetProfileViewController {
 extension SetProfileViewController {
     
     @objc func editPhotosButtonTap() {
-        if let editPhotoVC = editPhotoVC {
-            navigationController?.pushViewController(editPhotoVC, animated: true)
-        } else {
-            editPhotoVC = EditPhotoViewController()
-            if let editPhotoVC = editPhotoVC {
-                navigationController?.pushViewController(editPhotoVC, animated: true)
-            }
-        }
+        let vc = EditPhotoViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
+
     //MARK:  signOut
     @objc func signOut() {
         signOutAlert()
