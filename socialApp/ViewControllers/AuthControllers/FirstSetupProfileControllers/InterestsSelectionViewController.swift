@@ -13,8 +13,7 @@ class InterestsSelectionViewController: UIViewController {
     
     var currentUser: User
     let headerLabel = UILabel(labelText: "Расскажи о своих интересах", textFont: .avenirBold(size: 24),linesCount: 0)
-    let 
-    
+
     init(currentUser: User){
         self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)

@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseAuth
 
-class ProfileViewController:UIViewController {
+class ProfileNewViewController:UIViewController {
     
     weak private var setupProfileVC:SetProfileViewController?
     private var collectionView: UICollectionView!
@@ -50,7 +50,7 @@ class ProfileViewController:UIViewController {
 }
 
 //MARK: getLocation
-extension ProfileViewController {
+extension ProfileNewViewController {
     private func getLocation() {
         guard let people = currentPeople else { return }
         LocationService.shared.getCoordinate(userID: people.senderId) {[weak self] isAllowPermission in
@@ -63,7 +63,7 @@ extension ProfileViewController {
 }
 
 //MARK: getPeopleData
-extension ProfileViewController {
+extension ProfileNewViewController {
     private func getPeopleData() {
         guard let email = currentUser.email else { return }
         FirestoreService.shared.getUserData(userID: email) {[weak self] result in
@@ -95,7 +95,7 @@ extension ProfileViewController {
 }
 
 //MARK: setupCollectionView
-extension ProfileViewController {
+extension ProfileNewViewController {
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupLayout())
         
@@ -200,7 +200,7 @@ extension ProfileViewController {
 }
 
 //MARK: collectionViewDelegate
-extension ProfileViewController: UICollectionViewDelegate {
+extension ProfileNewViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         guard let section = SectionsProfile(rawValue: indexPath.section) else { return }
@@ -236,7 +236,7 @@ extension ProfileViewController: UICollectionViewDelegate {
     }
 }
 
-extension ProfileViewController {
+extension ProfileNewViewController {
     //MARK: openSettingsAlert
     private func openSettingsAlert(){
         let alert = UIAlertController(title: "Нет доступа к геопозиции",
