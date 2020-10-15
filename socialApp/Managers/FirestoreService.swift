@@ -23,8 +23,6 @@ class FirestoreService {
     
     private init() {}
     
-   
-    
     //MARK:  saveBaseProfile
     func saveBaseProfile(id: String,
                          email: String,
@@ -33,7 +31,7 @@ class FirestoreService {
         //save base user info to cloud FireStore
         usersReference.document(id).setData([MPeople.CodingKeys.senderId.rawValue : id,
                                              MPeople.CodingKeys.mail.rawValue: email,
-                                             MPeople.CodingKeys.isActive.rawValue: false],
+                                             MPeople.CodingKeys.isActive.rawValue: true],
                                             merge: true,
                                             completion: { (error) in
                                                 if let error = error {
@@ -43,62 +41,88 @@ class FirestoreService {
                                                 }
                                             })
     }
-    //MARK:  saveGender
-    func saveGender(id: String, gender: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        usersReference.document(id).setData([MPeople.CodingKeys.sex.rawValue : gender],
-                                                  merge: true,
-                                                  completion: { (error) in
-                                                    if let error = error {
-                                                        complition(.failure(error))
-                                                    } else {
-                                                        complition(.success(()))
-                                                    }
-                                                  })
-    }
     
-    //MARK:  saveWant
-    func saveWant(id: String, want: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        usersReference.document(id).setData([MPeople.CodingKeys.search.rawValue : want],
-                                                  merge: true,
-                                                  completion: { (error) in
-                                                    if let error = error {
-                                                        complition(.failure(error))
-                                                    } else {
-                                                        complition(.success(()))
-                                                    }
-                                                  })
+    //MARK:  saveFirstSetupDateOfBirth
+    func saveFirstSetupDateOfBirth(id: String,
+                                   dateOfBirth: Date,
+                                   complition: @escaping (Result<Void, Error>) -> Void){
+        usersReference.document(id).setData([MPeople.CodingKeys.dateOfBirth.rawValue: dateOfBirth],
+                                            merge: true,
+                                            completion: { error in
+                                                if let error = error {
+                                                    complition(.failure(error))
+                                                } else {
+                                                    complition(.success(()))
+                                                }
+                                            })
     }
-    
-    //MARK:  saveDefaultImage
-    func saveDefaultImage(id: String, defaultImageString: String, complition: @escaping (Result<Void, Error>) -> Void) {
-        usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : defaultImageString],
-                                                  merge: true,
-                                                  completion: { (error) in
-                                                    if let error = error {
-                                                        complition(.failure(error))
-                                                    } else {
-                                                        complition(.success(()))
-                                                    }
-                                                  })
+    //MARK:  saveFirstSetupNameGender
+    func saveFirstSetupNameGender(id: String,
+                                  userName: String,
+                                  gender: String,
+                                  lookingFor: String,
+                                  sexuality: String,
+                                  complition: @escaping (Result<Void, Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : userName,
+                                             MPeople.CodingKeys.gender.rawValue : gender,
+                                             MPeople.CodingKeys.lookingFor.rawValue : lookingFor,
+                                             MPeople.CodingKeys.sexuality.rawValue : sexuality],
+                                            merge: true,
+                                            completion: { (error) in
+                                                if let error = error {
+                                                    complition(.failure(error))
+                                                } else {
+                                                    complition(.success(()))
+                                                }
+                                            })
     }
     
     //MARK:  saveAdvertAndName
-    func saveAdvertAndName(id: String,
-                           userName: String,
-                           advert: String,
-                           isActive: Bool,
-                           complition: @escaping (Result<Void, Error>) -> Void){
-        usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : userName,
-                                                   MPeople.CodingKeys.advert.rawValue: advert,
-                                                   MPeople.CodingKeys.isActive.rawValue: isActive],
-                                                  merge: true,
-                                                  completion: { error in
-                                                    if let error = error {
-                                                        complition(.failure(error))
-                                                    } else {
-                                                        complition(.success(()))                                                    }
-                                                  })
+    func saveAdvert(id: String,
+                    advert: String,
+                    complition: @escaping (Result<Void, Error>) -> Void){
+        usersReference.document(id).setData([MPeople.CodingKeys.advert.rawValue: advert],
+                                            merge: true,
+                                            completion: { error in
+                                                if let error = error {
+                                                    complition(.failure(error))
+                                                } else {
+                                                    complition(.success(()))
+                                                }
+                                            })
     }
+    
+    //MARK:  saveProfileAfterEdit
+    func saveProfileAfterEdit(id: String,
+                              name: String,
+                              advert: String,
+                              gender: String,
+                              sexuality: String,
+                              lookingFor: String,
+                              complition: @escaping (Result<Void,Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : name,
+                                             MPeople.CodingKeys.advert.rawValue : advert,
+                                             MPeople.CodingKeys.gender.rawValue : gender,
+                                             MPeople.CodingKeys.sexuality.rawValue : sexuality,
+                                             MPeople.CodingKeys.lookingFor.rawValue : lookingFor],
+        merge: true) { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                //edit current user from UserDefaults for save request to server
+                if var people = UserDefaultsService.shared.getMpeople() {
+                    people.displayName = name
+                    people.advert = advert
+                    people.gender = gender
+                    people.sexuality = sexuality
+                    people.lookingFor = lookingFor
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                }
+                complition(.success(()))
+            }
+        }
+    }
+    
     
     //MARK: saveLocation
     func saveLocation(userID: String, longitude: Double, latitude: Double, complition: @escaping (Result<[String:Double],Error>) -> Void) {
@@ -298,6 +322,18 @@ extension FirestoreService {
 //MARK: - work with image
 extension FirestoreService {
     
+    //MARK:  saveDefaultImage
+    func saveDefaultImage(id: String, defaultImageString: String, complition: @escaping (Result<Void, Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : defaultImageString],
+                                                  merge: true,
+                                                  completion: { (error) in
+                                                    if let error = error {
+                                                        complition(.failure(error))
+                                                    } else {
+                                                        complition(.success(()))
+                                                    }
+                                                  })
+    }
     
     //MARK:  saveAvatar
     func saveAvatar(image: UIImage?, id: String, complition: @escaping (Result<String, Error>) -> Void) {
@@ -316,10 +352,10 @@ extension FirestoreService {
                             complition(.failure(error))
                         } else {
                             //edit current user from UserDefaults for save request to server
-                            guard var people = UserDefaultsService.shared.getMpeople() else { return }
-                            people.userImage = userImageString
-                            UserDefaultsService.shared.saveMpeople(people: people)
-                            
+                            if var people = UserDefaultsService.shared.getMpeople() {
+                                people.userImage = userImageString
+                                UserDefaultsService.shared.saveMpeople(people: people)
+                            }
                             complition(.success(userImageString))
                         }
                     })
@@ -343,9 +379,10 @@ extension FirestoreService {
                     complition(.failure(error))
                 } else {
                     //edit current user from UserDefaults for save request to server
-                    guard var people = UserDefaultsService.shared.getMpeople() else { return }
-                    people.userImage = imageURLString
-                    UserDefaultsService.shared.saveMpeople(people: people)
+                    if var people = UserDefaultsService.shared.getMpeople() {
+                        people.userImage = imageURLString
+                        UserDefaultsService.shared.saveMpeople(people: people)
+                    }
                     //if success, delete current image from gallery, but save in storage, for use in profileImage
                     self?.deleteFromGallery(imageURLString: imageURLString, deleteInStorage: false, id: id) { result in
                         switch result {
@@ -389,10 +426,10 @@ extension FirestoreService {
                                                                     complition(.failure(error))
                                                                 } else {
                                                                     //edit current user from UserDefaults for save request to server
-                                                                    guard var people = UserDefaultsService.shared.getMpeople() else { return }
-                                                                    people.gallery.append(userImageString)
-                                                                    UserDefaultsService.shared.saveMpeople(people: people)
-                                                                    
+                                                                    if var people = UserDefaultsService.shared.getMpeople() {
+                                                                        people.gallery.append(userImageString)
+                                                                        UserDefaultsService.shared.saveMpeople(people: people)
+                                                                    }
                                                                     complition(.success(userImageString))
                                                                 }
                                                               })
@@ -410,10 +447,10 @@ extension FirestoreService {
                                                         complition(.failure(error))
                                                     } else {
                                                         //edit current user from UserDefaults for save request to server
-                                                        guard var people = UserDefaultsService.shared.getMpeople() else { return }
-                                                        people.gallery.append(imageLink)
-                                                        UserDefaultsService.shared.saveMpeople(people: people)
-                                                        
+                                                        if var people = UserDefaultsService.shared.getMpeople() {
+                                                            people.gallery.append(imageLink)
+                                                            UserDefaultsService.shared.saveMpeople(people: people)
+                                                        }
                                                         complition(.success(imageLink))
                                                     }
                                                 })
@@ -431,11 +468,11 @@ extension FirestoreService {
                 complition(.failure(error))
             } else {
                 //edit current user from UserDefaults for save request to server
-                guard var people = UserDefaultsService.shared.getMpeople() else { return }
-                guard let indexOfImage = people.gallery.firstIndex(of: imageURLString) else { return }
-                people.gallery.remove(at: indexOfImage)
-                UserDefaultsService.shared.saveMpeople(people: people)
-                
+                if var people = UserDefaultsService.shared.getMpeople() {
+                    guard let indexOfImage = people.gallery.firstIndex(of: imageURLString) else { return }
+                    people.gallery.remove(at: indexOfImage)
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                }
                 if deleteInStorage {
                     //delete image from storage
                     StorageService.shared.deleteImage(link: imageURLString) { result in
@@ -450,7 +487,6 @@ extension FirestoreService {
                 } else {
                     complition(.success(imageURLString))
                 }
-               
             }
         })
     }

@@ -13,14 +13,16 @@ class GenderSelectionViewController: UIViewController {
 
     var currentUser: User
     
-    let headerLabel = UILabel(labelText: "Немного больше о тебе", textFont: .avenirBold(size: 24),linesCount: 0)
+    let headerLabel = UILabel(labelText: MLabels.genderSelectionHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
     let genderSelectionButton = OneLineButton(header: "Гендер", info: "Парень")
     let sexualitySelectionButton = OneLineButton(header: "Сексуальность", info: "Гетеро")
     let lookingForSelectionButton = OneLineButton(header: "Кого ты ищешь", info: "Девушку")
     let nameLabel = UILabel(labelText: "Вымышленное имя", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let nameTextField = OneLineTextField(isSecureText: false, tag: 1)
+    weak var navigationDelegate: NavigationDelegate?
 
-    init(currentUser: User){
+    init(currentUser: User, navigationDelegate: NavigationDelegate?){
+        self.navigationDelegate = navigationDelegate
         self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)
     }
@@ -48,14 +50,48 @@ class GenderSelectionViewController: UIViewController {
                                                          action: #selector(saveButtonTapped)),
                                          animated: false)
         
+        nameTextField.delegate = self
+        
         genderSelectionButton.addTarget(self, action: #selector(genderSelectTapped), for: .touchUpInside)
         sexualitySelectionButton.addTarget(self, action: #selector(sexualitySelectTapped), for: .touchUpInside)
         lookingForSelectionButton.addTarget(self, action: #selector(lookingForSelectTapped), for: .touchUpInside)
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+}
+
+//MARK: obcj
+extension GenderSelectionViewController {
+    
     @objc private func saveButtonTapped() {
-        let nextViewController = InterestsSelectionViewController(currentUser: currentUser)
-        navigationController?.pushViewController(nextViewController, animated: true)
+        guard let id = currentUser.email else { fatalError("Can't get user email")}
+        let userName = Validators.shared.isFilledUserName(userName: nameTextField.text)
+        if userName.isFilled {
+            guard let gender = genderSelectionButton.infoLabel.text else { return }
+            guard let sexuality = sexualitySelectionButton.infoLabel.text else { return }
+            guard let lookingFor = lookingForSelectionButton.infoLabel.text else { return }
+            
+            FirestoreService.shared.saveFirstSetupNameGender(id: id,
+                                                             userName: userName.userName,
+                                                             gender: gender,
+                                                             lookingFor: lookingFor,
+                                                             sexuality: sexuality) {[weak self] result in
+                switch result {
+                
+                case .success():
+                    guard let user = self?.currentUser else { fatalError("Can't get user")}
+                    let nextViewController = InterestsSelectionViewController(currentUser: user, navigationDelegate: self?.navigationDelegate)
+                    self?.navigationController?.pushViewController(nextViewController, animated: true)
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                }
+            }
+            
+        } else {
+            showAlert(title: "Укажи имя", text: "Ты можешь указать любое вымышленное имя", buttonText: "Ок")
+        }
     }
     
     @objc private func genderSelectTapped() {
@@ -68,7 +104,6 @@ class GenderSelectionViewController: UIViewController {
         vc.modalPresentationStyle = .overCurrentContext
         
         present(vc, animated: true, completion: nil)
-        
     }
 
 
@@ -97,6 +132,32 @@ class GenderSelectionViewController: UIViewController {
     }
 }
 
+//MARK: textFieldDelegate
+extension GenderSelectionViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
+}
+
+//MARK:  showAlert
+extension GenderSelectionViewController {
+    
+    private func showAlert(title: String, text: String, buttonText: String) {
+        
+        let alert = UIAlertController(title: title,
+                                      text: text,
+                                      buttonText: buttonText,
+                                      style: .alert) { [weak self] in
+            self?.nameTextField.becomeFirstResponder()
+        }
+        
+        alert.setMyLightStyle()
+        present(alert, animated: true, completion: nil)
+    }
+}
+
+//MARK: setupConstraints
 extension GenderSelectionViewController {
     private func setupConstraints() {
         view.addSubview(headerLabel)

@@ -36,6 +36,18 @@ extension UIView {
 }
 
 extension UIView {
+    func addCustomTransition(type: CATransitionType, duration: CFTimeInterval = 0.3) {
+        let transition: CATransition = CATransition()
+        transition.duration = duration
+        transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        transition.type = type
+        transition.subtype = .fromRight
+        
+        self.window?.layer.add(transition, forKey: nil)
+    }
+}
+
+extension UIView {
     func anchor(leading: NSLayoutXAxisAnchor?,
                 trailing: NSLayoutXAxisAnchor?,
                 top: NSLayoutYAxisAnchor?,

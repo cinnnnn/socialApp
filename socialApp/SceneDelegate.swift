@@ -95,7 +95,7 @@ extension SceneDelegate {
             switch result {
             
             case .success(let mPeople):
-                if mPeople.sex == "" || mPeople.search == "" {
+                if mPeople.gender == "" || mPeople.lookingFor == "" {
                     complition(.success(true))
                 } else {
                     complition(.success(false))

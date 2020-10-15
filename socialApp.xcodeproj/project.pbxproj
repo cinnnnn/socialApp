@@ -70,6 +70,8 @@
 		FB8C3D792535F4C500184FB5 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D782535F4C500184FB5 /* StringExtension.swift */; };
 		FB8C3D7D253606EE00184FB5 /* LocaleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D7C253606ED00184FB5 /* LocaleExtension.swift */; };
 		FB8C3D832536089A00184FB5 /* UIDatePickerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D822536089A00184FB5 /* UIDatePickerExtension.swift */; };
+		FB8C3D8B25371AE900184FB5 /* MLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D8A25371AE900184FB5 /* MLabels.swift */; };
+		FB8C3D8E25372BEB00184FB5 /* MReports.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D8D25372BEB00184FB5 /* MReports.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
@@ -166,6 +168,8 @@
 		FB8C3D7C253606ED00184FB5 /* LocaleExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocaleExtension.swift; sourceTree = "<group>"; };
 		FB8C3D822536089A00184FB5 /* UIDatePickerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDatePickerExtension.swift; sourceTree = "<group>"; };
 		FB8C3D8525360ED700184FB5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		FB8C3D8A25371AE900184FB5 /* MLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLabels.swift; sourceTree = "<group>"; };
+		FB8C3D8D25372BEB00184FB5 /* MReports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MReports.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
@@ -274,7 +278,9 @@
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
 				FB61A7F7251E3FE4005DCC78 /* MSender.swift */,
 				FB79DA6D252C942B00A7AA56 /* MLocation.swift */,
+				FB8C3D8A25371AE900184FB5 /* MLabels.swift */,
 				FB79DA4B2523577100A7AA56 /* MMediaItem.swift */,
+				FB8C3D8D25372BEB00184FB5 /* MReports.swift */,
 				FB79DA8A252DF0D600A7AA56 /* MSettings.swift */,
 				FBB3B264250ACA0700440632 /* MGender.swift */,
 				FB8C3D3B2533961800184FB5 /* MSexuality.swift */,
@@ -382,19 +388,19 @@
 			path = FirstSetupProfileControllers;
 			sourceTree = "<group>";
 		};
-		FB8C3D582533E0C400184FB5 /* SelectionTableView */ = {
+		FB8C3D582533E0C400184FB5 /* SelectionVIewController */ = {
 			isa = PBXGroup;
 			children = (
 				FB8C3D542533E09900184FB5 /* SelectionViewController.swift */,
 				FB8C3D452533A22C00184FB5 /* Cell */,
 			);
-			path = SelectionTableView;
+			path = SelectionVIewController;
 			sourceTree = "<group>";
 		};
 		FB8C3D742535DA5900184FB5 /* PopUpViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				FB8C3D582533E0C400184FB5 /* SelectionTableView */,
+				FB8C3D582533E0C400184FB5 /* SelectionVIewController */,
 			);
 			path = PopUpViewControllers;
 			sourceTree = "<group>";
@@ -640,6 +646,7 @@
 				FB8C3D392533958900184FB5 /* MLookingFor.swift in Sources */,
 				FB8C3D652534A74900184FB5 /* SelectionTableViewHeader.swift in Sources */,
 				FB79DA9D2530E9C500A7AA56 /* EditPhotoCell.swift in Sources */,
+				FB8C3D8E25372BEB00184FB5 /* MReports.swift in Sources */,
 				FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */,
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
 				FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */,
@@ -693,6 +700,7 @@
 				FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */,
 				FBF6289524F678C300DCD4AC /* SectionsChats.swift in Sources */,
 				FB09107E24FA73B2006B72D5 /* SendRequestViewController.swift in Sources */,
+				FB8C3D8B25371AE900184FB5 /* MLabels.swift in Sources */,
 				FB79DA6E252C942B00A7AA56 /* MLocation.swift in Sources */,
 				FBEF607824A602070005F947 /* AppDelegate.swift in Sources */,
 				FB1062DC24B09F6C0012C4D4 /* SetProfileViewController.swift in Sources */,

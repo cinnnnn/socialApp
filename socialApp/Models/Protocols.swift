@@ -44,4 +44,7 @@ protocol ReprasentationModel {
     init?(documentSnap: QueryDocumentSnapshot)
 }
 
-
+protocol NavigationDelegate: class {
+    func toMainTabBarController(user: User)
+    func toCompliteRegistration(user: User)
+}

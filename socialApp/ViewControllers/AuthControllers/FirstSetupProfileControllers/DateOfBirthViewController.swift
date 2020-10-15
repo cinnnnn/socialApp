@@ -14,12 +14,14 @@ class DateOfBirthViewController: UIViewController {
     
     var currentUser: User
     
-    let headerLabel = UILabel(labelText: "Когда у тебя день рождения?", textFont: .avenirBold(size: 24),linesCount: 0)
-    let subHeaderLabel = UILabel(labelText: "Мы никому не покажем дату, только отобразим твой возраст.", textFont: .avenirRegular(size: 16), textColor: .myGrayColor(), linesCount: 0)
+    let headerLabel = UILabel(labelText: MLabels.dateOfBirthHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
+    let subHeaderLabel = UILabel(labelText: MLabels.dateOfBirthSubHeader.rawValue, textFont: .avenirRegular(size: 16), textColor: .myGrayColor(), linesCount: 0)
     let dateLabel = UILabel(labelText: "День рождения", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let datePicker = UIDatePicker(datePickerMode: .date)
+    weak var navigationDelegate: NavigationDelegate?
     
-    init(currentUser: User){
+    init(currentUser: User, navigationDelegate: NavigationDelegate? ){
+        self.navigationDelegate = navigationDelegate
         self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)
     }
@@ -46,8 +48,6 @@ class DateOfBirthViewController: UIViewController {
                                                          target: self,
                                                          action: #selector(saveButtonTapped)),
                                          animated: false)
-       
-        
     }
 }
 
@@ -55,8 +55,18 @@ extension  DateOfBirthViewController {
     
     @objc private func saveButtonTapped() {
         
-        let nextViewController = GenderSelectionViewController(currentUser: currentUser)
-        navigationController?.pushViewController(nextViewController, animated: true)
+        guard let id = currentUser.email else { fatalError("Can't get user email")}
+        FirestoreService.shared.saveFirstSetupDateOfBirth(id: id, dateOfBirth: datePicker.date) {[weak self] result in
+            switch result {
+            
+            case .success():
+                guard let user = self?.currentUser else { fatalError("Can't get user") }
+                let nextViewController = GenderSelectionViewController(currentUser: user, navigationDelegate: self?.navigationDelegate)
+                self?.navigationController?.pushViewController(nextViewController, animated: true)
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
     }
 }
 

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Денис Щиголев. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class Validators {
     
@@ -42,16 +42,17 @@ class Validators {
     }
     
     
-    func isFilledSetProfile(userName: String?, advert: String? ) -> (isFilled: Bool,
-                                                                     userName: String,
-                                                                     advert: String) {
+    func isFilledUserName(userName: String? ) -> (isFilled: Bool,
+                                                  userName: String) {
         guard let userName = userName,
-            let advert = advert,
-            userName != "",
-            advert != ""
-            else { return (false, "", "") }
+              userName != ""
+              else { return (false, "") }
         
-        return (true, userName, advert)
+        return (true, userName)
+    }
+    
+    func isSetProfileImage(image: UIImage) -> Bool {
+        return true
     }
     
     

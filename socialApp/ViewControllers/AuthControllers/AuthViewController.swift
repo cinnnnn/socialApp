@@ -22,6 +22,8 @@ class AuthViewController: UIViewController {
     
     let appleButton = ASAuthorizationAppleIDButton()
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
+    private var currentChildViewController: UIViewController?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,26 +43,13 @@ class AuthViewController: UIViewController {
         appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
     }
     
-    private func toGenderSelect(user: User){
-        let navController = UINavigationController.init(rootViewController: GenderSelectionViewController(currentUser: user))
-        navController.modalPresentationStyle = .fullScreen
-        navController.navigationBar.backgroundColor = .systemBackground
-        navController.navigationBar.prefersLargeTitles = true
-        present(navController, animated: true, completion: nil)
-    }
-    
-    private func toMainTabBar(user: User){
-        let mainTabBarVC = MainTabBarController(currentUser: user)
-        mainTabBarVC.modalPresentationStyle = .fullScreen
-        present(mainTabBarVC, animated: true, completion: nil)
-    }
-    
     //MARK:  objc func
     @objc func loginButtonPressed() {
-        let navController = UINavigationController.init(rootViewController: LoginViewController())
+        let navController = UINavigationController.init(rootViewController: LoginViewController(navigationDelegate: self))
         navController.modalPresentationStyle = .fullScreen
         navController.navigationBar.isHidden = true
-        present(navController, animated: true, completion: nil)
+        navController.modalTransitionStyle = .crossDissolve
+       present(navController, animated: true, completion: nil)
     }
     
     @objc func appleButtonPressed() {
@@ -102,10 +91,10 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                                                                         
                                                                         case .success(let mPeople):
                                                                             //check gender and want data in mPeople
-                                                                            if mPeople.sex == "" || mPeople.search == "" {
-                                                                                self?.toGenderSelect(user: user)
+                                                                            if mPeople.gender == "" || mPeople.lookingFor == "" {
+                                                                                self?.toCompliteRegistration(user: user)
                                                                             } else {
-                                                                                self?.toMainTabBar(user: user)
+                                                                                self?.toMainTabBarController(user: user)
                                                                             }
                                                                         case .failure(_):
                                                                              break
@@ -150,6 +139,25 @@ extension AuthViewController {
     }
 }
 
+//MARK: navigationDelegate
+extension AuthViewController: NavigationDelegate {
+    
+    func toMainTabBarController(user: User){
+        let mainTabBarVC = MainTabBarController(currentUser: user)
+        mainTabBarVC.modalPresentationStyle = .fullScreen
+        mainTabBarVC.modalTransitionStyle = .crossDissolve
+        present(mainTabBarVC, animated: false, completion: nil)
+    }
+    
+    func toCompliteRegistration(user: User){
+        let navController = UINavigationController.init(rootViewController: DateOfBirthViewController(currentUser: user, navigationDelegate: self))
+        navController.modalPresentationStyle = .fullScreen
+        navController.modalTransitionStyle = .crossDissolve
+        navController.navigationBar.backgroundColor = .systemBackground
+        navController.navigationBar.prefersLargeTitles = true
+        present(navController, animated: false, completion: nil)
+    }
+}
 // MARK:  Setup Constraints
 extension AuthViewController {
     private func setupConstraints(){
@@ -184,24 +192,5 @@ extension AuthViewController {
                            height: appleButton.widthAnchor,
                            multiplier: .init(width: 0, height: 1.0/7.28))
         
-    }
-}
-
-//MARK: - SwiftUI
-struct ViewControllerProvider: PreviewProvider {
-    
-    static var previews: some View {
-        ContenerView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContenerView: UIViewControllerRepresentable {
-        
-        func makeUIViewController(context: Context) -> AuthViewController {
-            AuthViewController()
-        }
-        
-        func updateUIViewController(_ uiViewController: AuthViewController, context: Context) {
-            
-        }
     }
 }

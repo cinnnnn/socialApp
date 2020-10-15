@@ -17,20 +17,25 @@ class RegisterEmailViewController: UIViewController {
                                  contentMode: .scaleAspectFit)
     
     let loginLabel = UILabel(labelText: "Проверь test3@gmail.com почту",
-                             textFont: .boldSystemFont(ofSize: 16),
-                             opacity: 0)
+                             textFont: .avenirBold(size: 16),
+                             opacity: 0,
+                             linesCount: 0)
     let emailInstructionLabel = UILabel(labelText: "Пройди по ссылке в письме для активации",
-                                        textFont: .systemFont(ofSize: 12, weight: .thin),
+                                        textFont: .avenirRegular(size: 16),
+                                        textColor: .myGrayColor(),
                                         opacity:  0,
-                                        linesCount: 5)
+                                        linesCount: 0)
     let emailLabel = UILabel(labelText: "Твоя почта ",
-                             textFont: .systemFont(ofSize: 16, weight: .light),
+                             textFont: .avenirRegular(size: 16),
+                             textColor: .myGrayColor(),
                              opacity: 1)
     let passwordLabel = UILabel(labelText: "Придумай к ней пароль",
-                                textFont: .systemFont(ofSize: 16, weight: .regular),
+                                textFont: .avenirRegular(size: 16),
+                                textColor: .myGrayColor(),
                                 opacity: 1)
     let confirmPasswordLabel = UILabel(labelText: "Повтори пароль",
-                                       textFont: .systemFont(ofSize: 16, weight: .regular),
+                                       textFont: .avenirRegular(size: 16),
+                                       textColor: .myGrayColor(),
                                        opacity: 1)
     
     let passwordTextField = OneLineTextField(isSecureText: true,
@@ -42,20 +47,22 @@ class RegisterEmailViewController: UIViewController {
                                                     opacity: 1,
                                                     isEnable: true)
     
-    let signUpButton = UIButton(newBackgroundColor: .label,
-                                newBorderColor: .label,
+    let signUpButton = UIButton(newBackgroundColor: .myLabelColor(),
+                                newBorderColor: .myLabelColor(),
                                 title: "Продолжить",
-                                titleColor: .systemBackground)
+                                titleColor: .myWhiteColor())
     
-    let checkMailButton = UIButton(newBackgroundColor: .label,
-                                   newBorderColor: .label,
+    let checkMailButton = UIButton(newBackgroundColor: .myLabelColor(),
+                                   newBorderColor: .myLabelColor(),
                                    title: "Проверить активацию",
-                                   titleColor: .systemBackground,
+                                   titleColor: .myWhiteColor(),
                                    isHidden: true)
 
     var email:String?
+    weak var navigationDelegate: NavigationDelegate?
     
-    init(email: String?){
+    init(email: String?, navigationDelegate: NavigationDelegate?){
+        self.navigationDelegate = navigationDelegate
         self.email = email
         super.init(nibName: nil, bundle: nil)
     }
@@ -63,6 +70,7 @@ class RegisterEmailViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,16 +98,7 @@ extension RegisterEmailViewController {
     }
 
     private func setupButtonAction() {
-        
         signUpButton.addTarget(self, action: #selector(signUpButtonPressed), for: .touchUpInside)
-    }
-    
-    private func toGenderSelect(user: User){
-        let navController = UINavigationController.init(rootViewController: GenderSelectionViewController(currentUser: user))
-        navController.modalPresentationStyle = .fullScreen
-        navController.navigationBar.backgroundColor = .systemBackground
-        navController.navigationBar.prefersLargeTitles = true
-        present(navController, animated: true, completion: nil)
     }
 }
 
@@ -108,7 +107,7 @@ extension RegisterEmailViewController {
     
     @objc func signUpButtonPressed() {
         
-        //check activation mail before next VC
+        //need check activation mail before next VC
         AuthService.shared.register(
             email: email,
             password: passwordTextField.text,
@@ -122,7 +121,9 @@ extension RegisterEmailViewController {
                                                         email: email ) { result in
                     switch result {
                     case .success():
-                        self?.toGenderSelect(user: user)
+                        //after save base profile in Firestore, close and show complite registration VC
+                        let newVC = DateOfBirthViewController(currentUser: user, navigationDelegate: self?.navigationDelegate)
+                        self?.navigationController?.setViewControllers([newVC], animated: true)
                     case .failure(let error):
                         fatalError(error.localizedDescription)
                     }
@@ -136,10 +137,6 @@ extension RegisterEmailViewController {
                 self?.signUpButton.isEnabled = true
             }
         }
-    }
-    
-    @objc func loginButtonPressed() {
-        
     }
 }
 
@@ -256,25 +253,5 @@ extension RegisterEmailViewController {
             signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             signUpButton.heightAnchor.constraint(equalTo: signUpButton.widthAnchor, multiplier: 1.0/7.28)
         ])
-    }
-}
-
-
-//MARK: - SwiftUI
-struct SignUpViewControllerProvider: PreviewProvider {
-    
-    static var previews: some View {
-        ContenerView().edgesIgnoringSafeArea(.all)
-    }
-    
-    struct ContenerView: UIViewControllerRepresentable {
-        
-        func makeUIViewController(context: Context) -> RegisterEmailViewController {
-            RegisterEmailViewController(email: "Foo")
-        }
-        
-        func updateUIViewController(_ uiViewController: RegisterEmailViewController, context: Context) {
-            
-        }
     }
 }

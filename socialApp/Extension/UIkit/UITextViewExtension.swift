@@ -11,11 +11,13 @@ import UIKit
 extension UITextView {
     
     convenience init(text: String = "",
-                     isEditable: Bool = true) {
+                     isEditable: Bool = true,
+                     tag: Int = 1) {
         self.init()
         
         self.text = text
         self.isEditable = isEditable
+        self.tag = tag
         isSelectable = isEditable
         isScrollEnabled = false //for autosize height
         backgroundColor = nil

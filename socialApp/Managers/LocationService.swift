@@ -7,6 +7,7 @@
 //
 
 import MapKit
+import FirebaseAuth
 import CoreLocation
 
 class LocationService: UIResponder {
@@ -67,11 +68,10 @@ extension LocationService: CLLocationManagerDelegate {
             guard let userID = userID else { fatalError("Cant get userID for location")}
             FirestoreService.shared.saveLocation(userID: userID,
                                                  longitude: coordinate.longitude,
-                                                 latitude: coordinate.latitude) {[weak self] result in
+                                                 latitude: coordinate.latitude) { result in
                 switch result {
                 
                 case .success(_):
-                    self?.userID = nil
                     var people = UserDefaultsService.shared.getMpeople()
                     people?.location = coordinate
                     UserDefaultsService.shared.saveMpeople(people: people)

@@ -210,13 +210,13 @@ extension ProfileViewController: UICollectionViewDelegate {
             switch cell {
             
             case .setupProfile:
-                let vc = SetProfileViewController()
+                let vc = SetProfileViewController(currentUser: currentUser)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .setupSearch:
-                let newVC = DateOfBirthViewController(currentUser: currentUser)
+                let newVC = DateOfBirthViewController(currentUser: currentUser, navigationDelegate: nil)
                 newVC.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(newVC, animated: true)
                 

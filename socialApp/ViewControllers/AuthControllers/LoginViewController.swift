@@ -34,6 +34,16 @@ class LoginViewController: UIViewController {
     let passwordLabel = UILabel(labelText: "Пароль",
                                 opacity: 0)
     
+    weak var navigationDelegate: NavigationDelegate?
+    
+    init(navigationDelegate: NavigationDelegate?){
+        self.navigationDelegate = navigationDelegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,13 +75,6 @@ extension LoginViewController {
         emailTextField.addTarget(self, action: #selector(emailEnterComplite), for: .editingDidEnd)
     }
     
-    private func toGenderSelect(user: User){
-        let navController = UINavigationController.init(rootViewController: GenderSelectionViewController(currentUser: user))
-        navController.modalPresentationStyle = .fullScreen
-        navController.navigationBar.backgroundColor = .systemBackground
-        navController.navigationBar.prefersLargeTitles = true
-        present(navController, animated: true, completion: nil)
-    }
 }
 
 extension LoginViewController {
@@ -91,7 +94,7 @@ extension LoginViewController {
             }
             return
         }
-        
+        //check current email in Firebase auth, than show password textField
         AuthService.shared.isEmailAlreadyRegister(email: email) {[weak self] result in
             switch result {
             
@@ -136,8 +139,8 @@ extension LoginViewController {
                         switch result {
                         
                         case .success(let mPeople):
-                            if mPeople.sex == "" || mPeople.search == "" {
-                                self?.toGenderSelect(user: user)
+                            if mPeople.gender == "" || mPeople.lookingFor == "" {
+                                self?.navigationDelegate?.toCompliteRegistration(user: user)
                             } else {
                                 let mainVC = MainTabBarController(currentUser: user)
                                 mainVC.modalPresentationStyle = .fullScreen
@@ -160,7 +163,8 @@ extension LoginViewController {
             }
         //if passwordTextField is disable go to RegisterVC
         default:
-            let registerEmailVC = RegisterEmailViewController(email: emailTextField.text)
+            guard let delegate = navigationDelegate else { fatalError("Can't get navigationDelegate")}
+            let registerEmailVC = RegisterEmailViewController(email: emailTextField.text, navigationDelegate: delegate)
             navigationController?.pushViewController(registerEmailVC, animated: true)
         }
     }
