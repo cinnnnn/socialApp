@@ -14,7 +14,7 @@ enum MSexuality: String, CaseIterable {
     case pansexual = "Пансексуал"
     case polisexual = "Полисексуал"
     case autoSexual = "Автосексуал"
-    case androgynosexual = "Андрогиноосексуал"
+    case androgynosexual = "Андрогиносексуал"
     case androsexual = "Андросексуал"
     case asexual = "Асексуал"
     case demisexual = "Демисексуал"
@@ -29,7 +29,7 @@ enum MSexuality: String, CaseIterable {
 }
 
 extension MSexuality {
-    static let description = "Сексуальность"
+    static let description = "Ориентация"
     
     static var modelStringAllCases: [String] {
         allCases.map { gender -> String in

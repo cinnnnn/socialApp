@@ -32,7 +32,7 @@ class OneLineButton: UIButton {
         bottomLine.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+            headerLabel.topAnchor.constraint(equalTo: topAnchor),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             

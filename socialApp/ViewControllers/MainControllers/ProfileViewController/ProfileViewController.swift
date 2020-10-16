@@ -46,7 +46,7 @@ class ProfileViewController:UIViewController {
         view.backgroundColor = .myWhiteColor()
         
         navigationItem.backButtonTitle = ""
-        
+        navigationItem.largeTitleDisplayMode = .never
     }
 }
 
@@ -120,6 +120,10 @@ extension ProfileViewController {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                        leading: 25,
+                                                        bottom: 0,
+                                                        trailing: 25)
         
         return section
     }
@@ -136,6 +140,11 @@ extension ProfileViewController {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 10
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                        leading: 25,
+                                                        bottom: 0,
+                                                        trailing: 25)
         
         return section
     }

@@ -24,11 +24,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     var visibleIndexPath: IndexPath?
     var inactiveView = AdvertInactiveView(isHidden: true)
     var nameLabel = UILabel(labelText: "Name", textFont: .avenirBold(size: 38))
-    var distanceLabel = UILabel(labelText: "0.00KM", textFont: .avenirBold(size: 16))
-    var advertLabel = UILabel(labelText: "Test one more and more",
-                              textFont: .avenirRegular(size: 16),
-                              aligment: .center,
-                              linesCount: 5)
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
@@ -101,7 +96,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8),
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9),
                                                heightDimension: .fractionalHeight(1))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                      subitems: [item])
@@ -112,13 +107,15 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         section.orthogonalScrollingBehavior = .groupPaging
         section.interGroupSpacing = 40
         section.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                        leading: 40,
+                                                        leading: 20,
                                                         bottom: 0,
-                                                        trailing: 40)
+                                                        trailing: 20)
         
-        section.visibleItemsInvalidationHandler = { [weak self]visibleItems, point, environment in
+        section.visibleItemsInvalidationHandler = { [weak self] visibleItems, point, environment in
 
             self?.setDataForVisibleCell()
+            self?.setUIForVisivleCells(items: visibleItems, point: point, enviroment: environment)
+            
         }
         return section
     }
@@ -194,25 +191,27 @@ extension PeopleViewController {
         //set only when index path change to new value
         if visibleIndexPath != indexPath || firstLoad {
             
-            let item = dataSource?.itemIdentifier(for: indexPath)
-            
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.lineHeightMultiple = 0.8
-            paragraph.alignment = .center
-            
-            let attributes: [NSAttributedString.Key : Any] = [
-                .paragraphStyle : paragraph
-            ]
-            
-            advertLabel.attributedText = NSMutableAttributedString(string: item?.advert ?? "", attributes: attributes)
-            nameLabel.text = item?.displayName
-            distanceLabel.text = "\(item?.distance ?? Int.random(in: 0...30)) Km"
-        
+            guard let item = dataSource?.itemIdentifier(for: indexPath) else { return }
+            nameLabel.text = item.displayName
             //set new current visible indexPath
             visibleIndexPath = indexPath
         }
     }
 }
+
+//MARK: setUIForVisivleCells
+extension PeopleViewController {
+    private func setUIForVisivleCells(items: [NSCollectionLayoutVisibleItem], point: CGPoint, enviroment: NSCollectionLayoutEnvironment) {
+        items.forEach { visibleItem in
+            let distanceFromCenter = abs((visibleItem.frame.midX - point.x) - enviroment.container.contentSize.width / 2.0)
+            let minScale: CGFloat = 0.5
+            let maxScale: CGFloat = 1
+            let scale = max(maxScale - (distanceFromCenter / enviroment.container.contentSize.width / 2), minScale)
+            visibleItem.transform = CGAffineTransform(scaleX: scale, y: scale)
+        }
+    }
+}
+
 //MARK:  objc
 extension PeopleViewController {
     @objc private func pressLikeButton() {
@@ -242,31 +241,22 @@ extension PeopleViewController {
         inactiveView.autoresizingMask = [.flexibleHeight, .flexibleWidth ]
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        distanceLabel.translatesAutoresizingMaskIntoConstraints = false
-        advertLabel.translatesAutoresizingMaskIntoConstraints = false
+       
         
         view.addSubview(collectionView)
         view.addSubview(nameLabel)
-        view.addSubview(distanceLabel)
-        view.addSubview(advertLabel)
+       
         view.addSubview(inactiveView)
         
         NSLayoutConstraint.activate([
             nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
             nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            nameLabel.bottomAnchor.constraint(equalTo: collectionView.topAnchor, constant: -10),
+            nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
-            collectionView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
-            
-            distanceLabel.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
-            distanceLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 10),
-            
-            advertLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
-            advertLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
-            advertLabel.topAnchor.constraint(equalTo: distanceLabel.bottomAnchor, constant: 5),
+            collectionView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }

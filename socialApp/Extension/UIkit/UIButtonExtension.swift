@@ -13,7 +13,7 @@ extension UIButton {
     
     convenience init(newBackgroundColor: UIColor?,
                      newBorderColor: UIColor = .label,
-                     borderWidth: CGFloat = 1,
+                     borderWidth: CGFloat = 0,
                      title: String,
                      titleColor: UIColor,
                      font: UIFont? = .avenirBold(size: 16),
@@ -52,4 +52,13 @@ extension UIButton {
         setImage(image, for: .normal)
     }
     
+    convenience init(image: UIImage, tintColor: UIColor, backgroundColor: UIColor, cornerRadius: CGFloat = 0) {
+        self.init()
+        setImage(image, for: .normal)
+        imageView?.tintColor = tintColor
+        imageView?.backgroundColor = backgroundColor
+        self.backgroundColor = backgroundColor
+        clipsToBounds = true
+     
+    }
 }

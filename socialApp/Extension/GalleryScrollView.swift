@@ -22,6 +22,9 @@ class GalleryScrollView: UIScrollView {
     private func setup() {
         isPagingEnabled = true
         backgroundColor = .red
+        showsVerticalScrollIndicator = false
+        layer.cornerRadius = 4
+        clipsToBounds = true
     }
     
     func setupImages(imagesURL: [String], complition:(()->Void)?) {

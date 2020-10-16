@@ -23,16 +23,23 @@ class ListenerService {
         db.collection("users")
     }
     private var requestChatsRef: CollectionReference {
-        guard let email = currentUser?.email else { fatalError("Cant get current user")}
-        let collection = db.collection(["users", email, "requestChats"].joined(separator: "/"))
+        guard let id = currentUser?.email else { fatalError("Cant get current user")}
+        let collection = db.collection(["users", id, "requestChats"].joined(separator: "/"))
+        return collection
+    }
+    
+    private var newChatsRef: CollectionReference {
+        guard let id = currentUser?.email else { fatalError("Cant get current user")}
+        let collection = db.collection(["users", id, "newChats"].joined(separator: "/"))
         return collection
     }
     
     private var activeChatsRef: CollectionReference {
-        guard let email = currentUser?.email else { fatalError("Cant get current user")}
-        let collection = db.collection(["users", email, "activeChats"].joined(separator: "/"))
+        guard let id = currentUser?.email else { fatalError("Cant get current user")}
+        let collection = db.collection(["users", id, "activeChats"].joined(separator: "/"))
         return collection
     }
+    
     private var peopleListner: ListenerRegistration?
     private var requestChatsListner: ListenerRegistration?
     private var activeChatsListner: ListenerRegistration?
@@ -58,7 +65,6 @@ class ListenerService {
                 
                 if let currentPeople = UserDefaultsService.shared.getMpeople() {
                     user.distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: user)
-                    print(user.distance)
                 } else {
                     user.distance = Int.random(in: 0...30)
                 }

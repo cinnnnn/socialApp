@@ -42,7 +42,7 @@ extension UITextView {
         textInputView.addSubview(bottomView)
         
         NSLayoutConstraint.activate([
-            bottomView.bottomAnchor.constraint(equalTo: textInputView.bottomAnchor),
+            bottomView.bottomAnchor.constraint(equalTo: textInputView.bottomAnchor, constant: -3),
             bottomView.heightAnchor.constraint(equalToConstant: 1),
             bottomView.leadingAnchor.constraint(equalTo: textInputView.leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: textInputView.trailingAnchor)
