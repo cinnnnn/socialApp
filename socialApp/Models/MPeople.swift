@@ -80,11 +80,11 @@ struct MPeople: Hashable, Codable, SenderType {
         if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }
         if let gallery = documet["gallery"] as? [String] { self.gallery = gallery } else { self.gallery = []}
         if let gender = documet["gender"] as? String { self.gender = gender } else { self.gender = ""}
-        if let dateOfBirth = documet["dateOfBirth"] as? Date { self.dateOfBirth = dateOfBirth } else { self.dateOfBirth = Date()}
+        if let dateOfBirth = documet["dateOfBirth"] as? Timestamp { self.dateOfBirth = dateOfBirth.dateValue() } else { self.dateOfBirth = Date()}
         if let sexuality = documet["sexuality"] as? String { self.sexuality = sexuality } else { self.sexuality = ""}
         if let lookingFor = documet["lookingFor"] as? String { self.lookingFor = lookingFor } else { self.lookingFor = ""}
         if let goldMember = documet["goldMember"] as? Bool { self.goldMember = goldMember } else { self.goldMember = false}
-        if let goldMemberDate = documet["goldMemberDate"] as? Date { self.goldMemberDate = goldMemberDate } else { self.goldMemberDate = Date()}
+        if let goldMemberDate = documet["goldMemberDate"] as? Timestamp { self.goldMemberDate = goldMemberDate.dateValue() } else { self.goldMemberDate = Date()}
         if let isBlocked = documet["isBlocked"] as? Bool { self.isBlocked = isBlocked } else { self.isBlocked = false}
         if let isAdmin = documet["isAdmin"] as? Bool { self.isAdmin = isAdmin } else { self.isAdmin = false}
         if let isActive = documet["isActive"] as? Bool { self.isActive = isActive} else { self.isActive = false}
@@ -114,11 +114,11 @@ struct MPeople: Hashable, Codable, SenderType {
         if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }
         if let gallery = documet["gallery"] as? [String] { self.gallery = gallery } else { self.gallery = []}
         if let gender = documet["gender"] as? String { self.gender = gender } else { self.gender = ""}
-        if let dateOfBirth = documet["dateOfBirth"] as? Date { self.dateOfBirth = dateOfBirth } else { self.dateOfBirth = Date()}
+        if let dateOfBirth = documet["dateOfBirth"] as? Timestamp { self.dateOfBirth = dateOfBirth.dateValue() } else { self.dateOfBirth = Date()}
         if let sexuality = documet["sexuality"] as? String { self.sexuality = sexuality } else { self.sexuality = ""}
         if let lookingFor = documet["lookingFor"] as? String { self.lookingFor = lookingFor } else { self.lookingFor = ""}
         if let goldMember = documet["goldMember"] as? Bool { self.goldMember = goldMember } else { self.goldMember = false}
-        if let goldMemberDate = documet["goldMemberDate"] as? Date { self.goldMemberDate = goldMemberDate } else { self.goldMemberDate = Date()}
+        if let goldMemberDate = documet["goldMemberDate"] as? Timestamp { self.goldMemberDate = goldMemberDate.dateValue() } else { self.goldMemberDate = Date()}
         if let isBlocked = documet["isBlocked"] as? Bool { self.isBlocked = isBlocked } else { self.isBlocked = false}
         if let isAdmin = documet["isAdmin"] as? Bool { self.isAdmin = isAdmin } else { self.isAdmin = false}
         if let isActive = documet["isActive"] as? Bool { self.isActive = isActive} else { self.isActive = false}

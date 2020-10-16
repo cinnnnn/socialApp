@@ -21,6 +21,7 @@ class ProfileViewController:UIViewController {
         
         setup()
         setupCollectionView()
+        setupConstraints()
         setupDataSource()
         updateDataSource()
         getPeopleData()
@@ -30,6 +31,7 @@ class ProfileViewController:UIViewController {
         super.viewWillAppear(true)
         getPeopleData()
     }
+  
     
     init(currentUser: User) {
         self.currentUser = currentUser
@@ -41,9 +43,9 @@ class ProfileViewController:UIViewController {
     }
     
     private func setup() {
-        navigationController?.navigationBar.isHidden = true
-        navigationItem.backButtonTitle = "Профиль"
-        navigationController?.navigationBar.tintColor = .label
+        view.backgroundColor = .myWhiteColor()
+        
+        navigationItem.backButtonTitle = ""
         
     }
 }
@@ -98,9 +100,9 @@ extension ProfileViewController {
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupLayout())
         
-        view.addSubview(collectionView)
+       
         collectionView.backgroundColor = .myWhiteColor()
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
         collectionView.delegate = self
         
         collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: ProfileCell.reuseID)
@@ -113,7 +115,7 @@ extension ProfileViewController {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                               heightDimension: .absolute(400))
+                                               heightDimension: .fractionalHeight(0.5))
         
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
@@ -129,7 +131,7 @@ extension ProfileViewController {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                               heightDimension: .absolute(70))
+                                               heightDimension: .absolute(50))
         
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
@@ -210,7 +212,7 @@ extension ProfileViewController: UICollectionViewDelegate {
             switch cell {
             
             case .setupProfile:
-                let vc = SetProfileViewController(currentUser: currentUser)
+                let vc = EditProfileViewController(currentUser: currentUser)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 
@@ -249,5 +251,21 @@ extension ProfileViewController {
             }
         }
         present(alert, animated: true, completion: nil)
+    }
+}
+
+//MARK: setupConstraints
+extension ProfileViewController {
+    private func setupConstraints() {
+        view.addSubview(collectionView)
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
 }

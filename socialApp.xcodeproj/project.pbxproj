@@ -12,7 +12,7 @@
 		FB09108024FA93E2006B72D5 /* UITextViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB09107F24FA93E2006B72D5 /* UITextViewExtension.swift */; };
 		FB1062D824AE494A0012C4D4 /* OneLineTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */; };
 		FB1062DA24AE69250012C4D4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1062D924AE69240012C4D4 /* LoginViewController.swift */; };
-		FB1062DC24B09F6C0012C4D4 /* SetProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1062DB24B09F6C0012C4D4 /* SetProfileViewController.swift */; };
+		FB1062DC24B09F6C0012C4D4 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1062DB24B09F6C0012C4D4 /* EditProfileViewController.swift */; };
 		FB1062DE24B0C8DF0012C4D4 /* EditableProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */; };
 		FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1062DF24B20CE60012C4D4 /* UISegmentedControlExtension.swift */; };
 		FB15FCF32513A71F00B765D3 /* MMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB15FCF22513A71F00B765D3 /* MMessage.swift */; };
@@ -109,7 +109,7 @@
 		FB09107F24FA93E2006B72D5 /* UITextViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewExtension.swift; sourceTree = "<group>"; };
 		FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneLineTextField.swift; sourceTree = "<group>"; };
 		FB1062D924AE69240012C4D4 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		FB1062DB24B09F6C0012C4D4 /* SetProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileViewController.swift; sourceTree = "<group>"; };
+		FB1062DB24B09F6C0012C4D4 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableProfileImageView.swift; sourceTree = "<group>"; };
 		FB1062DF24B20CE60012C4D4 /* UISegmentedControlExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISegmentedControlExtension.swift; sourceTree = "<group>"; };
 		FB15FCF22513A71F00B765D3 /* MMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMessage.swift; sourceTree = "<group>"; };
@@ -247,7 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				FB18217A24B2261F00FFFC87 /* MainTabBarController.swift */,
-				FB1062DB24B09F6C0012C4D4 /* SetProfileViewController.swift */,
+				FB1062DB24B09F6C0012C4D4 /* EditProfileViewController.swift */,
 				FB09107D24FA73B2006B72D5 /* SendRequestViewController.swift */,
 				FB61B54124FD3DDD002761ED /* GetRequestViewController.swift */,
 				FB79DA9B2530E9A800A7AA56 /* EditPhotoViewController */,
@@ -703,7 +703,7 @@
 				FB8C3D8B25371AE900184FB5 /* MLabels.swift in Sources */,
 				FB79DA6E252C942B00A7AA56 /* MLocation.swift in Sources */,
 				FBEF607824A602070005F947 /* AppDelegate.swift in Sources */,
-				FB1062DC24B09F6C0012C4D4 /* SetProfileViewController.swift in Sources */,
+				FB1062DC24B09F6C0012C4D4 /* EditProfileViewController.swift in Sources */,
 				FB21A1B824E595CF000A2E91 /* Protocols.swift in Sources */,
 				FB79DA992530E86D00A7AA56 /* SectionEditPhotos.swift in Sources */,
 				FB21A1AD24C89F68000A2E91 /* BundleDecode.swift in Sources */,

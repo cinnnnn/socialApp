@@ -11,10 +11,11 @@ import UIKit
 
 extension UIScrollView {
     func updateContentView() {
-        let bottomOffset:CGFloat = 25
+        let bottomOffset:CGFloat = 45
         if let maxY = subviews.sorted(by: { $0.frame.maxY < $1.frame.maxY }).last?.frame.maxY {
             contentSize.height = maxY + bottomOffset
-        } 
+        }
+        print(contentSize.height)
     }
 }
 

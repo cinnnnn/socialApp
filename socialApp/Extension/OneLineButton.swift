@@ -18,7 +18,7 @@ class OneLineButton: UIButton {
         self.init()
         headerLabel.text = header
         infoLabel.text = info
-        bottomLine.backgroundColor = .myLabelColor()
+        bottomLine.backgroundColor = .myLightGrayColor()
         setupConstraints()
     }
     

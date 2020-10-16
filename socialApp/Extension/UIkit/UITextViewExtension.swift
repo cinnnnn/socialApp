@@ -36,7 +36,7 @@ extension UITextView {
         }
         
         let bottomView =  UIView.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
-        bottomView.backgroundColor = .myLabelColor()
+        bottomView.backgroundColor = .myLightGrayColor()
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         
         textInputView.addSubview(bottomView)
