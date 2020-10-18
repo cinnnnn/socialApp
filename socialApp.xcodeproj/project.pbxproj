@@ -86,7 +86,7 @@
 		FBB4F354251110AE00ACFE90 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB4F353251110AE00ACFE90 /* RadioButton.swift */; };
 		FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB4F3572511526C00ACFE90 /* CryptoService.swift */; };
 		FBB4F35A25116D7300ACFE90 /* DefaultImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB4F35925116D7300ACFE90 /* DefaultImage.swift */; };
-		FBB4F35F2512737400ACFE90 /* ListenerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB4F35E2512737400ACFE90 /* ListenerError.swift */; };
+		FBB4F35F2512737400ACFE90 /* FirestoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB4F35E2512737400ACFE90 /* FirestoreError.swift */; };
 		FBEF607824A602070005F947 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607724A602070005F947 /* AppDelegate.swift */; };
 		FBEF607A24A602070005F947 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607924A602070005F947 /* SceneDelegate.swift */; };
 		FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607B24A602070005F947 /* AuthViewController.swift */; };
@@ -190,7 +190,7 @@
 		FBB4F353251110AE00ACFE90 /* RadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButton.swift; sourceTree = "<group>"; };
 		FBB4F3572511526C00ACFE90 /* CryptoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoService.swift; sourceTree = "<group>"; };
 		FBB4F35925116D7300ACFE90 /* DefaultImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImage.swift; sourceTree = "<group>"; };
-		FBB4F35E2512737400ACFE90 /* ListenerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenerError.swift; sourceTree = "<group>"; };
+		FBB4F35E2512737400ACFE90 /* FirestoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreError.swift; sourceTree = "<group>"; };
 		FBEF607424A602070005F947 /* socialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = socialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBEF607724A602070005F947 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBEF607924A602070005F947 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -298,14 +298,10 @@
 				FBB3B264250ACA0700440632 /* MGender.swift */,
 				FB8C3D3B2533961800184FB5 /* MSexuality.swift */,
 				FB8C3D382533958900184FB5 /* MLookingFor.swift */,
-				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */,
 				FBB4F35925116D7300ACFE90 /* DefaultImage.swift */,
-				FBF6289424F678C300DCD4AC /* SectionsChats.swift */,
-				FB8C3D97253A525500184FB5 /* SectionsRequests.swift */,
-				FBF6289624F678EA00DCD4AC /* SectionsPeople.swift */,
-				FB79DA7E252DE71900A7AA56 /* SectionsProfile.swift */,
-				FB79DA982530E86D00A7AA56 /* SectionEditPhotos.swift */,
+				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
+				FB3C5BD6253C896100CD44E6 /* Sections */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -325,6 +321,18 @@
 				FB2346E424F69B1000FEE1EF /* Cell */,
 			);
 			path = PeopleViewController;
+			sourceTree = "<group>";
+		};
+		FB3C5BD6253C896100CD44E6 /* Sections */ = {
+			isa = PBXGroup;
+			children = (
+				FBF6289424F678C300DCD4AC /* SectionsChats.swift */,
+				FB8C3D97253A525500184FB5 /* SectionsRequests.swift */,
+				FBF6289624F678EA00DCD4AC /* SectionsPeople.swift */,
+				FB79DA7E252DE71900A7AA56 /* SectionsProfile.swift */,
+				FB79DA982530E86D00A7AA56 /* SectionEditPhotos.swift */,
+			);
+			path = Sections;
 			sourceTree = "<group>";
 		};
 		FB61B54524FE6921002761ED /* UIkit */ = {
@@ -478,7 +486,7 @@
 				FBF293DE250668CB00F7B5F1 /* UserError.swift */,
 				FB61A76B251BA06D005DCC78 /* ChatError.swift */,
 				FB207CB32520C544007AA232 /* MessageError.swift */,
-				FBB4F35E2512737400ACFE90 /* ListenerError.swift */,
+				FBB4F35E2512737400ACFE90 /* FirestoreError.swift */,
 				FB61A76E251CB97D005DCC78 /* DataSourceError.swift */,
 			);
 			path = Error;
@@ -685,7 +693,7 @@
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
 				FBB3B25F2509011200440632 /* StorageService.swift in Sources */,
-				FBB4F35F2512737400ACFE90 /* ListenerError.swift in Sources */,
+				FBB4F35F2512737400ACFE90 /* FirestoreError.swift in Sources */,
 				FB8C3D6A2535D71B00184FB5 /* InterestsSelectionViewController.swift in Sources */,
 				FB207CB42520C544007AA232 /* MessageError.swift in Sources */,
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,

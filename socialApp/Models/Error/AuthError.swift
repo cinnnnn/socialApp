@@ -16,6 +16,7 @@ enum AuthError {
     case serverError
     case appleToken
     case serializeAppleToken
+    case missingEmail
 }
 
 extension AuthError: LocalizedError {
@@ -36,6 +37,8 @@ extension AuthError: LocalizedError {
             return NSLocalizedString("Невозможно поолучить токен Apple", comment: "")
         case .serializeAppleToken:
             return NSLocalizedString("Невозможно выполнить сериализацию токена Apple", comment: "")
+        case .missingEmail:
+            return NSLocalizedString("Отсутствует Email у пользователя", comment: "")
         }
     }
 }

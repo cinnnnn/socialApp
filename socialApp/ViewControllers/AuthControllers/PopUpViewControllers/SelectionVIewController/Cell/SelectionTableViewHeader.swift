@@ -29,7 +29,7 @@ class SelectionTableViewHeader: UITableViewHeaderFooterView {
         super.init(reuseIdentifier: reuseIdentifier)
         setupConstraints()
         
-        tintColor = .white
+        tintColor = .myWhiteColor()
     }
     
     required init?(coder: NSCoder) {

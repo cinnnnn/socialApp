@@ -20,20 +20,47 @@ protocol PeopleConfigurationCell: class {
     static var reuseID: String { get }
     func configure(with value: MPeople, complition:@escaping()->Void)
 }
+protocol ReprasentationModel {
+    var reprasentation:[String : Any]{ get }
+    init?(documentSnap: DocumentSnapshot)
+    init?(documentSnap: QueryDocumentSnapshot)
+}
 
-protocol LikeDislikeDelegate: class {
+protocol NavigationDelegate: class {
+    func toMainTabBarController(user: User)
+    func toCompliteRegistration(user: User)
+}
+
+protocol LikeDislikeTappedDelegate: class {
     func likePeople(people: MPeople)
     func dislikePeople(people: MPeople)
 }
 
+//MARK: data fetch protocol
+protocol LikeDislikeDelegate: class {
+    var likePeople: [MChat] { get set }
+    var dislikePeople: [MChat] { get set }
+}
+
+protocol RequestChatDelegate: class {
+    var requestChats: [MChat] { get set }
+}
+
+protocol NewAndActiveChatsDelegate: class {
+    var activeChats: [MChat] { get set }
+    var newChats: [MChat] { get set }
+}
+
+//MARK: listner Firestore protocols
 protocol PeopleListenerDelegate: class {
     var peopleNearby: [MPeople] { get set }
     func updateData()
     func reloadData()
 }
 
-protocol RequestChatDelegate: class {
-    var requestChats: [MChat] { get set }
+protocol LikeDislikeListenerDelegate: class {
+    var likePeople: [MChat] { get set }
+    var dislikePeople: [MChat] { get set }
 }
 
 protocol RequestChatListenerDelegate: class {
@@ -51,14 +78,5 @@ protocol ActiveChatListenerDelegate: class {
     func reloadData(changeType: TypeOfListenerChanges)
 }
 
-protocol ReprasentationModel {
-    var reprasentation:[String : Any]{ get }
-    init?(documentSnap: DocumentSnapshot)
-    init?(documentSnap: QueryDocumentSnapshot)
-}
 
-protocol NavigationDelegate: class {
-    func toMainTabBarController(user: User)
-    func toCompliteRegistration(user: User)
-}
 

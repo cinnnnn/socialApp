@@ -25,6 +25,7 @@ class GalleryScrollView: UIScrollView {
         showsVerticalScrollIndicator = false
         layer.cornerRadius = 4
         clipsToBounds = true
+        bounces = false
     }
     
     func setupImages(imagesURL: [String], complition:(()->Void)?) {

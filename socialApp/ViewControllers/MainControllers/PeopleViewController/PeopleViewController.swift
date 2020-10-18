@@ -11,11 +11,14 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController, PeopleListenerDelegate {
+class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislikeDelegate {
     
     var currentUser: User!
     var currentPeople: MPeople?
     weak var requestDelegate: RequestChatDelegate?
+    weak var newActiveChatsDelegate: NewAndActiveChatsDelegate?
+    var likePeople: [MChat] = []
+    var dislikePeople: [MChat] = []
     var peopleNearby: [MPeople] = []
     var sortedPeopleNearby: [MPeople] {
         peopleNearby.sorted { p1, p2  in
@@ -24,12 +27,13 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     }
     var visibleIndexPath: IndexPath?
     var inactiveView = AdvertInactiveView(isHidden: true)
-    var nameLabel = UILabel(labelText: "Name", textFont: .avenirBold(size: 38))
+    var nameLabel = UILabel(labelText: "", textFont: .avenirBold(size: 38))
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     
-    init(currentUser: User, requestDelegate: RequestChatDelegate) {
+    init(currentUser: User, requestDelegate: RequestChatDelegate, newActiveChatsDelegate: NewAndActiveChatsDelegate) {
+        self.newActiveChatsDelegate = newActiveChatsDelegate
         self.requestDelegate = requestDelegate
         self.currentUser = currentUser
         
@@ -41,17 +45,16 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     }
 
     deinit {
-        ListenerService.shared.removePeopleListener()
+        removeListeners()
     }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupCollectionView()
         setupDiffebleDataSource()
         setup()
         setupConstraints()
+        setupListeners()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -59,10 +62,47 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         checkActiveAdvert()
     }
     
-    //MARK:  setup
+    //MARK:  setup VC
     private func setup() {
-        ListenerService.shared.addPeopleListener(delegate: self)
         view.backgroundColor = .systemBackground
+    }
+    
+    //MARK:  setupListeners
+    private func setupListeners() {
+        //get like people
+        FirestoreService.shared.getLikeDislikePeople(forUser: currentUser,
+                                                     collection: MFirestorCollection.likePeople.rawValue) {[weak self] result in
+            switch result {
+            
+            case .success(let likeChats):
+                self?.likePeople = likeChats
+                //get dislike people
+                guard let currentUser = self?.currentUser else { fatalError("Can't get current user")}
+                FirestoreService.shared.getLikeDislikePeople(forUser: currentUser,
+                                                             collection: MFirestorCollection.dislikePeople.rawValue) { result in
+                    switch result {
+                    
+                    case .success(let dislikeChat):
+                        self?.dislikePeople = dislikeChat
+                        //after get like and dislike setup people nearby listener
+                        guard let peopleDelegate = self else { return }
+                        guard let likeDislikeDelegate = self else { return }
+                        guard let newActiveChatsDelegate = self?.newActiveChatsDelegate else { return }
+                        ListenerService.shared.addPeopleListener(peopleDelegate: peopleDelegate,
+                                                                 likeDislikeDelegate: likeDislikeDelegate,
+                                                                 newActiveChatsDelegate: newActiveChatsDelegate)
+                    case .failure(let error):
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func removeListeners() {
+        ListenerService.shared.removePeopleListener()
     }
     
     //MARK: checkActiveAdvert
@@ -187,7 +227,12 @@ extension PeopleViewController {
         visibleRect.size = collectionView.bounds.size
         
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
+        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else {
+            //if empty people nearby
+            nameLabel.text = ""
+            return
+            
+        }
         
         //set only when index path change to new value
         if visibleIndexPath != indexPath || firstLoad {
@@ -214,9 +259,6 @@ extension PeopleViewController {
 
 //MARK:  objc
 extension PeopleViewController {
-    @objc private func pressLikeButton() {
-        reloadData()
-    }
     
     @objc private func touchGoToSetup() {
         tabBarController?.selectedIndex = 0
@@ -235,17 +277,23 @@ extension PeopleViewController: UICollectionViewDelegate {
 }
 
 //MARK: likeDislikeDelegate
-extension PeopleViewController: LikeDislikeDelegate {
+extension PeopleViewController: LikeDislikeTappedDelegate {
     
      func likePeople(people: MPeople) {
         guard let currentPeople = currentPeople else { return }
         FirestoreService.shared.likePeople(currentUser: currentPeople,
                                            likeUser: people,
-                                           requestChats: requestDelegate?.requestChats ?? []) { result in
+                                           requestChats: requestDelegate?.requestChats ?? []) {[weak self] result in
             switch result {
             
             case .success(let chat):
-                print(chat.friendUserName)
+                print("like \(chat.friendUserName)")
+                //delete like people from array
+                self?.peopleNearby.removeAll { people -> Bool in
+                    people.senderId == chat.friendId
+                }
+                self?.reloadData()
+                
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
@@ -255,11 +303,16 @@ extension PeopleViewController: LikeDislikeDelegate {
      func dislikePeople(people: MPeople) {
         guard let currentPeople = currentPeople else { return }
         FirestoreService.shared.dislikePeople(currentUser: currentPeople,
-                                              forUser: people) { result in
+                                              forUser: people) {[weak self] result in
             switch result {
             
-            case .success(let shortPeople):
-                print("dislike \(shortPeople.userName)")
+            case .success(let chat):
+                print("dislike \(chat.friendUserName)")
+                //delete like people from array
+                self?.peopleNearby.removeAll { people -> Bool in
+                    people.senderId == chat.friendId
+                }
+                self?.reloadData()
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

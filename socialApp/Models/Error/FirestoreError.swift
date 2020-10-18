@@ -8,19 +8,19 @@
 
 import Foundation
 
-enum ListenerError {
+enum FirestoreError {
     case snapshotNotExist
     case peopleCollectionNotExist
     case chatsCollectionNotExist
     case cantDeleteElementInCollection
 }
 
-extension ListenerError: LocalizedError {
+extension FirestoreError: LocalizedError {
     
     var errorDescription: String? {
         switch self {
         case .snapshotNotExist:
-            return NSLocalizedString("Snapshot слушателя не существует", comment: "")
+            return NSLocalizedString("Snapshot не существует", comment: "")
         case .peopleCollectionNotExist:
             return NSLocalizedString("Коллекция текущих пользователей не существует", comment: "")
         case .chatsCollectionNotExist:

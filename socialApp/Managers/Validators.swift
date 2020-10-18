@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class Validators {
     
@@ -65,6 +66,44 @@ class Validators {
      func isConfirmPassword(password1: String, password2: String) -> Bool {
  
         return password1 == password2
+    }
+    
+    //ListnerAddValidator
+    
+    func listnerAddPeopleValidator(currentUser: User,
+                                   newPeople: MPeople,
+                                   peopleDelegate: PeopleListenerDelegate,
+                                   likeDislikeDelegate: LikeDislikeDelegate,
+                                   newActiveChatsDelegate: NewAndActiveChatsDelegate,
+                                   isUpdate: Bool) -> Bool {
+        if !isUpdate {
+        //if not present in people array
+        guard !peopleDelegate.peopleNearby.contains(newPeople) else { return false}
+        }
+        //if not current user
+        guard newPeople.senderId != currentUser.email else { return false}
+        //if not inActive user
+        guard newPeople.isActive == true else { return false}
+        //if not blocked user
+        guard newPeople.isBlocked == false else { return false}
+        //if not already like
+        guard !likeDislikeDelegate.likePeople.contains(where: { chat -> Bool in
+            chat.friendId == newPeople.senderId
+        }) else { return false}
+        //if not already dislike
+        guard !likeDislikeDelegate.dislikePeople.contains(where: { chat -> Bool in
+            chat.friendId == newPeople.senderId
+        }) else { return false}
+        //if not in new chat
+        guard !newActiveChatsDelegate.newChats.contains(where: { chat -> Bool in
+            chat.friendId == newPeople.senderId
+        }) else { return false}
+        //if not in active chat
+        guard !newActiveChatsDelegate.activeChats.contains(where: { chat -> Bool in
+            chat.friendId == newPeople.senderId
+        }) else { return false}
+        
+        return true
     }
     
     private func checkRegEx(text: String, regEx: String) -> Bool {

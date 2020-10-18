@@ -18,13 +18,26 @@ class ListenerService {
     private var currentUser: User? {
         Auth.auth().currentUser
     }
+    
     private let db = Firestore.firestore()
     private var userRef: CollectionReference {
         db.collection("users")
     }
     private var requestChatsRef: CollectionReference {
         guard let id = currentUser?.email else { fatalError("Cant get current user")}
-        let collection = db.collection([MFirestorCollection.users.rawValue, id, MFirestorCollection.requstsChats.rawValue].joined(separator: "/"))
+        let collection = db.collection([MFirestorCollection.users.rawValue, id, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
+        return collection
+    }
+    
+    private var likeRef: CollectionReference {
+        guard let id = currentUser?.email else { fatalError("Cant get current user")}
+        let collection = db.collection([MFirestorCollection.users.rawValue, id, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        return collection
+    }
+    
+    private var dislikeRef: CollectionReference {
+        guard let id = currentUser?.email else { fatalError("Cant get current user")}
+        let collection = db.collection([MFirestorCollection.users.rawValue, id, MFirestorCollection.dislikePeople.rawValue].joined(separator: "/"))
         return collection
     }
     
@@ -42,12 +55,15 @@ class ListenerService {
     
     private var peopleListner: ListenerRegistration?
     private var requestChatsListner: ListenerRegistration?
+    private var likeListener: ListenerRegistration?
+    private var dislikeListener: ListenerRegistration?
     private var newChatsListner: ListenerRegistration?
     private var activeChatsListner: ListenerRegistration?
     private var messageListner: ListenerRegistration?
     
     private weak var peopleDelegate: PeopleListenerDelegate?
     private weak var requestChatDelegate: RequestChatListenerDelegate?
+    private weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     private weak var newChatDelegate: NewChatListenerDelegate?
     private weak var activeChatDelegate: ActiveChatListenerDelegate?
     
@@ -55,15 +71,17 @@ class ListenerService {
     private init() {}
     
     //MARK: peopleListener
-    func addPeopleListener(delegate: PeopleListenerDelegate) {
+    func addPeopleListener(peopleDelegate: PeopleListenerDelegate,
+                           likeDislikeDelegate: LikeDislikeDelegate,
+                           newActiveChatsDelegate: NewAndActiveChatsDelegate) {
         
-        self.peopleDelegate = delegate
+        self.peopleDelegate = peopleDelegate
         peopleListner = userRef.addSnapshotListener { snapshot, error in
-            guard let snapshot = snapshot else { fatalError(ListenerError.snapshotNotExist.localizedDescription) }
+            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
             
             snapshot.documentChanges.forEach {[weak self] changes in
                 guard var user = MPeople(documentSnap: changes.document) else { fatalError(UserError.getUserData.localizedDescription) }
-                guard let people = self?.peopleDelegate?.peopleNearby else { fatalError(ListenerError.peopleCollectionNotExist.localizedDescription) }
+                guard let people = self?.peopleDelegate?.peopleNearby else { fatalError(FirestoreError.peopleCollectionNotExist.localizedDescription) }
                 
                 if let currentPeople = UserDefaultsService.shared.getMpeople() {
                     user.distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: user)
@@ -71,26 +89,45 @@ class ListenerService {
                     user.distance = Int.random(in: 0...30)
                 }
                 
+                guard let currentUser = self?.currentUser else { return }
+//                print("like \(likeDislikeDelegate.likePeople)")
+//                print("dislike \(likeDislikeDelegate.dislikePeople)")
+                
                 switch changes.type {
                 
                 case .added:
-                    guard !people.contains(user) else { return }
-                    guard user.senderId != self?.currentUser?.email else { return }
-                    guard user.isActive == true else { return }
-                    self?.peopleDelegate?.peopleNearby.append(user)
-                    self?.peopleDelegate?.reloadData()
-                    
+                    if Validators.shared.listnerAddPeopleValidator(currentUser: currentUser,
+                                                                   newPeople: user,
+                                                                   peopleDelegate: peopleDelegate,
+                                                                   likeDislikeDelegate: likeDislikeDelegate,
+                                                                   newActiveChatsDelegate: newActiveChatsDelegate,
+                                                                   isUpdate: false) {
+                        
+                        self?.peopleDelegate?.peopleNearby.append(user)
+                        self?.peopleDelegate?.reloadData()
+                    }
                 case .modified:
+                    //index in peopleNearby array
                     if let index = people.firstIndex(of: user) {
-                        if user.isActive == true {
+                        if Validators.shared.listnerAddPeopleValidator(currentUser: currentUser,
+                                                                       newPeople: user,
+                                                                       peopleDelegate: peopleDelegate,
+                                                                       likeDislikeDelegate: likeDislikeDelegate,
+                                                                       newActiveChatsDelegate: newActiveChatsDelegate,
+                                                                       isUpdate: true) {
                             self?.peopleDelegate?.peopleNearby[index] = user
                             self?.peopleDelegate?.updateData()
-                        } else { //if user change to deactive profile delete him from collection
+                        } else { //if user change to deactive or block profile, delete him from collection
                             self?.peopleDelegate?.peopleNearby.remove(at: index)
                             self?.peopleDelegate?.reloadData()
                         }
-                        //if user change to active profile add him to collection
-                    } else if user.isActive == true, user.senderId != self?.currentUser?.email {
+                        //if user change to active profile, or unblock, add him to collection
+                    } else if Validators.shared.listnerAddPeopleValidator(currentUser: currentUser,
+                                                                          newPeople: user,
+                                                                          peopleDelegate: peopleDelegate,
+                                                                          likeDislikeDelegate: likeDislikeDelegate,
+                                                                          newActiveChatsDelegate: newActiveChatsDelegate,
+                                                                          isUpdate: false) {
                         self?.peopleDelegate?.peopleNearby.append(user)
                         self?.peopleDelegate?.reloadData()
                     }
@@ -108,18 +145,81 @@ class ListenerService {
         peopleListner?.remove()
     }
     
+    //MARK: addLikeDislikeListener
+    func addLikeDislikeListener(likeDislikeDelegate: LikeDislikeListenerDelegate) {
+        self.likeDislikeDelegate = likeDislikeDelegate
+        
+        likeListener = likeRef.addSnapshotListener({ snapshot, error in
+            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
+            
+            snapshot.documentChanges.forEach {  changes in
+                guard let chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
+                
+                let likePeopleChats = likeDislikeDelegate.likePeople
+                
+                switch changes.type {
+                
+                case .added:
+                    likeDislikeDelegate.likePeople.append(chat)
+                case .modified:
+                    if let index = likePeopleChats.firstIndex(of: chat) {
+                        likeDislikeDelegate.likePeople[index] = chat
+                    } else {
+                        likeDislikeDelegate.likePeople.append(chat)
+                    }
+                case .removed:
+                    if let index = likePeopleChats.firstIndex(of: chat) {
+                        likeDislikeDelegate.likePeople.remove(at: index)
+                    }
+                }
+            }
+        })
+        
+        dislikeListener = dislikeRef.addSnapshotListener({ snapshot, error in
+            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
+            
+            snapshot.documentChanges.forEach {  changes in
+                guard let chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
+                
+                let dislikePeopleChats = likeDislikeDelegate.dislikePeople
+                
+                switch changes.type {
+                
+                case .added:
+                    likeDislikeDelegate.dislikePeople.append(chat)
+                case .modified:
+                    if let index = dislikePeopleChats.firstIndex(of: chat) {
+                        likeDislikeDelegate.dislikePeople[index] = chat
+                    } else {
+                        likeDislikeDelegate.dislikePeople.append(chat)
+                    }
+                case .removed:
+                    if let index = dislikePeopleChats.firstIndex(of: chat) {
+                        likeDislikeDelegate.dislikePeople.remove(at: index)
+                    }
+                }
+            }
+        })
+    }
+    
+    func removeLikeDislikeChatsListener() {
+        likeListener?.remove()
+        dislikeListener?.remove()
+    }
+    
+    
     //MARK: requestChatsListener
     func addRequestChatsListener(delegate: RequestChatListenerDelegate) {
         self.requestChatDelegate = delegate
         self.requestChatsListner = requestChatsRef.addSnapshotListener({ snapshot, error in
-            guard let snapshot = snapshot else { fatalError(ListenerError.snapshotNotExist.localizedDescription) }
+            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
             
             
             snapshot.documentChanges.forEach { [weak self] changes in
                 guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
                 
                 guard let chats = self?.requestChatDelegate?.requestChats else {
-                    fatalError(ListenerError.chatsCollectionNotExist.localizedDescription) }
+                    fatalError(FirestoreError.chatsCollectionNotExist.localizedDescription) }
                 
                 //get actual information for user in chat
                 FirestoreService.shared.getUserData(userID: chat.friendId) { result in
@@ -146,7 +246,7 @@ class ListenerService {
                                 self?.requestChatDelegate?.requestChats.remove(at: index)
                                 self?.requestChatDelegate?.reloadData(changeType: .addOrDelete)
                             } else {
-                                fatalError(ListenerError.cantDeleteElementInCollection.localizedDescription)
+                                fatalError(FirestoreError.cantDeleteElementInCollection.localizedDescription)
                             }
                         }
                     //failure get people info
@@ -157,7 +257,7 @@ class ListenerService {
             }
         })
     }
-        
+    
     func removeRequestChatsListener() {
         requestChatsListner?.remove()
     }
@@ -166,13 +266,13 @@ class ListenerService {
     func addNewChatsListener(delegate: NewChatListenerDelegate) {
         self.newChatDelegate = delegate
         self.newChatsListner = newChatsRef.addSnapshotListener({ snapshot, error in
-            guard let snapshot = snapshot else { fatalError(ListenerError.snapshotNotExist.localizedDescription) }
+            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
             
             snapshot.documentChanges.forEach { [weak self] changes in
                 guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
                 
                 guard let chats = self?.newChatDelegate?.newChats else {
-                    fatalError(ListenerError.chatsCollectionNotExist.localizedDescription) }
+                    fatalError(FirestoreError.chatsCollectionNotExist.localizedDescription) }
                 
                 //get actual information for user in chat
                 FirestoreService.shared.getUserData(userID: chat.friendId) { result in
@@ -197,7 +297,7 @@ class ListenerService {
                                 self?.newChatDelegate?.newChats.remove(at: index)
                                 self?.newChatDelegate?.reloadData(changeType: .addOrDelete)
                             } else {
-                                fatalError(ListenerError.cantDeleteElementInCollection.localizedDescription)
+                                fatalError(FirestoreError.cantDeleteElementInCollection.localizedDescription)
                             }
                         }
                     //failure get people info
@@ -218,13 +318,13 @@ class ListenerService {
     func addActiveChatsListener(delegate: ActiveChatListenerDelegate) {
         self.activeChatDelegate = delegate
         self.activeChatsListner = activeChatsRef.addSnapshotListener({ snapshot, error in
-            guard let snapshot = snapshot else { fatalError(ListenerError.snapshotNotExist.localizedDescription) }
+            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
             
             snapshot.documentChanges.forEach { [weak self] changes in
                 guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
                 
                 guard let chats = self?.activeChatDelegate?.activeChats else {
-                    fatalError(ListenerError.chatsCollectionNotExist.localizedDescription) }
+                    fatalError(FirestoreError.chatsCollectionNotExist.localizedDescription) }
                 
                 //get actual information for user in chat
                 FirestoreService.shared.getUserData(userID: chat.friendId) { result in
@@ -249,7 +349,7 @@ class ListenerService {
                                 self?.activeChatDelegate?.activeChats.remove(at: index)
                                 self?.activeChatDelegate?.reloadData(changeType: .addOrDelete)
                             } else {
-                                fatalError(ListenerError.cantDeleteElementInCollection.localizedDescription)
+                                fatalError(FirestoreError.cantDeleteElementInCollection.localizedDescription)
                             }
                         }
                     //failure get people info
@@ -301,3 +401,4 @@ class ListenerService {
         messageListner?.remove()
     }
 }
+
