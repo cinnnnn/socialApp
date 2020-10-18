@@ -24,29 +24,31 @@ class ListenerService {
     }
     private var requestChatsRef: CollectionReference {
         guard let id = currentUser?.email else { fatalError("Cant get current user")}
-        let collection = db.collection(["users", id, "requestChats"].joined(separator: "/"))
+        let collection = db.collection([MFirestorCollection.users.rawValue, id, MFirestorCollection.requstsChats.rawValue].joined(separator: "/"))
         return collection
     }
     
     private var newChatsRef: CollectionReference {
         guard let id = currentUser?.email else { fatalError("Cant get current user")}
-        let collection = db.collection(["users", id, "newChats"].joined(separator: "/"))
+        let collection = db.collection([MFirestorCollection.users.rawValue, id, MFirestorCollection.newChats.rawValue].joined(separator: "/"))
         return collection
     }
     
     private var activeChatsRef: CollectionReference {
         guard let id = currentUser?.email else { fatalError("Cant get current user")}
-        let collection = db.collection(["users", id, "activeChats"].joined(separator: "/"))
+        let collection = db.collection([MFirestorCollection.users.rawValue, id, MFirestorCollection.activeChats.rawValue].joined(separator: "/"))
         return collection
     }
     
     private var peopleListner: ListenerRegistration?
     private var requestChatsListner: ListenerRegistration?
+    private var newChatsListner: ListenerRegistration?
     private var activeChatsListner: ListenerRegistration?
     private var messageListner: ListenerRegistration?
     
     private weak var peopleDelegate: PeopleListenerDelegate?
     private weak var requestChatDelegate: RequestChatListenerDelegate?
+    private weak var newChatDelegate: NewChatListenerDelegate?
     private weak var activeChatDelegate: ActiveChatListenerDelegate?
     
     
@@ -155,10 +157,62 @@ class ListenerService {
             }
         })
     }
-    
+        
     func removeRequestChatsListener() {
         requestChatsListner?.remove()
     }
+    
+    //MARK: NewChatsListener
+    func addNewChatsListener(delegate: NewChatListenerDelegate) {
+        self.newChatDelegate = delegate
+        self.newChatsListner = newChatsRef.addSnapshotListener({ snapshot, error in
+            guard let snapshot = snapshot else { fatalError(ListenerError.snapshotNotExist.localizedDescription) }
+            
+            snapshot.documentChanges.forEach { [weak self] changes in
+                guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
+                
+                guard let chats = self?.newChatDelegate?.newChats else {
+                    fatalError(ListenerError.chatsCollectionNotExist.localizedDescription) }
+                
+                //get actual information for user in chat
+                FirestoreService.shared.getUserData(userID: chat.friendId) { result in
+                    switch result {
+                    
+                    case .success(let people):
+                        chat.friendUserImageString = people.userImage
+                        chat.friendUserName = people.displayName
+                        
+                        switch changes.type {
+                        
+                        case .added:
+                            self?.newChatDelegate?.newChats.append(chat)
+                            self?.newChatDelegate?.reloadData(changeType: .addOrDelete)
+                        case .modified:
+                            if let index = chats.firstIndex(of: chat) {
+                                self?.newChatDelegate?.newChats[index] = chat
+                                self?.newChatDelegate?.reloadData(changeType: .update)
+                            }
+                        case .removed:
+                            if let index = chats.firstIndex(of: chat) {
+                                self?.newChatDelegate?.newChats.remove(at: index)
+                                self?.newChatDelegate?.reloadData(changeType: .addOrDelete)
+                            } else {
+                                fatalError(ListenerError.cantDeleteElementInCollection.localizedDescription)
+                            }
+                        }
+                    //failure get people info
+                    case .failure(let error):
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
+        })
+    }
+    
+    func removeNewChatsListener() {
+        newChatsListner?.remove()
+    }
+    
     
     //MARK: ActiveChatsListener
     func addActiveChatsListener(delegate: ActiveChatListenerDelegate) {

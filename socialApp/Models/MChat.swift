@@ -78,4 +78,12 @@ struct MChat: Hashable, Codable {
         
         return friendUserName.lowercased().contains(lowercasedElement)
     }
+    
+    func containsID(ID: String?) -> Bool {
+        guard let ID = ID else { return false }
+        
+        let lowercasedID = ID.lowercased()
+        
+        return friendId.lowercased().contains(lowercasedID)
+    }
 }

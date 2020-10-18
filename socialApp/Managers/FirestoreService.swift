@@ -181,6 +181,7 @@ class FirestoreService {
         } catch { complition(.failure(error)) }
     }
     
+    
     //MARK: deleteChatRequest
     func deleteChatRequest(fromUser: MChat, forUser: MPeople) {
         
@@ -191,6 +192,70 @@ class FirestoreService {
         deleteCollection(collection: messagesRef)
         //and delete request from userID document 
         collectionRequestRef.document(fromUser.friendId).delete()
+    }
+    
+    //MARK: likePeople
+    func likePeople(currentUser: MPeople, likeUser: MPeople, requestChats: [MChat], complition: @escaping(Result<MChat,Error>)->Void) {
+        
+        let collectionLikeUserRequestRef = db.collection([MFirestorCollection.users.rawValue, likeUser.senderId, MFirestorCollection.requstsChats.rawValue].joined(separator: "/"))
+        let collectionLikeUserNewChatRef = db.collection([MFirestorCollection.users.rawValue, likeUser.senderId, MFirestorCollection.newChats.rawValue].joined(separator: "/"))
+        let collectionLikeUserLikeRef = db.collection([MFirestorCollection.users.rawValue, likeUser.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        let collectionCurrentRequestRef = db.collection([MFirestorCollection.users.rawValue, currentUser.senderId, MFirestorCollection.requstsChats.rawValue].joined(separator: "/"))
+        let collectionCurrentLikeRef = db.collection([MFirestorCollection.users.rawValue, currentUser.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        let collectionCurrentNewChatRef = db.collection([MFirestorCollection.users.rawValue, currentUser.senderId, MFirestorCollection.newChats.rawValue].joined(separator: "/"))
+        
+        let requestChat = MChat(friendUserName: currentUser.displayName,
+                                friendUserImageString: currentUser.userImage,
+                                lastMessage: "",
+                                friendId: currentUser.senderId,
+                                date: Date())
+         let likeChat = MChat(friendUserName: likeUser.displayName,
+                             friendUserImageString: likeUser.userImage,
+                             lastMessage: "",
+                             friendId: likeUser.senderId,
+                             date: Date())
+        
+        //if like people contains in current user request chat than add to newChat and delete in request
+        let requestChatFromLikeUser = requestChats.filter { requestChat -> Bool in
+            requestChat.containsID(ID: likeUser.senderId)
+        }
+        //if have requst from like user
+        if !requestChatFromLikeUser.isEmpty {
+            //delete from request
+            collectionCurrentRequestRef.document(likeUser.senderId).delete()
+            //delete from like in like user collection
+            collectionLikeUserLikeRef.document(currentUser.senderId).delete()
+            //add to newChat to current user
+            do {
+                try collectionCurrentNewChatRef.document(likeUser.senderId).setData(from: likeChat)
+            } catch { complition(.failure(error))}
+            //add to newChat to like user
+            do {
+                try collectionLikeUserNewChatRef.document(currentUser.senderId).setData(from: requestChat)
+            } catch { complition(.failure(error))}
+            //if don't have request from like user
+        } else {
+            do { //add chat request document for reciever user
+                try collectionLikeUserRequestRef.document(currentUser.senderId).setData(from: requestChat, merge: true)
+                //add people to like collection
+                try collectionCurrentLikeRef.document(likeUser.senderId).setData(from:likeChat)
+                complition(.success(likeChat))
+            } catch { complition(.failure(error)) }
+        }
+    }
+    
+    //MARK: dislikePeople
+    func dislikePeople(currentUser: MPeople, forUser: MPeople, complition: @escaping(Result<MShortPeople,Error>)->Void) {
+        let collectionDislikeRef = usersReference.document(currentUser.senderId).collection("dislike")
+        
+        let shortPeopleInfo = MShortPeople(userName: forUser.displayName,
+                                           userImageString: forUser.userImage,
+                                           userId: forUser.senderId,
+                                           date: Date())
+        do {
+            try collectionDislikeRef.document(forUser.senderId).setData(from: shortPeopleInfo)
+            complition(.success(shortPeopleInfo))
+        } catch { complition(.failure(error))}
     }
     
     //MARK: changeToActive
@@ -302,7 +367,7 @@ extension FirestoreService {
     
     //MARK: deleteCollection
     //with inside document
-    private func  deleteCollection(collection: CollectionReference, batchSize: Int = 100) {
+    private func  deleteCollection(collection: CollectionReference, batchSize: Int = 500) {
         // Limit query to avoid out-of-memory errors on large collections.
         // When deleting a collection guaranteed to fit in memory, batching can be avoided entirely.
         collection.limit(to: batchSize).getDocuments { docset, error in

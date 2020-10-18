@@ -15,6 +15,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     var currentUser: User!
     var currentPeople: MPeople?
+    weak var requestDelegate: RequestChatDelegate?
     var peopleNearby: [MPeople] = []
     var sortedPeopleNearby: [MPeople] {
         peopleNearby.sorted { p1, p2  in
@@ -28,7 +29,8 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     
-    init(currentUser: User) {
+    init(currentUser: User, requestDelegate: RequestChatDelegate) {
+        self.requestDelegate = requestDelegate
         self.currentUser = currentUser
         
         super.init(nibName: nil, bundle: nil)
@@ -135,7 +137,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     //MARK: configureCell
     private  func configureCell(value: MPeople, indexPath: IndexPath) -> PeopleCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleCell.reuseID, for: indexPath) as? PeopleCell else { fatalError("Can't dequeue cell type PeopleCell")}
-        
+        cell.likeDislikeDelegate = self
         cell.configure(with: value) {
             cell.layoutIfNeeded()
         }
@@ -181,7 +183,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
 extension PeopleViewController {
     private func setDataForVisibleCell(firstLoad: Bool = false)  {
         var visibleRect = CGRect()
-        
         visibleRect.origin = collectionView.contentOffset
         visibleRect.size = collectionView.bounds.size
         
@@ -190,7 +191,6 @@ extension PeopleViewController {
         
         //set only when index path change to new value
         if visibleIndexPath != indexPath || firstLoad {
-            
             guard let item = dataSource?.itemIdentifier(for: indexPath) else { return }
             nameLabel.text = item.displayName
             //set new current visible indexPath
@@ -231,6 +231,40 @@ extension PeopleViewController: UICollectionViewDelegate {
         guard let currentPeople = currentPeople else { fatalError("Current people is nil") }
         let sendRequestVC = SendRequestViewController(requestForPeople: user, from: currentPeople)
         present(sendRequestVC, animated: true, completion: nil)
+    }
+}
+
+//MARK: likeDislikeDelegate
+extension PeopleViewController: LikeDislikeDelegate {
+    
+     func likePeople(people: MPeople) {
+        guard let currentPeople = currentPeople else { return }
+        FirestoreService.shared.likePeople(currentUser: currentPeople,
+                                           likeUser: people,
+                                           requestChats: requestDelegate?.requestChats ?? []) { result in
+            switch result {
+            
+            case .success(let chat):
+                print(chat.friendUserName)
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
+     func dislikePeople(people: MPeople) {
+        guard let currentPeople = currentPeople else { return }
+        FirestoreService.shared.dislikePeople(currentUser: currentPeople,
+                                              forUser: people) { result in
+            switch result {
+            
+            case .success(let shortPeople):
+                print("dislike \(shortPeople.userName)")
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+      
     }
 }
 

@@ -11,15 +11,19 @@ import FirebaseAuth
 import FirebaseFirestore
 
 // configure cell of collectionView
-
-protocol SelfConfiguringCell {
+protocol SelfConfiguringCell: class {
     static var reuseID: String { get }
     func configure(with value: MChat)
 }
 
-protocol PeopleConfigurationCell {
+protocol PeopleConfigurationCell: class {
     static var reuseID: String { get }
     func configure(with value: MPeople, complition:@escaping()->Void)
+}
+
+protocol LikeDislikeDelegate: class {
+    func likePeople(people: MPeople)
+    func dislikePeople(people: MPeople)
 }
 
 protocol PeopleListenerDelegate: class {
@@ -28,8 +32,17 @@ protocol PeopleListenerDelegate: class {
     func reloadData()
 }
 
+protocol RequestChatDelegate: class {
+    var requestChats: [MChat] { get set }
+}
+
 protocol RequestChatListenerDelegate: class {
     var requestChats: [MChat] { get set }
+    func reloadData(changeType: TypeOfListenerChanges)
+}
+
+protocol NewChatListenerDelegate: class {
+    var newChats: [MChat] { get set }
     func reloadData(changeType: TypeOfListenerChanges)
 }
 
@@ -48,3 +61,4 @@ protocol NavigationDelegate: class {
     func toMainTabBarController(user: User)
     func toCompliteRegistration(user: User)
 }
+

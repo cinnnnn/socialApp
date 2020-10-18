@@ -13,21 +13,27 @@ import FirebaseAuth
 
 class RequestsViewController: UIViewController {
     
-    var collectionView: UICollectionView!
+    var collectionView: UICollectionView?
+    weak var requestDelegate: RequestChatDelegate?
     var requestChats: [MChat] = []
     var sortedRequestChats: [MChat] {
-        requestChats.sorted {
+        let request = requestChats.sorted {
             $0.date > $1.date
         }
+        requestDelegate?.requestChats = request
+        return request
     }
     
     var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
     var currentUser: User
     var currentPeople: MPeople?
     
-    init(currentUser: User) {
+    init(currentUser: User, requestDelegate: RequestChatDelegate) {
+        self.requestDelegate = requestDelegate
         self.currentUser = currentUser
+        
         super.init(nibName: nil, bundle: nil)
+        setupListeners()
     }
     
     required init?(coder: NSCoder) {
@@ -46,7 +52,7 @@ class RequestsViewController: UIViewController {
         setupDataSource()
         loadSectionHedear()
         reloadDataSource(searchText: nil)
-        setupListeners()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,13 +76,14 @@ class RequestsViewController: UIViewController {
         collectionView = UICollectionView(frame: view.bounds,
                                           collectionViewLayout: setupCompositionalLayout())
         
+        guard let collectionView = collectionView else { fatalError("CollectionView is nil")}
         view.addSubview(collectionView)
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .myWhiteColor()
         collectionView.delegate = self
   
-        collectionView.register(ActiveChatsCell.self, forCellWithReuseIdentifier: ActiveChatsCell.reuseID)
-        collectionView.register(NewChatsCell.self, forCellWithReuseIdentifier: NewChatsCell.reuseID)
+
+        collectionView.register(RequestChatCell.self, forCellWithReuseIdentifier: RequestChatCell.reuseID)
         collectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeader.reuseId)
     }
 }
@@ -115,8 +122,8 @@ extension RequestsViewController {
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let grupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .fractionalHeight(0.2))
+        let grupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.4),
+                                              heightDimension: .fractionalHeight(0.4))
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: grupSize,
                                                        subitems: [item])
@@ -140,7 +147,7 @@ extension RequestsViewController {
 extension RequestsViewController {
     //MARK:  configure  cell
     private func configure<T: SelfConfiguringCell>(cellType: T.Type, value: MChat, indexPath: IndexPath) -> T {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)") }
+        guard let cell = collectionView?.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)") }
         
         cell.configure(with: value)
         return cell
@@ -148,6 +155,7 @@ extension RequestsViewController {
     
     //MARK:  setupDataSource
     private func setupDataSource(){
+        guard let collectionView = collectionView else { fatalError("CollectionView is nil")}
         dataSource = UICollectionViewDiffableDataSource<SectionsRequests, MChat>(
             collectionView: collectionView,
             cellProvider: { [weak self] (collectionView, indexPath, chat) -> UICollectionViewCell? in
@@ -186,6 +194,15 @@ extension RequestsViewController {
         snapshot.appendSections([.requestChats])
         snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
         dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        updateHeader()
+    }
+    //MARK:  updateHeader
+    private func updateHeader() {
+        guard var snapshot = dataSource?.snapshot() else { return }
+        let activeSection = snapshot.sectionIdentifiers
+        snapshot.reloadSections(activeSection)
+        dataSource?.apply(snapshot, animatingDifferences: false)
     }
 }
 

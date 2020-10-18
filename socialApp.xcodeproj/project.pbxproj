@@ -31,6 +31,8 @@
 		FB21A1BF24E5ADE5000A2E91 /* NewChatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BE24E5ADE5000A2E91 /* NewChatsCell.swift */; };
 		FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */; };
 		FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB39F2D724F66EFE001B9C4F /* MPeople.swift */; };
+		FB3C5BD0253B370A00CD44E6 /* MShortPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BCF253B370A00CD44E6 /* MShortPeople.swift */; };
+		FB3C5BD3253B399100CD44E6 /* MFirestorCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */; };
 		FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A76B251BA06D005DCC78 /* ChatError.swift */; };
 		FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A76E251CB97D005DCC78 /* DataSourceError.swift */; };
 		FB61A78C251E1342005DCC78 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A78B251E1342005DCC78 /* ChatViewController.swift */; };
@@ -131,6 +133,8 @@
 		FB21A1BE24E5ADE5000A2E91 /* NewChatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatsCell.swift; sourceTree = "<group>"; };
 		FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
 		FB39F2D724F66EFE001B9C4F /* MPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPeople.swift; sourceTree = "<group>"; };
+		FB3C5BCF253B370A00CD44E6 /* MShortPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MShortPeople.swift; sourceTree = "<group>"; };
+		FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MFirestorCollection.swift; sourceTree = "<group>"; };
 		FB61A76B251BA06D005DCC78 /* ChatError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatError.swift; sourceTree = "<group>"; };
 		FB61A76E251CB97D005DCC78 /* DataSourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceError.swift; sourceTree = "<group>"; };
 		FB61A78B251E1342005DCC78 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
@@ -282,11 +286,13 @@
 				FBB4F35D2512728900ACFE90 /* Error */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 				FB15FCF22513A71F00B765D3 /* MMessage.swift */,
+				FB3C5BCF253B370A00CD44E6 /* MShortPeople.swift */,
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
 				FB61A7F7251E3FE4005DCC78 /* MSender.swift */,
 				FB79DA6D252C942B00A7AA56 /* MLocation.swift */,
 				FB8C3D8A25371AE900184FB5 /* MLabels.swift */,
 				FB79DA4B2523577100A7AA56 /* MMediaItem.swift */,
+				FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */,
 				FB8C3D8D25372BEB00184FB5 /* MReports.swift */,
 				FB79DA8A252DF0D600A7AA56 /* MSettings.swift */,
 				FBB3B264250ACA0700440632 /* MGender.swift */,
@@ -695,6 +701,7 @@
 				FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,
 				FB61A78C251E1342005DCC78 /* ChatViewController.swift in Sources */,
+				FB3C5BD3253B399100CD44E6 /* MFirestorCollection.swift in Sources */,
 				FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */,
 				FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */,
 				FB79DA42252209E100A7AA56 /* TypeOfListenerChanges.swift in Sources */,
@@ -743,6 +750,7 @@
 				FB79DA78252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift in Sources */,
 				FB21A1BF24E5ADE5000A2E91 /* NewChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
+				FB3C5BD0253B370A00CD44E6 /* MShortPeople.swift in Sources */,
 				FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */,
 				FB8C3D792535F4C500184FB5 /* StringExtension.swift in Sources */,
 				FB61A7FB251E6312005DCC78 /* UserDefaultsService.swift in Sources */,
