@@ -227,12 +227,7 @@ extension PeopleViewController {
         visibleRect.size = collectionView.bounds.size
         
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else {
-            //if empty people nearby
-            nameLabel.text = ""
-            return
-            
-        }
+        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
         
         //set only when index path change to new value
         if visibleIndexPath != indexPath || firstLoad {
@@ -292,6 +287,13 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
                 self?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == chat.friendId
                 }
+                //if empty people nearby clear header
+                if let peopleNearby = self?.peopleNearby {
+                    if peopleNearby.isEmpty {
+                        self?.nameLabel.text = ""
+                    }
+                }
+                
                 self?.reloadData()
                 
             case .failure(let error):
@@ -311,6 +313,12 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
                 //delete like people from array
                 self?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == chat.friendId
+                }
+                //if empty people nearby clear header
+                if let peopleNearby = self?.peopleNearby {
+                    if peopleNearby.isEmpty {
+                        self?.nameLabel.text = ""
+                    }
                 }
                 self?.reloadData()
             case .failure(let error):
