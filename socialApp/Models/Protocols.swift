@@ -55,7 +55,7 @@ protocol NewAndActiveChatsDelegate: class {
 protocol PeopleListenerDelegate: class {
     var peopleNearby: [MPeople] { get set }
     func updateData()
-    func reloadData()
+    func reloadData(reloadSection: Bool)
 }
 
 protocol LikeDislikeListenerDelegate: class {

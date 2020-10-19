@@ -60,6 +60,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkActiveAdvert()
+        reloadData()
     }
     
     //MARK:  setup VC
@@ -205,23 +206,31 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         dataSource?.apply(snapshot, animatingDifferences: true)
         
-        setDataForVisibleCell(firstLoad: true)
+        setDataForVisibleCell(needUpdateHeader: true)
     }
     
     //MARK:  reloadData
-    func reloadData() {
+    func reloadData(reloadSection: Bool = false) {
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
+        
+        if reloadSection {
+            snapshot.reloadSections([.main])
+        }
         dataSource?.apply(snapshot, animatingDifferences: true)
         
-        setDataForVisibleCell(firstLoad: true)
+        setDataForVisibleCell(needUpdateHeader: true)
     }
 }
 
 //MARK:setDataForVisibleCell
 extension PeopleViewController {
-    private func setDataForVisibleCell(firstLoad: Bool = false)  {
+    private func setDataForVisibleCell(needUpdateHeader: Bool = false)  {
+        //if nearby people empty set 
+        if sortedPeopleNearby.count == 0 {
+            nameLabel.text = MLabels.emptyNearbyPeople.rawValue
+        }
         var visibleRect = CGRect()
         visibleRect.origin = collectionView.contentOffset
         visibleRect.size = collectionView.bounds.size
@@ -230,7 +239,7 @@ extension PeopleViewController {
         guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
         
         //set only when index path change to new value
-        if visibleIndexPath != indexPath || firstLoad {
+        if visibleIndexPath != indexPath || needUpdateHeader {
             guard let item = dataSource?.itemIdentifier(for: indexPath) else { return }
             nameLabel.text = item.displayName
             //set new current visible indexPath
@@ -242,6 +251,7 @@ extension PeopleViewController {
 //MARK: setUIForVisivleCells
 extension PeopleViewController {
     private func setUIForVisivleCells(items: [NSCollectionLayoutVisibleItem], point: CGPoint, enviroment: NSCollectionLayoutEnvironment) {
+       
         items.forEach { visibleItem in
             let distanceFromCenter = abs((visibleItem.frame.midX - point.x) - enviroment.container.contentSize.width / 2.0)
             let minScale: CGFloat = 0.5
@@ -281,20 +291,12 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
                                            requestChats: requestDelegate?.requestChats ?? []) {[weak self] result in
             switch result {
             
-            case .success(let chat):
-                print("like \(chat.friendUserName)")
+            case .success(let likeChat):
                 //delete like people from array
                 self?.peopleNearby.removeAll { people -> Bool in
-                    people.senderId == chat.friendId
+                    people.senderId == likeChat.friendId
                 }
-                //if empty people nearby clear header
-                if let peopleNearby = self?.peopleNearby {
-                    if peopleNearby.isEmpty {
-                        self?.nameLabel.text = ""
-                    }
-                }
-                
-                self?.reloadData()
+                self?.reloadData(reloadSection: self?.peopleNearby.count == 1 ? true : false)
                 
             case .failure(let error):
                 fatalError(error.localizedDescription)
@@ -302,45 +304,35 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
         }
     }
     
-     func dislikePeople(people: MPeople) {
+    func dislikePeople(people: MPeople) {
         guard let currentPeople = currentPeople else { return }
         FirestoreService.shared.dislikePeople(currentUser: currentPeople,
                                               forUser: people) {[weak self] result in
             switch result {
             
-            case .success(let chat):
-                print("dislike \(chat.friendUserName)")
-                //delete like people from array
+            case .success(let dislikeChat):
+                //delete dislike people from array
                 self?.peopleNearby.removeAll { people -> Bool in
-                    people.senderId == chat.friendId
+                    people.senderId == dislikeChat.friendId
                 }
-                //if empty people nearby clear header
-                if let peopleNearby = self?.peopleNearby {
-                    if peopleNearby.isEmpty {
-                        self?.nameLabel.text = ""
-                    }
-                }
-                self?.reloadData()
+                self?.reloadData(reloadSection: self?.peopleNearby.count == 1 ? true : false)
+                
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
         }
-      
     }
 }
 
 //MARK: setupConstraints
 extension PeopleViewController {
     private func setupConstraints() {
-    
         inactiveView.autoresizingMask = [.flexibleHeight, .flexibleWidth ]
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
        
-        
         view.addSubview(collectionView)
         view.addSubview(nameLabel)
-       
         view.addSubview(inactiveView)
         
         NSLayoutConstraint.activate([

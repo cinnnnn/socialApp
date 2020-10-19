@@ -104,7 +104,7 @@ class ListenerService {
                                                                    isUpdate: false) {
                         
                         self?.peopleDelegate?.peopleNearby.append(user)
-                        self?.peopleDelegate?.reloadData()
+                        self?.peopleDelegate?.reloadData(reloadSection: false)
                     }
                 case .modified:
                     //index in peopleNearby array
@@ -119,7 +119,7 @@ class ListenerService {
                             self?.peopleDelegate?.updateData()
                         } else { //if user change to deactive or block profile, delete him from collection
                             self?.peopleDelegate?.peopleNearby.remove(at: index)
-                            self?.peopleDelegate?.reloadData()
+                            self?.peopleDelegate?.reloadData(reloadSection: false)
                         }
                         //if user change to active profile, or unblock, add him to collection
                     } else if Validators.shared.listnerAddPeopleValidator(currentUser: currentUser,
@@ -129,13 +129,13 @@ class ListenerService {
                                                                           newActiveChatsDelegate: newActiveChatsDelegate,
                                                                           isUpdate: false) {
                         self?.peopleDelegate?.peopleNearby.append(user)
-                        self?.peopleDelegate?.reloadData()
+                        self?.peopleDelegate?.reloadData(reloadSection: false)
                     }
                     
                 case .removed:
                     guard let index = people.firstIndex(of: user) else { return }
                     self?.peopleDelegate?.peopleNearby.remove(at: index)
-                    self?.peopleDelegate?.reloadData()
+                    self?.peopleDelegate?.reloadData(reloadSection: false)
                 }
             }
         }
