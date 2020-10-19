@@ -36,7 +36,7 @@ struct MMessage: Hashable, ReprasentationModel, MessageType{
         }
     }
     
-    init(user: MPeople, content: String, id: String? = nil) {
+    init(user: MSender, content: String, id: String? = nil) {
         self.content = content
         messageId = id ?? UUID().uuidString
         sentDate = Date()

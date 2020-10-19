@@ -18,7 +18,6 @@ class ProfileViewController:UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setup()
         setupCollectionView()
         setupConstraints()
@@ -72,7 +71,7 @@ extension ProfileViewController {
             case .success(let mPeople):
                 self?.currentPeople = mPeople
                 UserDefaultsService.shared.saveMpeople(people: mPeople)
-                self?.updateProfileSection()
+                self?.updateSections(currentPeople: mPeople)
                 self?.getLocation()
             case .failure(_):
                 //if get incorrect info from mPeople profile, logOut and go to authVC
@@ -192,9 +191,14 @@ extension ProfileViewController {
     }
     
     //MARK: updateProfileSection
-    private func updateProfileSection() {
+    private func updateSections(currentPeople: MPeople) {
         guard var snapshot = dataSource?.snapshot() else { return }
         snapshot.reloadSections([ .profile])
+        
+        if currentPeople.isAdmin {
+            snapshot.appendItems([MSettings.adminPanel], toSection: .settings)
+        }
+        
         dataSource?.apply(snapshot)
     }
     
@@ -234,11 +238,12 @@ extension ProfileViewController: UICollectionViewDelegate {
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .about:
                 break
+            case .adminPanel:
+                break
             default:
                 break
             }
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

@@ -46,9 +46,8 @@ protocol RequestChatDelegate: class {
     var requestChats: [MChat] { get set }
 }
 
-protocol NewAndActiveChatsDelegate: class {
-    var activeChats: [MChat] { get set }
-    var newChats: [MChat] { get set }
+protocol AcceptChatsDelegate: class {
+    var acceptChats: [MChat] { get set }
 }
 
 //MARK: listner Firestore protocols
@@ -68,8 +67,8 @@ protocol RequestChatListenerDelegate: class {
     func reloadData(changeType: TypeOfListenerChanges)
 }
 
-protocol NewChatListenerDelegate: class {
-    var newChats: [MChat] { get set }
+protocol AcceptChatListenerDelegate: class {
+    var acceptChats: [MChat] { get set }
     func reloadData(changeType: TypeOfListenerChanges)
 }
 

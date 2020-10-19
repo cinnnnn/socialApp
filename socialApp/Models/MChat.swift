@@ -13,17 +13,20 @@ struct MChat: Hashable, Codable {
     var friendUserName: String
     var friendUserImageString: String
     var lastMessage: String
+    var isNewChat: Bool
     var friendId: String
     var date: Date
     
     init(friendUserName: String,
          friendUserImageString: String,
          lastMessage: String,
+         isNewChat: Bool,
          friendId:String,
          date:Date) {
         self.friendUserName = friendUserName
         self.friendUserImageString = friendUserImageString
         self.lastMessage = lastMessage
+        self.isNewChat = isNewChat
         self.friendId = friendId
         self.date = date
     }
@@ -44,6 +47,10 @@ struct MChat: Hashable, Codable {
             self.lastMessage = lastMessage
         } else { return nil }
         
+        if let isNewChat =  documet["isNewChat"] as? Bool {
+            self.isNewChat = isNewChat
+        } else { return nil }
+        
         if let friendId = documet["friendId"] as? String {
             self.friendId = friendId
         } else { return nil }
@@ -58,6 +65,7 @@ struct MChat: Hashable, Codable {
         case friendUserName
         case friendUserImageString
         case lastMessage
+        case isNewChat
         case friendId
         case date
     }

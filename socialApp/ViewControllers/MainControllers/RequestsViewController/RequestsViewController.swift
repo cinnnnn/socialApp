@@ -42,7 +42,6 @@ class RequestsViewController: UIViewController {
     
     deinit {
         ListenerService.shared.removeRequestChatsListener()
-        ListenerService.shared.removeActiveChatsListener()
     }
     
     override func viewDidLoad() {
@@ -59,12 +58,6 @@ class RequestsViewController: UIViewController {
         super.viewWillAppear(animated)
         
         currentPeople = UserDefaultsService.shared.getMpeople()
-        
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
     }
     
     private func setupListeners() {

@@ -13,7 +13,9 @@ enum MSettings: Int {
     case profileInfo
     case setupProfile
     case setupSearch
+    case adminPanel
     case about
+    
     
     func image() -> UIImage  {
         switch self {
@@ -24,8 +26,11 @@ enum MSettings: Int {
            return #imageLiteral(resourceName: "people")
         case .setupSearch:
            return #imageLiteral(resourceName: "search")
+        case .adminPanel:
+            return #imageLiteral(resourceName: "slider")
         case .about:
            return #imageLiteral(resourceName: "info")
+        
         }
     }
     
@@ -38,9 +43,10 @@ enum MSettings: Int {
            return "Редактировать профиль"
         case .setupSearch:
            return "Параметры поиска"
+        case .adminPanel:
+            return "Панель администратора"
         case .about:
            return "Информация"
-        
         }
     }
 }

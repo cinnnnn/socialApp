@@ -13,10 +13,10 @@ import FirebaseFirestore
 
 class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislikeDelegate {
     
+    weak var requestDelegate: RequestChatDelegate?
+    weak var newActiveChatsDelegate: AcceptChatsDelegate?
     var currentUser: User!
     var currentPeople: MPeople?
-    weak var requestDelegate: RequestChatDelegate?
-    weak var newActiveChatsDelegate: NewAndActiveChatsDelegate?
     var likePeople: [MChat] = []
     var dislikePeople: [MChat] = []
     var peopleNearby: [MPeople] = []
@@ -32,7 +32,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     
-    init(currentUser: User, requestDelegate: RequestChatDelegate, newActiveChatsDelegate: NewAndActiveChatsDelegate) {
+    init(currentUser: User, requestDelegate: RequestChatDelegate, newActiveChatsDelegate: AcceptChatsDelegate) {
         self.newActiveChatsDelegate = newActiveChatsDelegate
         self.requestDelegate = requestDelegate
         self.currentUser = currentUser
@@ -70,14 +70,14 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     
     //MARK:  setupListeners
     private func setupListeners() {
-        //get like people
+        //first get list of like people
         FirestoreService.shared.getLikeDislikePeople(forUser: currentUser,
                                                      collection: MFirestorCollection.likePeople.rawValue) {[weak self] result in
             switch result {
             
             case .success(let likeChats):
                 self?.likePeople = likeChats
-                //get dislike people
+                //get list of dislike people
                 guard let currentUser = self?.currentUser else { fatalError("Can't get current user")}
                 FirestoreService.shared.getLikeDislikePeople(forUser: currentUser,
                                                              collection: MFirestorCollection.dislikePeople.rawValue) { result in

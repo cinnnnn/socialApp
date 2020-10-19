@@ -11,7 +11,7 @@ enum MFirestorCollection: String, Codable {
     case messages = "messages"
     case requestsChats = "requestChats"
     case requestMessage = "requestMessage"
-    case newChats = "newChats"
+    case acceptChats = "acceptChats"
     case activeChats = "activeChats"
     case dislikePeople = "dislikePeople"
     case likePeople = "likePeople"

@@ -74,7 +74,7 @@ class Validators {
                                    newPeople: MPeople,
                                    peopleDelegate: PeopleListenerDelegate,
                                    likeDislikeDelegate: LikeDislikeDelegate,
-                                   newActiveChatsDelegate: NewAndActiveChatsDelegate,
+                                   acceptChatsDelegate: AcceptChatsDelegate,
                                    isUpdate: Bool) -> Bool {
         if !isUpdate {
         //if not present in people array
@@ -95,14 +95,10 @@ class Validators {
             chat.friendId == newPeople.senderId
         }) else { return false}
         //if not in new chat
-        guard !newActiveChatsDelegate.newChats.contains(where: { chat -> Bool in
+        guard !acceptChatsDelegate.acceptChats.contains(where: { chat -> Bool in
             chat.friendId == newPeople.senderId
         }) else { return false}
-        //if not in active chat
-        guard !newActiveChatsDelegate.activeChats.contains(where: { chat -> Bool in
-            chat.friendId == newPeople.senderId
-        }) else { return false}
-        
+    
         return true
     }
     
