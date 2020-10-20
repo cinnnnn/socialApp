@@ -88,7 +88,6 @@ extension OneLineTextField {
     @objc private func tapDoneButton() {
             text = datePicker?.date.getShortFormattedDate()
             resignFirstResponder()
-            print(#function)
     }
 }
 

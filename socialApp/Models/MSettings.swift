@@ -23,14 +23,13 @@ enum MSettings: Int {
         case .profileInfo:
             return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
         case .setupProfile:
-           return #imageLiteral(resourceName: "people")
+            return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
         case .setupSearch:
-           return #imageLiteral(resourceName: "search")
+           return UIImage(systemName: "magnifyingglass") ?? #imageLiteral(resourceName: "disclouser")
         case .adminPanel:
-            return #imageLiteral(resourceName: "slider")
+            return UIImage(systemName: "tv.circle") ?? #imageLiteral(resourceName: "disclouser")
         case .about:
-           return #imageLiteral(resourceName: "info")
-        
+           return UIImage(systemName: "info.circle") ?? #imageLiteral(resourceName: "disclouser")
         }
     }
     

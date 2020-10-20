@@ -69,7 +69,7 @@ class ListenerService {
         
         self.peopleDelegate = peopleDelegate
         peopleListner = userRef.addSnapshotListener { snapshot, error in
-            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
+            guard let snapshot = snapshot else { return }
             
             snapshot.documentChanges.forEach {[weak self] changes in
                 guard var user = MPeople(documentSnap: changes.document) else { fatalError(UserError.getUserData.localizedDescription) }
@@ -142,7 +142,7 @@ class ListenerService {
         self.likeDislikeDelegate = likeDislikeDelegate
         
         likeListener = likeRef.addSnapshotListener({ snapshot, error in
-            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
+            guard let snapshot = snapshot else { return }
             
             snapshot.documentChanges.forEach {  changes in
                 guard let chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
@@ -204,7 +204,7 @@ class ListenerService {
     func addRequestChatsListener(delegate: RequestChatListenerDelegate) {
         self.requestChatDelegate = delegate
         self.requestChatsListner = requestChatsRef.addSnapshotListener({ snapshot, error in
-            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
+            guard let snapshot = snapshot else { return }
             
             
             snapshot.documentChanges.forEach { [weak self] changes in
@@ -258,7 +258,7 @@ class ListenerService {
     func addAcceptChatsListener(delegate: AcceptChatListenerDelegate) {
         self.acceptChatDelegate = delegate
         self.acceptChatsListner = acceptChatsRef.addSnapshotListener({ snapshot, error in
-            guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
+            guard let snapshot = snapshot else { return }
             
             snapshot.documentChanges.forEach { [weak self] changes in
                 guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}

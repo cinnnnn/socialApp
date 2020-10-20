@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import CoreImage
+import CoreImage.CIFilterBuiltins
 
 extension UIImage {
         
@@ -29,6 +31,17 @@ extension UIImage {
             
             return newImage!
         }
+    
+    func applyFadeFilter() -> UIImage? {
+            let newFilter = CIFilter.photoEffectMono()
+            let context = CIContext()
+             newFilter.inputImage = CIImage(image: self)
+            guard let outputImage = newFilter.outputImage else { return nil }
+            guard let rect = CIImage(image: self)?.extent else { return nil }
+            guard let myCgImage = context.createCGImage(outputImage, from: rect) else { return nil }
+            let finalImage = UIImage(cgImage: myCgImage)
+            return finalImage
+    }
 }
 
 

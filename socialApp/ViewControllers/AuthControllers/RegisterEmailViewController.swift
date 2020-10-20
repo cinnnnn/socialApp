@@ -47,12 +47,12 @@ class RegisterEmailViewController: UIViewController {
                                                     opacity: 1,
                                                     isEnable: true)
     
-    let signUpButton = UIButton(newBackgroundColor: .myLabelColor(),
+    let signUpButton = RoundButton(newBackgroundColor: .myLabelColor(),
                                 newBorderColor: .myLabelColor(),
                                 title: "Продолжить",
                                 titleColor: .myWhiteColor())
     
-    let checkMailButton = UIButton(newBackgroundColor: .myLabelColor(),
+    let checkMailButton = RoundButton(newBackgroundColor: .myLabelColor(),
                                    newBorderColor: .myLabelColor(),
                                    title: "Проверить активацию",
                                    titleColor: .myWhiteColor(),
@@ -233,7 +233,6 @@ extension RegisterEmailViewController {
             confirmPasswordLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             confirmPasswordLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            
             loginLabel.topAnchor.constraint(equalTo: confirmPasswordTextField.bottomAnchor, constant: 25),
             loginLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             loginLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
@@ -246,9 +245,8 @@ extension RegisterEmailViewController {
             checkMailButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             checkMailButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             checkMailButton.heightAnchor.constraint(equalTo: checkMailButton.widthAnchor, multiplier: 1.0/7.28),
-            
-            
-            signUpButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25),
+                    
+            signUpButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25),
             signUpButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             signUpButton.heightAnchor.constraint(equalTo: signUpButton.widthAnchor, multiplier: 1.0/7.28)

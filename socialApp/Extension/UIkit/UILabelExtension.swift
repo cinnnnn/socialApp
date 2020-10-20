@@ -11,8 +11,8 @@ import UIKit
 extension UILabel {
     
     convenience init(labelText: String,
-                     textFont: UIFont = .systemFont(ofSize: 12),
-                     textColor: UIColor = .label,
+                     textFont: UIFont = .avenirRegular(size: 12),
+                     textColor: UIColor = .myLabelColor(),
                      opacity: Float = 1,
                      aligment: NSTextAlignment = .left,
                      linesCount: Int = 1) {

@@ -13,28 +13,30 @@ import AuthenticationServices
 
 class AuthViewController: UIViewController {
         
-    let loginButton = UIButton(newBackgroundColor: .systemBackground,
-                               borderWidth: 0,
+    let loginButton = UIButton(newBackgroundColor: nil,
                                title: "Войти с Email",
                                titleColor: .myGrayColor(),
-                               font: .systemFont(ofSize: 16, weight: .regular),
-                               isShadow: false)
+                               font: .avenirRegular(size: 16))
     
     let appleButton = ASAuthorizationAppleIDButton()
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
-    private var currentChildViewController: UIViewController?
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupVC()
         setupConstraints()
+        setupVC()
         setupButtonAction()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        appleButton.cornerRadius = appleButton.frame.height / 2
     }
     
     //MARK:  setupVC
     private func setupVC() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .myWhiteColor()
+        appleButton.layoutIfNeeded()
     }
     
     //MARK:  setupButtonAction
@@ -118,10 +120,10 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
 extension AuthViewController {
     
     private func appleSignInAlerController() {
-        let alert = UIAlertController(title: "Проблемки со входом",
+        let alert = UIAlertController(title: "Проблемы со входом",
                                       message: "Что то с твоим AppleID пошло не так",
                                       preferredStyle: .actionSheet)
-        let actionMail = UIAlertAction(title: "Попробовать по почте",
+        let actionMail = UIAlertAction(title: "Войти по Email",
                                        style: .default) { _ in
                                         self.loginButtonPressed()
         }

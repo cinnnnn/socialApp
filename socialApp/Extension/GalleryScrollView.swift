@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import CoreImage.CIFilterBuiltins
 
 class GalleryScrollView: UIScrollView {
     
     var images: [String] = []
+    
     
     convenience init(imagesURL: [String]) {
         self.init()
@@ -23,7 +25,7 @@ class GalleryScrollView: UIScrollView {
         isPagingEnabled = true
         backgroundColor = .red
         showsVerticalScrollIndicator = false
-        layer.cornerRadius = 4
+        layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         clipsToBounds = true
         bounces = false
     }
@@ -65,6 +67,7 @@ class GalleryScrollView: UIScrollView {
             }
         }
         contentSize.height = frame.height * CGFloat(countOfView)
+        layer.cornerRadius = frame.width / MDefaultLayer.widthMultiplier.rawValue / 2
     }
 }
 

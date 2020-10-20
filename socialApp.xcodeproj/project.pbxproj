@@ -33,6 +33,8 @@
 		FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB39F2D724F66EFE001B9C4F /* MPeople.swift */; };
 		FB3C5BD0253B370A00CD44E6 /* MShortPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BCF253B370A00CD44E6 /* MShortPeople.swift */; };
 		FB3C5BD3253B399100CD44E6 /* MFirestorCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */; };
+		FB3C5BDB253F4A5A00CD44E6 /* MDefaultLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */; };
+		FB3C5BDE253F5F3900CD44E6 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */; };
 		FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A76B251BA06D005DCC78 /* ChatError.swift */; };
 		FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A76E251CB97D005DCC78 /* DataSourceError.swift */; };
 		FB61A78C251E1342005DCC78 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61A78B251E1342005DCC78 /* ChatViewController.swift */; };
@@ -135,6 +137,8 @@
 		FB39F2D724F66EFE001B9C4F /* MPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPeople.swift; sourceTree = "<group>"; };
 		FB3C5BCF253B370A00CD44E6 /* MShortPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MShortPeople.swift; sourceTree = "<group>"; };
 		FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MFirestorCollection.swift; sourceTree = "<group>"; };
+		FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDefaultLayer.swift; sourceTree = "<group>"; };
+		FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
 		FB61A76B251BA06D005DCC78 /* ChatError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatError.swift; sourceTree = "<group>"; };
 		FB61A76E251CB97D005DCC78 /* DataSourceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceError.swift; sourceTree = "<group>"; };
 		FB61A78B251E1342005DCC78 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
@@ -290,6 +294,7 @@
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
 				FB61A7F7251E3FE4005DCC78 /* MSender.swift */,
 				FB79DA6D252C942B00A7AA56 /* MLocation.swift */,
+				FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */,
 				FB8C3D8A25371AE900184FB5 /* MLabels.swift */,
 				FB79DA4B2523577100A7AA56 /* MMediaItem.swift */,
 				FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */,
@@ -536,6 +541,7 @@
 				FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */,
 				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
 				FB8C3D5E25348F4900184FB5 /* OneLineButton.swift */,
+				FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
 				FB21A1BC24E59A31000A2E91 /* GradientView.swift */,
 				FB79DA9125307FF200A7AA56 /* GalleryScrollView.swift */,
@@ -674,6 +680,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB3C5BDE253F5F3900CD44E6 /* RoundButton.swift in Sources */,
 				FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */,
 				FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */,
 				FBB3B265250ACA0700440632 /* MGender.swift in Sources */,
@@ -699,6 +706,7 @@
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
 				FB8C3D3C2533961800184FB5 /* MSexuality.swift in Sources */,
 				FB79DA84252DED1700A7AA56 /* ProfileCell.swift in Sources */,
+				FB3C5BDB253F4A5A00CD44E6 /* MDefaultLayer.swift in Sources */,
 				FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */,
 				FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */,
 				FB61A7F8251E3FE4005DCC78 /* MSender.swift in Sources */,

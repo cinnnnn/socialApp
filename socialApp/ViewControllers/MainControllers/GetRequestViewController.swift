@@ -73,8 +73,7 @@ class GetRequestViewController: UIViewController {
 extension GetRequestViewController {
     
     @objc private func touchAccept() {
-        FirestoreService.shared.changeToActive(chat: chatRequestPeople, forUser: currentPeople)
-        dismiss(animated: true, completion: nil)
+       
     }
     
     @objc private func touchDeny() {

@@ -15,10 +15,15 @@ class LoginViewController: UIViewController {
     let signInLogo = UIImageView(image: #imageLiteral(resourceName: "SignInLogo"),
                                  contentMode: .scaleAspectFit)
     
-    let loginButton = UIButton(newBackgroundColor: .label,
-                               newBorderColor: .label,
-                               title: "Далее",
-                               titleColor: .systemBackground)
+    let loginButton = RoundButton(newBackgroundColor: .myLabelColor(),
+                                  newBorderColor: .myLabelColor(),
+                                  title: "Далее",
+                                  titleColor: .myWhiteColor())
+
+    let backButton = UIButton(newBackgroundColor: nil,
+                              title: "Выбрать другой метод входа",
+                              titleColor: .myGrayColor(),
+                              font: .avenirRegular(size: 16))
     
     let emailTextField = OneLineTextField(isSecureText: false,
                                           tag: 1)
@@ -29,7 +34,7 @@ class LoginViewController: UIViewController {
     
     let emailLabel = UILabel(labelText: "Напиши свою почту")
     let correctEmailLabel = UILabel(labelText: "Неправильно введена почта",
-                                    textColor: .red,
+                                    textColor: .myPinkColor(),
                                     opacity: 0)
     let passwordLabel = UILabel(labelText: "Пароль",
                                 opacity: 0)
@@ -63,6 +68,7 @@ extension LoginViewController {
         navigationController?.navigationBar.backgroundColor = .myWhiteColor()
         navigationController?.navigationBar.tintColor = .label
         
+        loginButton.setTitleColor(.myGrayColor(), for: .disabled)
         loginButton.isEnabled = false
         
         emailTextField.delegate = self
@@ -70,11 +76,10 @@ extension LoginViewController {
     }
     
     private func setupButtonAction() {
-        
         loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
         emailTextField.addTarget(self, action: #selector(emailEnterComplite), for: .editingDidEnd)
+        backButton.addTarget(self, action: #selector(backButtonTupped), for: .touchUpInside)
     }
-    
 }
 
 extension LoginViewController {
@@ -134,7 +139,6 @@ extension LoginViewController {
                 switch result {
                 case .success( let user):
                     //if correct login user, than close LoginVC and check setProfile info
-                    
                     FirestoreService.shared.getUserData(userID: user.email! ) { result in
                         switch result {
                         
@@ -167,6 +171,11 @@ extension LoginViewController {
             let registerEmailVC = RegisterEmailViewController(email: emailTextField.text, navigationDelegate: delegate)
             navigationController?.pushViewController(registerEmailVC, animated: true)
         }
+    }
+    
+    @objc private func backButtonTupped() {
+        view.addCustomTransition(type: .fade)
+        dismiss(animated: true, completion: nil)
     }
 }
 
@@ -239,6 +248,7 @@ extension LoginViewController {
         view.addSubview(passwordLabel)
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
+        view.addSubview(backButton)
         
         signInLogo.anchor(leading: view.leadingAnchor,
                           trailing: view.trailingAnchor,
@@ -275,6 +285,12 @@ extension LoginViewController {
                              top: passwordTextField.topAnchor,
                              bottom: nil,
                              padding: .init(top: -15, left: 25, bottom: 0, right: 25))
+        
+        backButton.anchor(leading: loginButton.leadingAnchor,
+                          trailing: loginButton.trailingAnchor,
+                          top: nil,
+                          bottom: loginButton.topAnchor,
+                          padding: .init(top: 0, left: 0, bottom: 10, right: 0))
         
         loginButton.anchor(leading: view.leadingAnchor,
                            trailing: view.trailingAnchor,

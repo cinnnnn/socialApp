@@ -29,7 +29,7 @@ extension UIColor {
     
     static func myLightGrayColor() -> UIColor {
         
-        dynamicColor(light: #colorLiteral(red: 0.9379875064, green: 0.9324114919, blue: 0.942273736, alpha: 1), dark: #colorLiteral(red: 0.0636183396, green: 0.06443779916, blue: 0.06440233439, alpha: 1))
+        dynamicColor(light: #colorLiteral(red: 0.9379875064, green: 0.9324114919, blue: 0.942273736, alpha: 1), dark: #colorLiteral(red: 0.2514118254, green: 0.2546254992, blue: 0.254514575, alpha: 1))
     }
     
     static func myWhiteColor() -> UIColor {
@@ -53,10 +53,10 @@ extension UIColor {
     
     static func myPurpleColor() -> UIColor {
         
-        dynamicColor(light: #colorLiteral(red: 0.5750052333, green: 0.5949758887, blue: 0.9911155105, alpha: 1), dark: #colorLiteral(red: 0.6526986957, green: 0.6832183003, blue: 1, alpha: 1))
+        dynamicColor(light: #colorLiteral(red: 0.5764705882, green: 0.5960784314, blue: 0.9921568627, alpha: 1), dark: #colorLiteral(red: 0.6526986957, green: 0.6832183003, blue: 1, alpha: 1))
     }
     
     static func myPinkColor() -> UIColor {
-         dynamicColor(light:  #colorLiteral(red: 0.9419099689, green: 0.4851585627, blue: 0.9007419348, alpha: 1), dark:  #colorLiteral(red: 0.9787521958, green: 0.7720793486, blue: 0.9878835082, alpha: 1))
+         dynamicColor(light:  #colorLiteral(red: 0.9411764706, green: 0.4862745098, blue: 0.9019607843, alpha: 1), dark:  #colorLiteral(red: 0.9787521958, green: 0.7720793486, blue: 0.9878835082, alpha: 1))
     }
 }

@@ -17,7 +17,7 @@ extension UIButton {
                      title: String,
                      titleColor: UIColor,
                      font: UIFont? = .avenirBold(size: 16),
-                     cornerRadius: CGFloat = 4,
+                     cornerRadius: CGFloat = MDefaultLayer.smallCornerRadius.rawValue,
                      isShadow: Bool = false,
                      isEnable: Bool = true,
                      isHidden: Bool = false,

@@ -30,10 +30,7 @@ class FirestoreService {
         
         //save base user info to cloud FireStore
         usersReference.document(id).setData([MPeople.CodingKeys.senderId.rawValue : id,
-                                             MPeople.CodingKeys.mail.rawValue: email,
-                                             MPeople.CodingKeys.isActive.rawValue: true,
-                                             MPeople.CodingKeys.isAdmin.rawValue: false,
-                                             MPeople.CodingKeys.isBlocked.rawValue: false],
+                                             MPeople.CodingKeys.mail.rawValue: email],
                                             merge: true,
                                             completion: { (error) in
                                                 if let error = error {
@@ -68,7 +65,10 @@ class FirestoreService {
         usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : userName,
                                              MPeople.CodingKeys.gender.rawValue : gender,
                                              MPeople.CodingKeys.lookingFor.rawValue : lookingFor,
-                                             MPeople.CodingKeys.sexuality.rawValue : sexuality],
+                                             MPeople.CodingKeys.sexuality.rawValue : sexuality,
+                                             MPeople.CodingKeys.isActive.rawValue: true,
+                                             MPeople.CodingKeys.isAdmin.rawValue: false,
+                                             MPeople.CodingKeys.isBlocked.rawValue: false],
                                             merge: true,
                                             completion: { (error) in
                                                 if let error = error {
@@ -313,53 +313,7 @@ class FirestoreService {
             complition(.success(dislikeChat))
         } catch { complition(.failure(error))}
     }
-    
-    //MARK: changeToActive
-    func changeToActive(chat: MChat, forUser: MPeople) {
-        
-        let collectionRequestRef = db.collection([MFirestorCollection.users.rawValue, forUser.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
-        let collectionActiveRef = db.collection([MFirestorCollection.users.rawValue, forUser.senderId, MFirestorCollection.activeChats.rawValue].joined(separator: "/"))
-        let collectionFriendActiveRef = db.collection([MFirestorCollection.users.rawValue, chat.friendId, MFirestorCollection.activeChats.rawValue].joined(separator: "/"))
-        let messagesRef = collectionRequestRef.document(chat.friendId).collection(MFirestorCollection.messages.rawValue)
-        let activeMessageRef = collectionActiveRef.document(chat.friendId).collection(MFirestorCollection.messages.rawValue)
-        let friendActiveMessageRef = collectionFriendActiveRef.document(forUser.senderId).collection(MFirestorCollection.messages.rawValue)
-        
-        getAlldocument(type: MMessage.self, collection: messagesRef) {[weak self] allMessages in
-            
-            self?.deleteCollection(collection: messagesRef)
-            collectionRequestRef.document(chat.friendId).delete()
-            
-            //add chat document to current user
-            do {
-                try collectionActiveRef.document(chat.friendId).setData(from: chat)
-            } catch {
-                fatalError("Cant convert from chat data to FirestoreData")
-            }
-            //add chat document to friend user
-            var chatForFriend = chat
-            chatForFriend.friendUserImageString = forUser.userImage
-            chatForFriend.friendUserName = forUser.displayName
-            chatForFriend.friendId = forUser.senderId
-            do {
-                try collectionFriendActiveRef.document(forUser.senderId).setData(from: chatForFriend)
-            } catch {
-                fatalError("Cant convert from chat data to FirestoreData")
-            }
-            
-            //add all message to collection "messages" in  chat document
-            allMessages.forEach { message in
-                var currentMessageRef: DocumentReference
-                //add message to current user
-                currentMessageRef = activeMessageRef.addDocument(data: message.reprasentation)
-                //set current path to ID message
-                currentMessageRef.setData([MMessage.CodingKeys.messageId.rawValue : currentMessageRef.path], merge: true)
-                //add message to friend user
-                currentMessageRef = friendActiveMessageRef.addDocument(data: message.reprasentation)
-                //set current path to ID message
-                currentMessageRef.setData([MMessage.CodingKeys.messageId.rawValue : currentMessageRef.path], merge: true)
-            }
-        }
-    }
+
     
     //MARK: sendMessage
     func sendMessage(chat: MChat,
