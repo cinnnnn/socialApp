@@ -120,9 +120,9 @@ extension RegisterEmailViewController {
                 FirestoreService.shared.saveBaseProfile(id: email,
                                                         email: email ) { result in
                     switch result {
-                    case .success():
+                    case .success(let id):
                         //after save base profile in Firestore, close and show complite registration VC
-                        let newVC = DateOfBirthViewController(currentUser: user, navigationDelegate: self?.navigationDelegate)
+                        let newVC = DateOfBirthViewController(userID: id, navigationDelegate: self?.navigationDelegate)
                         self?.navigationController?.setViewControllers([newVC], animated: true)
                     case .failure(let error):
                         fatalError(error.localizedDescription)

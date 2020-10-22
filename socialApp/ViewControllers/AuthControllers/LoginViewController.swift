@@ -9,11 +9,11 @@
 import UIKit
 import SwiftUI
 import FirebaseAuth
+import Lottie
 
 class LoginViewController: UIViewController {
     
-    let signInLogo = UIImageView(image: #imageLiteral(resourceName: "SignInLogo"),
-                                 contentMode: .scaleAspectFit)
+    let signInLogo = AnimationCustomView(name: "logo_eye", loopMode: .loop, contentMode: .scaleAspectFill)
     
     let loginButton = RoundButton(newBackgroundColor: .myLabelColor(),
                                   newBorderColor: .myLabelColor(),
@@ -55,6 +55,7 @@ class LoginViewController: UIViewController {
         setupVC()
         setupConstraints()
         setupButtonAction()
+        
     }
 }
 
@@ -73,6 +74,8 @@ extension LoginViewController {
         
         emailTextField.delegate = self
         passwordTextField.delegate = self
+        
+        signInLogo.animationView.play()
     }
     
     private func setupButtonAction() {
@@ -144,9 +147,9 @@ extension LoginViewController {
                         
                         case .success(let mPeople):
                             if mPeople.gender == "" || mPeople.lookingFor == "" {
-                                self?.navigationDelegate?.toCompliteRegistration(user: user)
+                                self?.navigationDelegate?.toCompliteRegistration(userID: mPeople.senderId)
                             } else {
-                                let mainVC = MainTabBarController(currentUser: user)
+                                let mainVC = MainTabBarController(userID: mPeople.senderId)
                                 mainVC.modalPresentationStyle = .fullScreen
                                 self?.present(mainVC, animated: true, completion: nil)
                             }
@@ -254,7 +257,9 @@ extension LoginViewController {
                           trailing: view.trailingAnchor,
                           top: view.safeAreaLayoutGuide.topAnchor,
                           bottom: nil,
-                          padding: .init(top: 80, left: 25, bottom: 0, right: 25))
+                          height: signInLogo.widthAnchor,
+                          multiplier: .init(width: 0, height: 0.25),
+                          padding: .init(top: 25, left: 25, bottom: 0, right: 25))
         
         emailTextField.anchor(leading: view.leadingAnchor,
                               trailing: view.trailingAnchor,
@@ -290,6 +295,8 @@ extension LoginViewController {
                           trailing: loginButton.trailingAnchor,
                           top: nil,
                           bottom: loginButton.topAnchor,
+                          height: backButton.widthAnchor,
+                          multiplier: .init(width: 0, height: 1.0/7.28),
                           padding: .init(top: 0, left: 0, bottom: 10, right: 0))
         
         loginButton.anchor(leading: view.leadingAnchor,

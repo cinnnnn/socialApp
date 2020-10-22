@@ -32,6 +32,11 @@ extension UIColor {
         dynamicColor(light: #colorLiteral(red: 0.9379875064, green: 0.9324114919, blue: 0.942273736, alpha: 1), dark: #colorLiteral(red: 0.2514118254, green: 0.2546254992, blue: 0.254514575, alpha: 1))
     }
     
+    static func mySuperLightGrayColor() -> UIColor {
+        
+        dynamicColor(light: #colorLiteral(red: 0.9750242829, green: 0.9692278504, blue: 0.9794797301, alpha: 1), dark: #colorLiteral(red: 0.1639038324, green: 0.168120265, blue: 0.1680073738, alpha: 1))
+    }
+    
     static func myWhiteColor() -> UIColor {
         
         dynamicColor(light: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), dark: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
@@ -49,6 +54,30 @@ extension UIColor {
     
     static func friendMessageColor() -> UIColor {
         dynamicColor(light: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1), dark: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1))
+    }
+    
+    static func myFirstButtonColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), dark: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))
+    }
+    
+    static func mySecondButtonColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 0.9379875064, green: 0.9324114919, blue: 0.942273736, alpha: 1), dark: #colorLiteral(red: 0.2514118254, green: 0.2546254992, blue: 0.254514575, alpha: 1))
+    }
+    
+    static func myFirstButtonLabelColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), dark: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
+    }
+    
+    static func mySecondButtonLabelColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), dark: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))
+    }
+    
+    static func myFirstColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 0.8, green: 0.6705882353, blue: 0.8470588235, alpha: 1), dark: #colorLiteral(red: 0.8, green: 0.6705882353, blue: 0.8470588235, alpha: 1))
+    }
+    
+    static func mySecondColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 0.431372549, green: 0.7764705882, blue: 0.7921568627, alpha: 1), dark: #colorLiteral(red: 0.431372549, green: 0.7764705882, blue: 0.7921568627, alpha: 1))
     }
     
     static func myPurpleColor() -> UIColor {

@@ -34,7 +34,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         }
                     }
                 } else {
-                    self?.window?.rootViewController = MainTabBarController(currentUser: user)
+                    if let userID = user.email {
+                        self?.window?.rootViewController = MainTabBarController(userID: userID)
+                    }
                 }
             }
         } else {

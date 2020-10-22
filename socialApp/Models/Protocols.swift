@@ -27,8 +27,8 @@ protocol ReprasentationModel {
 }
 
 protocol NavigationDelegate: class {
-    func toMainTabBarController(user: User)
-    func toCompliteRegistration(user: User)
+    func toMainTabBarController(userID: String)
+    func toCompliteRegistration(userID: String)
 }
 
 protocol LikeDislikeTappedDelegate: class {

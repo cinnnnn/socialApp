@@ -11,7 +11,7 @@ import FirebaseAuth
 
 class GenderSelectionViewController: UIViewController {
 
-    var currentUser: User
+    var userID: String
     
     let headerLabel = UILabel(labelText: MLabels.genderSelectionHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
     let genderSelectionButton = OneLineButton(header: "Гендер", info: "Парень")
@@ -21,9 +21,9 @@ class GenderSelectionViewController: UIViewController {
     let nameTextField = OneLineTextField(isSecureText: false, tag: 1)
     weak var navigationDelegate: NavigationDelegate?
 
-    init(currentUser: User, navigationDelegate: NavigationDelegate?){
+    init(userID: String, navigationDelegate: NavigationDelegate?){
         self.navigationDelegate = navigationDelegate
-        self.currentUser = currentUser
+        self.userID = userID
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -66,14 +66,14 @@ class GenderSelectionViewController: UIViewController {
 extension GenderSelectionViewController {
     
     @objc private func saveButtonTapped() {
-        guard let id = currentUser.email else { fatalError("Can't get user email")}
+        let id = userID
         let userName = Validators.shared.isFilledUserName(userName: nameTextField.text)
         if userName.isFilled {
             guard let gender = genderSelectionButton.infoLabel.text else { return }
             guard let sexuality = sexualitySelectionButton.infoLabel.text else { return }
             guard let lookingFor = lookingForSelectionButton.infoLabel.text else { return }
             
-            FirestoreService.shared.saveFirstSetupNameGender(id: id,
+            FirestoreService.shared.saveFirstSetupNameGender(id: userID,
                                                              userName: userName.userName,
                                                              gender: gender,
                                                              lookingFor: lookingFor,
@@ -81,8 +81,7 @@ extension GenderSelectionViewController {
                 switch result {
                 
                 case .success():
-                    guard let user = self?.currentUser else { fatalError("Can't get user")}
-                    let nextViewController = InterestsSelectionViewController(currentUser: user, navigationDelegate: self?.navigationDelegate)
+                    let nextViewController = InterestsSelectionViewController(userID: id, navigationDelegate: self?.navigationDelegate)
                     self?.navigationController?.pushViewController(nextViewController, animated: true)
                 case .failure(let error):
                     fatalError(error.localizedDescription)

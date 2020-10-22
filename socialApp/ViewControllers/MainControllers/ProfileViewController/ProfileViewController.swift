@@ -13,8 +13,16 @@ class ProfileViewController:UIViewController {
     
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MSettings>?
-    private var currentPeople: MPeople?
-    private var currentUser: User
+    private var currentPeople: MPeople
+    
+    init(currentPeople: MPeople) {
+        self.currentPeople = currentPeople
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,22 +31,17 @@ class ProfileViewController:UIViewController {
         setupConstraints()
         setupDataSource()
         updateDataSource()
-        getPeopleData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        getPeopleData()
-    }
-  
-    
-    init(currentUser: User) {
-        self.currentUser = currentUser
-        super.init(nibName: nil, bundle: nil)
+        
+        updateSections()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateCurrentPeople()
     }
     
     private func setup() {
@@ -47,49 +50,10 @@ class ProfileViewController:UIViewController {
         navigationItem.backButtonTitle = ""
         navigationItem.largeTitleDisplayMode = .never
     }
-}
-
-//MARK: getLocation
-extension ProfileViewController {
-    private func getLocation() {
-        guard let people = currentPeople else { return }
-        LocationService.shared.getCoordinate(userID: people.senderId) {[weak self] isAllowPermission in
-            //if geo is denied, show alert and go to settings
-            if isAllowPermission == false {
-                self?.openSettingsAlert()
-            }
-        }
-    }
-}
-
-//MARK: getPeopleData
-extension ProfileViewController {
-    private func getPeopleData() {
-        guard let email = currentUser.email else { return }
-        FirestoreService.shared.getUserData(userID: email) {[weak self] result in
-            switch result {
-            case .success(let mPeople):
-                self?.currentPeople = mPeople
-                UserDefaultsService.shared.saveMpeople(people: mPeople)
-                self?.updateSections(currentPeople: mPeople)
-                self?.getLocation()
-            case .failure(_):
-                //if get incorrect info from mPeople profile, logOut and go to authVC
-                AuthService.shared.signOut { result in
-                    switch result {
-                    case .success(_):
-                        self?.dismiss(animated: true) {
-                            let navVC = UINavigationController(rootViewController: AuthViewController())
-                            navVC.navigationBar.isHidden = true
-                            navVC.navigationItem.backButtonTitle = "Войти с Apple ID"
-                            self?.present(navVC, animated: false, completion: nil)
-                        }
-                        
-                    case .failure(let error):
-                        fatalError(error.localizedDescription)
-                    }
-                }
-            }
+    
+    private func updateCurrentPeople() {
+        if let people = UserDefaultsService.shared.getMpeople() {
+            currentPeople = people
         }
     }
 }
@@ -99,7 +63,7 @@ extension ProfileViewController {
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupLayout())
         
-       
+        
         collectionView.backgroundColor = .myWhiteColor()
         
         collectionView.delegate = self
@@ -191,24 +155,28 @@ extension ProfileViewController {
     }
     
     //MARK: updateProfileSection
-    private func updateSections(currentPeople: MPeople) {
+    private func updateSections() {
+        guard let currentPeople = UserDefaultsService.shared.getMpeople() else { return }
+        
+        self.currentPeople = currentPeople
+        
         guard var snapshot = dataSource?.snapshot() else { return }
         snapshot.reloadSections([ .profile])
         
-        if currentPeople.isAdmin {
-            snapshot.appendItems([MSettings.adminPanel], toSection: .settings)
-        }
-        
-        dataSource?.apply(snapshot)
+        dataSource?.apply(snapshot,animatingDifferences: true)
     }
     
-    //MARK: updateProfileSection
+    //MARK: updateDataSource
     private func updateDataSource() {
         var snapshot = NSDiffableDataSourceSnapshot<SectionsProfile, MSettings>()
         snapshot.appendSections([.profile,.settings])
         snapshot.appendItems([MSettings.profileInfo], toSection: .profile)
+        
         snapshot.appendItems([MSettings.setupProfile, MSettings.setupSearch, MSettings.about],
                              toSection: .settings)
+        if currentPeople.isAdmin {
+            snapshot.appendItems([MSettings.adminPanel], toSection: .settings)
+        }
         dataSource?.apply(snapshot)
     }
 }
@@ -225,15 +193,16 @@ extension ProfileViewController: UICollectionViewDelegate {
             switch cell {
             
             case .setupProfile:
-                let vc = EditProfileViewController(currentUser: currentUser)
+                let vc = EditProfileViewController(currentPeople: currentPeople)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .setupSearch:
-                let newVC = DateOfBirthViewController(currentUser: currentUser, navigationDelegate: nil)
-                newVC.hidesBottomBarWhenPushed = true
-                navigationController?.pushViewController(newVC, animated: true)
+                
+                let vc = EditSearchSettingsViewController(currentPeople: currentPeople)
+                vc.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(vc, animated: true)
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .about:
@@ -244,27 +213,6 @@ extension ProfileViewController: UICollectionViewDelegate {
                 break
             }
         }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        
-    }
-}
-
-extension ProfileViewController {
-    //MARK: openSettingsAlert
-    private func openSettingsAlert(){
-        let alert = UIAlertController(title: "Нет доступа к геопозиции",
-                                      text: "Необходимо разрешить доступ к геопозиции в настройках",
-                                      buttonText: "Перейти в настройки",
-                                      style: .alert) {
-            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
-            
-            if UIApplication.shared.canOpenURL(settingsUrl) {
-                UIApplication.shared.open(settingsUrl)
-            }
-        }
-        present(alert, animated: true, completion: nil)
     }
 }
 

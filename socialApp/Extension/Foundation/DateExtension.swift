@@ -39,51 +39,60 @@ extension Date {
     
     func getPeriod() -> String {
         let calendar = Calendar.current
-        let timePeriod = calendar.dateComponents([.minute,.hour,.day,.month,.year], from: self, to: Date())
+        let timePeriod = calendar.dateComponents([.second,.minute,.hour,.day,.month,.year], from: self, to: Date())
         if let year = timePeriod.year, year > 0 {
             switch year {
-            case 1:
-                return String("\(year) год назад")
-            case let currentYear where (year % 10 >= 2) && (year % 10 <= 4):
+            case let currentYear where (year % 10 == 1) && (year != 11):
+                return String("\(currentYear) год назад")
+            case let currentYear where (year % 10 >= 2) && (year % 10 <= 4) && (( year < 12) || (year > 14)):
                 return String("\(currentYear) года назад")
             default:
                 return String("\(year) лет назад")
             }
         } else if let month = timePeriod.month, month > 0 {
             switch month {
-            case 1:
-                return String("\(month) месяц назад")
-            case let currentMonth where (month % 10 >= 2) && (month % 10 <= 4):
+            case let currentMonth where (month % 10 == 1) && (month != 11):
+                return String("\(currentMonth) месяц назад")
+            case let currentMonth where (month % 10 >= 2) && (month % 10 <= 4) && (( month < 12) || (month > 14)):
                 return String("\(currentMonth) месяца назад")
             default:
                 return String("\(month) месяцев назад")
             }
         } else if let day = timePeriod.day, day > 0 {
             switch day {
-            case 1:
-                return String("\(day) день назад")
-            case let currentDay where (day % 10 >= 2) && (day % 10 <= 4):
+            case let currentDay where (day % 10 == 1) && (day != 11):
+                return String("\(currentDay) день назад")
+            case let currentDay where (day % 10 >= 2) && (day % 10 <= 4) && (( day < 12) || (day > 14)):
                 return String("\(currentDay) дня назад")
             default:
                 return String("\(day) дней назад")
             }
         } else if let hour = timePeriod.hour, hour > 0 {
             switch hour {
-            case 1:
-                return String("\(hour) час назад")
-            case let currentHour where (hour % 10 >= 2) && (hour % 10 <= 4):
+            case let currentHour where (hour % 10 == 1) && (hour != 11):
+                return String("\(currentHour) час назад")
+            case let currentHour where (hour % 10 >= 2) && (hour % 10 <= 4) && (( hour < 12) || (hour > 14)):
                 return String("\(currentHour) часа назад")
             default:
                 return String("\(hour) часов назад")
             }
         } else if let minute = timePeriod.minute, minute > 0 {
             switch minute {
-            case 1:
-                return String("\(minute) минута назад")
-            case let currentMinute where (minute % 10 >= 2) && (minute % 10 <= 4):
+            case let currentMinute where (minute % 10 == 1) && (minute != 11):
+                return String("\(currentMinute) минута назад")
+            case let currentMinute where (minute % 10 >= 2) && (minute % 10 <= 4) && (( minute < 12) || (minute > 14)):
                 return String("\(currentMinute) минуты назад")
             default:
                 return String("\(minute) минут назад")
+            }
+        } else if let seconds = timePeriod.second, seconds > 0 {
+            switch seconds {
+            case let currentSeconds where (seconds % 10 == 1) && (seconds != 11):
+                return String("\(currentSeconds) секунда назад")
+            case let currentSeconds where (seconds % 10 >= 2) && (seconds % 10 <= 4) && (( seconds < 12) || (seconds > 14)):
+                return String("\(currentSeconds) секунды назад")
+            default:
+                return String("\(seconds) секунд назад")
             }
         } else {
             return "Только что"

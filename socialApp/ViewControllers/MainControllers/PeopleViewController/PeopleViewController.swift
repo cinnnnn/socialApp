@@ -15,8 +15,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     
     weak var requestDelegate: RequestChatDelegate?
     weak var newActiveChatsDelegate: AcceptChatsDelegate?
-    var currentUser: User!
-    var currentPeople: MPeople?
+    var currentPeople: MPeople
     var likePeople: [MChat] = []
     var dislikePeople: [MChat] = []
     var peopleNearby: [MPeople] = []
@@ -26,16 +25,15 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         }
     }
     var visibleIndexPath: IndexPath?
-    var inactiveView = AdvertInactiveView(isHidden: true)
     var nameLabel = UILabel(labelText: "", textFont: .avenirBold(size: 38))
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     
-    init(currentUser: User, requestDelegate: RequestChatDelegate, newActiveChatsDelegate: AcceptChatsDelegate) {
+    init(currentPeople: MPeople, requestDelegate: RequestChatDelegate, newActiveChatsDelegate: AcceptChatsDelegate) {
         self.newActiveChatsDelegate = newActiveChatsDelegate
         self.requestDelegate = requestDelegate
-        self.currentUser = currentUser
+        self.currentPeople = currentPeople
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -57,29 +55,24 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         setupListeners()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        checkActiveAdvert()
-        reloadData()
-    }
-    
     //MARK:  setup VC
     private func setup() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .myWhiteColor()
+        navigationItem.backButtonTitle = ""
     }
     
     //MARK:  setupListeners
     private func setupListeners() {
         //first get list of like people
-        FirestoreService.shared.getLikeDislikePeople(forUser: currentUser,
+        let userID = currentPeople.senderId
+        FirestoreService.shared.getLikeDislikePeople(userID: userID,
                                                      collection: MFirestorCollection.likePeople.rawValue) {[weak self] result in
             switch result {
             
             case .success(let likeChats):
                 self?.likePeople = likeChats
                 //get list of dislike people
-                guard let currentUser = self?.currentUser else { fatalError("Can't get current user")}
-                FirestoreService.shared.getLikeDislikePeople(forUser: currentUser,
+                FirestoreService.shared.getLikeDislikePeople(userID: userID,
                                                              collection: MFirestorCollection.dislikePeople.rawValue) { result in
                     switch result {
                     
@@ -104,15 +97,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     
     private func removeListeners() {
         ListenerService.shared.removePeopleListener()
-    }
-    
-    //MARK: checkActiveAdvert
-    private func checkActiveAdvert() {
-        currentPeople = UserDefaultsService.shared.getMpeople()
-        if let state = currentPeople?.isActive {
-            inactiveView.isHidden = state
-            inactiveView.goToConfigButton.addTarget(self, action: #selector(touchGoToSetup), for: .touchUpInside)
-        }
     }
     
     //MARK: setupCollectionView
@@ -274,10 +258,7 @@ extension PeopleViewController {
 extension PeopleViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let user = dataSource?.itemIdentifier(for: indexPath) else { return }
-        guard let currentPeople = currentPeople else { fatalError("Current people is nil") }
-        let sendRequestVC = SendRequestViewController(requestForPeople: user, from: currentPeople)
-        present(sendRequestVC, animated: true, completion: nil)
+        
     }
 }
 
@@ -285,9 +266,9 @@ extension PeopleViewController: UICollectionViewDelegate {
 extension PeopleViewController: LikeDislikeTappedDelegate {
     
      func likePeople(people: MPeople) {
-        guard let currentPeople = currentPeople else { return }
-        FirestoreService.shared.likePeople(currentUser: currentPeople,
-                                           likeUser: people,
+        //save like to firestore
+        FirestoreService.shared.likePeople(currentPeople: currentPeople,
+                                           likePeople: people,
                                            requestChats: requestDelegate?.requestChats ?? []) {[weak self] result in
             switch result {
             
@@ -305,9 +286,9 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
     }
     
     func dislikePeople(people: MPeople) {
-        guard let currentPeople = currentPeople else { return }
-        FirestoreService.shared.dislikePeople(currentUser: currentPeople,
-                                              forUser: people) {[weak self] result in
+        //save dislike from firestore
+        FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
+                                              forPeople: people) {[weak self] result in
             switch result {
             
             case .success(let dislikeChat):
@@ -327,13 +308,11 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
 //MARK: setupConstraints
 extension PeopleViewController {
     private func setupConstraints() {
-        inactiveView.autoresizingMask = [.flexibleHeight, .flexibleWidth ]
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
        
         view.addSubview(collectionView)
         view.addSubview(nameLabel)
-        view.addSubview(inactiveView)
         
         NSLayoutConstraint.activate([
             nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),

@@ -23,3 +23,14 @@ extension String {
         return dateFormatter.date(from: self)
     }
 }
+
+extension String.StringInterpolation {
+    mutating func appendInterpolation(_ value: Int) {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+
+        if let result = formatter.string(from: value as NSNumber) {
+            appendLiteral(result)
+        }
+    }
+}

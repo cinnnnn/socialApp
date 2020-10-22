@@ -11,7 +11,7 @@ import FirebaseAuth
 
 class InterestsSelectionViewController: UIViewController {
     
-    var currentUser: User
+    var userID: String
     let headerLabel = UILabel(labelText: MLabels.interestSelectionHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
     let subHeaderLabel = UILabel(labelText: MLabels.interestSelectionSubHeader.rawValue,
                                  textFont: .avenirRegular(size: 16),
@@ -20,9 +20,9 @@ class InterestsSelectionViewController: UIViewController {
     var aboutTextView = UITextView(text: "", isEditable: true)
     weak var navigationDelegate: NavigationDelegate?
     
-    init(currentUser: User, navigationDelegate: NavigationDelegate?){
+    init(userID: String, navigationDelegate: NavigationDelegate?){
         self.navigationDelegate = navigationDelegate
-        self.currentUser = currentUser
+        self.userID = userID
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -59,13 +59,13 @@ class InterestsSelectionViewController: UIViewController {
 
 extension InterestsSelectionViewController {
     @objc private func saveButtonTapped() {
-        guard let id = currentUser.email else { fatalError("Can't get user email")}
+        
+        let id = userID
         FirestoreService.shared.saveAdvert(id: id, advert: aboutTextView.text ?? "") {[weak self] result in
             switch result {
             
             case .success():
-                guard let user = self?.currentUser else { fatalError("Can't get user") }
-                let nextViewController = EditPhotoViewController(currentUser: user, isFirstSetup: true, navigationDelegate: self?.navigationDelegate)
+                let nextViewController = EditPhotoViewController(userID: id, isFirstSetup: true, navigationDelegate: self?.navigationDelegate)
                 self?.navigationController?.pushViewController(nextViewController, animated: true)
             case .failure(let error):
                 fatalError(error.localizedDescription)

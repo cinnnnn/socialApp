@@ -12,7 +12,7 @@ import FirebaseAuth
 
 class DateOfBirthViewController: UIViewController {
     
-    var currentUser: User
+    var userID: String
     
     let headerLabel = UILabel(labelText: MLabels.dateOfBirthHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
     let subHeaderLabel = UILabel(labelText: MLabels.dateOfBirthSubHeader.rawValue, textFont: .avenirRegular(size: 16), textColor: .myGrayColor(), linesCount: 0)
@@ -20,9 +20,9 @@ class DateOfBirthViewController: UIViewController {
     let datePicker = UIDatePicker(datePickerMode: .date)
     weak var navigationDelegate: NavigationDelegate?
     
-    init(currentUser: User, navigationDelegate: NavigationDelegate? ){
+    init(userID: String, navigationDelegate: NavigationDelegate? ){
         self.navigationDelegate = navigationDelegate
-        self.currentUser = currentUser
+        self.userID = userID
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -55,13 +55,12 @@ extension  DateOfBirthViewController {
     
     @objc private func saveButtonTapped() {
         
-        guard let id = currentUser.email else { fatalError("Can't get user email")}
+        let id = userID
         FirestoreService.shared.saveFirstSetupDateOfBirth(id: id, dateOfBirth: datePicker.date) {[weak self] result in
             switch result {
             
             case .success():
-                guard let user = self?.currentUser else { fatalError("Can't get user") }
-                let nextViewController = GenderSelectionViewController(currentUser: user, navigationDelegate: self?.navigationDelegate)
+                let nextViewController = GenderSelectionViewController(userID: id, navigationDelegate: self?.navigationDelegate)
                 self?.navigationController?.pushViewController(nextViewController, animated: true)
             case .failure(let error):
                 fatalError(error.localizedDescription)

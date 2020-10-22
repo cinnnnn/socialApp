@@ -27,16 +27,20 @@ class LocationService: UIResponder {
         case .authorizedWhenInUse:
             locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
             locationManager.requestLocation()
+            complition(true)
             
         case .notDetermined:
+            complition(true)
             locationManager.requestWhenInUseAuthorization()
         case .restricted:
+            complition(true)
             locationManager.requestWhenInUseAuthorization()
         case .denied:
             //show alert and go to system settings to change geo settings for app
             complition(false)
          default:
             locationManager.requestWhenInUseAuthorization()
+            complition(true)
         }
     }
     

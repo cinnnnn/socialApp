@@ -26,7 +26,7 @@ class FirestoreService {
     //MARK:  saveBaseProfile
     func saveBaseProfile(id: String,
                          email: String,
-                         complition: @escaping (Result<Void, Error>) -> Void){
+                         complition: @escaping (Result<String, Error>) -> Void){
         
         //save base user info to cloud FireStore
         usersReference.document(id).setData([MPeople.CodingKeys.senderId.rawValue : id,
@@ -36,7 +36,7 @@ class FirestoreService {
                                                 if let error = error {
                                                     fatalError(error.localizedDescription)
                                                 } else {
-                                                    complition(.success(()))
+                                                    complition(.success(id))
                                                 }
                                             })
     }
@@ -62,13 +62,21 @@ class FirestoreService {
                                   lookingFor: String,
                                   sexuality: String,
                                   complition: @escaping (Result<Void, Error>) -> Void) {
+        
+        let searchSettings = [MSearchSettings.distance.rawValue : MSearchSettings.distance.defaultValue,
+                              MSearchSettings.minRange.rawValue : MSearchSettings.minRange.defaultValue,
+                              MSearchSettings.maxRange.rawValue : MSearchSettings.maxRange.defaultValue,
+                              MSearchSettings.currentLocation.rawValue : MSearchSettings.currentLocation.defaultValue]
+        
         usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : userName,
                                              MPeople.CodingKeys.gender.rawValue : gender,
                                              MPeople.CodingKeys.lookingFor.rawValue : lookingFor,
                                              MPeople.CodingKeys.sexuality.rawValue : sexuality,
                                              MPeople.CodingKeys.isActive.rawValue: true,
                                              MPeople.CodingKeys.isAdmin.rawValue: false,
-                                             MPeople.CodingKeys.isBlocked.rawValue: false],
+                                             MPeople.CodingKeys.isBlocked.rawValue: false,
+                                             MPeople.CodingKeys.goldMember.rawValue: false,
+                                             MPeople.CodingKeys.searchSettings.rawValue: searchSettings],
                                             merge: true,
                                             completion: { (error) in
                                                 if let error = error {
@@ -125,6 +133,38 @@ class FirestoreService {
         }
     }
     
+    //MARK:  saveSearchSettings
+    func saveSearchSettings(id: String,
+                            distance: Int,
+                            minRange: Int,
+                            maxRange: Int,
+                            currentLocation: Int,
+                            lookingFor: String,
+                            complition: @escaping (Result<Void, Error>) -> Void) {
+        
+        let searchSettings = [MSearchSettings.distance.rawValue : distance,
+                              MSearchSettings.minRange.rawValue : minRange,
+                              MSearchSettings.maxRange.rawValue : maxRange,
+                              MSearchSettings.currentLocation.rawValue : currentLocation]
+        
+        usersReference.document(id).setData([MPeople.CodingKeys.lookingFor.rawValue : lookingFor,
+                                             MPeople.CodingKeys.searchSettings.rawValue: searchSettings],
+                                            merge: true,
+                                            completion: { (error) in
+                                                if let error = error {
+                                                    complition(.failure(error))
+                                                } else {
+                                                    //save people to UserDefaults for save request to server
+                                                    if var people = UserDefaultsService.shared.getMpeople() {
+                                                        people.lookingFor = lookingFor
+                                                        people.searchSettings = searchSettings
+                                                        UserDefaultsService.shared.saveMpeople(people: people)
+                                                    }
+                                                    complition(.success(()))
+                                                }
+                                            })
+    }
+    
     
     //MARK: saveLocation
     func saveLocation(userID: String, longitude: Double, latitude: Double, complition: @escaping (Result<[String:Double],Error>) -> Void) {
@@ -161,11 +201,8 @@ class FirestoreService {
     }
     
     //MARK: getLikePeople
-    func getLikeDislikePeople(forUser: User, collection: String, complition: @escaping(Result<[MChat], Error>)->Void) {
-        guard let userID = forUser.email else {
-            complition(.failure(AuthError.missingEmail))
-            return
-        }
+    func getLikeDislikePeople(userID: String, collection: String, complition: @escaping(Result<[MChat], Error>)->Void) {
+      
         let reference = usersReference.document(userID).collection(collection)
         var chats: [MChat] = []
         reference.getDocuments { snapshot, error in
@@ -223,53 +260,53 @@ class FirestoreService {
     }
     
     //MARK: likePeople
-    func likePeople(currentUser: MPeople, likeUser: MPeople,message: String = "", requestChats: [MChat], complition: @escaping(Result<MChat,Error>)->Void) {
+    func likePeople(currentPeople: MPeople, likePeople: MPeople,message: String = "", requestChats: [MChat], complition: @escaping(Result<MChat,Error>)->Void) {
         
-        let collectionLikeUserRequestRef = db.collection([MFirestorCollection.users.rawValue, likeUser.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
-        let collectionLikeUserAcceptChatRef = db.collection([MFirestorCollection.users.rawValue, likeUser.senderId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
-        let collectionLikeUserLikeRef = db.collection([MFirestorCollection.users.rawValue, likeUser.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
-        let collectionCurrentRequestRef = db.collection([MFirestorCollection.users.rawValue, currentUser.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
-        let collectionCurrentLikeRef = db.collection([MFirestorCollection.users.rawValue, currentUser.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
-        let collectionCurrentAcceptChatRef = db.collection([MFirestorCollection.users.rawValue, currentUser.senderId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        let collectionLikeUserRequestRef = db.collection([MFirestorCollection.users.rawValue, likePeople.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
+        let collectionLikeUserAcceptChatRef = db.collection([MFirestorCollection.users.rawValue, likePeople.senderId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        let collectionLikeUserLikeRef = db.collection([MFirestorCollection.users.rawValue, likePeople.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        let collectionCurrentRequestRef = db.collection([MFirestorCollection.users.rawValue, currentPeople.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
+        let collectionCurrentLikeRef = db.collection([MFirestorCollection.users.rawValue, currentPeople.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        let collectionCurrentAcceptChatRef = db.collection([MFirestorCollection.users.rawValue, currentPeople.senderId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
         
-        let likeUserMessagesRef = collectionLikeUserAcceptChatRef.document(currentUser.senderId).collection(MFirestorCollection.messages.rawValue)
+        let likeUserMessagesRef = collectionLikeUserAcceptChatRef.document(currentPeople.senderId).collection(MFirestorCollection.messages.rawValue)
         let likeUserMessageRef = likeUserMessagesRef.document(MFirestorCollection.requestMessage.rawValue)
-        let currentUserMessagesRef = collectionCurrentAcceptChatRef.document(currentUser.senderId).collection(MFirestorCollection.messages.rawValue)
+        let currentUserMessagesRef = collectionCurrentAcceptChatRef.document(currentPeople.senderId).collection(MFirestorCollection.messages.rawValue)
         let currentUserMessageRef = currentUserMessagesRef.document(MFirestorCollection.requestMessage.rawValue)
         
-        let requestChat = MChat(friendUserName: currentUser.displayName,
-                                friendUserImageString: currentUser.userImage,
+        let requestChat = MChat(friendUserName: currentPeople.displayName,
+                                friendUserImageString: currentPeople.userImage,
                                 lastMessage: message,
                                 isNewChat: true,
-                                friendId: currentUser.senderId,
+                                friendId: currentPeople.senderId,
                                 date: Date())
-         let likeChat = MChat(friendUserName: likeUser.displayName,
-                             friendUserImageString: likeUser.userImage,
+         let likeChat = MChat(friendUserName: likePeople.displayName,
+                             friendUserImageString: likePeople.userImage,
                              lastMessage: message,
                              isNewChat: true,
-                             friendId: likeUser.senderId,
+                             friendId: likePeople.senderId,
                              date: Date())
         
         //if like people contains in current user request chat than add to newChat and delete in request
         let requestChatFromLikeUser = requestChats.filter { requestChat -> Bool in
-            requestChat.containsID(ID: likeUser.senderId)
+            requestChat.containsID(ID: likePeople.senderId)
         }
         //if have requst chat from like user
         if let chat = requestChatFromLikeUser.first {
             print("request chats \(requestChats)")
             //delete from request
-            collectionCurrentRequestRef.document(likeUser.senderId).delete()
-            print(collectionCurrentRequestRef.document(likeUser.senderId).path)
+            collectionCurrentRequestRef.document(likePeople.senderId).delete()
+            print(collectionCurrentRequestRef.document(likePeople.senderId).path)
             //delete from like in like user collection
-            collectionLikeUserLikeRef.document(currentUser.senderId).delete()
-            print(collectionLikeUserLikeRef.document(currentUser.senderId).path)
-            let sender = MSender(senderId: currentUser.senderId, displayName: currentUser.displayName)
+            collectionLikeUserLikeRef.document(currentPeople.senderId).delete()
+            print(collectionLikeUserLikeRef.document(currentPeople.senderId).path)
+            let sender = MSender(senderId: currentPeople.senderId, displayName: currentPeople.displayName)
             var requestMessage = MMessage(user: sender,
                                           content: chat.lastMessage,
                                           id: currentUserMessageRef.path)
             
             do { //add to acceptChat to current user
-                try collectionCurrentAcceptChatRef.document(likeUser.senderId).setData(from: likeChat)
+                try collectionCurrentAcceptChatRef.document(likePeople.senderId).setData(from: likeChat)
                 //if with first message, create message in collection
                 if !chat.lastMessage.isEmpty {
                     currentUserMessageRef.setData(requestMessage.reprasentation)
@@ -277,7 +314,7 @@ class FirestoreService {
         } catch { complition(.failure(error))}
         
         do { //add to acceptChat to like user
-            try collectionLikeUserAcceptChatRef.document(currentUser.senderId).setData(from: requestChat)
+            try collectionLikeUserAcceptChatRef.document(currentPeople.senderId).setData(from: requestChat)
             if !chat.lastMessage.isEmpty {
                 //change message id to likeUser path
                 requestMessage.messageId = likeUserMessageRef.path
@@ -289,9 +326,9 @@ class FirestoreService {
         //if don't have request from like user
     } else {
     do { //add chat request for like user
-    try collectionLikeUserRequestRef.document(currentUser.senderId).setData(from: requestChat, merge: true)
+    try collectionLikeUserRequestRef.document(currentPeople.senderId).setData(from: requestChat, merge: true)
     //add chat to like collection current user
-    try collectionCurrentLikeRef.document(likeUser.senderId).setData(from:likeChat)
+    try collectionCurrentLikeRef.document(likePeople.senderId).setData(from:likeChat)
     complition(.success(likeChat))
     } catch { complition(.failure(error)) }
     }
@@ -299,17 +336,17 @@ class FirestoreService {
 
 
     //MARK: dislikePeople
-    func dislikePeople(currentUser: MPeople, forUser: MPeople, complition: @escaping(Result<MChat,Error>)->Void) {
-        let collectionDislikeRef = usersReference.document(currentUser.senderId).collection(MFirestorCollection.dislikePeople.rawValue)
+    func dislikePeople(currentPeople: MPeople, forPeople: MPeople, complition: @escaping(Result<MChat,Error>)->Void) {
+        let collectionDislikeRef = usersReference.document(currentPeople.senderId).collection(MFirestorCollection.dislikePeople.rawValue)
         
-        let dislikeChat = MChat(friendUserName: forUser.displayName,
-                                    friendUserImageString: forUser.userImage,
+        let dislikeChat = MChat(friendUserName: forPeople.displayName,
+                                    friendUserImageString: forPeople.userImage,
                                     lastMessage: "",
                                     isNewChat: true,
-                                    friendId: forUser.senderId,
+                                    friendId: forPeople.senderId,
                                     date: Date())
         do {
-            try collectionDislikeRef.document(forUser.senderId).setData(from: dislikeChat)
+            try collectionDislikeRef.document(forPeople.senderId).setData(from: dislikeChat)
             complition(.success(dislikeChat))
         } catch { complition(.failure(error))}
     }

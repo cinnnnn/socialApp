@@ -30,6 +30,7 @@ struct MPeople: Hashable, Codable, SenderType {
     var isActive: Bool
     var reportList: [MReports:String]
     
+    var searchSettings: [String: Int]
     var location: CLLocationCoordinate2D
     var distance: Int
     
@@ -49,6 +50,7 @@ struct MPeople: Hashable, Codable, SenderType {
          isAdmin: Bool,
          isActive: Bool,
          reportList: [MReports:String],
+         searchSettings: [String: Int],
          location: CLLocationCoordinate2D,
          distance: Int) {
         
@@ -68,6 +70,7 @@ struct MPeople: Hashable, Codable, SenderType {
         self.isAdmin = isAdmin
         self.isActive = isActive
         self.reportList = reportList
+        self.searchSettings = searchSettings
         self.location = location
         self.distance = distance
     }
@@ -97,6 +100,30 @@ struct MPeople: Hashable, Codable, SenderType {
             self.location = clLocation
         } else { self.location = CLLocationCoordinate2D(latitude: MLocation.latitude.defaultValue,
                                                         longitude: MLocation.longitude.defaultValue)}
+        
+        if let searchSettings = documet["searchSettings"] as? [String: Int] {
+            if let distance = searchSettings[MSearchSettings.distance.rawValue] {
+                self.searchSettings = [MSearchSettings.distance.rawValue : distance]
+            } else { self.searchSettings = [MSearchSettings.distance.rawValue : MSearchSettings.distance.defaultValue] }
+            
+            if let minRange = searchSettings[MSearchSettings.minRange.rawValue] {
+                self.searchSettings[MSearchSettings.minRange.rawValue] = minRange
+            } else { self.searchSettings[MSearchSettings.minRange.rawValue] = MSearchSettings.minRange.defaultValue }
+            
+            if let maxRange = searchSettings[MSearchSettings.maxRange.rawValue] {
+                self.searchSettings[MSearchSettings.maxRange.rawValue] = maxRange
+            } else { self.searchSettings[MSearchSettings.maxRange.rawValue] = MSearchSettings.maxRange.defaultValue }
+            
+            if let currentLocation = searchSettings[MSearchSettings.currentLocation.rawValue] {
+                self.searchSettings[MSearchSettings.currentLocation.rawValue] = currentLocation
+            } else { self.searchSettings[MSearchSettings.currentLocation.rawValue] = MSearchSettings.currentLocation.defaultValue }
+        } else {
+            self.searchSettings = [MSearchSettings.distance.rawValue : MSearchSettings.distance.defaultValue,
+                                   MSearchSettings.minRange.rawValue : MSearchSettings.minRange.defaultValue,
+                                   MSearchSettings.maxRange.rawValue : MSearchSettings.maxRange.defaultValue,
+                                   MSearchSettings.currentLocation.rawValue : MSearchSettings.currentLocation.defaultValue]
+        }
+        
         guard let mail = documet["mail"] as? String else { return nil }
         guard let senderId = documet["senderId"] as? String else { return nil }
         
@@ -131,6 +158,30 @@ struct MPeople: Hashable, Codable, SenderType {
             self.location = clLocation
         } else { self.location = CLLocationCoordinate2D(latitude: MLocation.latitude.defaultValue,
                                                         longitude: MLocation.longitude.defaultValue)}
+        
+        if let searchSettings = documet["searchSettings"] as? [String: Int] {
+            if let distance = searchSettings[MSearchSettings.distance.rawValue] {
+                self.searchSettings = [MSearchSettings.distance.rawValue : distance]
+            } else { self.searchSettings = [MSearchSettings.distance.rawValue : MSearchSettings.distance.defaultValue] }
+            
+            if let minRange = searchSettings[MSearchSettings.minRange.rawValue] {
+                self.searchSettings[MSearchSettings.minRange.rawValue] = minRange
+            } else { self.searchSettings[MSearchSettings.minRange.rawValue] = MSearchSettings.minRange.defaultValue }
+            
+            if let maxRange = searchSettings[MSearchSettings.maxRange.rawValue] {
+                self.searchSettings[MSearchSettings.maxRange.rawValue] = maxRange
+            } else { self.searchSettings[MSearchSettings.maxRange.rawValue] = MSearchSettings.maxRange.defaultValue }
+            
+            if let currentLocation = searchSettings[MSearchSettings.currentLocation.rawValue] {
+                self.searchSettings[MSearchSettings.currentLocation.rawValue] = currentLocation
+            } else { self.searchSettings[MSearchSettings.currentLocation.rawValue] = MSearchSettings.currentLocation.defaultValue }
+        } else {
+            self.searchSettings = [MSearchSettings.distance.rawValue : MSearchSettings.distance.defaultValue,
+                                   MSearchSettings.minRange.rawValue : MSearchSettings.minRange.defaultValue,
+                                   MSearchSettings.maxRange.rawValue : MSearchSettings.maxRange.defaultValue,
+                                   MSearchSettings.currentLocation.rawValue : MSearchSettings.currentLocation.defaultValue]
+        }
+        
         guard let mail = documet["mail"] as? String else { return nil }
         guard let senderId = documet["senderId"] as? String else { return nil }
         
@@ -158,6 +209,7 @@ struct MPeople: Hashable, Codable, SenderType {
         guard let reportList = data["reportList"] as? [MReports:String] else { return nil }
         guard let location = data["location"] as? CLLocationCoordinate2D else { return nil }
         guard let mail = data["mail"] as? String else { return nil }
+        guard let searchSettings = data["searchSettings"] as? [String: Int] else { return nil}
         guard let senderId = data["senderId"] as? String else { return nil }
         guard let distance = data["distance"] as? Int else { return nil }
         
@@ -177,6 +229,7 @@ struct MPeople: Hashable, Codable, SenderType {
         self.reportList = reportList
         self.location = location
         self.mail = mail
+        self.searchSettings = searchSettings
         self.senderId = senderId
         self.distance = distance
     }
@@ -198,6 +251,7 @@ struct MPeople: Hashable, Codable, SenderType {
         case reportList
         case location
         case mail
+        case searchSettings
         case senderId
         case distance
     }

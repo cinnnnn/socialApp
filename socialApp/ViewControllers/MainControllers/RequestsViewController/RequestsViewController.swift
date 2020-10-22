@@ -25,12 +25,11 @@ class RequestsViewController: UIViewController {
     }
     
     var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
-    var currentUser: User
-    var currentPeople: MPeople?
+    var currentPeople: MPeople
     
-    init(currentUser: User, requestDelegate: RequestChatDelegate) {
+    init(currentPeople: MPeople, requestDelegate: RequestChatDelegate) {
         self.requestDelegate = requestDelegate
-        self.currentUser = currentUser
+        self.currentPeople = currentPeople
         
         super.init(nibName: nil, bundle: nil)
         setupListeners()
@@ -56,12 +55,17 @@ class RequestsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        currentPeople = UserDefaultsService.shared.getMpeople()
+        updateCurrentPeople()
     }
     
     private func setupListeners() {
         ListenerService.shared.addRequestChatsListener(delegate: self)
+    }
+    
+    private func updateCurrentPeople() {
+        if let people = UserDefaultsService.shared.getMpeople() {
+            currentPeople = people
+        }
     }
     
     //MARK:  setupCollectionView
@@ -212,7 +216,6 @@ extension RequestsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let section = SectionsRequests(rawValue: indexPath.section) else { fatalError("Unknow section index")}
         guard let item = dataSource?.itemIdentifier(for: indexPath) else { fatalError(DataSourceError.unknownChatIdentificator.localizedDescription)}
-        guard let currentPeople = currentPeople else { fatalError("Current people is nil")}
         
         switch section {
         case .requestChats:
