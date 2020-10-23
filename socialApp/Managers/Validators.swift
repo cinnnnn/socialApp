@@ -98,6 +98,10 @@ class Validators {
         guard !acceptChatsDelegate.acceptChats.contains(where: { chat -> Bool in
             chat.friendId == newPeople.senderId
         }) else { return false }
+        //check distance to people
+        let distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: newPeople)
+        let range = currentPeople.searchSettings[MSearchSettings.distance.rawValue] ?? MSearchSettings.distance.defaultValue
+        guard distance <= range else { return false }
         //if newPeople is looking for
         guard newPeople.gender == MLookingFor.compareGender(gender: currentPeople.lookingFor) else { return false }
         //if age range correct
@@ -112,7 +116,4 @@ class Validators {
         let textCheck  = NSPredicate(format:"SELF MATCHES %@", regEx)
         return textCheck.evaluate(with: text)
     }
-    
-    
-    
 }

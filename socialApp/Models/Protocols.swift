@@ -60,7 +60,7 @@ protocol PeopleListenerDelegate: class {
     var acceptChatsDelegate: AcceptChatsDelegate? { get set }
     var peopleNearby: [MPeople] { get set }
     func updateData()
-    func reloadData(reloadSection: Bool)
+    func reloadData(reloadSection: Bool, animating: Bool)
     func reloadListner()
 }
 

@@ -10,7 +10,7 @@ import UIKit
 
 class EditSearchSettingsViewController: UIViewController, UpdatePeopleListnerDelegate {
     
-    let currentPeople: MPeople
+    var currentPeople: MPeople
     weak var peopleListnerDelegate: PeopleListenerDelegate?
     let distanceLabel = UILabel(labelText: "Максимальное расстояние поиска:",
                                 textFont: .avenirRegular(size: 16),
@@ -95,7 +95,16 @@ class EditSearchSettingsViewController: UIViewController, UpdatePeopleListnerDel
         let distance = Int(distanceSlider.value)
         guard let lookingFor = lookingForButton.infoLabel.text else { return }
         guard let newLocation = currentLocationButton.infoLabel.text else { return }
-        let currentLocation = MVirtualLocation.index(location: newLocation)
+        let currentLocationIndex = MVirtualLocation.index(location: newLocation)
+        guard let virtualLocation = MVirtualLocation(rawValue: currentLocationIndex) else { return }
+        
+        LocationService.shared.getCoordinate(userID: currentPeople.senderId,
+                                             virtualLocation: virtualLocation) { [weak self] isAllowPermission in
+           //if permission deniy, open settings
+            if !isAllowPermission {
+                self?.openSettingsAlert()
+            }
+        }
         
         let minRange = ageRangePicker.selectedRow(inComponent: 0) + MSearchSettings.minRange.defaultValue
         let maxRange = ageRangePicker.selectedRow(inComponent: 1) + MSearchSettings.minRange.defaultValue + 1
@@ -103,7 +112,7 @@ class EditSearchSettingsViewController: UIViewController, UpdatePeopleListnerDel
                                                    distance: distance,
                                                    minRange: minRange,
                                                    maxRange: maxRange,
-                                                   currentLocation: currentLocation,
+                                                   currentLocation: currentLocationIndex,
                                                    lookingFor: lookingFor) {[weak self] result in
             switch result {
             
@@ -239,3 +248,20 @@ extension EditSearchSettingsViewController {
         ])
     }
 }
+
+extension EditSearchSettingsViewController {
+        //MARK: openSettingsAlert
+        private func openSettingsAlert(){
+            let alert = UIAlertController(title: "Нет доступа к геопозиции",
+                                          text: "Необходимо разрешить доступ к геопозиции в настройках",
+                                          buttonText: "Перейти в настройки",
+                                          style: .alert) {
+                guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+                
+                if UIApplication.shared.canOpenURL(settingsUrl) {
+                    UIApplication.shared.open(settingsUrl)
+                }
+            }
+            present(alert, animated: true, completion: nil)
+        }
+    }

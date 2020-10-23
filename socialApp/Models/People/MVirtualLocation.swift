@@ -36,10 +36,10 @@ enum MVirtualLocation: Int, CaseIterable {
         switch self {
         
         case .current:
-            return  [MLocation.longitude.rawValue: MLocation.longitude.defaultValue,
-                     MLocation.latitude.rawValue: MLocation.latitude.defaultValue]
+            return  [MLocation.latitude.rawValue: MLocation.latitude.defaultValue,
+                     MLocation.longitude.rawValue: MLocation.longitude.defaultValue]
         case .forPlay:
-            return [MLocation.longitude.rawValue: 37.559796, MLocation.latitude.rawValue: 55.730898]
+            return [ MLocation.latitude.rawValue: 81.785171, MLocation.longitude.rawValue: 58.837104 ]
         }
     }
 }

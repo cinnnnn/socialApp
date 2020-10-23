@@ -62,7 +62,6 @@ class ListenerService {
                            peopleDelegate: PeopleListenerDelegate,
                            likeDislikeDelegate: LikeDislikeDelegate,
                            newActiveChatsDelegate: AcceptChatsDelegate) {
-        print(currentPeople.lookingFor)
         peopleListner = userRef.addSnapshotListener { snapshot, error in
             guard let snapshot = snapshot else { return }
             
@@ -87,7 +86,7 @@ class ListenerService {
                                                                    isUpdate: false) {
                         print(#function)
                         peopleDelegate.peopleNearby.append(user)
-                        peopleDelegate.reloadData(reloadSection: false)
+                        peopleDelegate.reloadData(reloadSection: false, animating: true)
                     }
                 case .modified:
                     //index in peopleNearby array
@@ -102,7 +101,7 @@ class ListenerService {
                             peopleDelegate.updateData()
                         } else { //if user change to deactive or block profile, delete him from collection
                             peopleDelegate.peopleNearby.remove(at: index)
-                            peopleDelegate.reloadData(reloadSection: false)
+                            peopleDelegate.reloadData(reloadSection: false, animating: true)
                         }
                         //if user change to active profile, or unblock, add him to collection
                     } else if Validators.shared.listnerAddPeopleValidator(currentPeople: currentPeople,
@@ -112,13 +111,13 @@ class ListenerService {
                                                                           acceptChatsDelegate: newActiveChatsDelegate,
                                                                           isUpdate: false) {
                         peopleDelegate.peopleNearby.append(user)
-                        peopleDelegate.reloadData(reloadSection: false)
+                        peopleDelegate.reloadData(reloadSection: false, animating: true)
                     }
                     
                 case .removed:
                     guard let index = people.firstIndex(of: user) else { return }
                     peopleDelegate.peopleNearby.remove(at: index)
-                    peopleDelegate.reloadData(reloadSection: false)
+                    peopleDelegate.reloadData(reloadSection: false, animating: true)
                 }
             }
         }

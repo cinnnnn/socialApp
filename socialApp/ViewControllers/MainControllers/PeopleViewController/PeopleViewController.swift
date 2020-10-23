@@ -197,7 +197,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     }
     
     //MARK:  reloadData
-    func reloadData(reloadSection: Bool = false) {
+    func reloadData(reloadSection: Bool = false, animating: Bool = true) {
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
@@ -205,7 +205,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         if reloadSection {
             snapshot.reloadSections([.main])
         }
-        dataSource?.apply(snapshot, animatingDifferences: true)
+        dataSource?.apply(snapshot, animatingDifferences: animating)
         
         setDataForVisibleCell(needUpdateHeader: true)
     }
@@ -215,9 +215,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         peopleNearby = []
         guard let updatePeople = UserDefaultsService.shared.getMpeople() else { return }
         currentPeople = updatePeople
-        print(currentPeople)
-        print(sortedPeopleNearby)
-        reloadData(reloadSection: true)
+        reloadData(reloadSection: false, animating: false)
         removeListeners()
         setupListeners(forPeople: updatePeople)
     }

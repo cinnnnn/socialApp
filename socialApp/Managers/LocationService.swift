@@ -17,30 +17,54 @@ class LocationService: UIResponder {
     private var userID: String?
     private let locationManager = CLLocationManager()
     
-    func getCoordinate(userID: String, complition:@escaping(Bool)->Void) {
-        self.userID = userID
-        locationManager.delegate = self
-       
-        let authorizationStatus = CLLocationManager.authorizationStatus()
+    func getCoordinate(userID: String, virtualLocation: MVirtualLocation, complition:@escaping(Bool)->Void) {
         
-        switch authorizationStatus {
-        case .authorizedWhenInUse:
-            locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-            locationManager.requestLocation()
-            complition(true)
+        switch virtualLocation {
+        //get current location and save
+        case .current:
+            self.userID = userID
+            locationManager.delegate = self
             
-        case .notDetermined:
-            complition(true)
-            locationManager.requestWhenInUseAuthorization()
-        case .restricted:
-            complition(true)
-            locationManager.requestWhenInUseAuthorization()
-        case .denied:
-            //show alert and go to system settings to change geo settings for app
-            complition(false)
-         default:
-            locationManager.requestWhenInUseAuthorization()
-            complition(true)
+            let authorizationStatus = CLLocationManager.authorizationStatus()
+            
+            switch authorizationStatus {
+            case .authorizedWhenInUse:
+                locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+                locationManager.requestLocation()
+                complition(true)
+                
+            case .notDetermined:
+                complition(true)
+                locationManager.requestWhenInUseAuthorization()
+            case .restricted:
+                complition(true)
+                locationManager.requestWhenInUseAuthorization()
+            case .denied:
+                //show alert and go to system settings to change geo settings for app
+                complition(false)
+            default:
+                locationManager.requestWhenInUseAuthorization()
+                complition(true)
+            }
+            //save default location forPlay
+        case .forPlay:
+            guard let forPlayLongitude = MVirtualLocation.forPlay.defaultValue[MLocation.longitude.rawValue] else { return }
+            guard let forPlayLatitude = MVirtualLocation.forPlay.defaultValue[MLocation.latitude.rawValue] else { return }
+            let location = CLLocationCoordinate2D(latitude: forPlayLatitude, longitude: forPlayLongitude)
+            FirestoreService.shared.saveLocation(userID: userID,
+                                                 longitude: location.longitude,
+                                                 latitude: location.latitude) { result in
+                switch result {
+                
+                case .success(_):
+                    var people = UserDefaultsService.shared.getMpeople()
+                    people?.location = location
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                    complition(true)
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                }
+            }
         }
     }
     
@@ -49,7 +73,7 @@ class LocationService: UIResponder {
         switch authorizationStatus {
         case .denied:
             return true
-         default:
+        default:
             return false
         }
     }
@@ -95,16 +119,16 @@ extension LocationService: CLLocationManagerDelegate {
         case .authorizedWhenInUse:
             locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
             locationManager.requestLocation()
-         default:
+        default:
             locationManager.requestWhenInUseAuthorization()
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-       
+        
         let authorizationStatus = CLLocationManager.authorizationStatus()
-            if (authorizationStatus == CLAuthorizationStatus.notDetermined) {
-                locationManager.requestWhenInUseAuthorization()
-            }
+        if (authorizationStatus == CLAuthorizationStatus.notDetermined) {
+            locationManager.requestWhenInUseAuthorization()
+        }
     }
 }

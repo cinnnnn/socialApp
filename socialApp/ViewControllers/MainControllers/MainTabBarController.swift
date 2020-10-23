@@ -39,21 +39,13 @@ extension MainTabBarController {
             switch result {
             case .success(let mPeople):
                 UserDefaultsService.shared.saveMpeople(people: mPeople)
-                if let location = MVirtualLocation(rawValue: mPeople.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
-                    switch location{
-                    case .current:
-                        //get current location
-                        LocationService.shared.getCoordinate(userID: mPeople.senderId) {[weak self] isAllowPermission in
-                            //if geo is denied, show alert and go to settings
-                            if isAllowPermission == false {
-                                
-                                self?.openSettingsAlert()
-                            }
-                            //close loading animation
-                            self?.setupControllers(currentPeople: mPeople)
+                if let virtualLocation = MVirtualLocation(rawValue: mPeople.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
+                    LocationService.shared.getCoordinate(userID: mPeople.senderId,
+                                                         virtualLocation: virtualLocation) {[weak self] isAllowPermission in
+                        //if geo is denied, show alert and go to settings
+                        if !isAllowPermission {
+                            self?.openSettingsAlert()
                         }
-                    default:
-                        //people use custom location, just reloadData
                         //close loading animation
                         self?.setupControllers(currentPeople: mPeople)
                     }
@@ -78,6 +70,7 @@ extension MainTabBarController {
         }
     }
 }
+
 //MARK: setupControllers
 extension MainTabBarController {
     private func setupControllers(currentPeople: MPeople){
@@ -134,7 +127,6 @@ extension MainTabBarController {
         return navController
     }
 }
-
 
 extension MainTabBarController {
     //MARK: openSettingsAlert

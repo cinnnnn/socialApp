@@ -74,8 +74,17 @@ class PeopleCell: UICollectionViewCell,PeopleConfigurationCell {
         advertLabel.attributedText = NSMutableAttributedString(string: value.advert, attributes: attributes)
         
         infoLabel.text = [value.dateOfBirth.getStringAge(), value.gender, value.sexuality].joined(separator: ", ").lowercased()
-        distanceLabel.text = "\(value.distance) км от тебя"
         
+        let locationIndex = value.searchSettings[MSearchSettings.currentLocation.rawValue] ?? MSearchSettings.currentLocation.defaultValue
+        let virtualLocation = MVirtualLocation(rawValue: locationIndex)
+        switch virtualLocation {
+        case .current:
+            distanceLabel.text = "\(value.distance) км от тебя"
+        case .forPlay:
+            distanceLabel.text = MVirtualLocation.forPlay.description()
+        default:
+            distanceLabel.text = "\(value.distance) км от тебя"
+        }
     }
     
     override func prepareForReuse() {
