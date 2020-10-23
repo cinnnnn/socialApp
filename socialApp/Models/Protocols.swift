@@ -36,6 +36,10 @@ protocol LikeDislikeTappedDelegate: class {
     func dislikePeople(people: MPeople)
 }
 
+protocol UpdatePeopleListnerDelegate: class {
+    var peopleListnerDelegate: PeopleListenerDelegate? { get set }
+}
+
 //MARK: data fetch protocol
 protocol LikeDislikeDelegate: class {
     var likePeople: [MChat] { get set }
@@ -52,9 +56,12 @@ protocol AcceptChatsDelegate: class {
 
 //MARK: listner Firestore protocols
 protocol PeopleListenerDelegate: class {
+    var requestDelegate: RequestChatDelegate? { get set }
+    var acceptChatsDelegate: AcceptChatsDelegate? { get set }
     var peopleNearby: [MPeople] { get set }
     func updateData()
     func reloadData(reloadSection: Bool)
+    func reloadListner()
 }
 
 protocol LikeDislikeListenerDelegate: class {

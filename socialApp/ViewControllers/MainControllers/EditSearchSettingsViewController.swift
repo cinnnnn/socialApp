@@ -8,9 +8,10 @@
 
 import UIKit
 
-class EditSearchSettingsViewController: UIViewController {
+class EditSearchSettingsViewController: UIViewController, UpdatePeopleListnerDelegate {
     
     let currentPeople: MPeople
+    weak var peopleListnerDelegate: PeopleListenerDelegate?
     let distanceLabel = UILabel(labelText: "Максимальное расстояние поиска:",
                                 textFont: .avenirRegular(size: 16),
                                 textColor: .myGrayColor())
@@ -23,10 +24,10 @@ class EditSearchSettingsViewController: UIViewController {
     let currentLocationButton = OneLineButton(header: "Локация", info: "")
     
     
-    init(currentPeople: MPeople) {
+    init(currentPeople: MPeople, peopleListnerDelegate: PeopleListenerDelegate?) {
+        self.peopleListnerDelegate = peopleListnerDelegate
         self.currentPeople = currentPeople
         super.init(nibName: nil, bundle: nil)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -103,11 +104,12 @@ class EditSearchSettingsViewController: UIViewController {
                                                    minRange: minRange,
                                                    maxRange: maxRange,
                                                    currentLocation: currentLocation,
-                                                   lookingFor: lookingFor) { result in
+                                                   lookingFor: lookingFor) {[weak self] result in
             switch result {
             
             case .success():
-                return
+                //reload peopleListner
+                self?.peopleListnerDelegate?.reloadListner()
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

@@ -14,7 +14,7 @@ import FirebaseFirestore
 class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislikeDelegate {
     
     weak var requestDelegate: RequestChatDelegate?
-    weak var newActiveChatsDelegate: AcceptChatsDelegate?
+    weak var acceptChatsDelegate: AcceptChatsDelegate?
     var currentPeople: MPeople
     var likePeople: [MChat] = []
     var dislikePeople: [MChat] = []
@@ -30,9 +30,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     
-    init(currentPeople: MPeople, requestDelegate: RequestChatDelegate, newActiveChatsDelegate: AcceptChatsDelegate) {
-        self.newActiveChatsDelegate = newActiveChatsDelegate
-        self.requestDelegate = requestDelegate
+    init(currentPeople: MPeople) {
         self.currentPeople = currentPeople
         
         super.init(nibName: nil, bundle: nil)
@@ -52,7 +50,8 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         setupDiffebleDataSource()
         setup()
         setupConstraints()
-        setupListeners()
+        setupListeners(forPeople: currentPeople)
+        print(#function)
     }
     
     //MARK:  setup VC
@@ -62,7 +61,8 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     }
     
     //MARK:  setupListeners
-    private func setupListeners() {
+    private func setupListeners(forPeople: MPeople) {
+
         //first get list of like people
         let userID = currentPeople.senderId
         FirestoreService.shared.getLikeDislikePeople(userID: userID,
@@ -79,10 +79,13 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
                     case .success(let dislikeChat):
                         self?.dislikePeople = dislikeChat
                         //after get like and dislike setup people nearby listener
+                        
                         guard let peopleDelegate = self else { return }
                         guard let likeDislikeDelegate = self else { return }
-                        guard let newActiveChatsDelegate = self?.newActiveChatsDelegate else { return }
-                        ListenerService.shared.addPeopleListener(peopleDelegate: peopleDelegate,
+                        guard let newActiveChatsDelegate = self?.acceptChatsDelegate else { return }
+                        
+                        ListenerService.shared.addPeopleListener(currentPeople: forPeople,
+                                                                 peopleDelegate: peopleDelegate,
                                                                  likeDislikeDelegate: likeDislikeDelegate,
                                                                  newActiveChatsDelegate: newActiveChatsDelegate)
                     case .failure(let error):
@@ -206,6 +209,18 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         
         setDataForVisibleCell(needUpdateHeader: true)
     }
+    
+    //MARK: reloadListner
+    func reloadListner() {
+        peopleNearby = []
+        guard let updatePeople = UserDefaultsService.shared.getMpeople() else { return }
+        currentPeople = updatePeople
+        print(currentPeople)
+        print(sortedPeopleNearby)
+        reloadData(reloadSection: true)
+        removeListeners()
+        setupListeners(forPeople: updatePeople)
+    }
 }
 
 //MARK:setDataForVisibleCell
@@ -257,9 +272,6 @@ extension PeopleViewController {
 //MARK:  UICollectionViewDelegate
 extension PeopleViewController: UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-    }
 }
 
 //MARK: likeDislikeDelegate
@@ -277,6 +289,7 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
                 self?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == likeChat.friendId
                 }
+                //for correct reload last element, need reload section
                 self?.reloadData(reloadSection: self?.peopleNearby.count == 1 ? true : false)
                 
             case .failure(let error):
@@ -296,6 +309,7 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
                 self?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == dislikeChat.friendId
                 }
+                //for correct reload last element, need reload section
                 self?.reloadData(reloadSection: self?.peopleNearby.count == 1 ? true : false)
                 
             case .failure(let error):

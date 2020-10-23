@@ -11,24 +11,21 @@ import SwiftUI
 import FirebaseAuth
 
 
-class RequestsViewController: UIViewController {
+class RequestsViewController: UIViewController, RequestChatDelegate {
     
     var collectionView: UICollectionView?
-    weak var requestDelegate: RequestChatDelegate?
     var requestChats: [MChat] = []
     var sortedRequestChats: [MChat] {
         let request = requestChats.sorted {
             $0.date > $1.date
         }
-        requestDelegate?.requestChats = request
         return request
     }
     
     var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
     var currentPeople: MPeople
     
-    init(currentPeople: MPeople, requestDelegate: RequestChatDelegate) {
-        self.requestDelegate = requestDelegate
+    init(currentPeople: MPeople) {
         self.currentPeople = currentPeople
         
         super.init(nibName: nil, bundle: nil)
@@ -59,7 +56,7 @@ class RequestsViewController: UIViewController {
     }
     
     private func setupListeners() {
-        ListenerService.shared.addRequestChatsListener(delegate: self)
+        ListenerService.shared.addRequestChatsListener(requestChatDelegate: self)
     }
     
     private func updateCurrentPeople() {

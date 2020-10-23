@@ -73,7 +73,7 @@ class PeopleCell: UICollectionViewCell,PeopleConfigurationCell {
         
         advertLabel.attributedText = NSMutableAttributedString(string: value.advert, attributes: attributes)
         
-        infoLabel.text = [value.dateOfBirth.getAge(), value.gender, value.sexuality].joined(separator: ", ").lowercased()
+        infoLabel.text = [value.dateOfBirth.getStringAge(), value.gender, value.sexuality].joined(separator: ", ").lowercased()
         distanceLabel.text = "\(value.distance) км от тебя"
         
     }

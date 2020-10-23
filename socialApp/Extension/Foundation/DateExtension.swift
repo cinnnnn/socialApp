@@ -31,10 +31,16 @@ extension Date {
         return dateFormatter.string(from: self)
     }
     
-    func getAge() -> String {
+    func getStringAge() -> String {
         let calendar = Calendar.current
         let age = calendar.dateComponents([.year], from: self, to: Date())
         return String(age.year!)
+    }
+    
+    func getAge() -> Int {
+        let calendar = Calendar.current
+        let age = calendar.dateComponents([.year], from: self, to: Date())
+        return age.year!
     }
     
     func getPeriod() -> String {

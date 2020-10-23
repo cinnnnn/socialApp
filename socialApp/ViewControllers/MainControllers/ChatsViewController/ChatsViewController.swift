@@ -11,24 +11,21 @@ import SwiftUI
 import FirebaseAuth
 
 
-class ChatsViewController: UIViewController {
+class ChatsViewController: UIViewController, AcceptChatsDelegate {
     
     var acceptChats: [MChat] = []
     var sortedAcceptChats: [MChat] {
         let accept = acceptChats.sorted {
             $0.date > $1.date
         }
-        acceptChatsDelegate?.acceptChats = accept
         return accept
     }
     
     var collectionView: UICollectionView?
-    weak var acceptChatsDelegate: AcceptChatsDelegate?
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
     var currentPeople: MPeople
     
-    init(currentPeople: MPeople, acceptChatsDelegate: AcceptChatsDelegate) {
-        self.acceptChatsDelegate = acceptChatsDelegate
+    init(currentPeople: MPeople) {
         self.currentPeople = currentPeople
         super.init(nibName: nil, bundle: nil)
         setupListeners()
@@ -61,7 +58,7 @@ class ChatsViewController: UIViewController {
     }
     
     private func setupListeners() {
-        ListenerService.shared.addAcceptChatsListener(delegate: self)
+        ListenerService.shared.addAcceptChatsListener(acceptChatDelegate: self)
     }
     
     private func updateCurrentPeople() {

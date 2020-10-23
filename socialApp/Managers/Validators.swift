@@ -70,7 +70,7 @@ class Validators {
     
     //ListnerAddValidator
     
-    func listnerAddPeopleValidator(currentUser: User,
+    func listnerAddPeopleValidator(currentPeople: MPeople,
                                    newPeople: MPeople,
                                    peopleDelegate: PeopleListenerDelegate,
                                    likeDislikeDelegate: LikeDislikeDelegate,
@@ -78,10 +78,10 @@ class Validators {
                                    isUpdate: Bool) -> Bool {
         if !isUpdate {
         //if not present in people array
-        guard !peopleDelegate.peopleNearby.contains(newPeople) else { return false}
+        guard !peopleDelegate.peopleNearby.contains(newPeople) else { return false }
         }
         //if not current user
-        guard newPeople.senderId != currentUser.email else { return false}
+        guard newPeople.senderId != currentPeople.senderId else { return false }
         //if not inActive user
         guard newPeople.isActive == true else { return false}
         //if not blocked user
@@ -89,16 +89,22 @@ class Validators {
         //if not already like
         guard !likeDislikeDelegate.likePeople.contains(where: { chat -> Bool in
             chat.friendId == newPeople.senderId
-        }) else { return false}
+        }) else { return false }
         //if not already dislike
         guard !likeDislikeDelegate.dislikePeople.contains(where: { chat -> Bool in
             chat.friendId == newPeople.senderId
-        }) else { return false}
+        }) else { return false }
         //if not in new chat
         guard !acceptChatsDelegate.acceptChats.contains(where: { chat -> Bool in
             chat.friendId == newPeople.senderId
-        }) else { return false}
-    
+        }) else { return false }
+        //if newPeople is looking for
+        guard newPeople.gender == MLookingFor.compareGender(gender: currentPeople.lookingFor) else { return false }
+        //if age range correct
+        let age = newPeople.dateOfBirth.getAge()
+        let minRange = currentPeople.searchSettings[MSearchSettings.minRange.rawValue] ?? MSearchSettings.minRange.defaultValue
+        let maxRange = currentPeople.searchSettings[MSearchSettings.maxRange.rawValue] ?? MSearchSettings.maxRange.defaultValue
+        guard age >= minRange && age <= maxRange else { return false }
         return true
     }
     

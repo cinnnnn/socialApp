@@ -9,13 +9,13 @@
 import UIKit
 import FirebaseAuth
 
-class MainTabBarController: UITabBarController, RequestChatDelegate, AcceptChatsDelegate {
+class MainTabBarController: UITabBarController{
     
     var userID: String
-    var currentPeople: MPeople?
-    var peopleVC: UIViewController?
-    var requestChats: [MChat] = []
-    var acceptChats: [MChat] = []
+    
+    weak var acceptChatsDelegate: AcceptChatsDelegate?
+    weak var requestChatsDelegate: RequestChatDelegate?
+    weak var peopleListenerDelegate: PeopleListenerDelegate?
     
     init(userID: String) {
         self.userID = userID
@@ -30,7 +30,6 @@ class MainTabBarController: UITabBarController, RequestChatDelegate, AcceptChats
         super.viewDidLoad()
         getPeopleData()
     }
-    
 }
 
 extension MainTabBarController {
@@ -39,7 +38,6 @@ extension MainTabBarController {
         FirestoreService.shared.getUserData(userID: userID) {[weak self] result in
             switch result {
             case .success(let mPeople):
-                self?.currentPeople = mPeople
                 UserDefaultsService.shared.saveMpeople(people: mPeople)
                 if let location = MVirtualLocation(rawValue: mPeople.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
                     switch location{
@@ -80,7 +78,7 @@ extension MainTabBarController {
         }
     }
 }
-
+//MARK: setupControllers
 extension MainTabBarController {
     private func setupControllers(currentPeople: MPeople){
         tabBar.shadowImage = UIImage()
@@ -89,15 +87,19 @@ extension MainTabBarController {
         tabBar.unselectedItemTintColor = .myLightGrayColor()
         tabBar.tintColor = .myLabelColor()
         
-        tabBar.layer.cornerRadius = 40
-        tabBar.clipsToBounds = true
-        
         let profileVC = ProfileViewController(currentPeople: currentPeople)
-        let peopleVC = PeopleViewController(currentPeople: currentPeople, requestDelegate: self, newActiveChatsDelegate: self)
-        let requsetsVC = RequestsViewController(currentPeople: currentPeople, requestDelegate: self)
-        let chatsVC = ChatsViewController(currentPeople: currentPeople, acceptChatsDelegate: self)
+        let peopleVC = PeopleViewController(currentPeople: currentPeople)
+        let requsetsVC = RequestsViewController(currentPeople: currentPeople)
+        let chatsVC = ChatsViewController(currentPeople: currentPeople)
         
-        tabBar.tintColor = .myLabelColor()
+        peopleListenerDelegate = peopleVC
+        requestChatsDelegate = requsetsVC
+        acceptChatsDelegate = chatsVC
+        
+        //setup delegate
+        peopleVC.requestDelegate = requestChatsDelegate
+        peopleVC.acceptChatsDelegate = acceptChatsDelegate
+        profileVC.peopleListnerDelegate = peopleListenerDelegate
         
         viewControllers = [
             generateNavigationController(rootViewController: peopleVC, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
@@ -132,6 +134,7 @@ extension MainTabBarController {
         return navController
     }
 }
+
 
 extension MainTabBarController {
     //MARK: openSettingsAlert

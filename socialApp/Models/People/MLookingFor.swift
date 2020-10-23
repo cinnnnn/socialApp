@@ -33,6 +33,19 @@ enum MLookingFor: String, CaseIterable {
     case twoSpirit = "Two-spirit"
     case other = "Other"
 }
+extension MLookingFor {
+    //for correct compare female = woman, male = man
+    static func compareGender(gender: String) -> String {
+        switch gender {
+        case self.female.rawValue:
+            return MGender.woman.rawValue
+        case self.male.rawValue:
+            return MGender.man.rawValue
+        default:
+            return gender
+        }
+    }
+}
 
 extension MLookingFor {
     static let description = "Укажи свой гендер"

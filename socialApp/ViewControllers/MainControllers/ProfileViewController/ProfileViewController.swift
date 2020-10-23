@@ -9,8 +9,9 @@
 import UIKit
 import FirebaseAuth
 
-class ProfileViewController:UIViewController {
+class ProfileViewController:UIViewController, UpdatePeopleListnerDelegate {
     
+    weak var peopleListnerDelegate: PeopleListenerDelegate?
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MSettings>?
     private var currentPeople: MPeople
@@ -74,11 +75,11 @@ extension ProfileViewController {
     
     private func setupProfileSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .fractionalHeight(1))
+                                              heightDimension: .estimated(100))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                               heightDimension: .fractionalHeight(0.5))
+                                               heightDimension: .estimated(100))
         
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
@@ -199,8 +200,8 @@ extension ProfileViewController: UICollectionViewDelegate {
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .setupSearch:
-                
-                let vc = EditSearchSettingsViewController(currentPeople: currentPeople)
+                let vc = EditSearchSettingsViewController(currentPeople: currentPeople,
+                                                          peopleListnerDelegate: peopleListnerDelegate)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 

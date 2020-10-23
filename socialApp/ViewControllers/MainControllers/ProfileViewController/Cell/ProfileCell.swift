@@ -43,7 +43,7 @@ class ProfileCell: UICollectionViewCell {
             profileImage.sd_setImage(with: url, completed: nil)
         }
         profileName.text = people.displayName
-        info.text = [people.dateOfBirth.getAge(), people.gender, people.sexuality].joined(separator: ", ").lowercased()
+        info.text = [people.dateOfBirth.getStringAge(), people.gender, people.sexuality].joined(separator: ", ").lowercased()
         
     }
     
@@ -82,7 +82,8 @@ class ProfileCell: UICollectionViewCell {
             
             info.topAnchor.constraint(equalTo: profileName.bottomAnchor, constant: 0),
             info.leadingAnchor.constraint(equalTo: profileName.leadingAnchor),
-            info.trailingAnchor.constraint(equalTo: profileName.trailingAnchor)
+            info.trailingAnchor.constraint(equalTo: profileName.trailingAnchor),
+            info.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25)
         ])
     }
 }
