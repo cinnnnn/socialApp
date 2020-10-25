@@ -22,12 +22,14 @@ class ChatViewController: MessagesViewController  {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
-        messageInputBar.delegate = self
+        messagesCollectionView.messageCellDelegate = self
         
+        messageInputBar.delegate = self
+
         configure()
         configureInputBar()
         configureCameraBar()
-        
+    
         addMessageListener()
     }
     
@@ -36,7 +38,6 @@ class ChatViewController: MessagesViewController  {
         self.chat = chat
         
         super.init(nibName: nil, bundle: nil)
-        title = chat.friendUserName
     }
     
     required init?(coder: NSCoder) {
@@ -49,15 +50,19 @@ class ChatViewController: MessagesViewController  {
     
     //MARK: configure
     private func configure() {
+     
+        messagesCollectionView.insetsLayoutMarginsFromSafeArea = true
+        
+        showMessageTimestampOnSwipeLeft = true
+        
         //delete avatar from message
         if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {
             layout.textMessageSizeCalculator.outgoingAvatarSize = .zero
             layout.textMessageSizeCalculator.incomingAvatarSize = .zero
         }
-        
-        navigationItem.largeTitleDisplayMode = .never
-        navigationController?.navigationBar.tintColor = .myLabelColor()
-        navigationController?.navigationBar.isHidden = false
+    
+        navigationItem.titleView = ChatTitleStackView(chat: chat)
+
     }
     
     //MARK: addMessageListener
@@ -157,6 +162,7 @@ class ChatViewController: MessagesViewController  {
       //  messageInputBar.leftStackView.
         messageInputBar.setStackViewItems([cameraItem], forStack: .left, animated: false)
     }
+    
 }
 
 extension ChatViewController {
@@ -231,6 +237,25 @@ extension ChatViewController: MessagesDataSource {
         messages.count
     }
     
+    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        let currentTime = MessageKitDateFormatter.shared.string(from: message.sentDate)
+        let attributedDateString = NSAttributedString(string: currentTime,
+                                                      attributes: [NSAttributedString.Key.font : UIFont.avenirRegular(size: 12),
+                                                                   NSAttributedString.Key.foregroundColor : UIColor.myGrayColor()])
+        
+        if indexPath.section == 0 {
+            return attributedDateString
+        } else {
+            //if from previus message more then 10 minets show time
+            let timeDifference = messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
+            print(timeDifference)
+            if timeDifference > 1 {
+                return attributedDateString
+            } else {
+                return nil
+            }
+        }
+    }
 }
 
 //MARK: MessagesLayoutDelegate
@@ -240,6 +265,20 @@ extension ChatViewController: MessagesLayoutDelegate {
         CGSize(width: 0, height: 9)
     }
     
+    func cellTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        if indexPath.section == 0 {
+            return 30
+        } else {
+            //if from previus message more then 10 minets set new height
+            let timeDifference = messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
+            print(timeDifference)
+            if timeDifference > 1 {
+                return 30
+            } else {
+                return 0
+            }
+        }
+    }
 }
 
 //MARK: MessagesDisplayDelegate
@@ -249,7 +288,7 @@ extension ChatViewController: MessagesDisplayDelegate {
     }
     
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        isFromCurrentSender(message: message) ? .myWhiteColor() : .label
+        isFromCurrentSender(message: message) ? .myWhiteColor() : .myLabelColor()
     }
     
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
@@ -273,6 +312,21 @@ extension ChatViewController: MessagesDisplayDelegate {
     }
 }
 
+//
+extension ChatViewController: MessageCellDelegate {
+    func didTapBackground(in cell: MessageCollectionViewCell) {
+        messageInputBar.inputTextView.resignFirstResponder()
+    }
+    
+    func didTapMessage(in cell: MessageCollectionViewCell) {
+        messageInputBar.inputTextView.resignFirstResponder()
+    }
+    
+    func didTapImage(in cell: MessageCollectionViewCell) {
+        messageInputBar.inputTextView.resignFirstResponder()
+    }
+}
+
 //MARK: InputBarAccessoryViewDelegate
 extension ChatViewController: InputBarAccessoryViewDelegate {
     
@@ -292,6 +346,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             }
         }
         inputBar.inputTextView.text = ""
-        
     }
 }
+
+

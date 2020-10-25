@@ -76,10 +76,8 @@ class ChatsViewController: UIViewController, AcceptChatsDelegate {
         
     
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .myWhiteColor()
         collectionView.delegate = self
-        collectionView.alwaysBounceVertical = false
-        
         
         view.addSubview(collectionView)
         
@@ -90,21 +88,19 @@ class ChatsViewController: UIViewController, AcceptChatsDelegate {
     
     //MARK:  setupNavigationController
     private func setupNavigationController(){
-        
         navigationItem.largeTitleDisplayMode = .never
         navigationItem.backButtonTitle = ""
         
         let searchController = UISearchController(searchResultsController: nil)
-        
-        searchController.hidesNavigationBarDuringPresentation = false
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.delegate = self
+        searchController.searchBar.backgroundColor = .myWhiteColor()
+        searchController.searchBar.barTintColor = .myWhiteColor()
         searchController.searchBar.placeholder = "Поиск по людям"
         searchController.searchBar.searchTextField.borderStyle = .roundedRect
         
         navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = true
-    
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
 }
 
@@ -123,6 +119,7 @@ extension ChatsViewController {
                 return self.createWaitingChatsLayout()
             }
         }
+    
         return layout
     }
     
@@ -151,10 +148,7 @@ extension ChatsViewController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: grupSize,
                                                        subitems: [item])
         
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                      leading: 0,
-                                                      bottom: 0,
-                                                      trailing: 0)
+
         
         let section = NSCollectionLayoutSection(group: group)
         
@@ -164,6 +158,7 @@ extension ChatsViewController {
         }
         
         section.interGroupSpacing = 15
+        
         section.contentInsets = NSDirectionalEdgeInsets(top: 15,
                                                         leading: 20,
                                                         bottom: 0,
@@ -255,7 +250,7 @@ extension ChatsViewController {
             guard let itemsCount = self.dataSource?.snapshot().numberOfItems(inSection: section) else { fatalError("Unknow items count in section")}
             
             reuseSectionHeader.configure(text: section.description(count: itemsCount),
-                                         font: .avenirBold(size: 12),
+                                         font: .avenirRegular(size: 12),
                                          textColor: UIColor.myGrayColor())
             
             return reuseSectionHeader

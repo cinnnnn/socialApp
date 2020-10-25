@@ -15,7 +15,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     
     let frendImage = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
     let frendName = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
-    let lastMessage = UILabel(labelText: "", textFont: .avenirBold(size: 14), textColor: .myGrayColor(), linesCount: 2)
+    let lastMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .myLabelColor(), linesCount: 2)
     let dateOfMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
     var dateOfLastMessage: Date?
     var displayLink: CADisplayLink?
@@ -94,7 +94,7 @@ extension ActiveChatsCell {
             frendImage.bottomAnchor.constraint(equalTo: bottomAnchor),
             frendImage.widthAnchor.constraint(equalTo: frendImage.heightAnchor),
             
-            frendName.leadingAnchor.constraint(equalTo: frendImage.trailingAnchor, constant: 10),
+            frendName.leadingAnchor.constraint(equalTo: frendImage.trailingAnchor, constant: 15),
             frendName.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             
             lastMessage.leadingAnchor.constraint(equalTo: frendName.leadingAnchor),
@@ -105,7 +105,6 @@ extension ActiveChatsCell {
             dateOfMessage.topAnchor.constraint(equalTo: frendName.topAnchor)
         ])
     }
-    
 }
 
 

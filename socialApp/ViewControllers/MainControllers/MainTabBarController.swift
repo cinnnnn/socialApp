@@ -106,7 +106,8 @@ extension MainTabBarController {
     private func generateNavigationController(rootViewController: UIViewController,
                                               image: UIImage,
                                               title: String?,
-                                              isHidden: Bool = false) -> UIViewController {
+                                              isHidden: Bool = false,
+                                              withoutBackImage: Bool = false) -> UIViewController {
         
         let navController = UINavigationController(rootViewController: rootViewController)
         navController.tabBarItem.imageInsets = UIEdgeInsets(top: 15, left: 0, bottom: 0, right: 0)
@@ -115,12 +116,15 @@ extension MainTabBarController {
         navController.navigationItem.title = title
         navController.navigationBar.isHidden = isHidden
         
+        if withoutBackImage {
+            navController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        }
+        
         navController.navigationBar.prefersLargeTitles = true
-        navController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navController.navigationBar.isTranslucent = true
         navController.navigationBar.shadowImage = UIImage()
         navController.navigationBar.tintColor = .myLabelColor()
         navController.navigationBar.barTintColor = .myWhiteColor()
-        navController.navigationBar.isTranslucent = true
         navController.navigationBar.backgroundColor = .myWhiteColor()
         navController.navigationBar.titleTextAttributes = [.font: UIFont.avenirBold(size: 16)]
         navController.navigationBar.largeTitleTextAttributes = [.font: UIFont.avenirBold(size: 38)]
