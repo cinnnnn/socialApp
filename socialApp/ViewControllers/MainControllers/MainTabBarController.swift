@@ -12,6 +12,7 @@ import FirebaseAuth
 class MainTabBarController: UITabBarController{
     
     var userID: String
+    let loadingView = LoadingView(isHidden: false)
     
     weak var acceptChatsDelegate: AcceptChatsDelegate?
     weak var requestChatsDelegate: RequestChatDelegate?
@@ -28,7 +29,18 @@ class MainTabBarController: UITabBarController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupConstraints()
+        loadIsComplite(isComplite: false)
         getPeopleData()
+    }
+    
+    private func loadIsComplite(isComplite: Bool) {
+        tabBar.isHidden = !isComplite
+        if isComplite {
+            loadingView.hide()
+        } else {
+            loadingView.show()
+        }
     }
 }
 
@@ -46,7 +58,7 @@ extension MainTabBarController {
                         if !isAllowPermission {
                             self?.openSettingsAlert()
                         }
-                        //close loading animation
+                        self?.loadIsComplite(isComplite: true)
                         self?.setupControllers(currentPeople: mPeople)
                     }
                 }
@@ -146,5 +158,20 @@ extension MainTabBarController {
             }
         }
         present(alert, animated: true, completion: nil)
+    }
+}
+
+extension MainTabBarController {
+    private func setupConstraints() {
+        view.addSubview(loadingView)
+        
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingView.topAnchor.constraint(equalTo: view.topAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }

@@ -25,7 +25,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         }
     }
     var visibleIndexPath: IndexPath?
-    var nameLabel = UILabel(labelText: "", textFont: .avenirBold(size: 38))
+    var infoLabel = UILabel(labelText: "", textFont: .avenirBold(size: 38))
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
@@ -143,7 +143,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         
         section.visibleItemsInvalidationHandler = { [weak self] visibleItems, point, environment in
 
-            self?.setDataForVisibleCell()
             self?.setUIForVisivleCells(items: visibleItems, point: point, enviroment: environment)
             
         }
@@ -193,7 +192,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         dataSource?.apply(snapshot, animatingDifferences: true)
         
-        setDataForVisibleCell(needUpdateHeader: true)
+        checkPeopleNearbyIsEmpty()
     }
     
     //MARK:  reloadData
@@ -207,7 +206,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         }
         dataSource?.apply(snapshot, animatingDifferences: animating)
         
-        setDataForVisibleCell(needUpdateHeader: true)
+        checkPeopleNearbyIsEmpty()
     }
     
     //MARK: reloadListner
@@ -223,24 +222,13 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
 
 //MARK:setDataForVisibleCell
 extension PeopleViewController {
-    private func setDataForVisibleCell(needUpdateHeader: Bool = false)  {
+    private func checkPeopleNearbyIsEmpty()  {
         //if nearby people empty set 
-        if sortedPeopleNearby.count == 0 {
-            nameLabel.text = MLabels.emptyNearbyPeople.rawValue
-        }
-        var visibleRect = CGRect()
-        visibleRect.origin = collectionView.contentOffset
-        visibleRect.size = collectionView.bounds.size
-        
-        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
-        
-        //set only when index path change to new value
-        if visibleIndexPath != indexPath || needUpdateHeader {
-            guard let item = dataSource?.itemIdentifier(for: indexPath) else { return }
-            nameLabel.text = item.displayName
-            //set new current visible indexPath
-            visibleIndexPath = indexPath
+        if sortedPeopleNearby.isEmpty {
+            infoLabel.isHidden = false
+            infoLabel.text = MLabels.emptyNearbyPeople.rawValue
+        } else {
+            infoLabel.isHidden = true
         }
     }
 }
@@ -321,19 +309,19 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
 extension PeopleViewController {
     private func setupConstraints() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        infoLabel.translatesAutoresizingMaskIntoConstraints = false
        
         view.addSubview(collectionView)
-        view.addSubview(nameLabel)
+        view.addSubview(infoLabel)
         
         NSLayoutConstraint.activate([
-            nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            nameLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            infoLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            infoLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            infoLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }

@@ -61,8 +61,13 @@ class ChatViewController: MessagesViewController  {
             layout.textMessageSizeCalculator.incomingAvatarSize = .zero
         }
     
-        navigationItem.titleView = ChatTitleStackView(chat: chat)
-
+        navigationItem.titleView = ChatTitleStackView(chat: chat, target: self, profileTappedAction: #selector(profileTapped))
+        
+        //add screenshot observer
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(screenshotTaken),
+                                               name: UIApplication.userDidTakeScreenshotNotification,
+                                               object: nil)
     }
     
     //MARK: addMessageListener
@@ -156,10 +161,8 @@ class ChatViewController: MessagesViewController  {
         cameraItem.contentEdgeInsets = UIEdgeInsets(top: 3, left: 5, bottom: 5, right: 5)
         cameraItem.addTarget(self, action: #selector(tuppedSendImage), for: .primaryActionTriggered)
         
-        
         messageInputBar.leftStackView.axis = .horizontal
         messageInputBar.setLeftStackViewWidthConstant(to: 36, animated: false)
-      //  messageInputBar.leftStackView.
         messageInputBar.setStackViewItems([cameraItem], forStack: .left, animated: false)
     }
     
@@ -177,6 +180,31 @@ extension ChatViewController {
                 self?.present(picker, animated: true, completion: nil)
             }
         }
+    }
+    
+    //MARK: screenshotTaken
+    @objc private func screenshotTaken(){
+        let sender = MSender.getAdminSender()
+        let text = user.displayName + MLabels.screenshotTaken.rawValue
+        let message = MMessage(user: sender, content: text)
+        
+        FirestoreService.shared.sendMessage(chat: chat,
+                                            currentUser: user,
+                                            message: message) { result in
+            switch result {
+            
+            case .success():
+                break
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
+    //MARK: profileTapped
+    @objc private func profileTapped() {
+        let profileVC = PeopleInfoViewController(peopleID: chat.friendId)
+        navigationController?.pushViewController(profileVC, animated: true)
     }
 }
 
@@ -256,6 +284,15 @@ extension ChatViewController: MessagesDataSource {
             }
         }
     }
+    func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        if message.sender.senderId == MAdmin.id.rawValue {
+            return NSAttributedString(string: message.sender.displayName,
+                                      attributes: [NSAttributedString.Key.font : UIFont.avenirRegular(size: 12),
+                                                   NSAttributedString.Key.foregroundColor : UIColor.myGrayColor()])
+        } else {
+            return nil
+        }
+    }
 }
 
 //MARK: MessagesLayoutDelegate
@@ -271,7 +308,6 @@ extension ChatViewController: MessagesLayoutDelegate {
         } else {
             //if from previus message more then 10 minets set new height
             let timeDifference = messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
-            print(timeDifference)
             if timeDifference > 1 {
                 return 30
             } else {
@@ -279,12 +315,27 @@ extension ChatViewController: MessagesLayoutDelegate {
             }
         }
     }
+    
+    func messageTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        if message.sender.senderId == MAdmin.id.rawValue {
+            return 20
+        } else {
+            return 0
+        }
+    }
 }
 
 //MARK: MessagesDisplayDelegate
 extension ChatViewController: MessagesDisplayDelegate {
     func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        isFromCurrentSender(message: message) ? .myMessageColor() : .friendMessageColor()
+        if isFromCurrentSender(message: message) {
+            return .myMessageColor()
+        } else if message.sender.senderId == MAdmin.id.rawValue {
+            return .adminMessageColor()
+        } else {
+            return .friendMessageColor()
+        }
+        
     }
     
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {

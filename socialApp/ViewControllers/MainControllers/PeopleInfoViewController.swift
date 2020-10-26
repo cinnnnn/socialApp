@@ -1,0 +1,78 @@
+//
+//  PeopleInfoViewController.swift
+//  socialApp
+//
+//  Created by Денис Щиголев on 26.10.2020.
+//  Copyright © 2020 Денис Щиголев. All rights reserved.
+//
+
+import UIKit
+
+class PeopleInfoViewController: UIViewController {
+    
+    var peopleID: String
+    let peopleView = PeopleView()
+    let loadingView = LoadingView(isHidden: false)
+    
+    init(peopleID: String) {
+        self.peopleID = peopleID
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setup()
+        configure()
+        setupConstraints()
+    }
+    
+    func setup() {
+        view.backgroundColor = .myWhiteColor()
+        peopleView.likeButton.isHidden = true
+        peopleView.dislikeButton.isHidden = true
+    }
+    
+    func configure() {
+        FirestoreService.shared.getUserData(userID: peopleID, complition: { [weak self] result in
+            switch result {
+            
+            case .success(let mPeople):
+                self?.peopleView.configure(with: mPeople) {
+                    self?.loadingView.hide()
+                }
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        })
+    }
+}
+
+//MARK: setupConstraints
+extension PeopleInfoViewController {
+    private func setupConstraints() {
+        
+        view.addSubview(peopleView)
+        view.addSubview(loadingView)
+        
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        peopleView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            loadingView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            peopleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            peopleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            peopleView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            peopleView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+}
+
+

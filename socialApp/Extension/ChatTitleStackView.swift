@@ -15,12 +15,13 @@ class ChatTitleStackView: UIStackView {
     let peopleImageButton = UIButton()
     let peopleNameLabel = UILabel(labelText: "Test", textFont: .avenirBold(size: 16), textColor: .myLabelColor())
     
-    convenience init(chat: MChat) {
+    convenience init(chat: MChat, target: Any, profileTappedAction: Selector) {
         self.init()
         self.chat = chat
         
         setup()
         setupConstraints()
+        peopleImageButton.addTarget(target, action: profileTappedAction, for: .touchUpInside)
     }
     
     private func setup() {
@@ -32,8 +33,6 @@ class ChatTitleStackView: UIStackView {
         peopleImageButton.clipsToBounds = true
         
         peopleNameLabel.text = chat.friendUserName
-        
-        peopleImageButton.addTarget(self, action: #selector(peopleImageTapped), for: .touchUpInside)
     }
     
     override func layoutSubviews() {
@@ -41,12 +40,6 @@ class ChatTitleStackView: UIStackView {
         
         peopleImageButton.layer.cornerRadius = peopleImageButton.frame.height / 2
         peopleImageButton.layer.frame.size.width = peopleImageButton.frame.height
-    }
-}
-
-extension ChatTitleStackView {
-    @objc private func peopleImageTapped() {
-        print(#function)
     }
 }
 

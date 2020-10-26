@@ -56,6 +56,10 @@ extension UIColor {
         dynamicColor(light: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1), dark: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1))
     }
     
+    static func adminMessageColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 0.8, green: 0.6705882353, blue: 0.8470588235, alpha: 1), dark: #colorLiteral(red: 0.8, green: 0.6705882353, blue: 0.8470588235, alpha: 1))
+    }
+    
     static func myFirstButtonColor() -> UIColor {
         dynamicColor(light: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), dark: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))
     }

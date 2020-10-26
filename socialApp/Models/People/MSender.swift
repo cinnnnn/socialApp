@@ -9,7 +9,16 @@
 import MessageKit
 
 struct MSender: SenderType {
-    var senderId: String
+    private let adminID = "Admin"
+    private let adminDisplayName = "Команда Chi"
     
+    var senderId: String
     var displayName: String
+}
+
+extension MSender {
+    
+    static func getAdminSender() -> MSender {
+        MSender(senderId: MAdmin.id.rawValue, displayName: MAdmin.displayName.rawValue)
+    }
 }
