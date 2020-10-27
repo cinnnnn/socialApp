@@ -114,6 +114,7 @@ class ChatViewController: MessagesViewController  {
     //MARK: sendImage
     private func sendImage(image: UIImage) {
         StorageService.shared.uploadChatImage(image: image,
+                                              currentUserID: user.senderId,
                                               chat: chat) {[weak self] result in
             switch result {
             
@@ -225,9 +226,17 @@ extension ChatViewController {
     
     //MARK: profileTapped
     @objc private func chatSettingsTapped() {
-        isInitiateDeleteChat = true
-        navigationController?.popToRootViewController(animated: true)
-        FirestoreService.shared.deleteChat(currentUserID: user.senderId, chat: chat)
+        
+        FirestoreService.shared.unMatch(currentUser: user, chat: chat) {[weak self] result in
+            switch result {
+            
+            case .success(_):
+                self?.isInitiateDeleteChat = true
+                self?.navigationController?.popToRootViewController(animated: true)
+            case .failure(_):
+                return
+            }
+        }
     }
 }
 
@@ -265,7 +274,7 @@ extension ChatViewController {
         let alert = UIAlertController(title: nil,
                                       message: text,
                                       preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "Ок",
+        let okAction = UIAlertAction(title: "Понятно",
                                      style: .default) {[weak self] _ in
             
             self?.navigationController?.popToRootViewController(animated: true)

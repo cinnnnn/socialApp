@@ -95,15 +95,14 @@ class StorageService {
     }
     
     //MARK:  uploadChatImage
-    func uploadChatImage(image: UIImage, chat: MChat, complition: @escaping (Result<URL,Error>)->Void ) {
+    func uploadChatImage(image: UIImage, currentUserID: String, chat: MChat, complition: @escaping (Result<URL,Error>)->Void ) {
         
         let scaleImage = image.resizeImage(targetLength: 400)
         guard let compressionImageData = scaleImage.jpegData(compressionQuality: 0.4) else { fatalError("cant compress image")}
         
-        guard let userID = currentUserID else { fatalError("Cant get current user ID for upload image")}
         let currentDate = Date().getFormattedDate(format: "yyyy-MM-dd HH:mm:ss")
-        let currentChatRef = chatsImageRef.child([userID,chat.friendId].joined(separator: "_"))
-        let currentImageRef = currentChatRef.child([currentDate,"chatImage",userID].joined(separator: "_"))
+        let currentChatRef = chatsImageRef.child([currentUserID, chat.friendId].joined(separator: "_"))
+        let currentImageRef = currentChatRef.child([currentDate, "chatImage", currentUserID].joined(separator: "_"))
         
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
@@ -121,6 +120,34 @@ class StorageService {
                 }
                 complition(.success(downloadURL))
             })
+        }
+    }
+    
+    //MARK: deleteChatImages
+    func deleteChatImages(currentUserID: String, friendUserID: String) {
+        let currentChatRef = chatsImageRef.child([currentUserID, friendUserID].joined(separator: "_"))
+        let userChatRef = chatsImageRef.child([friendUserID, currentUserID].joined(separator: "_"))
+        
+        currentChatRef.listAll { result, error in
+            guard error == nil else { return }
+            for photo in result.items {
+                photo.delete { error in
+                    if let error = error {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
+        }
+        
+        userChatRef.listAll { result, error in
+            guard error == nil else { return }
+            for photo in result.items {
+                photo.delete { error in
+                    if let error = error {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
         }
     }
 }

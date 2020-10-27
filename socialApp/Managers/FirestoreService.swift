@@ -435,15 +435,15 @@ class FirestoreService {
         }
     }
     //MARK: deleteChat
-    func deleteChat(currentUserID: String, chat: MChat) {
+    func deleteChat(currentUserID: String, friendID: String) {
         
         //delete acceptChats
         let refChat = db.document([MFirestorCollection.users.rawValue,
                                    currentUserID,
                                    MFirestorCollection.acceptChats.rawValue,
-                                   chat.friendId].joined(separator: "/"))
+                                   friendID].joined(separator: "/"))
         let friendChat = db.document([MFirestorCollection.users.rawValue,
-                                      chat.friendId,
+                                      friendID,
                                       MFirestorCollection.acceptChats.rawValue,
                                       currentUserID].joined(separator: "/"))
         
@@ -457,7 +457,35 @@ class FirestoreService {
         refChat.delete()
         friendChat.delete()
     }
+    
+    //MARK: unMatch
+    func unMatch(currentUser: MPeople, chat: MChat, complition:@escaping(Result<MChat,Error>)->Void) {
+        //delete all chat and messages
+        deleteChat(currentUserID: currentUser.senderId, friendID: chat.friendId)
+        //add dislike to current and friend collection
+        let refCurrentDislike = db.collection([MFirestorCollection.users.rawValue, currentUser.senderId, MFirestorCollection.dislikePeople.rawValue].joined(separator: "/"))
+        let refFriendDislike = db.collection([MFirestorCollection.users.rawValue, chat.friendId, MFirestorCollection.dislikePeople.rawValue].joined(separator: "/"))
+        
+        var dislikeChat = MChat(friendUserName: chat.friendUserName,
+                                friendUserImageString: chat.friendUserImageString,
+                                lastMessage: "",
+                                isNewChat: true,
+                                friendId: chat.friendId,
+                                date: Date())
+        
+        do {
+            try refCurrentDislike.document(chat.friendId).setData(from: dislikeChat)
+            //change info in chat and write to friend dislike collection
+            dislikeChat.friendUserName = currentUser.displayName
+            dislikeChat.friendUserImageString = currentUser.userImage
+            dislikeChat.friendId = currentUser.senderId
+            try refFriendDislike.document(currentUser.senderId).setData(from: dislikeChat)
+            StorageService.shared.deleteChatImages(currentUserID: currentUser.senderId, friendUserID: chat.friendId)
+            complition(.success(dislikeChat))
+        } catch { complition(.failure(error))}
+    }
 }
+
 
 extension FirestoreService {
     //MARK: getAlldocument
