@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum TypeOfListenerChanges {
+enum MTypeOfListenerChanges {
     case addOrDelete
     case update
 }

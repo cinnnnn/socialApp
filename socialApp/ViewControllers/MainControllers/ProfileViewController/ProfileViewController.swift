@@ -13,7 +13,7 @@ class ProfileViewController:UIViewController, UpdatePeopleListnerDelegate {
     
     weak var peopleListnerDelegate: PeopleListenerDelegate?
     private var collectionView: UICollectionView!
-    private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MSettings>?
+    private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MProfileSettings>?
     private var currentPeople: MPeople
     
     init(currentPeople: MPeople) {
@@ -36,7 +36,6 @@ class ProfileViewController:UIViewController, UpdatePeopleListnerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        
         updateSections()
     }
     
@@ -169,14 +168,14 @@ extension ProfileViewController {
     
     //MARK: updateDataSource
     private func updateDataSource() {
-        var snapshot = NSDiffableDataSourceSnapshot<SectionsProfile, MSettings>()
+        var snapshot = NSDiffableDataSourceSnapshot<SectionsProfile, MProfileSettings>()
         snapshot.appendSections([.profile,.settings])
-        snapshot.appendItems([MSettings.profileInfo], toSection: .profile)
+        snapshot.appendItems([MProfileSettings.profileInfo], toSection: .profile)
         
-        snapshot.appendItems([MSettings.setupProfile, MSettings.setupSearch, MSettings.about],
+        snapshot.appendItems([MProfileSettings.setupProfile, MProfileSettings.setupSearch, MProfileSettings.appSettings],
                              toSection: .settings)
         if currentPeople.isAdmin {
-            snapshot.appendItems([MSettings.adminPanel], toSection: .settings)
+            snapshot.appendItems([MProfileSettings.adminPanel], toSection: .settings)
         }
         dataSource?.apply(snapshot)
     }
@@ -189,7 +188,7 @@ extension ProfileViewController: UICollectionViewDelegate {
         guard let section = SectionsProfile(rawValue: indexPath.section) else { return }
         
         if section == .settings {
-            guard let cell = MSettings(rawValue: indexPath.row + 1) else { fatalError("unknown cell")}
+            guard let cell = MProfileSettings(rawValue: indexPath.row + 1) else { fatalError("unknown cell")}
             
             switch cell {
             
@@ -206,8 +205,12 @@ extension ProfileViewController: UICollectionViewDelegate {
                 navigationController?.pushViewController(vc, animated: true)
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
-            case .about:
-                break
+            case .appSettings:
+                let vc = AppSettingsViewController(currentPeople: currentPeople)
+                vc.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(vc, animated: true)
+                
+                collectionView.deselectItem(at: indexPath, animated: true)
             case .adminPanel:
                 break
             default:

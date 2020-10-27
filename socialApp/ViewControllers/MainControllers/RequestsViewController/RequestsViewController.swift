@@ -212,7 +212,7 @@ extension RequestsViewController {
 
 extension RequestsViewController: RequestChatListenerDelegate {
     //MARK: reloadRequestData
-    func reloadData(changeType: TypeOfListenerChanges) {
+    func reloadData(changeType: MTypeOfListenerChanges) {
         reloadDataSource()
     }
     

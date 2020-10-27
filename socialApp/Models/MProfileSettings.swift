@@ -9,12 +9,12 @@
 import UIKit
 
 
-enum MSettings: Int {
+enum MProfileSettings: Int, CollectionCellModel {
     case profileInfo
     case setupProfile
     case setupSearch
+    case appSettings
     case adminPanel
-    case about
     
     
     func image() -> UIImage  {
@@ -25,11 +25,11 @@ enum MSettings: Int {
         case .setupProfile:
             return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
         case .setupSearch:
-           return UIImage(systemName: "magnifyingglass") ?? #imageLiteral(resourceName: "disclouser")
+            return UIImage(systemName: "magnifyingglass") ?? #imageLiteral(resourceName: "disclouser")
+        case .appSettings:
+            return UIImage(systemName: "slider.horizontal.3") ?? #imageLiteral(resourceName: "disclouser")
         case .adminPanel:
             return UIImage(systemName: "tv.circle") ?? #imageLiteral(resourceName: "disclouser")
-        case .about:
-           return UIImage(systemName: "info.circle") ?? #imageLiteral(resourceName: "disclouser")
         }
     }
     
@@ -39,18 +39,18 @@ enum MSettings: Int {
         case .profileInfo:
             return "Профиль"
         case .setupProfile:
-           return "Редактировать профиль"
+            return "Редактировать профиль"
         case .setupSearch:
-           return "Параметры поиска"
+            return "Параметры поиска"
+        case .appSettings:
+            return "Настройки"
         case .adminPanel:
             return "Панель администратора"
-        case .about:
-           return "Информация"
         }
     }
 }
 
-extension MSettings: Hashable {
+extension MProfileSettings: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(self)
     }

@@ -20,6 +20,12 @@ protocol PeopleConfigurationCell: class {
     static var reuseID: String { get }
     func configure(with value: MPeople, complition:@escaping()->Void)
 }
+
+protocol CollectionCellModel {
+    func image() -> UIImage
+    func description() -> String
+}
+
 protocol ReprasentationModel {
     var reprasentation:[String : Any]{ get }
     init?(documentSnap: DocumentSnapshot)
@@ -71,18 +77,18 @@ protocol LikeDislikeListenerDelegate: class {
 
 protocol RequestChatListenerDelegate: class {
     var requestChats: [MChat] { get set }
-    func reloadData(changeType: TypeOfListenerChanges)
+    func reloadData(changeType: MTypeOfListenerChanges)
     func reloadListner()
 }
 
 protocol AcceptChatListenerDelegate: class {
     var acceptChats: [MChat] { get set }
-    func reloadData(changeType: TypeOfListenerChanges)
+    func reloadData(changeType: MTypeOfListenerChanges)
 }
 
 protocol ActiveChatListenerDelegate: class {
     var activeChats: [MChat] { get set }
-    func reloadData(changeType: TypeOfListenerChanges)
+    func reloadData(changeType: MTypeOfListenerChanges)
 }
 
 

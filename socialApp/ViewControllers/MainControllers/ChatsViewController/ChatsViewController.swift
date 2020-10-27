@@ -299,7 +299,7 @@ extension ChatsViewController {
 
 extension ChatsViewController: AcceptChatListenerDelegate {
     //MARK: reloadRequestData
-    func reloadData(changeType: TypeOfListenerChanges) {
+    func reloadData(changeType: MTypeOfListenerChanges) {
         switch changeType {
         case .addOrDelete:
             

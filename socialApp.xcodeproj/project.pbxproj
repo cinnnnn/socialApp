@@ -41,7 +41,6 @@
 		FB3727942541A18600906FBE /* MVirtualLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3727932541A18600906FBE /* MVirtualLocation.swift */; };
 		FB3727992541CAD600906FBE /* EditSearchSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3727982541CAD500906FBE /* EditSearchSettingsViewController.swift */; };
 		FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB39F2D724F66EFE001B9C4F /* MPeople.swift */; };
-		FB3C5BD0253B370A00CD44E6 /* MShortPeople.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BCF253B370A00CD44E6 /* MShortPeople.swift */; };
 		FB3C5BD3253B399100CD44E6 /* MFirestorCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */; };
 		FB3C5BDB253F4A5A00CD44E6 /* MDefaultLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */; };
 		FB3C5BDE253F5F3900CD44E6 /* RoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */; };
@@ -54,7 +53,7 @@
 		FB61B54724FE7F23002761ED /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54624FE7F22002761ED /* AuthService.swift */; };
 		FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB61B54824FE9581002761ED /* UIAlertExtension.swift */; };
 		FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */; };
-		FB79DA42252209E100A7AA56 /* TypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */; };
+		FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */; };
 		FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4825234EDA00A7AA56 /* DateExtension.swift */; };
 		FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4B2523577100A7AA56 /* MMediaItem.swift */; };
 		FB79DA4F2524D1FB00A7AA56 /* UIScrollViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4E2524D1FA00A7AA56 /* UIScrollViewExtension.swift */; };
@@ -66,7 +65,7 @@
 		FB79DA7F252DE71900A7AA56 /* SectionsProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA7E252DE71900A7AA56 /* SectionsProfile.swift */; };
 		FB79DA84252DED1700A7AA56 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA83252DED1700A7AA56 /* ProfileCell.swift */; };
 		FB79DA88252DEDB900A7AA56 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA87252DEDB900A7AA56 /* SettingsCell.swift */; };
-		FB79DA8B252DF0D600A7AA56 /* MSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA8A252DF0D600A7AA56 /* MSettings.swift */; };
+		FB79DA8B252DF0D600A7AA56 /* MProfileSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA8A252DF0D600A7AA56 /* MProfileSettings.swift */; };
 		FB79DA9225307FF200A7AA56 /* GalleryScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA9125307FF200A7AA56 /* GalleryScrollView.swift */; };
 		FB79DA962530E69400A7AA56 /* EditPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA952530E69300A7AA56 /* EditPhotoViewController.swift */; };
 		FB79DA992530E86D00A7AA56 /* SectionEditPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA982530E86D00A7AA56 /* SectionEditPhotos.swift */; };
@@ -93,6 +92,9 @@
 		FBB26EB42546E49B0081CF2C /* MAdmin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EB32546E49B0081CF2C /* MAdmin.swift */; };
 		FBB26EB72546EC230081CF2C /* PeopleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EB62546EC220081CF2C /* PeopleView.swift */; };
 		FBB26EBC2546F3250081CF2C /* PeopleInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EBB2546F3250081CF2C /* PeopleInfoViewController.swift */; };
+		FBB26EC3254843C60081CF2C /* AppSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EC2254843C50081CF2C /* AppSettingsViewController.swift */; };
+		FBB26EC72548452C0081CF2C /* MAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EC62548452C0081CF2C /* MAppSettings.swift */; };
+		FBB26ECA254845D90081CF2C /* SectionAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
 		FBB3B265250ACA0700440632 /* MGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B264250ACA0700440632 /* MGender.swift */; };
@@ -158,7 +160,6 @@
 		FB3727932541A18600906FBE /* MVirtualLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVirtualLocation.swift; sourceTree = "<group>"; };
 		FB3727982541CAD500906FBE /* EditSearchSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditSearchSettingsViewController.swift; sourceTree = "<group>"; };
 		FB39F2D724F66EFE001B9C4F /* MPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPeople.swift; sourceTree = "<group>"; };
-		FB3C5BCF253B370A00CD44E6 /* MShortPeople.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MShortPeople.swift; sourceTree = "<group>"; };
 		FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MFirestorCollection.swift; sourceTree = "<group>"; };
 		FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDefaultLayer.swift; sourceTree = "<group>"; };
 		FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundButton.swift; sourceTree = "<group>"; };
@@ -171,7 +172,7 @@
 		FB61B54624FE7F22002761ED /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		FB61B54824FE9581002761ED /* UIAlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertExtension.swift; sourceTree = "<group>"; };
 		FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterEmailViewController.swift; sourceTree = "<group>"; };
-		FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeOfListenerChanges.swift; sourceTree = "<group>"; };
+		FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTypeOfListenerChanges.swift; sourceTree = "<group>"; };
 		FB79DA4825234EDA00A7AA56 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		FB79DA4B2523577100A7AA56 /* MMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMediaItem.swift; sourceTree = "<group>"; };
 		FB79DA4E2524D1FA00A7AA56 /* UIScrollViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewExtension.swift; sourceTree = "<group>"; };
@@ -183,7 +184,7 @@
 		FB79DA7E252DE71900A7AA56 /* SectionsProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsProfile.swift; sourceTree = "<group>"; };
 		FB79DA83252DED1700A7AA56 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		FB79DA87252DEDB900A7AA56 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
-		FB79DA8A252DF0D600A7AA56 /* MSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSettings.swift; sourceTree = "<group>"; };
+		FB79DA8A252DF0D600A7AA56 /* MProfileSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MProfileSettings.swift; sourceTree = "<group>"; };
 		FB79DA9125307FF200A7AA56 /* GalleryScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryScrollView.swift; sourceTree = "<group>"; };
 		FB79DA952530E69300A7AA56 /* EditPhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotoViewController.swift; sourceTree = "<group>"; };
 		FB79DA982530E86D00A7AA56 /* SectionEditPhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionEditPhotos.swift; sourceTree = "<group>"; };
@@ -211,6 +212,9 @@
 		FBB26EB32546E49B0081CF2C /* MAdmin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAdmin.swift; sourceTree = "<group>"; };
 		FBB26EB62546EC220081CF2C /* PeopleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleView.swift; sourceTree = "<group>"; };
 		FBB26EBB2546F3250081CF2C /* PeopleInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleInfoViewController.swift; sourceTree = "<group>"; };
+		FBB26EC2254843C50081CF2C /* AppSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsViewController.swift; sourceTree = "<group>"; };
+		FBB26EC62548452C0081CF2C /* MAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAppSettings.swift; sourceTree = "<group>"; };
+		FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionAppSettings.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		FBB3B260250905D800440632 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
@@ -289,6 +293,7 @@
 				FB18217A24B2261F00FFFC87 /* MainTabBarController.swift */,
 				FB1062DB24B09F6C0012C4D4 /* EditProfileViewController.swift */,
 				FB3727982541CAD500906FBE /* EditSearchSettingsViewController.swift */,
+				FBB26EC2254843C50081CF2C /* AppSettingsViewController.swift */,
 				FB09107D24FA73B2006B72D5 /* SendRequestViewController.swift */,
 				FB79DA9B2530E9A800A7AA56 /* EditPhotoViewController */,
 				FB79DA81252DECEB00A7AA56 /* ProfileViewController */,
@@ -319,13 +324,13 @@
 				FB37278B25419C4800906FBE /* People */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 				FB15FCF22513A71F00B765D3 /* MMessage.swift */,
-				FB3C5BCF253B370A00CD44E6 /* MShortPeople.swift */,
-				FB79DA8A252DF0D600A7AA56 /* MSettings.swift */,
+				FB79DA8A252DF0D600A7AA56 /* MProfileSettings.swift */,
+				FBB26EC62548452C0081CF2C /* MAppSettings.swift */,
 				FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */,
 				FB8C3D8A25371AE900184FB5 /* MLabels.swift */,
 				FB79DA4B2523577100A7AA56 /* MMediaItem.swift */,
 				FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */,
-				FB79DA41252209E000A7AA56 /* TypeOfListenerChanges.swift */,
+				FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */,
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FB3C5BD6253C896100CD44E6 /* Sections */,
 			);
@@ -374,6 +379,7 @@
 				FB8C3D97253A525500184FB5 /* SectionsRequests.swift */,
 				FBF6289624F678EA00DCD4AC /* SectionsPeople.swift */,
 				FB79DA7E252DE71900A7AA56 /* SectionsProfile.swift */,
+				FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */,
 				FB79DA982530E86D00A7AA56 /* SectionEditPhotos.swift */,
 			);
 			path = Sections;
@@ -755,6 +761,7 @@
 				FB8C3D392533958900184FB5 /* MLookingFor.swift in Sources */,
 				FB8C3D652534A74900184FB5 /* SelectionTableViewHeader.swift in Sources */,
 				FB79DA9D2530E9C500A7AA56 /* EditPhotoCell.swift in Sources */,
+				FBB26ECA254845D90081CF2C /* SectionAppSettings.swift in Sources */,
 				FB8C3D8E25372BEB00184FB5 /* MReports.swift in Sources */,
 				FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */,
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
@@ -785,12 +792,13 @@
 				FB3C5BD3253B399100CD44E6 /* MFirestorCollection.swift in Sources */,
 				FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */,
 				FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */,
-				FB79DA42252209E100A7AA56 /* TypeOfListenerChanges.swift in Sources */,
+				FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */,
 				FB79DA9225307FF200A7AA56 /* GalleryScrollView.swift in Sources */,
 				FB8C3D5F25348F4900184FB5 /* OneLineButton.swift in Sources */,
 				FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */,
 				FBB4F354251110AE00ACFE90 /* RadioButton.swift in Sources */,
 				FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */,
+				FBB26EC3254843C60081CF2C /* AppSettingsViewController.swift in Sources */,
 				FB09108024FA93E2006B72D5 /* UITextViewExtension.swift in Sources */,
 				FB79DA7F252DE71900A7AA56 /* SectionsProfile.swift in Sources */,
 				FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */,
@@ -825,9 +833,10 @@
 				FB21A1B824E595CF000A2E91 /* Protocols.swift in Sources */,
 				FB79DA992530E86D00A7AA56 /* SectionEditPhotos.swift in Sources */,
 				FB21A1AD24C89F68000A2E91 /* BundleDecode.swift in Sources */,
-				FB79DA8B252DF0D600A7AA56 /* MSettings.swift in Sources */,
+				FB79DA8B252DF0D600A7AA56 /* MProfileSettings.swift in Sources */,
 				FB3727992541CAD600906FBE /* EditSearchSettingsViewController.swift in Sources */,
 				FB15FCF32513A71F00B765D3 /* MMessage.swift in Sources */,
+				FBB26EC72548452C0081CF2C /* MAppSettings.swift in Sources */,
 				FB8C3D6E2535D94D00184FB5 /* DateOfBirthViewController.swift in Sources */,
 				FB1062DA24AE69250012C4D4 /* LoginViewController.swift in Sources */,
 				FBF2927F2512828C0090BA9E /* LoadingView.swift in Sources */,
@@ -835,7 +844,6 @@
 				FB79DA78252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift in Sources */,
 				FB21A1BF24E5ADE5000A2E91 /* NewChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
-				FB3C5BD0253B370A00CD44E6 /* MShortPeople.swift in Sources */,
 				FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */,
 				FB8C3D792535F4C500184FB5 /* StringExtension.swift in Sources */,
 				FB61A7FB251E6312005DCC78 /* UserDefaultsService.swift in Sources */,

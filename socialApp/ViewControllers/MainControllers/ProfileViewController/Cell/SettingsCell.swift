@@ -34,11 +34,11 @@ class SettingsCell: UICollectionViewCell {
         selectedBackgroundView = selectView
         
         let unselectView = UIView(frame: bounds)
-        unselectView.backgroundColor = .mySecondButtonColor()
+        unselectView.backgroundColor = .myWhiteColor()
         backgroundView = unselectView
     }
     
-    func configure(settings: MSettings) {
+    func configure(settings: CollectionCellModel) {
         settingslabel.text = settings.description()
         settingsImage.image = settings.image().withConfiguration(UIImage.SymbolConfiguration(font: .avenirRegular(size: 25), scale: .default))
     }
@@ -61,8 +61,9 @@ class SettingsCell: UICollectionViewCell {
 //            settingsImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
 //            settingsImage.centerYAnchor.constraint(equalTo: centerYAnchor),
             
-            settingslabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             settingslabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            settingslabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            settingslabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 10),
         ])
     }
 }

@@ -35,9 +35,6 @@ class EditProfileViewController: UIViewController {
                                        title: "Редактировать фото",
                                        titleColor: .myFirstButtonLabelColor())
     
-    let exitProfileButton = RoundButton(newBackgroundColor: .mySecondButtonColor(),
-                                        title: "Выйти из профиля",
-                                        titleColor: .mySecondButtonLabelColor())
     
     private var visibleRect: CGPoint?
     private var currentPeople: MPeople
@@ -92,7 +89,6 @@ class EditProfileViewController: UIViewController {
         gelleryScrollView.clipsToBounds = true
         advertTextView.addDoneButton()
         editPhotosButton.layoutIfNeeded()
-        exitProfileButton.layoutIfNeeded()
         scrollView.layoutIfNeeded()
     }
     
@@ -105,7 +101,6 @@ class EditProfileViewController: UIViewController {
     //MARK:  setupButtonAction
     private func setupButtonAction() {
         editPhotosButton.addTarget(self, action: #selector(editPhotosButtonTap), for: .touchUpInside)
-        exitProfileButton.addTarget(self, action: #selector(signOut), for: .touchUpInside)
         genderButton.addTarget(self, action: #selector(genderSelectTapped), for: .touchUpInside)
         sexualityButton.addTarget(self, action: #selector(sexualitySelectTapped), for: .touchUpInside)
         lookingForButton.addTarget(self, action: #selector(sexualitySelectTapped), for: .touchUpInside)
@@ -179,11 +174,6 @@ extension EditProfileViewController {
         let vc = EditPhotoViewController(userID: id,isFirstSetup: false)
         navigationController?.pushViewController(vc, animated: true)
     }
-
-    //MARK:  signOut
-    @objc func signOut() {
-        signOutAlert()
-    }
     
     //MARK: endEditing
     @objc func endEditing() {
@@ -251,37 +241,7 @@ extension EditProfileViewController {
     }
 }
 
-extension EditProfileViewController {
-    //MARK:  signOutAlert
-    private func signOutAlert() {
-        let alert = UIAlertController(title: nil,
-                                      message: nil,
-                                      preferredStyle: .actionSheet)
-        
-        let okAction = UIAlertAction(title: "Выйду, но вернусь",
-                                     style: .destructive) {[weak self] _ in
-            
-            self?.view.addCustomTransition(type: .fade)
-            AuthService.shared.signOut { result in
-                switch result {
-                case .success(_):
-                    return
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                }
-            }
-        }
-        let cancelAction = UIAlertAction(title: "Продолжу общение",
-                                         style: .default)
-        
-        alert.setMyStyle()
-        alert.addAction(okAction)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true, completion: nil)
-    }
-    
-}
+
 //MARK:  UITextFieldDelegate
 extension EditProfileViewController: UITextFieldDelegate {
     
@@ -319,7 +279,6 @@ extension EditProfileViewController {
         genderButton.translatesAutoresizingMaskIntoConstraints = false
         lookingForButton.translatesAutoresizingMaskIntoConstraints = false
         sexualityButton.translatesAutoresizingMaskIntoConstraints = false
-        exitProfileButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(scrollView)
         scrollView.addSubview(gelleryScrollView)
@@ -331,7 +290,6 @@ extension EditProfileViewController {
         scrollView.addSubview(genderButton)
         scrollView.addSubview(lookingForButton)
         scrollView.addSubview(sexualityButton)
-        scrollView.addSubview(exitProfileButton)
         
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -379,12 +337,7 @@ extension EditProfileViewController {
             lookingForButton.topAnchor.constraint(equalTo: sexualityButton.bottomAnchor, constant: 15),
             lookingForButton.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             lookingForButton.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
-            lookingForButton.heightAnchor.constraint(equalToConstant: 70),
-            
-            exitProfileButton.topAnchor.constraint(equalTo: lookingForButton.bottomAnchor, constant: 20),
-            exitProfileButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            exitProfileButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            exitProfileButton.heightAnchor.constraint(equalTo: exitProfileButton.widthAnchor, multiplier: 1.0/7.28),
+            lookingForButton.heightAnchor.constraint(equalToConstant: 70)
         ])
     }
 }
