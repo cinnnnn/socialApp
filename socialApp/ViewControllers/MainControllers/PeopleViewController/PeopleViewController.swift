@@ -11,13 +11,12 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislikeDelegate {
+class PeopleViewController: UIViewController, PeopleListenerDelegate {
     
     weak var requestDelegate: RequestChatDelegate?
     weak var acceptChatsDelegate: AcceptChatsDelegate?
+    weak var likeDislikeDelegate: LikeDislikeDelegate?
     var currentPeople: MPeople
-    var likePeople: [MChat] = []
-    var dislikePeople: [MChat] = []
     var peopleNearby: [MPeople] = []
     var sortedPeopleNearby: [MPeople] {
         peopleNearby.sorted { p1, p2  in
@@ -51,7 +50,6 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
         setup()
         setupConstraints()
         setupListeners(forPeople: currentPeople)
-        print(#function)
     }
     
     //MARK:  setup VC
@@ -62,40 +60,15 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate, LikeDislik
     
     //MARK:  setupListeners
     private func setupListeners(forPeople: MPeople) {
-
-        //first get list of like people
-        let userID = currentPeople.senderId
-        FirestoreService.shared.getLikeDislikePeople(userID: userID,
-                                                     collection: MFirestorCollection.likePeople.rawValue) {[weak self] result in
-            switch result {
-            
-            case .success(let likeChats):
-                self?.likePeople = likeChats
-                //get list of dislike people
-                FirestoreService.shared.getLikeDislikePeople(userID: userID,
-                                                             collection: MFirestorCollection.dislikePeople.rawValue) { result in
-                    switch result {
-                    
-                    case .success(let dislikeChat):
-                        self?.dislikePeople = dislikeChat
-                        //after get like and dislike setup people nearby listener
-                        
-                        guard let peopleDelegate = self else { return }
-                        guard let likeDislikeDelegate = self else { return }
-                        guard let newActiveChatsDelegate = self?.acceptChatsDelegate else { return }
-                        
-                        ListenerService.shared.addPeopleListener(currentPeople: forPeople,
-                                                                 peopleDelegate: peopleDelegate,
-                                                                 likeDislikeDelegate: likeDislikeDelegate,
-                                                                 newActiveChatsDelegate: newActiveChatsDelegate)
-                    case .failure(let error):
-                        fatalError(error.localizedDescription)
-                    }
-                }
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
-        }
+        
+        guard let likeDislikeDelegate = likeDislikeDelegate else { return }
+        guard let newActiveChatsDelegate = acceptChatsDelegate else { return }
+        
+        ListenerService.shared.addPeopleListener(currentPeople: forPeople,
+                                                 peopleDelegate: self,
+                                                 likeDislikeDelegate: likeDislikeDelegate,
+                                                 acceptChatsDelegate: newActiveChatsDelegate)
+        
     }
     
     private func removeListeners() {
@@ -287,7 +260,8 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
     func dislikePeople(people: MPeople) {
         //save dislike from firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
-                                              forPeople: people) {[weak self] result in
+                                              dislikeForPeople: people,
+                                              requestChats: requestDelegate?.requestChats ?? []) {[weak self] result in
             switch result {
             
             case .success(let dislikeChat):

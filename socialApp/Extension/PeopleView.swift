@@ -49,7 +49,6 @@ class PeopleView: UIView {
     }
     
     func configure(with value: MPeople, complition: @escaping()-> Void) {
-    
         peopleName.text = value.displayName
         
         galleryScrollView.setupImages(imagesURL: [value.userImage] + value.gallery) {
@@ -82,7 +81,7 @@ class PeopleView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        scrollView.updateContentView()
+        scrollView.updateContentView(bottomOffset: 60)
         likeButton.layer.cornerRadius = likeButton.frame.width / 2
         dislikeButton.layer.cornerRadius = dislikeButton.frame.width / 2
     }

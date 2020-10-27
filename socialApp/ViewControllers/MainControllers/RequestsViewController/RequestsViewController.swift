@@ -21,13 +21,14 @@ class RequestsViewController: UIViewController, RequestChatDelegate {
         }
         return request
     }
-    
+    weak var peopleListnerDelegate: PeopleListenerDelegate?
+    weak var likeDislikeDelegate: LikeDislikeDelegate?
     var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
     var currentPeople: MPeople
     
-    init(currentPeople: MPeople) {
+    init(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeDelegate) {
         self.currentPeople = currentPeople
-        
+        self.likeDislikeDelegate = likeDislikeDelegate
         super.init(nibName: nil, bundle: nil)
         setupListeners()
     }
@@ -42,12 +43,12 @@ class RequestsViewController: UIViewController, RequestChatDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
+        setupNavigationBar()
         setupCollectionView()
         setupDataSource()
         loadSectionHedear()
         reloadDataSource(searchText: nil)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -56,13 +57,21 @@ class RequestsViewController: UIViewController, RequestChatDelegate {
     }
     
     private func setupListeners() {
-        ListenerService.shared.addRequestChatsListener(requestChatDelegate: self)
+        guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislikeDelegate is nil") }
+        ListenerService.shared.addRequestChatsListener(currentPeople: currentPeople,
+                                                       requestChatDelegate: self,
+                                                       likeDislikeDelegate: likeDislikeDelegate)
     }
     
     private func updateCurrentPeople() {
         if let people = UserDefaultsService.shared.getMpeople() {
             currentPeople = people
         }
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.backButtonTitle = ""
+        navigationItem.largeTitleDisplayMode = .never
     }
     
     //MARK:  setupCollectionView
@@ -129,7 +138,7 @@ extension RequestsViewController {
         
         section.orthogonalScrollingBehavior = .continuous
         section.interGroupSpacing = 15
-        section.contentInsets = NSDirectionalEdgeInsets(top: 25,
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10,
                                                         leading: 20,
                                                         bottom: 0,
                                                         trailing: 20)
@@ -175,7 +184,7 @@ extension RequestsViewController {
             guard let itemsCount = self.dataSource?.snapshot().numberOfItems(inSection: section) else { fatalError("Unknow items count in section")}
             
             reuseSectionHeader.configure(text: section.description(count: itemsCount),
-                                         font: .avenirBold(size: 12),
+                                         font: .avenirRegular(size: 12),
                                          textColor: UIColor.myGrayColor())
             
             return reuseSectionHeader
@@ -206,6 +215,16 @@ extension RequestsViewController: RequestChatListenerDelegate {
     func reloadData(changeType: TypeOfListenerChanges) {
         reloadDataSource()
     }
+    
+    //MARK: reloadListner
+    func reloadListner() {
+        requestChats = []
+        reloadDataSource()
+        ListenerService.shared.removeRequestChatsListener()
+        setupListeners()
+        //reload listner peopleNearby VC
+        peopleListnerDelegate?.reloadListner()
+    }
 }
 
 //MARK: CollectionViewDelegate
@@ -216,8 +235,10 @@ extension RequestsViewController: UICollectionViewDelegate {
         
         switch section {
         case .requestChats:
-            let requestVC = GetRequestViewController(chatRequest: item, currentPeople: currentPeople)
-            present(requestVC, animated: true, completion: nil)
+            let peopleVC = PeopleInfoViewController(peopleID: item.friendId, withLikeButtons: true)
+            peopleVC.requestChatsDelegate = self
+            peopleVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(peopleVC, animated: true)
         }
     }
 }

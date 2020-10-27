@@ -43,11 +43,11 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         frendName.text = value.friendUserName
         lastMessage.text = value.lastMessage
         dateOfMessage.text = value.date.getPeriod()
+        
         displayLink = CADisplayLink(target: self, selector: #selector(dateUpdate))
         displayLink?.preferredFramesPerSecond = 1
         displayLink?.add(to: .main, forMode: .default)
     
-        
         dateOfLastMessage = value.date
     }
     

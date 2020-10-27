@@ -52,7 +52,6 @@ class ChatViewController: MessagesViewController  {
     private func configure() {
      
         messagesCollectionView.insetsLayoutMarginsFromSafeArea = true
-        
         showMessageTimestampOnSwipeLeft = true
         
         //delete avatar from message
@@ -62,6 +61,7 @@ class ChatViewController: MessagesViewController  {
         }
     
         navigationItem.titleView = ChatTitleStackView(chat: chat, target: self, profileTappedAction: #selector(profileTapped))
+        navigationItem.backButtonTitle = ""
         
         //add screenshot observer
         NotificationCenter.default.addObserver(self,
@@ -203,7 +203,8 @@ extension ChatViewController {
     
     //MARK: profileTapped
     @objc private func profileTapped() {
-        let profileVC = PeopleInfoViewController(peopleID: chat.friendId)
+        let profileVC = PeopleInfoViewController(peopleID: chat.friendId, withLikeButtons: false)
+        profileVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(profileVC, animated: true)
     }
 }
@@ -317,6 +318,7 @@ extension ChatViewController: MessagesLayoutDelegate {
     }
     
     func messageTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        //if sender of message - Admin, set more Height to label in messageTop
         if message.sender.senderId == MAdmin.id.rawValue {
             return 20
         } else {

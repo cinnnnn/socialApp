@@ -280,7 +280,7 @@ class FirestoreService {
                                 isNewChat: true,
                                 friendId: currentPeople.senderId,
                                 date: Date())
-         let likeChat = MChat(friendUserName: likePeople.displayName,
+        let likeChat = MChat(friendUserName: likePeople.displayName,
                              friendUserImageString: likePeople.userImage,
                              lastMessage: message,
                              isNewChat: true,
@@ -293,13 +293,10 @@ class FirestoreService {
         }
         //if have requst chat from like user
         if let chat = requestChatFromLikeUser.first {
-            print("request chats \(requestChats)")
             //delete from request
             collectionCurrentRequestRef.document(likePeople.senderId).delete()
-            print(collectionCurrentRequestRef.document(likePeople.senderId).path)
             //delete from like in like user collection
             collectionLikeUserLikeRef.document(currentPeople.senderId).delete()
-            print(collectionLikeUserLikeRef.document(currentPeople.senderId).path)
             let sender = MSender(senderId: currentPeople.senderId, displayName: currentPeople.displayName)
             var requestMessage = MMessage(user: sender,
                                           content: chat.lastMessage,
@@ -310,43 +307,56 @@ class FirestoreService {
                 //if with first message, create message in collection
                 if !chat.lastMessage.isEmpty {
                     currentUserMessageRef.setData(requestMessage.reprasentation)
-                    }
-        } catch { complition(.failure(error))}
-        
-        do { //add to acceptChat to like user
-            try collectionLikeUserAcceptChatRef.document(currentPeople.senderId).setData(from: requestChat)
-            if !chat.lastMessage.isEmpty {
-                //change message id to likeUser path
-                requestMessage.messageId = likeUserMessageRef.path
-                //if with first message, create message in collection
-                likeUserMessageRef.setData(requestMessage.reprasentation)
-            }
-        } catch { complition(.failure(error))}
+                }
+            } catch { complition(.failure(error))}
+            
+            do { //add to acceptChat to like user
+                try collectionLikeUserAcceptChatRef.document(currentPeople.senderId).setData(from: requestChat)
+                if !chat.lastMessage.isEmpty {
+                    //change message id to likeUser path
+                    requestMessage.messageId = likeUserMessageRef.path
+                    //if with first message, create message in collection
+                    likeUserMessageRef.setData(requestMessage.reprasentation)
+                }
+            } catch { complition(.failure(error))}
             complition(.success(likeChat))
-        //if don't have request from like user
-    } else {
-    do { //add chat request for like user
-    try collectionLikeUserRequestRef.document(currentPeople.senderId).setData(from: requestChat, merge: true)
-    //add chat to like collection current user
-    try collectionCurrentLikeRef.document(likePeople.senderId).setData(from:likeChat)
-    complition(.success(likeChat))
-    } catch { complition(.failure(error)) }
+            //if don't have request from like user
+        } else {
+            do { //add chat request for like user
+                try collectionLikeUserRequestRef.document(currentPeople.senderId).setData(from: requestChat, merge: true)
+                //add chat to like collection current user
+                try collectionCurrentLikeRef.document(likePeople.senderId).setData(from:likeChat)
+                complition(.success(likeChat))
+            } catch { complition(.failure(error)) }
+        }
     }
-}
-
-
+    
+    
     //MARK: dislikePeople
-    func dislikePeople(currentPeople: MPeople, forPeople: MPeople, complition: @escaping(Result<MChat,Error>)->Void) {
-        let collectionDislikeRef = usersReference.document(currentPeople.senderId).collection(MFirestorCollection.dislikePeople.rawValue)
+    func dislikePeople(currentPeople: MPeople, dislikeForPeople: MPeople, requestChats: [MChat], complition: @escaping(Result<MChat,Error>)->Void) {
+        let collectionCurrentUserDislikeRef = usersReference.document(currentPeople.senderId).collection(MFirestorCollection.dislikePeople.rawValue)
+        let collectionCurrentRequestRef = db.collection([MFirestorCollection.users.rawValue, currentPeople.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
+        let collectionDislikeUserLikeRef = db.collection([MFirestorCollection.users.rawValue, dislikeForPeople.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
         
-        let dislikeChat = MChat(friendUserName: forPeople.displayName,
-                                    friendUserImageString: forPeople.userImage,
-                                    lastMessage: "",
-                                    isNewChat: true,
-                                    friendId: forPeople.senderId,
-                                    date: Date())
+        let dislikeChat = MChat(friendUserName: dislikeForPeople.displayName,
+                                friendUserImageString: dislikeForPeople.userImage,
+                                lastMessage: "",
+                                isNewChat: true,
+                                friendId: dislikeForPeople.senderId,
+                                date: Date())
+        //if dislike people contains in current user request chat, than delete his request
+        let requestChatFromLikeUser = requestChats.filter { requestChat -> Bool in
+            requestChat.containsID(ID: dislikeForPeople.senderId)
+        }
+        //if have requst chat from dislike user
+        if let _ = requestChatFromLikeUser.first {
+            //delete from request
+            collectionCurrentRequestRef.document(dislikeForPeople.senderId).delete()
+            //delete from like in dislike user collection
+            collectionDislikeUserLikeRef.document(currentPeople.senderId).delete()
+        }
         do {
-            try collectionDislikeRef.document(forPeople.senderId).setData(from: dislikeChat)
+            try collectionCurrentUserDislikeRef.document(dislikeForPeople.senderId).setData(from: dislikeChat)
             complition(.success(dislikeChat))
         } catch { complition(.failure(error))}
     }

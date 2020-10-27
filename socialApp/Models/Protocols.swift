@@ -72,6 +72,7 @@ protocol LikeDislikeListenerDelegate: class {
 protocol RequestChatListenerDelegate: class {
     var requestChats: [MChat] { get set }
     func reloadData(changeType: TypeOfListenerChanges)
+    func reloadListner()
 }
 
 protocol AcceptChatListenerDelegate: class {

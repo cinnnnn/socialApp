@@ -9,10 +9,12 @@
 import UIKit
 import FirebaseAuth
 
-class MainTabBarController: UITabBarController{
+class MainTabBarController: UITabBarController, LikeDislikeDelegate{
     
     var userID: String
     let loadingView = LoadingView(isHidden: false)
+    var likePeople: [MChat] = []
+    var dislikePeople: [MChat] = []
     
     weak var acceptChatsDelegate: AcceptChatsDelegate?
     weak var requestChatsDelegate: RequestChatDelegate?
@@ -44,6 +46,7 @@ class MainTabBarController: UITabBarController{
     }
 }
 
+
 extension MainTabBarController {
     //MARK: getPeopleData, location
     private func getPeopleData() {
@@ -58,10 +61,22 @@ extension MainTabBarController {
                         if !isAllowPermission {
                             self?.openSettingsAlert()
                         }
-                        self?.loadIsComplite(isComplite: true)
-                        self?.setupControllers(currentPeople: mPeople)
+                        //get like dislike users
+                        self?.getLikeDislike(forPeople: mPeople, complition: { result in
+                            switch result {
+                            
+                            case .success():
+                                self?.loadIsComplite(isComplite: true)
+                                self?.setupControllers(currentPeople: mPeople)
+                            case .failure(let error):
+                                self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                text: error.localizedDescription,
+                                                buttonText: "Попробую позже")
+                            }
+                        })
                     }
                 }
+                
             case .failure(_):
                 //if get incorrect info from mPeople profile, logOut and go to authVC
                 AuthService.shared.signOut { result in
@@ -83,6 +98,38 @@ extension MainTabBarController {
     }
 }
 
+extension MainTabBarController {
+    //MARK:  setupListeners
+    private func getLikeDislike(forPeople: MPeople, complition: @escaping (Result<(), Error>) -> Void) {
+
+        //first get list of like people
+        let userID = forPeople.senderId
+        FirestoreService.shared.getLikeDislikePeople(userID: userID,
+                                                     collection: MFirestorCollection.likePeople.rawValue) {[weak self] result in
+            switch result {
+            
+            case .success(let likeChats):
+                self?.likePeople = likeChats
+                //get list of dislike people
+                FirestoreService.shared.getLikeDislikePeople(userID: userID,
+                                                             collection: MFirestorCollection.dislikePeople.rawValue) { result in
+                    switch result {
+                    
+                    case .success(let dislikeChat):
+                        self?.dislikePeople = dislikeChat
+                        complition(.success(()))
+                       
+                    case .failure(let error):
+                        complition(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                complition(.failure(error))
+            }
+        }
+    }
+}
+
 //MARK: setupControllers
 extension MainTabBarController {
     private func setupControllers(currentPeople: MPeople){
@@ -94,7 +141,7 @@ extension MainTabBarController {
         
         let profileVC = ProfileViewController(currentPeople: currentPeople)
         let peopleVC = PeopleViewController(currentPeople: currentPeople)
-        let requsetsVC = RequestsViewController(currentPeople: currentPeople)
+        let requsetsVC = RequestsViewController(currentPeople: currentPeople, likeDislikeDelegate: self)
         let chatsVC = ChatsViewController(currentPeople: currentPeople)
         
         peopleListenerDelegate = peopleVC
@@ -104,17 +151,19 @@ extension MainTabBarController {
         //setup delegate
         peopleVC.requestDelegate = requestChatsDelegate
         peopleVC.acceptChatsDelegate = acceptChatsDelegate
+        peopleVC.likeDislikeDelegate = self
+        requsetsVC.peopleListnerDelegate = peopleListenerDelegate
         profileVC.peopleListnerDelegate = peopleListenerDelegate
         
         viewControllers = [
             generateNavigationController(rootViewController: peopleVC, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
-            generateNavigationController(rootViewController: requsetsVC, image: #imageLiteral(resourceName: "Heart"), title: nil, isHidden: true),
+            generateNavigationController(rootViewController: requsetsVC, image: #imageLiteral(resourceName: "Heart"), title: nil),
             generateNavigationController(rootViewController: chatsVC, image: #imageLiteral(resourceName: "chats"), title: nil),
             generateNavigationController(rootViewController: profileVC, image: #imageLiteral(resourceName: "profile"), title: nil)
         ]
     }
     
-    
+    //MARK: generateNavigationController
     private func generateNavigationController(rootViewController: UIViewController,
                                               image: UIImage,
                                               title: String?,
@@ -144,8 +193,9 @@ extension MainTabBarController {
     }
 }
 
+//MARK: alert
 extension MainTabBarController {
-    //MARK: openSettingsAlert
+    
     private func openSettingsAlert(){
         let alert = UIAlertController(title: "Нет доступа к геопозиции",
                                       text: "Необходимо разрешить доступ к геопозиции в настройках",
@@ -157,6 +207,18 @@ extension MainTabBarController {
                 UIApplication.shared.open(settingsUrl)
             }
         }
+        alert.setMyLightStyle()
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func showAlert(title: String, text: String, buttonText: String) {
+        
+        let alert = UIAlertController(title: title,
+                                      text: text,
+                                      buttonText: buttonText,
+                                      style: .alert)
+        
+        alert.setMyLightStyle()
         present(alert, animated: true, completion: nil)
     }
 }

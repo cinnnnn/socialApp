@@ -15,61 +15,65 @@ class Validators {
     
     private init() {}
     
+    //MARK: isFilledRegister
     func isFilledRegister(email: String?, password: String?, confirmPassword: String? ) -> (isFilled: Bool,
-                                                                                    email: String,
-                                                                                    password: String,
-                                                                                    confirmPassword: String) {
+                                                                                            email: String,
+                                                                                            password: String,
+                                                                                            confirmPassword: String) {
         guard let email = email,
-            let password = password,
-            let confirmPassword = confirmPassword,
-            email != "",
-            password != "",
-            confirmPassword != ""
-            else { return (false, "", "", "") }
+              let password = password,
+              let confirmPassword = confirmPassword,
+              email != "",
+              password != "",
+              confirmPassword != ""
+        else { return (false, "", "", "") }
         
         return (true, email, password, confirmPassword)
     }
     
+    //MARK: isFilledSignIn
     func isFilledSignIn(email: String?, password: String?) -> (isFilled: Bool,
-                                                                email: String,
-                                                                password: String) {
+                                                               email: String,
+                                                               password: String) {
         guard let email = email,
               let password = password,
               email != "",
               password != ""
-              else { return (false, "", "") }
+        else { return (false, "", "") }
         
         return (true, email, password)
     }
     
-    
+    //MARK: isFilledUserName
     func isFilledUserName(userName: String? ) -> (isFilled: Bool,
                                                   userName: String) {
         guard let userName = userName,
               userName != ""
-              else { return (false, "") }
+        else { return (false, "") }
         
         return (true, userName)
     }
     
+    //MARK: isSetProfileImage
     func isSetProfileImage(image: UIImage) -> Bool {
         return true
     }
     
     
+    //MARK: isEmail
     func isEmail(email: String) -> Bool {
         
         let mailRegEX = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,20}"
         return checkRegEx(text: email, regEx: mailRegEX)
     }
     
-     func isConfirmPassword(password1: String, password2: String) -> Bool {
- 
+    //MARK: isConfirmPassword
+    func isConfirmPassword(password1: String, password2: String) -> Bool {
+        
         return password1 == password2
     }
     
     //ListnerAddValidator
-    
     func listnerAddPeopleValidator(currentPeople: MPeople,
                                    newPeople: MPeople,
                                    peopleDelegate: PeopleListenerDelegate,
@@ -77,8 +81,8 @@ class Validators {
                                    acceptChatsDelegate: AcceptChatsDelegate,
                                    isUpdate: Bool) -> Bool {
         if !isUpdate {
-        //if not present in people array
-        guard !peopleDelegate.peopleNearby.contains(newPeople) else { return false }
+            //if not present in people array
+            guard !peopleDelegate.peopleNearby.contains(newPeople) else { return false }
         }
         //if not current user
         guard newPeople.senderId != currentPeople.senderId else { return false }
@@ -112,6 +116,18 @@ class Validators {
         return true
     }
     
+    //MARK: listnerAddRequestValidator
+    func listnerAddRequestValidator(currentPeople: MPeople,
+                                    newRequestChat: MChat,
+                                    likeDislikeDelegate: LikeDislikeDelegate) -> Bool {
+        
+        guard !likeDislikeDelegate.dislikePeople.contains(where: { dislikeChat -> Bool in
+            dislikeChat.friendId == newRequestChat.friendId
+        }) else { return false }
+        return true
+    }
+    
+    //MARK: checkRegEx
     private func checkRegEx(text: String, regEx: String) -> Bool {
         let textCheck  = NSPredicate(format:"SELF MATCHES %@", regEx)
         return textCheck.evaluate(with: text)

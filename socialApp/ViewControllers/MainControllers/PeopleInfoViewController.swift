@@ -11,11 +11,17 @@ import UIKit
 class PeopleInfoViewController: UIViewController {
     
     var peopleID: String
+    var withLikeButtons: Bool
+    weak var requestChatsDelegate: RequestChatListenerDelegate?
+    
+    var currentPeople: MPeople?
+    var people: MPeople?
     let peopleView = PeopleView()
     let loadingView = LoadingView(isHidden: false)
     
-    init(peopleID: String) {
+    init(peopleID: String, withLikeButtons: Bool) {
         self.peopleID = peopleID
+        self.withLikeButtons = withLikeButtons
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -25,15 +31,22 @@ class PeopleInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
+    
         configure()
         setupConstraints()
+        setup()
     }
     
     func setup() {
         view.backgroundColor = .myWhiteColor()
-        peopleView.likeButton.isHidden = true
-        peopleView.dislikeButton.isHidden = true
+        peopleView.likeButton.isHidden = !withLikeButtons
+        peopleView.dislikeButton.isHidden = !withLikeButtons
+        peopleView.likeButton.addTarget(self, action: #selector(likeTapped), for: .touchUpInside)
+        peopleView.dislikeButton.addTarget(self, action: #selector(dislikeTapped), for: .touchUpInside)
+        peopleView.layoutIfNeeded()
+        
+        currentPeople = UserDefaultsService.shared.getMpeople()
+        
     }
     
     func configure() {
@@ -41,6 +54,7 @@ class PeopleInfoViewController: UIViewController {
             switch result {
             
             case .success(let mPeople):
+                self?.people = mPeople
                 self?.peopleView.configure(with: mPeople) {
                     self?.loadingView.hide()
                 }
@@ -48,6 +62,60 @@ class PeopleInfoViewController: UIViewController {
                 fatalError(error.localizedDescription)
             }
         })
+    }
+}
+
+//MARK: obcj
+extension PeopleInfoViewController {
+    @objc private func likeTapped() {
+        guard let people = people else { return }
+        likePeople(people: people)
+    }
+    
+    @objc private func dislikeTapped() {
+        guard let people = people else { return }
+        dislikePeople(people: people)
+    }
+}
+extension PeopleInfoViewController: LikeDislikeTappedDelegate {
+     func likePeople(people: MPeople) {
+        guard let currentPeople = currentPeople else { return }
+        guard let requestChatsDelegate = requestChatsDelegate else { return }
+        //save like to firestore
+        FirestoreService.shared.likePeople(currentPeople: currentPeople,
+                                           likePeople: people,
+                                           requestChats: requestChatsDelegate.requestChats ) {[weak self] result in
+            switch result {
+            
+            case .success(_):
+                self?.peopleView.likeButton.isHidden = true
+                self?.peopleView.dislikeButton.isHidden = true
+                requestChatsDelegate.reloadListner()
+                
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
+    
+     func dislikePeople(people: MPeople) {
+        guard let currentPeople = currentPeople else { return }
+        guard let requestChatsDelegate = requestChatsDelegate else { return }
+        //save dislike from firestore
+        FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
+                                              dislikeForPeople: people,
+                                              requestChats: requestChatsDelegate.requestChats) {[weak self] result in
+            switch result {
+            
+            case .success(_):
+                self?.peopleView.likeButton.isHidden = true
+                self?.peopleView.dislikeButton.isHidden = true
+                requestChatsDelegate.reloadListner()
+                
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -69,8 +137,8 @@ extension PeopleInfoViewController {
             
             peopleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
             peopleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            peopleView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            peopleView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            peopleView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -20),
+            peopleView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }

@@ -10,7 +10,7 @@ import UIKit
 
 class LoadingView: UIView {
     
-    let logoImage = AnimationCustomView(name: "loading_3blackHeart", loopMode: .loop, contentMode: .scaleAspectFit)
+    let logoImage = AnimationCustomView(name: "logo_neverAlone", loopMode: .loop, contentMode: .scaleAspectFill)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

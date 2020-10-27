@@ -61,7 +61,7 @@ class ListenerService {
     func addPeopleListener(currentPeople: MPeople,
                            peopleDelegate: PeopleListenerDelegate,
                            likeDislikeDelegate: LikeDislikeDelegate,
-                           newActiveChatsDelegate: AcceptChatsDelegate) {
+                           acceptChatsDelegate: AcceptChatsDelegate) {
         peopleListner = userRef.addSnapshotListener { snapshot, error in
             guard let snapshot = snapshot else { return }
             
@@ -82,9 +82,9 @@ class ListenerService {
                                                                    newPeople: user,
                                                                    peopleDelegate: peopleDelegate,
                                                                    likeDislikeDelegate: likeDislikeDelegate,
-                                                                   acceptChatsDelegate: newActiveChatsDelegate,
+                                                                   acceptChatsDelegate: acceptChatsDelegate,
                                                                    isUpdate: false) {
-                        print(#function)
+                
                         peopleDelegate.peopleNearby.append(user)
                         peopleDelegate.reloadData(reloadSection: false, animating: true)
                     }
@@ -95,7 +95,7 @@ class ListenerService {
                                                                        newPeople: user,
                                                                        peopleDelegate: peopleDelegate,
                                                                        likeDislikeDelegate: likeDislikeDelegate,
-                                                                       acceptChatsDelegate: newActiveChatsDelegate,
+                                                                       acceptChatsDelegate: acceptChatsDelegate,
                                                                        isUpdate: true) {
                             peopleDelegate.peopleNearby[index] = user
                             peopleDelegate.updateData()
@@ -108,7 +108,7 @@ class ListenerService {
                                                                           newPeople: user,
                                                                           peopleDelegate: peopleDelegate,
                                                                           likeDislikeDelegate: likeDislikeDelegate,
-                                                                          acceptChatsDelegate: newActiveChatsDelegate,
+                                                                          acceptChatsDelegate: acceptChatsDelegate,
                                                                           isUpdate: false) {
                         peopleDelegate.peopleNearby.append(user)
                         peopleDelegate.reloadData(reloadSection: false, animating: true)
@@ -190,8 +190,11 @@ class ListenerService {
     
     
     //MARK: requestChatsListener
-    func addRequestChatsListener(requestChatDelegate: RequestChatListenerDelegate) {
+    func addRequestChatsListener(currentPeople: MPeople,
+                                 requestChatDelegate: RequestChatListenerDelegate,
+                                 likeDislikeDelegate: LikeDislikeDelegate) {
         
+        print(#function)
         self.requestChatsListner = requestChatsRef.addSnapshotListener({ snapshot, error in
             guard let snapshot = snapshot else { return }
             
@@ -208,18 +211,29 @@ class ListenerService {
                         chat.friendUserImageString = people.userImage
                         chat.friendUserName = people.displayName
                         
+
                         switch changes.type {
                         
                         case .added:
-                            requestChatDelegate.requestChats.append(chat)
-                            requestChatDelegate.reloadData(changeType: .addOrDelete)
+                            if Validators.shared.listnerAddRequestValidator(currentPeople: currentPeople,
+                                                                            newRequestChat: chat,
+                                                                            likeDislikeDelegate: likeDislikeDelegate) {
+                                requestChatDelegate.requestChats.append(chat)
+                                requestChatDelegate.reloadData(changeType: .addOrDelete)
+                            }
+                            
                         case .modified:
                             if let index = chats.firstIndex(of: chat) {
                                 requestChatDelegate.requestChats[index] = chat
                             } else {
-                                requestChatDelegate.requestChats.append(chat)
+                                if Validators.shared.listnerAddRequestValidator(currentPeople: currentPeople,
+                                                                                newRequestChat: chat,
+                                                                                likeDislikeDelegate: likeDislikeDelegate) {
+                                    requestChatDelegate.requestChats.append(chat)
+                                }
                             }
                             requestChatDelegate.reloadData(changeType: .update)
+                            
                         case .removed:
                             if let index = chats.firstIndex(of: chat) {
                                 requestChatDelegate.requestChats.remove(at: index)
