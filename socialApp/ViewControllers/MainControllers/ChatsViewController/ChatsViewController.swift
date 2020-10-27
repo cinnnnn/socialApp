@@ -257,7 +257,7 @@ extension ChatsViewController {
         }
     }
     
-    //MARK:  reloadData
+    //MARK:  reloadDataSource
     private func reloadDataSource(searchText: String?){
         let sortedChats = sortedAcceptChats.filter { activeChat -> Bool in
             activeChat.contains(element: searchText)
@@ -287,6 +287,26 @@ extension ChatsViewController {
         }
     }
     
+    //MARK:  updateDataSource
+    private func updateDataSource(searchText: String?){
+        let activeChats = sortedAcceptChats.filter({ chat -> Bool in
+            !chat.isNewChat
+        })
+        
+        if let collectionView = collectionView {
+            collectionView.setCollectionViewLayout(setupCompositionalLayout(isEmptyActiveSection: activeChats.isEmpty),
+                                                   animated: false) {[weak self] finished in
+                if finished {
+                    
+                    //for correct update cell data in collectionView
+                    guard var snapshot = self?.dataSource?.snapshot() else { return }
+                    snapshot.appendItems(activeChats, toSection: .activeChats)
+                    self?.dataSource?.apply(snapshot, animatingDifferences: false)
+                }
+            }
+        }
+    }
+    
     //MARK:  updateHeader
     private func updateHeader() {
         guard var snapshot = dataSource?.snapshot() else { fatalError("Snapshot not exist")}
@@ -302,16 +322,10 @@ extension ChatsViewController: AcceptChatListenerDelegate {
     func reloadData(changeType: MTypeOfListenerChanges) {
         switch changeType {
         case .addOrDelete:
-            
             reloadDataSource(searchText: nil)
             
         case .update:
-            //for correct update cell data in collectionView
-            guard var snapshot = dataSource?.snapshot() else { return }
-            snapshot.appendItems(sortedAcceptChats.filter({ chat -> Bool in
-                !chat.isNewChat
-            }), toSection: .activeChats)
-            dataSource?.apply(snapshot, animatingDifferences: false)
+            updateDataSource(searchText: nil)
         }
     }
 }

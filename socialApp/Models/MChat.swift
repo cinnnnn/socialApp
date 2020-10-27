@@ -9,7 +9,7 @@
 import Foundation
 import FirebaseFirestore
 
-struct MChat: Hashable, Codable {
+struct MChat: Hashable, Codable, ReprasentationModel {
     var friendUserName: String
     var friendUserImageString: String
     var lastMessage: String
@@ -58,8 +58,48 @@ struct MChat: Hashable, Codable {
         if let date = documet["date"] as? Timestamp {
             self.date = date.dateValue()
         } else { return nil }
-
       }
+    
+    //for get document from Firestore
+    init?(documentSnap: DocumentSnapshot){
+        guard let documet = documentSnap.data()  else { return nil }
+          
+        if let friendUserName = documet["friendUserName"] as? String {
+            self.friendUserName = friendUserName
+        } else { return nil }
+        
+        if let friendUserImageString = documet["friendUserImageString"] as? String {
+            self.friendUserImageString = friendUserImageString
+        } else { return nil }
+        
+        if let lastMessage =  documet["lastMessage"] as? String {
+            self.lastMessage = lastMessage
+        } else { return nil }
+        
+        if let isNewChat =  documet["isNewChat"] as? Bool {
+            self.isNewChat = isNewChat
+        } else { return nil }
+        
+        if let friendId = documet["friendId"] as? String {
+            self.friendId = friendId
+        } else { return nil }
+        
+        if let date = documet["date"] as? Timestamp {
+            self.date = date.dateValue()
+        } else { return nil }
+      }
+    
+    var reprasentation: [String:Any] {
+        let rep:[String: Any] = [
+            "friendUserName": friendUserName,
+            "friendUserImageString": friendUserImageString,
+            "lastMessage": lastMessage,
+            "isNewChat": isNewChat,
+            "friendId": friendId,
+            "date": date
+        ]
+        return rep
+    }
     
     enum CodingKeys: String, CodingKey {
         case friendUserName

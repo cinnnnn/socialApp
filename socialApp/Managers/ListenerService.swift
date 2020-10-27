@@ -331,7 +331,7 @@ class ListenerService {
                 case .modified:
                     break
                 case .removed:
-                    break
+                    complition(.failure(MessageError.deleteChat))
                 }
             }
         })

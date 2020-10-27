@@ -108,13 +108,11 @@ class FirestoreService {
                               advert: String,
                               gender: String,
                               sexuality: String,
-                              lookingFor: String,
                               complition: @escaping (Result<Void,Error>) -> Void) {
         usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : name,
                                              MPeople.CodingKeys.advert.rawValue : advert,
                                              MPeople.CodingKeys.gender.rawValue : gender,
-                                             MPeople.CodingKeys.sexuality.rawValue : sexuality,
-                                             MPeople.CodingKeys.lookingFor.rawValue : lookingFor],
+                                             MPeople.CodingKeys.sexuality.rawValue : sexuality],
         merge: true) { error in
             if let error = error {
                 complition(.failure(error))
@@ -125,7 +123,6 @@ class FirestoreService {
                     people.advert = advert
                     people.gender = gender
                     people.sexuality = sexuality
-                    people.lookingFor = lookingFor
                     UserDefaultsService.shared.saveMpeople(people: people)
                 }
                 complition(.success(()))
@@ -406,6 +403,59 @@ class FirestoreService {
                 }
             }
         }  
+    }
+    
+    //MARK: deleteAllChats
+    func deleteAllChats(forPeopleID: String) {
+        
+        //delete acceptChats
+        let refChats = db.collection([MFirestorCollection.users.rawValue, forPeopleID, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        
+        //get all acceptChats, for delete messages collection
+        getAlldocument(type: MChat.self, collection: refChats) {[weak self] chats in
+            chats.forEach { chat in
+                
+                //delete all message in current chat
+                let refMessages = refChats.document(chat.friendId).collection(MFirestorCollection.messages.rawValue)
+                self?.deleteCollection(collection: refMessages)
+                
+                //friend chat
+                guard let refFriendChat = self?.db.collection([MFirestorCollection.users.rawValue, chat.friendId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/")) else { return }
+                
+                //delete all messages in friend chat
+                let refFriendChatMessages = refFriendChat.document(forPeopleID).collection(MFirestorCollection.messages.rawValue)
+                self?.deleteCollection(collection: refFriendChatMessages)
+                
+                //delete chat document from friend
+                refFriendChat.document(forPeopleID).delete()
+                
+                //delete chat document from current user
+                refChats.document(chat.friendId).delete()
+            }
+        }
+    }
+    //MARK: deleteChat
+    func deleteChat(currentUserID: String, chat: MChat) {
+        
+        //delete acceptChats
+        let refChat = db.document([MFirestorCollection.users.rawValue,
+                                   currentUserID,
+                                   MFirestorCollection.acceptChats.rawValue,
+                                   chat.friendId].joined(separator: "/"))
+        let friendChat = db.document([MFirestorCollection.users.rawValue,
+                                      chat.friendId,
+                                      MFirestorCollection.acceptChats.rawValue,
+                                      currentUserID].joined(separator: "/"))
+        
+        let refMessageCollection = refChat.collection(MFirestorCollection.messages.rawValue)
+        let refFriendMessageCollection = friendChat.collection(MFirestorCollection.messages.rawValue)
+        //delete all messages from current and friend user
+        deleteCollection(collection: refMessageCollection)
+        deleteCollection(collection: refFriendMessageCollection)
+        
+        //delete chat document from current and friend user
+        refChat.delete()
+        friendChat.delete()
     }
 }
 

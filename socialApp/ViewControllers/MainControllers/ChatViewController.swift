@@ -16,6 +16,7 @@ class ChatViewController: MessagesViewController  {
     private let user:MPeople
     private let chat:MChat
     private var messages:[MMessage] = []
+    lazy var isInitiateDeleteChat = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +46,7 @@ class ChatViewController: MessagesViewController  {
     }
     
     deinit {
+        print(#function)
         ListenerService.shared.removeMessageListener()
     }
     
@@ -62,6 +64,12 @@ class ChatViewController: MessagesViewController  {
     
         navigationItem.titleView = ChatTitleStackView(chat: chat, target: self, profileTappedAction: #selector(profileTapped))
         navigationItem.backButtonTitle = ""
+        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "pencil.circle"),
+                                            style: .done,
+                                            target: self,
+                                            action: #selector(chatSettingsTapped))
+        navigationItem.rightBarButtonItem = barButtonItem
+            
         
         //add screenshot observer
         NotificationCenter.default.addObserver(self,
@@ -79,7 +87,11 @@ class ChatViewController: MessagesViewController  {
                 self?.newMessage(message: message)
                 
             case .failure(let error):
-                fatalError(error.localizedDescription)
+                guard let isInitiateDeleteChat = self?.isInitiateDeleteChat else { return }
+                //if user don't press delete chat, show alert and close chat
+                if !isInitiateDeleteChat {
+                self?.showDeleteChatAlert(text: error.localizedDescription)
+                }
             }
         }
     }
@@ -168,7 +180,10 @@ class ChatViewController: MessagesViewController  {
     
 }
 
+//MARK: objc
 extension ChatViewController {
+    
+    
     //MARK: tuppedSendImage
     @objc private func tuppedSendImage() {
         let picker = UIImagePickerController()
@@ -207,6 +222,13 @@ extension ChatViewController {
         profileVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(profileVC, animated: true)
     }
+    
+    //MARK: profileTapped
+    @objc private func chatSettingsTapped() {
+        isInitiateDeleteChat = true
+        navigationController?.popToRootViewController(animated: true)
+        FirestoreService.shared.deleteChat(currentUserID: user.senderId, chat: chat)
+    }
 }
 
 extension ChatViewController {
@@ -236,6 +258,23 @@ extension ChatViewController {
         photoAlert.addAction(cancelAction)
         
         present(photoAlert, animated: true, completion: nil)
+    }
+    
+    //MARK: showDeleteChatAlert
+    private func showDeleteChatAlert(text: String) {
+        let alert = UIAlertController(title: nil,
+                                      message: text,
+                                      preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Ок",
+                                     style: .default) {[weak self] _ in
+            
+            self?.navigationController?.popToRootViewController(animated: true)
+        }
+        
+        alert.setMyLightStyle()
+        alert.addAction(okAction)
+        
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -277,7 +316,7 @@ extension ChatViewController: MessagesDataSource {
         } else {
             //if from previus message more then 10 minets show time
             let timeDifference = messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
-            print(timeDifference)
+            
             if timeDifference > 1 {
                 return attributedDateString
             } else {

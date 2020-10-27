@@ -24,7 +24,6 @@ class EditProfileViewController: UIViewController {
                              textColor: .myGrayColor())
     let genderButton = OneLineButton(header: "Гендер", info: "")
     let sexualityButton = OneLineButton(header: "Сексуальная ориентация", info: "")
-    let lookingForButton = OneLineButton(header: "Ищу", info: "")
     let nameTextField = OneLineTextField(isSecureText: false,
                                          tag: 1,
                                          placeHoledText: "Ты можешь быть кем угодно...")
@@ -103,7 +102,6 @@ class EditProfileViewController: UIViewController {
         editPhotosButton.addTarget(self, action: #selector(editPhotosButtonTap), for: .touchUpInside)
         genderButton.addTarget(self, action: #selector(genderSelectTapped), for: .touchUpInside)
         sexualityButton.addTarget(self, action: #selector(sexualitySelectTapped), for: .touchUpInside)
-        lookingForButton.addTarget(self, action: #selector(sexualitySelectTapped), for: .touchUpInside)
     }
 }
 
@@ -123,7 +121,6 @@ extension EditProfileViewController {
         advertTextView.text = people.advert
         genderButton.infoLabel.text = people.gender
         sexualityButton.infoLabel.text = people.sexuality
-        lookingForButton.infoLabel.text = people.lookingFor
 
     }
     
@@ -135,13 +132,11 @@ extension EditProfileViewController {
         
         guard let gender = genderButton.infoLabel.text else { fatalError("Can't get gender from button")}
         guard let sexuality = sexualityButton.infoLabel.text else { fatalError("Can't get sexuality from button")}
-        guard let lookingFor = lookingForButton.infoLabel.text else { fatalError("Can't get lookingFor from button")}
         FirestoreService.shared.saveProfileAfterEdit(id: id,
                                                      name: name,
                                                      advert: advert,
                                                      gender: gender,
-                                                     sexuality: sexuality,
-                                                     lookingFor: lookingFor) { result in
+                                                     sexuality: sexuality) { result in
             switch result {
             
             case .success():
@@ -208,19 +203,6 @@ extension EditProfileViewController {
         present(vc, animated: true, completion: nil)
     }
     
-    //MARK: lookingForSelectTapped
-    @objc private func lookingForSelectTapped() {
-        let vc = SelectionViewController(elements: MLookingFor.modelStringAllCases,
-                                         description: MLookingFor.description,
-                                         selectedValue: lookingForButton.infoLabel.text ?? "",
-                                         complition: { [weak self] selected in
-                                            self?.lookingForButton.infoLabel.text = selected
-                                         })
-        vc.modalPresentationStyle = .overCurrentContext
-        
-        present(vc, animated: true, completion: nil)
-    }
-    
     //MARK: updateView
     @objc func updateView(notification: Notification) {
         let info = notification.userInfo
@@ -277,7 +259,6 @@ extension EditProfileViewController {
         aboutLabel.translatesAutoresizingMaskIntoConstraints = false
         advertTextView.translatesAutoresizingMaskIntoConstraints = false
         genderButton.translatesAutoresizingMaskIntoConstraints = false
-        lookingForButton.translatesAutoresizingMaskIntoConstraints = false
         sexualityButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(scrollView)
@@ -288,7 +269,6 @@ extension EditProfileViewController {
         scrollView.addSubview(aboutLabel)
         scrollView.addSubview(advertTextView)
         scrollView.addSubview(genderButton)
-        scrollView.addSubview(lookingForButton)
         scrollView.addSubview(sexualityButton)
         
         NSLayoutConstraint.activate([
@@ -332,12 +312,7 @@ extension EditProfileViewController {
             sexualityButton.topAnchor.constraint(equalTo: genderButton.bottomAnchor, constant: 15),
             sexualityButton.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             sexualityButton.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
-            sexualityButton.heightAnchor.constraint(equalToConstant: 70),
-            
-            lookingForButton.topAnchor.constraint(equalTo: sexualityButton.bottomAnchor, constant: 15),
-            lookingForButton.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
-            lookingForButton.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
-            lookingForButton.heightAnchor.constraint(equalToConstant: 70)
+            sexualityButton.heightAnchor.constraint(equalToConstant: 70)
         ])
     }
 }
