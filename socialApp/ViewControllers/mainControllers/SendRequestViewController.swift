@@ -92,21 +92,7 @@ class SendRequestViewController: UIViewController {
     }
     
     @objc func sendMessage() {
-        let text = unswerTextField.text ?? ""
-        unswerTextField.rightView?.isHidden = true
-        FirestoreService.shared.sendChatRequest(fromUser: currentPeople,
-                                                forFrend: requestToPeople,
-                                                text: text) {[weak self] result in
-            switch result {
-            
-            case .success(_):
-                self?.removeKeyboadNotification()
-                self?.dismiss(animated: true, completion: nil)
-            case .failure(let error):
-                self?.unswerTextField.rightView?.isHidden = false
-                fatalError(error.localizedDescription)
-            }
-        }
+       
     }
 }
 

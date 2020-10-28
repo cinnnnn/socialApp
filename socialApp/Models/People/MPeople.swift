@@ -28,6 +28,7 @@ struct MPeople: Hashable, Codable, SenderType {
     var isBlocked: Bool
     var isAdmin: Bool
     var isActive: Bool
+    var authType: MAuthType
     var reportList: [MReports:String]
     
     var searchSettings: [String: Int]
@@ -50,6 +51,7 @@ struct MPeople: Hashable, Codable, SenderType {
          isAdmin: Bool,
          isActive: Bool,
          reportList: [MReports:String],
+         authType: MAuthType,
          searchSettings: [String: Int],
          location: CLLocationCoordinate2D,
          distance: Int) {
@@ -70,6 +72,7 @@ struct MPeople: Hashable, Codable, SenderType {
         self.isAdmin = isAdmin
         self.isActive = isActive
         self.reportList = reportList
+        self.authType = authType
         self.searchSettings = searchSettings
         self.location = location
         self.distance = distance
@@ -122,6 +125,16 @@ struct MPeople: Hashable, Codable, SenderType {
                                    MSearchSettings.minRange.rawValue : MSearchSettings.minRange.defaultValue,
                                    MSearchSettings.maxRange.rawValue : MSearchSettings.maxRange.defaultValue,
                                    MSearchSettings.currentLocation.rawValue : MSearchSettings.currentLocation.defaultValue]
+        }
+        
+        if let authType = documet["authType"] as? String {
+            if let mAuthType = MAuthType(rawValue: authType) {
+                self.authType = mAuthType
+            } else {
+                self.authType = MAuthType.defaultAuthType()
+            }
+        } else {
+            self.authType = MAuthType.defaultAuthType()
         }
         
         guard let mail = documet["mail"] as? String else { return nil }
@@ -181,6 +194,15 @@ struct MPeople: Hashable, Codable, SenderType {
                                    MSearchSettings.maxRange.rawValue : MSearchSettings.maxRange.defaultValue,
                                    MSearchSettings.currentLocation.rawValue : MSearchSettings.currentLocation.defaultValue]
         }
+        if let authType = documet["authType"] as? String {
+            if let mAuthType = MAuthType(rawValue: authType) {
+                self.authType = mAuthType
+            } else {
+                self.authType = MAuthType.defaultAuthType()
+            }
+        } else {
+            self.authType = MAuthType.defaultAuthType()
+        }
         
         guard let mail = documet["mail"] as? String else { return nil }
         guard let senderId = documet["senderId"] as? String else { return nil }
@@ -209,6 +231,7 @@ struct MPeople: Hashable, Codable, SenderType {
         guard let reportList = data["reportList"] as? [MReports:String] else { return nil }
         guard let location = data["location"] as? CLLocationCoordinate2D else { return nil }
         guard let mail = data["mail"] as? String else { return nil }
+        guard let authType = data["authType"] as? MAuthType else { return nil }
         guard let searchSettings = data["searchSettings"] as? [String: Int] else { return nil}
         guard let senderId = data["senderId"] as? String else { return nil }
         guard let distance = data["distance"] as? Int else { return nil }
@@ -229,6 +252,7 @@ struct MPeople: Hashable, Codable, SenderType {
         self.reportList = reportList
         self.location = location
         self.mail = mail
+        self.authType = authType
         self.searchSettings = searchSettings
         self.senderId = senderId
         self.distance = distance
@@ -251,6 +275,7 @@ struct MPeople: Hashable, Codable, SenderType {
         case reportList
         case location
         case mail
+        case authType
         case searchSettings
         case senderId
         case distance

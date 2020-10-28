@@ -118,7 +118,8 @@ extension RegisterEmailViewController {
                 guard let email = user.email else { fatalError("cant get email")}
                 //if user create in auth, then create current user in cloud Firestore
                 FirestoreService.shared.saveBaseProfile(id: email,
-                                                        email: email ) { result in
+                                                        email: email,
+                                                        authType: .email) { result in
                     switch result {
                     case .success(let id):
                         //after save base profile in Firestore, close and show complite registration VC

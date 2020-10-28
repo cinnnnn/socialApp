@@ -46,14 +46,11 @@ class ChatViewController: MessagesViewController  {
     }
     
     deinit {
-        print(#function)
         ListenerService.shared.removeMessageListener()
     }
     
     //MARK: configure
     private func configure() {
-     
-        messagesCollectionView.insetsLayoutMarginsFromSafeArea = true
         showMessageTimestampOnSwipeLeft = true
         
         //delete avatar from message
@@ -64,13 +61,12 @@ class ChatViewController: MessagesViewController  {
     
         navigationItem.titleView = ChatTitleStackView(chat: chat, target: self, profileTappedAction: #selector(profileTapped))
         navigationItem.backButtonTitle = ""
-        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "pencil.circle"),
+        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"),
                                             style: .done,
                                             target: self,
                                             action: #selector(chatSettingsTapped))
         navigationItem.rightBarButtonItem = barButtonItem
             
-        
         //add screenshot observer
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(screenshotTaken),

@@ -150,5 +150,21 @@ class StorageService {
             }
         }
     }
+    
+    //MARK: deleteProfileImages
+    func deleteProfileImages(userID: String) {
+        let currentAvatarsRef = avatarRef.child(userID)
+       
+        currentAvatarsRef.listAll { result, error in
+            guard error == nil else { return }
+            for photo in result.items {
+                photo.delete { error in
+                    if let error = error {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
+        }
+    }
 }
 

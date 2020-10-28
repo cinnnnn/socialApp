@@ -38,7 +38,7 @@ class AuthService {
         
         user.sendEmailVerification { error in
             
-
+            
         }
     }
     
@@ -74,11 +74,11 @@ class AuthService {
                 return
             }
             
-             let credential = OAuthProvider.credential(withProviderID: "apple.com",
+            let credential = OAuthProvider.credential(withProviderID: "apple.com",
                                                       idToken: idTokenString,
                                                       rawNonce: nonce)
-                
-             complition(.success(credential))
+            
+            complition(.success(credential))
         }
     }
     
@@ -138,7 +138,6 @@ class AuthService {
         
         auth.signIn(withEmail: isFilledCheck.email, password: isFilledCheck.password) { result, error in
             
-           
             guard let result = result else {
                 complition(.failure(error!))
                 return
@@ -160,6 +159,46 @@ class AuthService {
         } catch {
             complition(.failure(error))
         }
+    }
+    
+    //MARK: - reAuthentificate
+    func reAuthentificate(credential: AuthCredential?, email: String?, password: String?, complition: @escaping (Result<User,Error>) -> Void) {
+        let user = Auth.auth().currentUser
+
+        //if dont have credential, login with email to get them
+        if let newCredential = credential {
+            user?.reauthenticate(with: newCredential) { arg, error   in
+                if let error = error {
+                    complition(.failure(error))
+                } else {
+                    if let user = arg?.user {
+                        complition(.success(user))
+                    }
+                }
+            }
+        } else {
+            guard let email = email else { complition(.failure(AuthError.invalidEmail)); return }
+            guard let password = password else { complition(.failure(AuthError.invalidPassword)); return }
+            Auth.auth().signIn(withEmail: email, password: password) { result, error in
+                if let error = error {
+                    complition(.failure(error))
+                }
+                if let result = result {
+                    complition(.success(result.user))
+                }
+            }
+        }
+    }
+    
+    //MARK: - deleteUser
+    func deleteUser(complition: @escaping (Result<Bool,Error>)-> Void) {
+        auth.currentUser?.delete(completion: { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                complition(.success(true))
+            }
+        })
     }
 }
 

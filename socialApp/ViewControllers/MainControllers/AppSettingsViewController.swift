@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import FirebaseAuth
+import AuthenticationServices
 
 class AppSettingsViewController: UIViewController {
     
@@ -37,6 +39,24 @@ class AppSettingsViewController: UIViewController {
         
         navigationItem.backButtonTitle = ""
         navigationItem.largeTitleDisplayMode = .never
+    }
+}
+
+extension AppSettingsViewController {
+    //MARK: deleteAllUserData
+    private func deleteAllUserData() {
+        FirestoreService.shared.deleteAllProfileData(userID: currentPeople.senderId) { [weak self] in
+            //after delete, sign out
+            self?.view.addCustomTransition(type: .fade)
+            AuthService.shared.signOut { result in
+                switch result {
+                case .success(_):
+                    return
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
+                }
+            }
+        }
     }
 }
 
@@ -129,14 +149,15 @@ extension AppSettingsViewController: UICollectionViewDelegate {
             case .about:
                 break
             case .logOut:
-               signOutAlert(pressedIndexPath: indexPath)
+                signOutAlert(pressedIndexPath: indexPath)
             case .terminateAccaunt:
-                break
+                terminateAccauntAlert(pressedIndexPath: indexPath)
             }
         }
     }
 }
 
+//MARK: - ALERTS
 extension AppSettingsViewController {
     //MARK:  signOutAlert
     private func signOutAlert(pressedIndexPath: IndexPath) {
@@ -162,11 +183,153 @@ extension AppSettingsViewController {
             self?.collectionView.deselectItem(at: pressedIndexPath, animated: true)
         }
         
-        alert.setMyStyle()
+        alert.setMyLightStyle()
         alert.addAction(okAction)
         alert.addAction(cancelAction)
         
         present(alert, animated: true, completion: nil)
+    }
+    
+    //MARK:  terminateAccauntAlert
+    private func terminateAccauntAlert(pressedIndexPath: IndexPath) {
+        
+        let alert = UIAlertController(title: nil,
+                                      message: "Удалить профиль полностью, без возможности восстановления?",
+                                      preferredStyle: .actionSheet)
+        
+        let okAction = UIAlertAction(title: "Ввести пароль и удалить",
+                                     style: .destructive) {[weak self] _ in
+            
+            let authType = self?.currentPeople.authType
+            
+            switch authType {
+            case .appleID:
+                AuthService.shared.AppleIDRequest(delegateController: self!,
+                                                  presetationController: self!)
+            case .email:
+                self?.emailLoginAlert()
+            case .none:
+                return
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: "Продолжу общение",
+                                         style: .default) { [weak self] _ in
+            self?.collectionView.deselectItem(at: pressedIndexPath, animated: true)
+        }
+        
+        alert.setMyLightStyle()
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    //MARK:  emailLoginAlert
+    private func emailLoginAlert() {
+        let alert = UIAlertController(title: "Введи свой пароль от почты:",
+                                      message: currentPeople.mail,
+                                      preferredStyle: .alert)
+
+        let actionOK = UIAlertAction(title: "Подтвердить",
+                                     style: .cancel) {[weak self] _ in
+            
+            guard let password = alert.textFields?.first?.text else { return }
+            guard let mail = self?.currentPeople.mail else { return }
+            
+            print(password, mail)
+            AuthService.shared.reAuthentificate(credential: nil,
+                                                email: mail,
+                                                password: password) { result in
+                switch result {
+                
+                case .success(_):
+                    self?.deleteAllUserData()
+                case .failure(let error):
+                    self?.reAuthErrorAlert(text: error.localizedDescription)
+                }
+            }
+        }
+        
+        alert.addTextField { passwordTextField in
+            passwordTextField.isSecureTextEntry = true
+            passwordTextField.tag = 1
+            passwordTextField.delegate = self
+        }
+        
+        alert.setMyLightStyle()
+        alert.addAction(actionOK)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    //MARK:  reAuthAlert
+    private func reAuthErrorAlert(text: String) {
+        let alert = UIAlertController(title: "Ошибка",
+                                      message: text,
+                                      preferredStyle: .actionSheet)
+        let actionCancel = UIAlertAction(title: "Хорошо",
+                                         style: .cancel, handler: nil)
+        
+        alert.setMyLightStyle()
+        alert.addAction(actionCancel)
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
+extension AppSettingsViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.selectAll(nil)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Try to find next responder
+        if let nextField = textField.superview?.viewWithTag(textField.tag + 1) as? UITextField, nextField.isEnabled {
+            nextField.becomeFirstResponder()
+        } else {
+            // Not found, so remove keyboard.
+            textField.resignFirstResponder()
+        }
+        return false
+    }
+}
+
+//MARK: - AppleID Auth
+extension AppSettingsViewController: ASAuthorizationControllerPresentationContextProviding {
+    
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        guard let window = self.view.window else { fatalError("can't get window")}
+        return window
+    }
+}
+
+//MARK:  ASAuthorizationControllerDelegate
+extension AppSettingsViewController: ASAuthorizationControllerDelegate {
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        
+        AuthService.shared.didCompleteWithAuthorizationApple(authorization: authorization) {  [weak self] result in
+            
+            switch result {
+            
+            //if success get credential, then auth
+            case .success(let credential):
+                
+                AuthService.shared.reAuthentificate(credential: credential, email: nil, password: nil) { result in
+                    switch result {
+                    
+                    case .success(_):
+                        //after reAuth, delete all user data
+                        self?.deleteAllUserData()
+                    case .failure(let error):
+                        self?.reAuthErrorAlert(text: error.localizedDescription)
+                    }
+                }
+            //Error get credential for Apple Auth
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
     }
 }
 

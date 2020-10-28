@@ -94,7 +94,8 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                     case .success(let user):
                         //if success Apple login renew or create base mPeople info
                         FirestoreService.shared.saveBaseProfile(id: user.email!,
-                                                                email: user.email!) { result in
+                                                                email: user.email!,
+                                                                authType: .appleID) { result in
                             switch result {
                             
                             case .success(let id):

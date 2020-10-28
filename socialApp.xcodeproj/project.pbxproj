@@ -95,6 +95,7 @@
 		FBB26EC3254843C60081CF2C /* AppSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EC2254843C50081CF2C /* AppSettingsViewController.swift */; };
 		FBB26EC72548452C0081CF2C /* MAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EC62548452C0081CF2C /* MAppSettings.swift */; };
 		FBB26ECA254845D90081CF2C /* SectionAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */; };
+		FBB26ECF254980500081CF2C /* MAuthType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26ECE2549804F0081CF2C /* MAuthType.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
 		FBB3B265250ACA0700440632 /* MGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B264250ACA0700440632 /* MGender.swift */; };
@@ -215,6 +216,7 @@
 		FBB26EC2254843C50081CF2C /* AppSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsViewController.swift; sourceTree = "<group>"; };
 		FBB26EC62548452C0081CF2C /* MAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAppSettings.swift; sourceTree = "<group>"; };
 		FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionAppSettings.swift; sourceTree = "<group>"; };
+		FBB26ECE2549804F0081CF2C /* MAuthType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAuthType.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		FBB3B260250905D800440632 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 			children = (
 				FB39F2D724F66EFE001B9C4F /* MPeople.swift */,
 				FBB26EB32546E49B0081CF2C /* MAdmin.swift */,
+				FBB26ECE2549804F0081CF2C /* MAuthType.swift */,
 				FBB4F35925116D7300ACFE90 /* DefaultImage.swift */,
 				FB61A7F7251E3FE4005DCC78 /* MSender.swift */,
 				FB79DA6D252C942B00A7AA56 /* MLocation.swift */,
@@ -812,6 +815,7 @@
 				FB1062D824AE494A0012C4D4 /* OneLineTextField.swift in Sources */,
 				FBB26EB72546EC230081CF2C /* PeopleView.swift in Sources */,
 				FB8C3D98253A525500184FB5 /* SectionsRequests.swift in Sources */,
+				FBB26ECF254980500081CF2C /* MAuthType.swift in Sources */,
 				FBB3B267250D00D000440632 /* StorageError.swift in Sources */,
 				FB18217724B21F5100FFFC87 /* ChatsViewController.swift in Sources */,
 				FB8C3D94253A51BF00184FB5 /* RequestsViewController.swift in Sources */,

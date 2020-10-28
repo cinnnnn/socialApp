@@ -26,11 +26,14 @@ class FirestoreService {
     //MARK:  saveBaseProfile
     func saveBaseProfile(id: String,
                          email: String,
+                         authType: MAuthType,
                          complition: @escaping (Result<String, Error>) -> Void){
         
+        let authTypeString = authType.rawValue
         //save base user info to cloud FireStore
         usersReference.document(id).setData([MPeople.CodingKeys.senderId.rawValue : id,
-                                             MPeople.CodingKeys.mail.rawValue: email],
+                                             MPeople.CodingKeys.mail.rawValue: email,
+                                             MPeople.CodingKeys.authType.rawValue: authTypeString],
                                             merge: true,
                                             completion: { (error) in
                                                 if let error = error {
@@ -113,7 +116,7 @@ class FirestoreService {
                                              MPeople.CodingKeys.advert.rawValue : advert,
                                              MPeople.CodingKeys.gender.rawValue : gender,
                                              MPeople.CodingKeys.sexuality.rawValue : sexuality],
-        merge: true) { error in
+                                            merge: true) { error in
             if let error = error {
                 complition(.failure(error))
             } else {
@@ -197,9 +200,9 @@ class FirestoreService {
         }
     }
     
-    //MARK: getLikePeople
+    //MARK: getLikeDislikePeople
     func getLikeDislikePeople(userID: String, collection: String, complition: @escaping(Result<[MChat], Error>)->Void) {
-      
+        
         let reference = usersReference.document(userID).collection(collection)
         var chats: [MChat] = []
         reference.getDocuments { snapshot, error in
@@ -221,7 +224,7 @@ class FirestoreService {
     
     //MARK: sendChatRequest
     func sendChatRequest(fromUser: MPeople, forFrend: MPeople, text:String?, complition: @escaping(Result<MMessage,Error>)->Void) {
-
+        
         let textToSend = text ?? MLabels.requestMessage.rawValue
         let collectionRequestRef = db.collection([MFirestorCollection.users.rawValue, forFrend.senderId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
         let messagesRef = collectionRequestRef.document(fromUser.senderId).collection(MFirestorCollection.messages.rawValue)
@@ -235,7 +238,7 @@ class FirestoreService {
                                 isNewChat: false,
                                 friendId: fromUser.senderId,
                                 date: Date())
-
+        
         do { //add chat request document for reciever user
             try collectionRequestRef.document(fromUser.senderId).setData(from: chatMessage, merge: true)
             //add message to collection messages in ChatRequest
@@ -357,7 +360,7 @@ class FirestoreService {
             complition(.success(dislikeChat))
         } catch { complition(.failure(error))}
     }
-
+    
     
     //MARK: sendMessage
     func sendMessage(chat: MChat,
@@ -404,9 +407,14 @@ class FirestoreService {
             }
         }  
     }
+}
+
+//MARK: - WORK WITH PROFILE
+extension FirestoreService {
+    
     
     //MARK: deleteAllChats
-    func deleteAllChats(forPeopleID: String) {
+    func deleteAllChats(forPeopleID: String, complition: @escaping ()-> Void) {
         
         //delete acceptChats
         let refChats = db.collection([MFirestorCollection.users.rawValue, forPeopleID, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
@@ -431,9 +439,14 @@ class FirestoreService {
                 
                 //delete chat document from current user
                 refChats.document(chat.friendId).delete()
+                
+                //delete chat images for this chat
+                StorageService.shared.deleteChatImages(currentUserID: forPeopleID, friendUserID: chat.friendId)
             }
+            complition()
         }
     }
+    
     //MARK: deleteChat
     func deleteChat(currentUserID: String, friendID: String) {
         
@@ -456,7 +469,76 @@ class FirestoreService {
         //delete chat document from current and friend user
         refChat.delete()
         friendChat.delete()
+        
+        //delete chat images
+        StorageService.shared.deleteChatImages(currentUserID: currentUserID, friendUserID: friendID)
     }
+    
+    //MARK: delte input request
+    func deleteInputRequest(currentUserID: String, complition: @escaping ()-> Void) {
+        let refCurrentRequestChat = db.collection([MFirestorCollection.users.rawValue,
+                                                   currentUserID,
+                                                   MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
+        
+        getAlldocument(type: MChat.self, collection: refCurrentRequestChat) {[weak self] requestChats in
+            requestChats.forEach { chat in
+                //delete request chat for current user
+                refCurrentRequestChat.document(chat.friendId).delete()
+                //delete like chat for friend collection
+                let refFriendLike = self?.db.collection([MFirestorCollection.users.rawValue,
+                                                         chat.friendId,
+                                                         MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+                
+                refFriendLike?.document(currentUserID).delete()
+            }
+            complition()
+        }
+    }
+    
+    //MARK: delte output like
+    func deleteOutputLike(currentUserID: String, complition: @escaping ()-> Void) {
+        let refCurrentLikeChat = db.collection([MFirestorCollection.users.rawValue,
+                                                currentUserID,
+                                                MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        
+        getAlldocument(type: MChat.self, collection: refCurrentLikeChat) {[weak self] likeChats in
+            likeChats.forEach { chat in
+                //delete output like chat for current user
+                refCurrentLikeChat.document(chat.friendId).delete()
+                //delete request chat for friend collection
+                let refFriendRequest = self?.db.collection([MFirestorCollection.users.rawValue,
+                                                            chat.friendId,
+                                                            MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
+                
+                refFriendRequest?.document(currentUserID).delete()
+            }
+            complition()
+        }
+    }
+    
+    //MARK: delete all dislike
+    func deleteAllDislikes(userID: String, complition: @escaping ()-> Void) {
+        
+        let refCurrentRequestChat = db.collection([MFirestorCollection.users.rawValue,
+                                                   userID,
+                                                   MFirestorCollection.dislikePeople.rawValue].joined(separator: "/"))
+        getAlldocument(type: MChat.self, collection: refCurrentRequestChat) { dislikeChats in
+            dislikeChats.forEach { dislikeChat in
+                refCurrentRequestChat.document(dislikeChat.friendId).delete()
+            }
+            complition()
+        }
+    }
+    
+    //MARK: delete profile document
+    func deleteProfileDocument(userID: String, complition: @escaping ()-> Void) {
+        let refCurrentUser = db.collection(MFirestorCollection.users.rawValue).document(userID)
+        refCurrentUser.delete()
+        //delete profile images
+        StorageService.shared.deleteProfileImages(userID: userID)
+        complition()
+    }
+    
     
     //MARK: unMatch
     func unMatch(currentUser: MPeople, chat: MChat, complition:@escaping(Result<MChat,Error>)->Void) {
@@ -480,63 +562,55 @@ class FirestoreService {
             dislikeChat.friendUserImageString = currentUser.userImage
             dislikeChat.friendId = currentUser.senderId
             try refFriendDislike.document(currentUser.senderId).setData(from: dislikeChat)
-            StorageService.shared.deleteChatImages(currentUserID: currentUser.senderId, friendUserID: chat.friendId)
             complition(.success(dislikeChat))
         } catch { complition(.failure(error))}
     }
-}
-
-
-extension FirestoreService {
-    //MARK: getAlldocument
-    private func getAlldocument<T:ReprasentationModel>(type: T.Type ,collection: CollectionReference, complition:@escaping([T])-> Void) {
-        var elements = [T]()
-        var element: T?
-        collection.getDocuments { snapshot, error in
-            guard let snapshot = snapshot else { fatalError("Cant get collection snapshot")}
-            
-            snapshot.documents.forEach { document in
-                element = T(documentSnap: document)
-                guard let elementTType = element else { fatalError("Cant convert doc to T type")}
-                elements.append(elementTType)
-            }
-            complition(elements)
-        }
-    }
     
-    //MARK: deleteCollection
-    //with inside document
-    private func  deleteCollection(collection: CollectionReference, batchSize: Int = 500) {
-        // Limit query to avoid out-of-memory errors on large collections.
-        // When deleting a collection guaranteed to fit in memory, batching can be avoided entirely.
-        collection.limit(to: batchSize).getDocuments { docset, error in
-            // An error occurred.
-            guard let docset = docset else { fatalError("Cant get collection") }
-            
-            let batch = collection.firestore.batch()
-            docset.documents.forEach { batch.deleteDocument($0.reference) }
-            
-            batch.commit {_ in
-                //   self.deleteCollection(collection: collection, batchSize: batchSize)
-            }
+    //MARK: delete all profile data
+    func deleteAllProfileData(userID: String, complition: @escaping () -> Void) {
+        deleteAllChats(forPeopleID: userID) { [weak self] in
+            //delete input requests and like chats for people who send a request
+            self?.deleteInputRequest(currentUserID: userID, complition: {
+                //delete output likes and request who got a like
+                self?.deleteOutputLike(currentUserID: userID, complition: {
+                    //delete all dislikes users
+                    self?.deleteAllDislikes(userID: userID, complition: {
+                        //delete profile document
+                        self?.deleteProfileDocument(userID: userID, complition: {
+                            //delete current user Auth data
+                            AuthService.shared.deleteUser { result in
+                                switch result {
+                                
+                                case .success(let isDelete):
+                                    if isDelete {
+                                        complition()
+                                    }
+                                case .failure(let error):
+                                    fatalError(error.localizedDescription)
+                                }
+                            }
+                        })
+                    })
+                })
+            })
         }
     }
 }
 
-//MARK: - work with image
+//MARK: - WORK WITH IMAGE
 extension FirestoreService {
     
     //MARK:  saveDefaultImage
     func saveDefaultImage(id: String, defaultImageString: String, complition: @escaping (Result<Void, Error>) -> Void) {
         usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : defaultImageString],
-                                                  merge: true,
-                                                  completion: { (error) in
-                                                    if let error = error {
-                                                        complition(.failure(error))
-                                                    } else {
-                                                        complition(.success(()))
-                                                    }
-                                                  })
+                                            merge: true,
+                                            completion: { (error) in
+                                                if let error = error {
+                                                    complition(.failure(error))
+                                                } else {
+                                                    complition(.success(()))
+                                                }
+                                            })
     }
     
     //MARK:  saveAvatar
@@ -572,7 +646,7 @@ extension FirestoreService {
     
     //MARK: updateAvatar
     func updateAvatar(imageURLString: String, currentAvatarURL: String, id: String, complition:@escaping(Result<String, Error>) -> Void) {
-
+        
         //set current image to profile image
         usersReference.document(id).setData(
             [MPeople.CodingKeys.userImage.rawValue : imageURLString],
@@ -666,32 +740,68 @@ extension FirestoreService {
         
         //delete image from array in Firestore
         usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayRemove([imageURLString])],
-                                                  merge: true,
-                                                  completion: { error in
-            if let error = error {
-                complition(.failure(error))
-            } else {
-                //edit current user from UserDefaults for save request to server
-                if var people = UserDefaultsService.shared.getMpeople() {
-                    guard let indexOfImage = people.gallery.firstIndex(of: imageURLString) else { return }
-                    people.gallery.remove(at: indexOfImage)
-                    UserDefaultsService.shared.saveMpeople(people: people)
-                }
-                if deleteInStorage {
-                    //delete image from storage
-                    StorageService.shared.deleteImage(link: imageURLString) { result in
-                        switch result {
+                                            merge: true,
+                                            completion: { error in
+                                                if let error = error {
+                                                    complition(.failure(error))
+                                                } else {
+                                                    //edit current user from UserDefaults for save request to server
+                                                    if var people = UserDefaultsService.shared.getMpeople() {
+                                                        guard let indexOfImage = people.gallery.firstIndex(of: imageURLString) else { return }
+                                                        people.gallery.remove(at: indexOfImage)
+                                                        UserDefaultsService.shared.saveMpeople(people: people)
+                                                    }
+                                                    if deleteInStorage {
+                                                        //delete image from storage
+                                                        StorageService.shared.deleteImage(link: imageURLString) { result in
+                                                            switch result {
+                                                            
+                                                            case .success(_):
+                                                                complition(.success(imageURLString))
+                                                            case .failure(let error):
+                                                                complition(.failure(error))
+                                                            }
+                                                        }
+                                                    } else {
+                                                        complition(.success(imageURLString))
+                                                    }
+                                                }
+                                            })
+    }
+}
+
+extension FirestoreService {
+    //MARK: getAlldocument
+    private func getAlldocument<T:ReprasentationModel>(type: T.Type ,collection: CollectionReference, complition:@escaping([T])-> Void) {
+        var elements = [T]()
+        var element: T?
+        collection.getDocuments { snapshot, error in
+            guard let snapshot = snapshot else { fatalError("Cant get collection snapshot")}
             
-                        case .success(_):
-                            complition(.success(imageURLString))
-                        case .failure(let error):
-                            complition(.failure(error))
-                        }
-                    }
-                } else {
-                    complition(.success(imageURLString))
-                }
+            snapshot.documents.forEach { document in
+                element = T(documentSnap: document)
+                guard let elementTType = element else { fatalError("Cant convert doc to T type")}
+                elements.append(elementTType)
             }
-        })
+            complition(elements)
+        }
+    }
+    
+    //MARK: deleteCollection
+    //with inside document
+    private func  deleteCollection(collection: CollectionReference, batchSize: Int = 500) {
+        // Limit query to avoid out-of-memory errors on large collections.
+        // When deleting a collection guaranteed to fit in memory, batching can be avoided entirely.
+        collection.limit(to: batchSize).getDocuments { docset, error in
+            // An error occurred.
+            guard let docset = docset else { fatalError("Cant get collection") }
+            
+            let batch = collection.firestore.batch()
+            docset.documents.forEach { batch.deleteDocument($0.reference) }
+            
+            batch.commit {_ in
+                //   self.deleteCollection(collection: collection, batchSize: batchSize)
+            }
+        }
     }
 }

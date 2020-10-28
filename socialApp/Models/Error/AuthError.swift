@@ -11,12 +11,14 @@ import Foundation
 enum AuthError {
     case notFilled
     case invalidEmail
+    case invalidPassword
     case passwordNotMatch
     case unknowError
     case serverError
     case appleToken
     case serializeAppleToken
     case missingEmail
+    case credentialError
 }
 
 extension AuthError: LocalizedError {
@@ -27,6 +29,8 @@ extension AuthError: LocalizedError {
             return NSLocalizedString("Заполни все поля", comment: "")
         case .invalidEmail:
             return NSLocalizedString("Некорректно введен Email", comment: "")
+        case .invalidPassword:
+            return NSLocalizedString("Некорректно введен пароль", comment: "")
         case .passwordNotMatch:
             return NSLocalizedString("Пароли не совпадают", comment: "")
         case .unknowError:
@@ -39,6 +43,8 @@ extension AuthError: LocalizedError {
             return NSLocalizedString("Невозможно выполнить сериализацию токена Apple", comment: "")
         case .missingEmail:
             return NSLocalizedString("Отсутствует Email у пользователя", comment: "")
+        case .credentialError:
+            return NSLocalizedString("Не удалось получить данные авторизации", comment: "")
         }
     }
 }
