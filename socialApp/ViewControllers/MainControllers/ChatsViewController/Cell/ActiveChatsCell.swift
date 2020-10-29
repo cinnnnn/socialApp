@@ -17,6 +17,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     let frendName = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
     let lastMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .myLabelColor(), linesCount: 2)
     let dateOfMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
+    let unreadMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myWhiteColor())
     var dateOfLastMessage: Date?
     var displayLink: CADisplayLink?
     
@@ -34,6 +35,9 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         
         clipsToBounds = true
         frendImage.clipsToBounds = true
+        unreadMessage.clipsToBounds = true
+        unreadMessage.backgroundColor = .myLabelColor()
+        
     }
     //MARK: - configure
     func configure(with value: MChat) {
@@ -49,6 +53,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         displayLink?.add(to: .main, forMode: .default)
     
         dateOfLastMessage = value.date
+        unreadMessage.text = String(value.unreadChatMessageCount)
     }
     
     required init?(coder: NSCoder) {
@@ -58,6 +63,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         frendImage.layer.cornerRadius = frendImage.frame.height / 2
+        unreadMessage.layer.cornerRadius = unreadMessage.frame.width / 2
     }
     
     override func prepareForReuse() {
@@ -82,11 +88,13 @@ extension ActiveChatsCell {
         frendName.translatesAutoresizingMaskIntoConstraints = false
         lastMessage.translatesAutoresizingMaskIntoConstraints = false
         dateOfMessage.translatesAutoresizingMaskIntoConstraints = false
+        unreadMessage.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(frendImage)
         addSubview(frendName)
         addSubview(lastMessage)
         addSubview(dateOfMessage)
+        addSubview(unreadMessage)
         
         NSLayoutConstraint.activate([
             frendImage.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -102,7 +110,10 @@ extension ActiveChatsCell {
             lastMessage.topAnchor.constraint(equalTo: frendName.bottomAnchor, constant: 5),
             
             dateOfMessage.trailingAnchor.constraint(equalTo: trailingAnchor,constant: -10),
-            dateOfMessage.topAnchor.constraint(equalTo: frendName.topAnchor)
+            dateOfMessage.topAnchor.constraint(equalTo: frendName.topAnchor),
+            
+            unreadMessage.trailingAnchor.constraint(equalTo: trailingAnchor,constant: -10),
+            unreadMessage.topAnchor.constraint(equalTo: frendName.bottomAnchor, constant: 5)
         ])
     }
 }

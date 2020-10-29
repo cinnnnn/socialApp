@@ -96,6 +96,11 @@
 		FBB26EC72548452C0081CF2C /* MAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EC62548452C0081CF2C /* MAppSettings.swift */; };
 		FBB26ECA254845D90081CF2C /* SectionAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */; };
 		FBB26ECF254980500081CF2C /* MAuthType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26ECE2549804F0081CF2C /* MAuthType.swift */; };
+		FBB26ED3254AFD130081CF2C /* AcceptChatDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26ED2254AFD110081CF2C /* AcceptChatDataProvider.swift */; };
+		FBB26ED8254B014A0081CF2C /* LikeDislikeChatDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26ED7254B014A0081CF2C /* LikeDislikeChatDataProvider.swift */; };
+		FBB26EDB254B03760081CF2C /* RequestChatDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EDA254B03760081CF2C /* RequestChatDataProvider.swift */; };
+		FBB26EDE254B0E960081CF2C /* PeopleDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EDD254B0E960081CF2C /* PeopleDataProvider.swift */; };
+		FBB26EE1254B38B60081CF2C /* UserDefaultsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EE0254B38B60081CF2C /* UserDefaultsError.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
 		FBB3B265250ACA0700440632 /* MGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B264250ACA0700440632 /* MGender.swift */; };
@@ -217,6 +222,11 @@
 		FBB26EC62548452C0081CF2C /* MAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAppSettings.swift; sourceTree = "<group>"; };
 		FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionAppSettings.swift; sourceTree = "<group>"; };
 		FBB26ECE2549804F0081CF2C /* MAuthType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAuthType.swift; sourceTree = "<group>"; };
+		FBB26ED2254AFD110081CF2C /* AcceptChatDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptChatDataProvider.swift; sourceTree = "<group>"; };
+		FBB26ED7254B014A0081CF2C /* LikeDislikeChatDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeDislikeChatDataProvider.swift; sourceTree = "<group>"; };
+		FBB26EDA254B03760081CF2C /* RequestChatDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestChatDataProvider.swift; sourceTree = "<group>"; };
+		FBB26EDD254B0E960081CF2C /* PeopleDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleDataProvider.swift; sourceTree = "<group>"; };
+		FBB26EE0254B38B60081CF2C /* UserDefaultsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsError.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		FBB3B260250905D800440632 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
@@ -544,6 +554,17 @@
 			path = ChatsViewController;
 			sourceTree = "<group>";
 		};
+		FBB26ED5254AFD420081CF2C /* DataProvider */ = {
+			isa = PBXGroup;
+			children = (
+				FBB26ED2254AFD110081CF2C /* AcceptChatDataProvider.swift */,
+				FBB26EDD254B0E960081CF2C /* PeopleDataProvider.swift */,
+				FBB26ED7254B014A0081CF2C /* LikeDislikeChatDataProvider.swift */,
+				FBB26EDA254B03760081CF2C /* RequestChatDataProvider.swift */,
+			);
+			path = DataProvider;
+			sourceTree = "<group>";
+		};
 		FBB4F35D2512728900ACFE90 /* Error */ = {
 			isa = PBXGroup;
 			children = (
@@ -553,6 +574,7 @@
 				FB61A76B251BA06D005DCC78 /* ChatError.swift */,
 				FB207CB32520C544007AA232 /* MessageError.swift */,
 				FBB4F35E2512737400ACFE90 /* FirestoreError.swift */,
+				FBB26EE0254B38B60081CF2C /* UserDefaultsError.swift */,
 				FB61A76E251CB97D005DCC78 /* DataSourceError.swift */,
 			);
 			path = Error;
@@ -584,6 +606,7 @@
 				FBEF607924A602070005F947 /* SceneDelegate.swift */,
 				FBA94D1C24F55AC2000DA5D5 /* Managers */,
 				FB21A1B924E596E3000A2E91 /* Models */,
+				FBB26ED5254AFD420081CF2C /* DataProvider */,
 				FBEF609424A90DD60005F947 /* ViewControllers */,
 				FBEF608F24A908100005F947 /* Extension */,
 				FBEF608024A6020A0005F947 /* Assets.xcassets */,
@@ -770,6 +793,7 @@
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
 				FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */,
 				FB1062DE24B0C8DF0012C4D4 /* EditableProfileImageView.swift in Sources */,
+				FBB26ED3254AFD130081CF2C /* AcceptChatDataProvider.swift in Sources */,
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
 				FBB3B25F2509011200440632 /* StorageService.swift in Sources */,
@@ -798,6 +822,7 @@
 				FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */,
 				FB79DA9225307FF200A7AA56 /* GalleryScrollView.swift in Sources */,
 				FB8C3D5F25348F4900184FB5 /* OneLineButton.swift in Sources */,
+				FBB26ED8254B014A0081CF2C /* LikeDislikeChatDataProvider.swift in Sources */,
 				FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */,
 				FBB4F354251110AE00ACFE90 /* RadioButton.swift in Sources */,
 				FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */,
@@ -840,11 +865,13 @@
 				FB79DA8B252DF0D600A7AA56 /* MProfileSettings.swift in Sources */,
 				FB3727992541CAD600906FBE /* EditSearchSettingsViewController.swift in Sources */,
 				FB15FCF32513A71F00B765D3 /* MMessage.swift in Sources */,
+				FBB26EDB254B03760081CF2C /* RequestChatDataProvider.swift in Sources */,
 				FBB26EC72548452C0081CF2C /* MAppSettings.swift in Sources */,
 				FB8C3D6E2535D94D00184FB5 /* DateOfBirthViewController.swift in Sources */,
 				FB1062DA24AE69250012C4D4 /* LoginViewController.swift in Sources */,
 				FBF2927F2512828C0090BA9E /* LoadingView.swift in Sources */,
 				FB61B54724FE7F23002761ED /* AuthService.swift in Sources */,
+				FBB26EDE254B0E960081CF2C /* PeopleDataProvider.swift in Sources */,
 				FB79DA78252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift in Sources */,
 				FB21A1BF24E5ADE5000A2E91 /* NewChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
@@ -853,6 +880,7 @@
 				FB61A7FB251E6312005DCC78 /* UserDefaultsService.swift in Sources */,
 				FB8C3D9C253A589B00184FB5 /* RequestChatCell.swift in Sources */,
 				FBEF607A24A602070005F947 /* SceneDelegate.swift in Sources */,
+				FBB26EE1254B38B60081CF2C /* UserDefaultsError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

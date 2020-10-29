@@ -77,8 +77,8 @@ class Validators {
     func listnerAddPeopleValidator(currentPeople: MPeople,
                                    newPeople: MPeople,
                                    peopleDelegate: PeopleListenerDelegate,
-                                   likeDislikeDelegate: LikeDislikeDelegate,
-                                   acceptChatsDelegate: AcceptChatsDelegate,
+                                   likeDislikeDelegate: LikeDislikeListenerDelegate,
+                                   acceptChatsDelegate: AcceptChatListenerDelegate,
                                    isUpdate: Bool) -> Bool {
         if !isUpdate {
             //if not present in people array
@@ -117,10 +117,11 @@ class Validators {
     }
     
     //MARK: listnerAddRequestValidator
-    func listnerAddRequestValidator(currentPeople: MPeople,
+    func listnerAddRequestValidator(userID: String,
                                     newRequestChat: MChat,
-                                    likeDislikeDelegate: LikeDislikeDelegate) -> Bool {
+                                    likeDislikeDelegate: LikeDislikeListenerDelegate) -> Bool {
         
+        //if this user have dislike, don't add him to collection
         guard !likeDislikeDelegate.dislikePeople.contains(where: { dislikeChat -> Bool in
             dislikeChat.friendId == newRequestChat.friendId
         }) else { return false }

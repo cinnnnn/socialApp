@@ -15,6 +15,8 @@ struct MChat: Hashable, Codable, ReprasentationModel {
     var lastMessage: String
     var isNewChat: Bool
     var friendId: String
+    var unreadChatMessageCount: Int
+    var createChatDate: Date
     var date: Date
     
     init(friendUserName: String,
@@ -22,12 +24,16 @@ struct MChat: Hashable, Codable, ReprasentationModel {
          lastMessage: String,
          isNewChat: Bool,
          friendId:String,
+         unreadChatMessageCount: Int,
+         createChatDate: Date,
          date:Date) {
         self.friendUserName = friendUserName
         self.friendUserImageString = friendUserImageString
         self.lastMessage = lastMessage
         self.isNewChat = isNewChat
         self.friendId = friendId
+        self.unreadChatMessageCount = unreadChatMessageCount
+        self.createChatDate = createChatDate
         self.date = date
     }
     
@@ -53,6 +59,14 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         
         if let friendId = documet["friendId"] as? String {
             self.friendId = friendId
+        } else { return nil }
+        
+        if let unreadChatMessageCount = documet["unreadChatMessageCount"] as? Int {
+            self.unreadChatMessageCount = unreadChatMessageCount
+        } else { return nil }
+        
+        if let createChatDate = documet["createChatDate"] as? Timestamp {
+            self.createChatDate = createChatDate.dateValue()
         } else { return nil }
         
         if let date = documet["date"] as? Timestamp {
@@ -84,6 +98,14 @@ struct MChat: Hashable, Codable, ReprasentationModel {
             self.friendId = friendId
         } else { return nil }
         
+        if let unreadChatMessageCount = documet["unreadChatMessageCount"] as? Int {
+            self.unreadChatMessageCount = unreadChatMessageCount
+        } else { return nil }
+        
+        if let createChatDate = documet["createChatDate"] as? Timestamp {
+            self.createChatDate = createChatDate.dateValue()
+        } else { return nil }
+        
         if let date = documet["date"] as? Timestamp {
             self.date = date.dateValue()
         } else { return nil }
@@ -96,6 +118,8 @@ struct MChat: Hashable, Codable, ReprasentationModel {
             "lastMessage": lastMessage,
             "isNewChat": isNewChat,
             "friendId": friendId,
+            "unreadChatMessageCount": unreadChatMessageCount,
+            "createChatDate": createChatDate,
             "date": date
         ]
         return rep
@@ -107,6 +131,8 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         case lastMessage
         case isNewChat
         case friendId
+        case unreadChatMessageCount
+        case createChatDate
         case date
     }
     

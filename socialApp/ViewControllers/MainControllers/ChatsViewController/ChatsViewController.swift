@@ -11,24 +11,17 @@ import SwiftUI
 import FirebaseAuth
 
 
-class ChatsViewController: UIViewController, AcceptChatsDelegate {
-    
-    var acceptChats: [MChat] = []
-    var sortedAcceptChats: [MChat] {
-        let accept = acceptChats.sorted {
-            $0.date > $1.date
-        }
-        return accept
-    }
+class ChatsViewController: UIViewController {
     
     var collectionView: UICollectionView?
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
     var currentPeople: MPeople
+    weak var acceptChatDelegate: AcceptChatListenerDelegate?
     
-    init(currentPeople: MPeople) {
+    init(currentPeople: MPeople, acceptChatDelegate: AcceptChatListenerDelegate?) {
         self.currentPeople = currentPeople
+        self.acceptChatDelegate = acceptChatDelegate
         super.init(nibName: nil, bundle: nil)
-        setupListeners()
     }
     
     required init?(coder: NSCoder) {
@@ -45,6 +38,7 @@ class ChatsViewController: UIViewController, AcceptChatsDelegate {
         setupCollectionView()
         setupDataSource()
         loadSectionHedear()
+        setupListeners()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,7 +52,7 @@ class ChatsViewController: UIViewController, AcceptChatsDelegate {
     }
     
     private func setupListeners() {
-        ListenerService.shared.addAcceptChatsListener(acceptChatDelegate: self)
+        acceptChatDelegate?.setupListener()
     }
     
     private func updateCurrentPeople() {
@@ -257,8 +251,22 @@ extension ChatsViewController {
         }
     }
     
+ 
+    
+    //MARK:  updateHeader
+    private func updateHeader() {
+        guard var snapshot = dataSource?.snapshot() else { fatalError("Snapshot not exist")}
+        let activeSection = snapshot.sectionIdentifiers
+        snapshot.reloadSections(activeSection)
+        dataSource?.apply(snapshot, animatingDifferences: false)
+    }
+}
+
+
+extension ChatsViewController: AcceptChatCollectionViewDelegate {
     //MARK:  reloadDataSource
-    private func reloadDataSource(searchText: String?){
+     func reloadDataSource(searchText: String?){
+        guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
         let sortedChats = sortedAcceptChats.filter { activeChat -> Bool in
             activeChat.contains(element: searchText)
         }
@@ -288,7 +296,8 @@ extension ChatsViewController {
     }
     
     //MARK:  updateDataSource
-    private func updateDataSource(searchText: String?){
+     func updateDataSource(searchText: String?){
+        guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
         let activeChats = sortedAcceptChats.filter({ chat -> Bool in
             !chat.isNewChat
         })
@@ -304,28 +313,6 @@ extension ChatsViewController {
                     self?.dataSource?.apply(snapshot, animatingDifferences: false)
                 }
             }
-        }
-    }
-    
-    //MARK:  updateHeader
-    private func updateHeader() {
-        guard var snapshot = dataSource?.snapshot() else { fatalError("Snapshot not exist")}
-        let activeSection = snapshot.sectionIdentifiers
-        snapshot.reloadSections(activeSection)
-        dataSource?.apply(snapshot, animatingDifferences: false)
-    }
-}
-
-
-extension ChatsViewController: AcceptChatListenerDelegate {
-    //MARK: reloadRequestData
-    func reloadData(changeType: MTypeOfListenerChanges) {
-        switch changeType {
-        case .addOrDelete:
-            reloadDataSource(searchText: nil)
-            
-        case .update:
-            updateDataSource(searchText: nil)
         }
     }
 }

@@ -42,48 +42,67 @@ protocol LikeDislikeTappedDelegate: class {
     func dislikePeople(people: MPeople)
 }
 
-protocol UpdatePeopleListnerDelegate: class {
-    var peopleListnerDelegate: PeopleListenerDelegate? { get set }
-}
-
-//MARK: data fetch protocol
-protocol LikeDislikeDelegate: class {
-    var likePeople: [MChat] { get set }
-    var dislikePeople: [MChat] { get set }
-}
-
-protocol RequestChatDelegate: class {
-    var requestChats: [MChat] { get set }
-}
-
-protocol AcceptChatsDelegate: class {
-    var acceptChats: [MChat] { get set }
-}
-
-//MARK: listner Firestore protocols
-protocol PeopleListenerDelegate: class {
-    var requestDelegate: RequestChatDelegate? { get set }
-    var acceptChatsDelegate: AcceptChatsDelegate? { get set }
-    var peopleNearby: [MPeople] { get set }
+//MARK: collection view protocol
+protocol PeopleCollectionViewDelegate: class {
     func updateData()
     func reloadData(reloadSection: Bool, animating: Bool)
-    func reloadListner()
 }
 
+protocol RequestChatCollectionViewDelegate: class {
+    func reloadData()
+}
+
+protocol AcceptChatCollectionViewDelegate: class {
+    func reloadDataSource(searchText: String?)
+    func updateDataSource(searchText: String?)
+}
+
+
+//MARK: listner Firestore protocols
 protocol LikeDislikeListenerDelegate: class {
     var likePeople: [MChat] { get set }
     var dislikePeople: [MChat] { get set }
+    
+    func getLike(complition: @escaping (Result<[MChat], Error>) -> Void)
+    func getDislike(complition: @escaping (Result<[MChat], Error>) -> Void)
 }
 
 protocol RequestChatListenerDelegate: class {
     var requestChats: [MChat] { get set }
+    var sortedRequestChats: [MChat] { get }
+    var requestChatCollectionViewDelegate: RequestChatCollectionViewDelegate? { get set }
+    //first time get data
+    func getRequestChats(complition: @escaping (Result<[MChat], Error>) -> Void)
+    //work with collectionView
     func reloadData(changeType: MTypeOfListenerChanges)
-    func reloadListner()
+    //work with listner
+    func setupListener(likeDislikeDelegate: LikeDislikeListenerDelegate)
+    func removeListener()
+    func reloadListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate)
 }
 
 protocol AcceptChatListenerDelegate: class {
     var acceptChats: [MChat] { get set }
+    var sortedAcceptChats: [MChat] { get }
+    var acceptChatCollectionViewDelegate: AcceptChatCollectionViewDelegate? { get set }
+    
     func reloadData(changeType: MTypeOfListenerChanges)
+    func getAcceptChats(complition: @escaping (Result<[MChat], Error>) -> Void)
+    func setupListener()
+    func removeListener()
+}
+
+protocol PeopleListenerDelegate: class {
+    var peopleNearby: [MPeople] { get set }
+    var sortedPeopleNearby: [MPeople] { get }
+    var peopleCollectionViewDelegate: PeopleCollectionViewDelegate? { get set }
+    //work with listner
+    func setupListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate) 
+    func removeListener()
+    func reloadListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate)
+    //work with collectionView
+    func updateData()
+    func reloadData(reloadSection: Bool, animating: Bool)
 }
 
 protocol ActiveChatListenerDelegate: class {

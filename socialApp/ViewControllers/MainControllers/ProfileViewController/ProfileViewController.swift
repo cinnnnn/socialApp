@@ -9,15 +9,25 @@
 import UIKit
 import FirebaseAuth
 
-class ProfileViewController:UIViewController, UpdatePeopleListnerDelegate {
+class ProfileViewController: UIViewController {
     
     weak var peopleListnerDelegate: PeopleListenerDelegate?
+    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
+    weak var acceptChatsDelegate: AcceptChatListenerDelegate?
+    
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MProfileSettings>?
     private var currentPeople: MPeople
     
-    init(currentPeople: MPeople) {
+    init(currentPeople: MPeople,
+         peopleListnerDelegate: PeopleListenerDelegate?,
+         likeDislikeDelegate: LikeDislikeListenerDelegate?,
+         acceptChatsDelegate: AcceptChatListenerDelegate?) {
+        
         self.currentPeople = currentPeople
+        self.peopleListnerDelegate = peopleListnerDelegate
+        self.likeDislikeDelegate = likeDislikeDelegate
+        self.acceptChatsDelegate = acceptChatsDelegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,13 +44,9 @@ class ProfileViewController:UIViewController, UpdatePeopleListnerDelegate {
         updateDataSource()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        updateSections()
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        updateSections()
         updateCurrentPeople()
     }
     
@@ -198,19 +204,24 @@ extension ProfileViewController: UICollectionViewDelegate {
                 navigationController?.pushViewController(vc, animated: true)
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
+                
             case .setupSearch:
                 let vc = EditSearchSettingsViewController(currentPeople: currentPeople,
-                                                          peopleListnerDelegate: peopleListnerDelegate)
+                                                          peopleListnerDelegate: peopleListnerDelegate,
+                                                          likeDislikeDelegate: likeDislikeDelegate,
+                                                          acceptChatsDelegate: acceptChatsDelegate)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
+                
             case .appSettings:
                 let vc = AppSettingsViewController(currentPeople: currentPeople)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
+                
             case .adminPanel:
                 break
             default:

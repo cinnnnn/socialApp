@@ -12,9 +12,13 @@ extension UIDatePicker {
     
     convenience init(datePickerMode: UIDatePicker.Mode ) {
         self.init()
-        self.datePickerMode = .date
+        self.datePickerMode = datePickerMode
         backgroundColor = .myWhiteColor()
         tintColor = .myLabelColor()
         locale = Locale.getPreferredLocale()
+        let minYear = MSearchSettings.minRange.defaultValue
+        let maxYear = MSearchSettings.maxRange.defaultValue
+        minimumDate = Calendar.current.date(byAdding: .year, value: -maxYear, to: Date())
+        maximumDate = Calendar.current.date(byAdding: .year, value: -minYear, to: Date())
     }
 }

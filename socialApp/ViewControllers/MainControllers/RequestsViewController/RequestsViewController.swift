@@ -11,26 +11,30 @@ import SwiftUI
 import FirebaseAuth
 
 
-class RequestsViewController: UIViewController, RequestChatDelegate {
+class RequestsViewController: UIViewController {
     
     var collectionView: UICollectionView?
-    var requestChats: [MChat] = []
-    var sortedRequestChats: [MChat] {
-        let request = requestChats.sorted {
-            $0.date > $1.date
-        }
-        return request
-    }
-    weak var peopleListnerDelegate: PeopleListenerDelegate?
-    weak var likeDislikeDelegate: LikeDislikeDelegate?
+   
+    weak var peopleDelegate: PeopleListenerDelegate?
+    weak var requestChatDelegate: RequestChatListenerDelegate?
+    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
+    weak var acceptChatDelegate: AcceptChatListenerDelegate?
+    
     var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
     var currentPeople: MPeople
     
-    init(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeDelegate) {
+    init(currentPeople: MPeople,
+         likeDislikeDelegate: LikeDislikeListenerDelegate?,
+         requestChatDelegate: RequestChatListenerDelegate?,
+         peopleNearbyDelegate: PeopleListenerDelegate?,
+         acceptChatDelegate: AcceptChatListenerDelegate?) {
+        
         self.currentPeople = currentPeople
+        self.peopleDelegate = peopleNearbyDelegate
+        self.requestChatDelegate = requestChatDelegate
         self.likeDislikeDelegate = likeDislikeDelegate
+        self.acceptChatDelegate = acceptChatDelegate
         super.init(nibName: nil, bundle: nil)
-        setupListeners()
     }
     
     required init?(coder: NSCoder) {
@@ -38,7 +42,7 @@ class RequestsViewController: UIViewController, RequestChatDelegate {
     }
     
     deinit {
-        ListenerService.shared.removeRequestChatsListener()
+        requestChatDelegate?.removeListener()
     }
     
     override func viewDidLoad() {
@@ -48,7 +52,7 @@ class RequestsViewController: UIViewController, RequestChatDelegate {
         setupCollectionView()
         setupDataSource()
         loadSectionHedear()
-        reloadDataSource(searchText: nil)
+        setupListeners()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -57,10 +61,10 @@ class RequestsViewController: UIViewController, RequestChatDelegate {
     }
     
     private func setupListeners() {
+        guard let requestChatDelegate = requestChatDelegate else { fatalError("requestChatDelegate is nil") }
         guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislikeDelegate is nil") }
-        ListenerService.shared.addRequestChatsListener(currentPeople: currentPeople,
-                                                       requestChatDelegate: self,
-                                                       likeDislikeDelegate: likeDislikeDelegate)
+        
+        requestChatDelegate.setupListener(likeDislikeDelegate: likeDislikeDelegate)
     }
     
     private func updateCurrentPeople() {
@@ -191,15 +195,6 @@ extension RequestsViewController {
         }
     }
     
-    //MARK:  reloadData
-    private func reloadDataSource(searchText: String? = nil){
-        var snapshot = NSDiffableDataSourceSnapshot<SectionsRequests, MChat>()
-        snapshot.appendSections([.requestChats])
-        snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
-        dataSource?.apply(snapshot, animatingDifferences: true)
-        
-        updateHeader()
-    }
     //MARK:  updateHeader
     private func updateHeader() {
         guard var snapshot = dataSource?.snapshot() else { return }
@@ -209,21 +204,16 @@ extension RequestsViewController {
     }
 }
 
-
-extension RequestsViewController: RequestChatListenerDelegate {
+extension RequestsViewController: RequestChatCollectionViewDelegate {
     //MARK: reloadRequestData
-    func reloadData(changeType: MTypeOfListenerChanges) {
-        reloadDataSource()
-    }
-    
-    //MARK: reloadListner
-    func reloadListner() {
-        requestChats = []
-        reloadDataSource()
-        ListenerService.shared.removeRequestChatsListener()
-        setupListeners()
-        //reload listner peopleNearby VC
-        peopleListnerDelegate?.reloadListner()
+    func reloadData() {
+        guard let sortedRequestChats = requestChatDelegate?.sortedRequestChats else { fatalError("can't get sorted chats")}
+        var snapshot = NSDiffableDataSourceSnapshot<SectionsRequests, MChat>()
+        snapshot.appendSections([.requestChats])
+        snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
+        dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        updateHeader()
     }
 }
 
@@ -236,7 +226,10 @@ extension RequestsViewController: UICollectionViewDelegate {
         switch section {
         case .requestChats:
             let peopleVC = PeopleInfoViewController(peopleID: item.friendId, withLikeButtons: true)
-            peopleVC.requestChatsDelegate = self
+            peopleVC.requestChatsDelegate = requestChatDelegate
+            peopleVC.likeDislikeDelegate = likeDislikeDelegate
+            peopleVC.acceptChatsDelegate = acceptChatDelegate
+            peopleVC.peopleDelegate = peopleDelegate
             peopleVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(peopleVC, animated: true)
         }

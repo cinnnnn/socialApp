@@ -9,16 +9,15 @@
 import UIKit
 import FirebaseAuth
 
-class MainTabBarController: UITabBarController, LikeDislikeDelegate{
+class MainTabBarController: UITabBarController{
     
     var userID: String
     let loadingView = LoadingView(isHidden: false)
-    var likePeople: [MChat] = []
-    var dislikePeople: [MChat] = []
     
-    weak var acceptChatsDelegate: AcceptChatsDelegate?
-    weak var requestChatsDelegate: RequestChatDelegate?
-    weak var peopleListenerDelegate: PeopleListenerDelegate?
+    var acceptChatsDelegate: AcceptChatListenerDelegate?
+    var requestChatsDelegate: RequestChatListenerDelegate?
+    var peopleDelegate: PeopleListenerDelegate?
+    var likeDislikeDelegate: LikeDislikeListenerDelegate?
     
     init(userID: String) {
         self.userID = userID
@@ -33,7 +32,17 @@ class MainTabBarController: UITabBarController, LikeDislikeDelegate{
         super.viewDidLoad()
         setupConstraints()
         loadIsComplite(isComplite: false)
+        setupDataDelegate()
         getPeopleData()
+    }
+}
+
+extension MainTabBarController {
+    private func setupDataDelegate() {
+        likeDislikeDelegate = LikeDislikeChatDataProvider(userID: userID)
+        requestChatsDelegate = RequestChatDataProvider(userID: userID)
+        acceptChatsDelegate = AcceptChatDataProvider(userID: userID)
+        peopleDelegate = PeopleDataProvider(userID: userID)
     }
     
     private func loadIsComplite(isComplite: Bool) {
@@ -45,7 +54,6 @@ class MainTabBarController: UITabBarController, LikeDislikeDelegate{
         }
     }
 }
-
 
 extension MainTabBarController {
     //MARK: getPeopleData, location
@@ -61,13 +69,49 @@ extension MainTabBarController {
                         if !isAllowPermission {
                             self?.openSettingsAlert()
                         }
-                        //get like dislike users
-                        self?.getLikeDislike(forPeople: mPeople, complition: { result in
+                        //get like like users
+                        self?.likeDislikeDelegate?.getLike(complition: { result in
                             switch result {
                             
-                            case .success():
-                                self?.loadIsComplite(isComplite: true)
-                                self?.setupControllers(currentPeople: mPeople)
+                            case .success(_):
+                                //get dislike users
+                                self?.likeDislikeDelegate?.getDislike(complition: { result in
+                                    switch result {
+                                
+                                    case .success(_):
+                                        //get request users
+                                        self?.requestChatsDelegate?.getRequestChats(complition: { result in
+                                            switch result {
+                                            
+                                            case .success(_):
+                                                //get accept chats
+                                                self?.acceptChatsDelegate?.getAcceptChats(complition: { result in
+                                                    switch result {
+                                                    
+                                                    case .success(_):
+                                                        self?.loadIsComplite(isComplite: true)
+                                                        self?.setupControllers(currentPeople: mPeople)
+                                                        
+                                                    case .failure(let error):
+                                                        self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                                        text: error.localizedDescription,
+                                                                        buttonText: "Попробую позже")
+                                                    }
+                                                })
+                                                
+                                            case .failure(let error):
+                                                self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                                text: error.localizedDescription,
+                                                                buttonText: "Попробую позже")
+                                            }
+                                        })
+                                        
+                                    case .failure(let error):
+                                        self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                        text: error.localizedDescription,
+                                                        buttonText: "Попробую позже")
+                                    }
+                                })
                             case .failure(let error):
                                 self?.showAlert(title: "Ошибка, мы работаем над ней",
                                                 text: error.localizedDescription,
@@ -98,37 +142,7 @@ extension MainTabBarController {
     }
 }
 
-extension MainTabBarController {
-    //MARK:  setupListeners
-    private func getLikeDislike(forPeople: MPeople, complition: @escaping (Result<(), Error>) -> Void) {
 
-        //first get list of like people
-        let userID = forPeople.senderId
-        FirestoreService.shared.getLikeDislikePeople(userID: userID,
-                                                     collection: MFirestorCollection.likePeople.rawValue) {[weak self] result in
-            switch result {
-            
-            case .success(let likeChats):
-                self?.likePeople = likeChats
-                //get list of dislike people
-                FirestoreService.shared.getLikeDislikePeople(userID: userID,
-                                                             collection: MFirestorCollection.dislikePeople.rawValue) { result in
-                    switch result {
-                    
-                    case .success(let dislikeChat):
-                        self?.dislikePeople = dislikeChat
-                        complition(.success(()))
-                       
-                    case .failure(let error):
-                        complition(.failure(error))
-                    }
-                }
-            case .failure(let error):
-                complition(.failure(error))
-            }
-        }
-    }
-}
 
 //MARK: setupControllers
 extension MainTabBarController {
@@ -139,21 +153,32 @@ extension MainTabBarController {
         tabBar.unselectedItemTintColor = .myLightGrayColor()
         tabBar.tintColor = .myLabelColor()
         
-        let profileVC = ProfileViewController(currentPeople: currentPeople)
-        let peopleVC = PeopleViewController(currentPeople: currentPeople)
-        let requsetsVC = RequestsViewController(currentPeople: currentPeople, likeDislikeDelegate: self)
-        let chatsVC = ChatsViewController(currentPeople: currentPeople)
+        let profileVC = ProfileViewController(currentPeople: currentPeople,
+                                              peopleListnerDelegate: peopleDelegate,
+                                              likeDislikeDelegate: likeDislikeDelegate,
+                                              acceptChatsDelegate: acceptChatsDelegate)
         
-        peopleListenerDelegate = peopleVC
-        requestChatsDelegate = requsetsVC
-        acceptChatsDelegate = chatsVC
+        let peopleVC = PeopleViewController(currentPeople: currentPeople,
+                                            peopleDelegate: peopleDelegate,
+                                            requestChatDelegate: requestChatsDelegate,
+                                            likeDislikeDelegate: likeDislikeDelegate,
+                                            acceptChatDelegate: acceptChatsDelegate)
         
-        //setup delegate
-        peopleVC.requestDelegate = requestChatsDelegate
-        peopleVC.acceptChatsDelegate = acceptChatsDelegate
-        peopleVC.likeDislikeDelegate = self
-        requsetsVC.peopleListnerDelegate = peopleListenerDelegate
-        profileVC.peopleListnerDelegate = peopleListenerDelegate
+        peopleDelegate?.peopleCollectionViewDelegate = peopleVC
+        
+        let requsetsVC = RequestsViewController(currentPeople: currentPeople,
+                                                likeDislikeDelegate: likeDislikeDelegate,
+                                                requestChatDelegate: requestChatsDelegate,
+                                                peopleNearbyDelegate: peopleDelegate,
+                                                acceptChatDelegate: acceptChatsDelegate)
+        
+        requestChatsDelegate?.requestChatCollectionViewDelegate = requsetsVC
+        
+        let chatsVC = ChatsViewController(currentPeople: currentPeople,
+                                          acceptChatDelegate: acceptChatsDelegate)
+        
+        acceptChatsDelegate?.acceptChatCollectionViewDelegate = chatsVC
+        
         
         viewControllers = [
             generateNavigationController(rootViewController: peopleVC, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),

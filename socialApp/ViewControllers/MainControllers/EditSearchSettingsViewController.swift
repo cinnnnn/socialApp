@@ -8,10 +8,13 @@
 
 import UIKit
 
-class EditSearchSettingsViewController: UIViewController, UpdatePeopleListnerDelegate {
+class EditSearchSettingsViewController: UIViewController {
     
     var currentPeople: MPeople
     weak var peopleListnerDelegate: PeopleListenerDelegate?
+    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
+    weak var acceptChatsDelegate: AcceptChatListenerDelegate?
+    
     let distanceLabel = UILabel(labelText: "Максимальное расстояние поиска:",
                                 textFont: .avenirRegular(size: 16),
                                 textColor: .myGrayColor())
@@ -24,8 +27,14 @@ class EditSearchSettingsViewController: UIViewController, UpdatePeopleListnerDel
     let currentLocationButton = OneLineButton(header: "Локация", info: "")
     
     
-    init(currentPeople: MPeople, peopleListnerDelegate: PeopleListenerDelegate?) {
+    init(currentPeople: MPeople,
+         peopleListnerDelegate: PeopleListenerDelegate?,
+         likeDislikeDelegate: LikeDislikeListenerDelegate?,
+         acceptChatsDelegate: AcceptChatListenerDelegate?) {
+        
         self.peopleListnerDelegate = peopleListnerDelegate
+        self.likeDislikeDelegate = likeDislikeDelegate
+        self.acceptChatsDelegate = acceptChatsDelegate
         self.currentPeople = currentPeople
         super.init(nibName: nil, bundle: nil)
     }
@@ -116,9 +125,13 @@ class EditSearchSettingsViewController: UIViewController, UpdatePeopleListnerDel
                                                    lookingFor: lookingFor) {[weak self] result in
             switch result {
             
-            case .success():
+            case .success(let mPeople):
+                guard let likeDislikeDelegate = self?.likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
+                guard let acceptChatsDelegate = self?.acceptChatsDelegate else { fatalError("Can't get acceptChatsDelegate")}
                 //reload peopleListner
-                self?.peopleListnerDelegate?.reloadListner()
+                self?.peopleListnerDelegate?.reloadListener(currentPeople: mPeople,
+                                                            likeDislikeDelegate: likeDislikeDelegate,
+                                                            acceptChatsDelegate: acceptChatsDelegate)
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

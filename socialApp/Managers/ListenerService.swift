@@ -60,8 +60,8 @@ class ListenerService {
     //MARK: peopleListener
     func addPeopleListener(currentPeople: MPeople,
                            peopleDelegate: PeopleListenerDelegate,
-                           likeDislikeDelegate: LikeDislikeDelegate,
-                           acceptChatsDelegate: AcceptChatsDelegate) {
+                           likeDislikeDelegate: LikeDislikeListenerDelegate,
+                           acceptChatsDelegate: AcceptChatListenerDelegate) {
         peopleListner = userRef.addSnapshotListener { snapshot, error in
             guard let snapshot = snapshot else { return }
             
@@ -190,9 +190,9 @@ class ListenerService {
     
     
     //MARK: requestChatsListener
-    func addRequestChatsListener(currentPeople: MPeople,
+    func addRequestChatsListener(userID: String,
                                  requestChatDelegate: RequestChatListenerDelegate,
-                                 likeDislikeDelegate: LikeDislikeDelegate) {
+                                 likeDislikeDelegate: LikeDislikeListenerDelegate) {
         
         print(#function)
         self.requestChatsListner = requestChatsRef.addSnapshotListener({ snapshot, error in
@@ -215,7 +215,7 @@ class ListenerService {
                         switch changes.type {
                         
                         case .added:
-                            if Validators.shared.listnerAddRequestValidator(currentPeople: currentPeople,
+                            if Validators.shared.listnerAddRequestValidator(userID: userID,
                                                                             newRequestChat: chat,
                                                                             likeDislikeDelegate: likeDislikeDelegate) {
                                 requestChatDelegate.requestChats.append(chat)
@@ -226,7 +226,7 @@ class ListenerService {
                             if let index = chats.firstIndex(of: chat) {
                                 requestChatDelegate.requestChats[index] = chat
                             } else {
-                                if Validators.shared.listnerAddRequestValidator(currentPeople: currentPeople,
+                                if Validators.shared.listnerAddRequestValidator(userID: userID,
                                                                                 newRequestChat: chat,
                                                                                 likeDislikeDelegate: likeDislikeDelegate) {
                                     requestChatDelegate.requestChats.append(chat)

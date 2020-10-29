@@ -13,6 +13,9 @@ class PeopleInfoViewController: UIViewController {
     var peopleID: String
     var withLikeButtons: Bool
     weak var requestChatsDelegate: RequestChatListenerDelegate?
+    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
+    weak var peopleDelegate: PeopleListenerDelegate?
+    weak var acceptChatsDelegate: AcceptChatListenerDelegate?
     
     var currentPeople: MPeople?
     var people: MPeople?
@@ -46,7 +49,6 @@ class PeopleInfoViewController: UIViewController {
         peopleView.layoutIfNeeded()
         
         currentPeople = UserDefaultsService.shared.getMpeople()
-        
     }
     
     func configure() {
@@ -80,7 +82,10 @@ extension PeopleInfoViewController {
 extension PeopleInfoViewController: LikeDislikeTappedDelegate {
      func likePeople(people: MPeople) {
         guard let currentPeople = currentPeople else { return }
-        guard let requestChatsDelegate = requestChatsDelegate else { return }
+        guard let requestChatsDelegate = requestChatsDelegate else { fatalError("Can't get requestChatsDelegate") }
+        guard let likeDislikeDelegate = likeDislikeDelegate else {  fatalError("Can't get likeDislikeDelegate")  }
+        guard let peopleDelegate = peopleDelegate else {  fatalError("Can't get peopleDelegate")  }
+        guard let acceptChatsDelegate = acceptChatsDelegate else {  fatalError("Can't get peopleDelegate")  }
         //save like to firestore
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
@@ -90,7 +95,11 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
             case .success(_):
                 self?.peopleView.likeButton.isHidden = true
                 self?.peopleView.dislikeButton.isHidden = true
-                requestChatsDelegate.reloadListner()
+                requestChatsDelegate.reloadListener(currentPeople: currentPeople,
+                                                    likeDislikeDelegate: likeDislikeDelegate)
+                peopleDelegate.reloadListener(currentPeople: currentPeople,
+                                              likeDislikeDelegate: likeDislikeDelegate,
+                                              acceptChatsDelegate: acceptChatsDelegate)
                 
             case .failure(let error):
                 fatalError(error.localizedDescription)
@@ -100,7 +109,10 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
     
      func dislikePeople(people: MPeople) {
         guard let currentPeople = currentPeople else { return }
-        guard let requestChatsDelegate = requestChatsDelegate else { return }
+        guard let requestChatsDelegate = requestChatsDelegate else { fatalError("Can't get requestChatsDelegate") }
+        guard let likeDislikeDelegate = likeDislikeDelegate else {  fatalError("Can't get likeDislikeDelegate")  }
+        guard let peopleDelegate = peopleDelegate else {  fatalError("Can't get peopleDelegate")  }
+        guard let acceptChatsDelegate = acceptChatsDelegate else {  fatalError("Can't get peopleDelegate")  }
         //save dislike from firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
@@ -110,7 +122,11 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
             case .success(_):
                 self?.peopleView.likeButton.isHidden = true
                 self?.peopleView.dislikeButton.isHidden = true
-                requestChatsDelegate.reloadListner()
+                requestChatsDelegate.reloadListener(currentPeople: currentPeople,
+                                                    likeDislikeDelegate: likeDislikeDelegate)
+                peopleDelegate.reloadListener(currentPeople: currentPeople,
+                                              likeDislikeDelegate: likeDislikeDelegate,
+                                              acceptChatsDelegate: acceptChatsDelegate)
                 
             case .failure(let error):
                 fatalError(error.localizedDescription)

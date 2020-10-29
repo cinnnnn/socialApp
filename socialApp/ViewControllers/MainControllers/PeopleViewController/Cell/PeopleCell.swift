@@ -9,7 +9,7 @@
 import UIKit
 import SDWebImage
 
-class PeopleCell: UICollectionViewCell,PeopleConfigurationCell {
+class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     static var reuseID = "PeopleCell"
     

@@ -11,25 +11,30 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController, PeopleListenerDelegate {
+class PeopleViewController: UIViewController {
     
-    weak var requestDelegate: RequestChatDelegate?
-    weak var acceptChatsDelegate: AcceptChatsDelegate?
-    weak var likeDislikeDelegate: LikeDislikeDelegate?
     var currentPeople: MPeople
-    var peopleNearby: [MPeople] = []
-    var sortedPeopleNearby: [MPeople] {
-        peopleNearby.sorted { p1, p2  in
-            p1.distance < p2.distance
-        }
-    }
+    weak var peopleDelegate: PeopleListenerDelegate?
+    weak var requestChatDelegate: RequestChatListenerDelegate?
+    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
+    weak var acceptChatDelegate: AcceptChatListenerDelegate?
+    
     var visibleIndexPath: IndexPath?
     var infoLabel = UILabel(labelText: "", textFont: .avenirBold(size: 38))
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
     
-    init(currentPeople: MPeople) {
+    init(currentPeople: MPeople,
+         peopleDelegate: PeopleListenerDelegate?,
+         requestChatDelegate: RequestChatListenerDelegate?,
+         likeDislikeDelegate: LikeDislikeListenerDelegate?,
+         acceptChatDelegate: AcceptChatListenerDelegate?) {
+        
+        self.peopleDelegate = peopleDelegate
+        self.requestChatDelegate = requestChatDelegate
+        self.likeDislikeDelegate = likeDislikeDelegate
+        self.acceptChatDelegate = acceptChatDelegate
         self.currentPeople = currentPeople
         
         super.init(nibName: nil, bundle: nil)
@@ -40,7 +45,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
     }
 
     deinit {
-        removeListeners()
+        peopleDelegate?.removeListener()
     }
 
     override func viewDidLoad() {
@@ -49,7 +54,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         setupDiffebleDataSource()
         setup()
         setupConstraints()
-        setupListeners(forPeople: currentPeople)
+        setupListner()
     }
     
     //MARK:  setup VC
@@ -58,21 +63,14 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         navigationItem.backButtonTitle = ""
     }
     
-    //MARK:  setupListeners
-    private func setupListeners(forPeople: MPeople) {
+    private func setupListner() {
+        guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
+        guard let acceptChatDelegate = acceptChatDelegate else { fatalError("Can't get acceptChatDelegate")}
         
-        guard let likeDislikeDelegate = likeDislikeDelegate else { return }
-        guard let newActiveChatsDelegate = acceptChatsDelegate else { return }
-        
-        ListenerService.shared.addPeopleListener(currentPeople: forPeople,
-                                                 peopleDelegate: self,
-                                                 likeDislikeDelegate: likeDislikeDelegate,
-                                                 acceptChatsDelegate: newActiveChatsDelegate)
-        
-    }
-    
-    private func removeListeners() {
-        ListenerService.shared.removePeopleListener()
+        print(acceptChatDelegate.acceptChats)
+        peopleDelegate?.setupListener(currentPeople: currentPeople,
+                                            likeDislikeDelegate: likeDislikeDelegate,
+                                            acceptChatsDelegate: acceptChatDelegate)
     }
     
     //MARK: setupCollectionView
@@ -144,7 +142,7 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
         return cell
     }
     
-    //MARK: setupDiffebleDataSource
+    //MARK: setupDataSource
     private func setupDiffebleDataSource() {
         dataSource = UICollectionViewDiffableDataSource<SectionsPeople,MPeople>(
             collectionView: collectionView,
@@ -158,45 +156,13 @@ class PeopleViewController: UIViewController, PeopleListenerDelegate {
                 }
         })
     }
-    
-    //MARK:  updateData
-    func updateData() {
-        guard var snapshot = dataSource?.snapshot() else { return }
-        snapshot.appendItems(sortedPeopleNearby, toSection: .main)
-        dataSource?.apply(snapshot, animatingDifferences: true)
-        
-        checkPeopleNearbyIsEmpty()
-    }
-    
-    //MARK:  reloadData
-    func reloadData(reloadSection: Bool = false, animating: Bool = true) {
-        var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(sortedPeopleNearby, toSection: .main)
-        
-        if reloadSection {
-            snapshot.reloadSections([.main])
-        }
-        dataSource?.apply(snapshot, animatingDifferences: animating)
-        
-        checkPeopleNearbyIsEmpty()
-    }
-    
-    //MARK: reloadListner
-    func reloadListner() {
-        peopleNearby = []
-        guard let updatePeople = UserDefaultsService.shared.getMpeople() else { return }
-        currentPeople = updatePeople
-        reloadData(reloadSection: false, animating: false)
-        removeListeners()
-        setupListeners(forPeople: updatePeople)
-    }
 }
 
-//MARK:setDataForVisibleCell
+//MARK: set empty data
 extension PeopleViewController {
     private func checkPeopleNearbyIsEmpty()  {
-        //if nearby people empty set 
+        //if nearby people empty set
+        guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
         if sortedPeopleNearby.isEmpty {
             infoLabel.isHidden = false
             infoLabel.text = MLabels.emptyNearbyPeople.rawValue
@@ -220,13 +186,38 @@ extension PeopleViewController {
     }
 }
 
-//MARK:  objc
-extension PeopleViewController {
+//MARK: - PeopleCollectionViewDelegate
+extension PeopleViewController: PeopleCollectionViewDelegate {
     
-    @objc private func touchGoToSetup() {
-        tabBarController?.selectedIndex = 0
+    
+    //MARK:  updateData
+    func updateData() {
+        guard var snapshot = dataSource?.snapshot() else { return }
+        guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
+        snapshot.appendItems(sortedPeopleNearby, toSection: .main)
+        dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        checkPeopleNearbyIsEmpty()
+    }
+    
+    
+    //MARK:  reloadData
+    func reloadData(reloadSection: Bool = false, animating: Bool = true) {
+        var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
+        snapshot.appendSections([.main])
+        guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
+        snapshot.appendItems(sortedPeopleNearby, toSection: .main)
+        
+        if reloadSection {
+            snapshot.reloadSections([.main])
+        }
+        dataSource?.apply(snapshot, animatingDifferences: animating)
+        
+        checkPeopleNearbyIsEmpty()
     }
 }
+
+
 
 //MARK:  UICollectionViewDelegate
 extension PeopleViewController: UICollectionViewDelegate {
@@ -240,16 +231,16 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
         //save like to firestore
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
-                                           requestChats: requestDelegate?.requestChats ?? []) {[weak self] result in
+                                           requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result in
             switch result {
             
             case .success(let likeChat):
                 //delete like people from array
-                self?.peopleNearby.removeAll { people -> Bool in
+                self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == likeChat.friendId
                 }
                 //for correct reload last element, need reload section
-                self?.reloadData(reloadSection: self?.peopleNearby.count == 1 ? true : false)
+                self?.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false)
                 
             case .failure(let error):
                 fatalError(error.localizedDescription)
@@ -261,16 +252,16 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
         //save dislike from firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
-                                              requestChats: requestDelegate?.requestChats ?? []) {[weak self] result in
+                                              requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result in
             switch result {
             
             case .success(let dislikeChat):
                 //delete dislike people from array
-                self?.peopleNearby.removeAll { people -> Bool in
+                self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == dislikeChat.friendId
                 }
                 //for correct reload last element, need reload section
-                self?.reloadData(reloadSection: self?.peopleNearby.count == 1 ? true : false)
+                self?.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false)
                 
             case .failure(let error):
                 fatalError(error.localizedDescription)

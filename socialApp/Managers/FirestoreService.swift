@@ -90,7 +90,7 @@ class FirestoreService {
                                             })
     }
     
-    //MARK:  saveAdvert
+    //MARK:  saveFirstSetupAdvert
     func saveAdvert(id: String,
                     advert: String,
                     complition: @escaping (Result<Void, Error>) -> Void){
@@ -140,7 +140,7 @@ class FirestoreService {
                             maxRange: Int,
                             currentLocation: Int,
                             lookingFor: String,
-                            complition: @escaping (Result<Void, Error>) -> Void) {
+                            complition: @escaping (Result<MPeople, Error>) -> Void) {
         
         let searchSettings = [MSearchSettings.distance.rawValue : distance,
                               MSearchSettings.minRange.rawValue : minRange,
@@ -159,8 +159,10 @@ class FirestoreService {
                                                         people.lookingFor = lookingFor
                                                         people.searchSettings = searchSettings
                                                         UserDefaultsService.shared.saveMpeople(people: people)
+                                                        complition(.success(people))
+                                                    } else {
+                                                        complition(.failure(UserDefaultsError.cantGetData))
                                                     }
-                                                    complition(.success(()))
                                                 }
                                             })
     }
@@ -200,10 +202,10 @@ class FirestoreService {
         }
     }
     
-    //MARK: getLikeDislikePeople
-    func getLikeDislikePeople(userID: String, collection: String, complition: @escaping(Result<[MChat], Error>)->Void) {
+    //MARK: getUserCollection
+    func getUserCollection(userID: String, collection: MFirestorCollection, complition: @escaping(Result<[MChat], Error>)->Void) {
         
-        let reference = usersReference.document(userID).collection(collection)
+        let reference = usersReference.document(userID).collection(collection.rawValue)
         var chats: [MChat] = []
         reference.getDocuments { snapshot, error in
             if let error = error {
@@ -222,6 +224,7 @@ class FirestoreService {
         }
     }
     
+    
     //MARK: sendChatRequest
     func sendChatRequest(fromUser: MPeople, forFrend: MPeople, text:String?, complition: @escaping(Result<MMessage,Error>)->Void) {
         
@@ -237,6 +240,8 @@ class FirestoreService {
                                 lastMessage: textToSend,
                                 isNewChat: false,
                                 friendId: fromUser.senderId,
+                                unreadChatMessageCount: 0,
+                                createChatDate: Date(),
                                 date: Date())
         
         do { //add chat request document for reciever user
@@ -274,17 +279,21 @@ class FirestoreService {
         let currentUserMessagesRef = collectionCurrentAcceptChatRef.document(currentPeople.senderId).collection(MFirestorCollection.messages.rawValue)
         let currentUserMessageRef = currentUserMessagesRef.document(MFirestorCollection.requestMessage.rawValue)
         
-        let requestChat = MChat(friendUserName: currentPeople.displayName,
+        var requestChat = MChat(friendUserName: currentPeople.displayName,
                                 friendUserImageString: currentPeople.userImage,
                                 lastMessage: message,
                                 isNewChat: true,
                                 friendId: currentPeople.senderId,
+                                unreadChatMessageCount: 0,
+                                createChatDate: Date(),
                                 date: Date())
-        let likeChat = MChat(friendUserName: likePeople.displayName,
+        var likeChat = MChat(friendUserName: likePeople.displayName,
                              friendUserImageString: likePeople.userImage,
                              lastMessage: message,
                              isNewChat: true,
                              friendId: likePeople.senderId,
+                             unreadChatMessageCount: 0,
+                             createChatDate: Date(),
                              date: Date())
         
         //if like people contains in current user request chat than add to newChat and delete in request
@@ -303,20 +312,26 @@ class FirestoreService {
                                           id: currentUserMessageRef.path)
             
             do { //add to acceptChat to current user
-                try collectionCurrentAcceptChatRef.document(likePeople.senderId).setData(from: likeChat)
-                //if with first message, create message in collection
+                //if with first message, create chat and message in collection
                 if !chat.lastMessage.isEmpty {
+                    likeChat.unreadChatMessageCount = 1
+                    try collectionCurrentAcceptChatRef.document(likePeople.senderId).setData(from: likeChat)
                     currentUserMessageRef.setData(requestMessage.reprasentation)
+                } else {
+                    try collectionCurrentAcceptChatRef.document(likePeople.senderId).setData(from: likeChat)
                 }
             } catch { complition(.failure(error))}
             
             do { //add to acceptChat to like user
-                try collectionLikeUserAcceptChatRef.document(currentPeople.senderId).setData(from: requestChat)
                 if !chat.lastMessage.isEmpty {
+                    requestChat.unreadChatMessageCount = 1
+                    try collectionLikeUserAcceptChatRef.document(currentPeople.senderId).setData(from: requestChat)
                     //change message id to likeUser path
                     requestMessage.messageId = likeUserMessageRef.path
                     //if with first message, create message in collection
                     likeUserMessageRef.setData(requestMessage.reprasentation)
+                } else {
+                    try collectionLikeUserAcceptChatRef.document(currentPeople.senderId).setData(from: requestChat)
                 }
             } catch { complition(.failure(error))}
             complition(.success(likeChat))
@@ -343,6 +358,8 @@ class FirestoreService {
                                 lastMessage: "",
                                 isNewChat: true,
                                 friendId: dislikeForPeople.senderId,
+                                unreadChatMessageCount: 0,
+                                createChatDate: Date(),
                                 date: Date())
         //if dislike people contains in current user request chat, than delete his request
         let requestChatFromLikeUser = requestChats.filter { requestChat -> Bool in
@@ -381,24 +398,28 @@ class FirestoreService {
                     if let error = error {
                         complition(.failure(error))
                     } else {
-                        //set new lastMessage to activeChats
+                        //set new lastMessage to activeChats, set to active chat and increment unread message
                         if let messageContent = message.content {
                             refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
                                                                                   MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                                  MChat.CodingKeys.isNewChat.rawValue: false],
+                                                                                  MChat.CodingKeys.isNewChat.rawValue: false,
+                                                                                  MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))],
                                                                                  merge: true)
                             refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
                                                                            MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                           MChat.CodingKeys.isNewChat.rawValue: false],
+                                                                           MChat.CodingKeys.isNewChat.rawValue: false,
+                                                                           MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))],
                                                                           merge: true)
                         } else if let _ = message.imageURL {
-                            refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: "📷",
+                            refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: "Фото 📷",
                                                                                   MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                                  MChat.CodingKeys.isNewChat.rawValue: false],
+                                                                                  MChat.CodingKeys.isNewChat.rawValue: false,
+                                                                                  MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))],
                                                                                  merge: true)
-                            refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: "📷",
+                            refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: "Фото 📷",
                                                                            MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                           MChat.CodingKeys.isNewChat.rawValue: false],
+                                                                           MChat.CodingKeys.isNewChat.rawValue: false,
+                                                                           MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))],
                                                                           merge: true)
                         }
                         complition(.success(()))
@@ -553,6 +574,8 @@ extension FirestoreService {
                                 lastMessage: "",
                                 isNewChat: true,
                                 friendId: chat.friendId,
+                                unreadChatMessageCount: 0,
+                                createChatDate: Date(),
                                 date: Date())
         
         do {
