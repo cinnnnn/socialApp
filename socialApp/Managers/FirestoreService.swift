@@ -378,6 +378,20 @@ class FirestoreService {
         } catch { complition(.failure(error))}
     }
     
+    //MARK: readAllMessageInChat
+    func readAllMessageInChat(userID: String, chat: MChat, complition: @escaping(Result<(),Error>) -> Void) {
+        let refChat = db.collection([MFirestorCollection.users.rawValue,
+                                     userID,
+                                     MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        refChat.document(chat.friendId).updateData([ MChat.CodingKeys.unreadChatMessageCount.rawValue : 0]) { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                complition(.success(()))
+            }
+        }
+        
+    }
     
     //MARK: sendMessage
     func sendMessage(chat: MChat,
@@ -385,8 +399,13 @@ class FirestoreService {
                      message: MMessage,
                      complition: @escaping(Result<Void, Error>)-> Void) {
         
-        let refFriendChat = db.collection([MFirestorCollection.users.rawValue, chat.friendId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
-        let refSenderChat = db.collection([MFirestorCollection.users.rawValue, currentUser.senderId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        let refFriendChat = db.collection([MFirestorCollection.users.rawValue,
+                                           chat.friendId,
+                                           MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        let refSenderChat = db.collection([MFirestorCollection.users.rawValue,
+                                           currentUser.senderId,
+                                           MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        
         let refFriendMessage = refFriendChat.document(currentUser.senderId).collection(MFirestorCollection.messages.rawValue)
         let refSenderMessage = refSenderChat.document(chat.friendId).collection(MFirestorCollection.messages.rawValue)
         
@@ -407,8 +426,7 @@ class FirestoreService {
                                                                                  merge: true)
                             refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
                                                                            MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                           MChat.CodingKeys.isNewChat.rawValue: false,
-                                                                           MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))],
+                                                                           MChat.CodingKeys.isNewChat.rawValue: false],
                                                                           merge: true)
                         } else if let _ = message.imageURL {
                             refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: "Фото 📷",
@@ -418,8 +436,7 @@ class FirestoreService {
                                                                                  merge: true)
                             refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: "Фото 📷",
                                                                            MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                           MChat.CodingKeys.isNewChat.rawValue: false,
-                                                                           MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))],
+                                                                           MChat.CodingKeys.isNewChat.rawValue: false],
                                                                           merge: true)
                         }
                         complition(.success(()))

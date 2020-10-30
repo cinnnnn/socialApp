@@ -9,6 +9,7 @@
 import Foundation
 
 enum AuthError {
+    case userError
     case notFilled
     case invalidEmail
     case invalidPassword
@@ -25,6 +26,8 @@ extension AuthError: LocalizedError {
     
     var errorDescription: String? {
         switch self {
+        case .userError:
+            return NSLocalizedString("Ошибка получения данных пользователя", comment: "")
         case .notFilled:
             return NSLocalizedString("Заполни все поля", comment: "")
         case .invalidEmail:

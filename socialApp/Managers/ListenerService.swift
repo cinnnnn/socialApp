@@ -307,6 +307,10 @@ class ListenerService {
     
     //MARK: messageListener
     func messageListener(chat:MChat, complition: @escaping (Result<MMessage,Error>)->Void) {
+        guard let userID = currentUser?.email else {
+            complition(.failure(AuthError.userError))
+            return
+        }
         
         messageListner = acceptChatsRef.document(chat.friendId).collection(MFirestorCollection.messages.rawValue).addSnapshotListener({ snapshot, error in
             guard let snapshot = snapshot else { fatalError("Cant get snapshot of message")}
@@ -327,11 +331,23 @@ class ListenerService {
                 switch document.type {
                 
                 case .added:
+                    
                     complition(.success(message))
                 case .modified:
                     break
                 case .removed:
                     complition(.failure(MessageError.deleteChat))
+                }
+            }
+            
+            //read all message in this chat
+            FirestoreService.shared.readAllMessageInChat(userID: userID, chat: chat) { result in
+                switch result {
+                
+                case .success():
+                    break
+                case .failure(let error):
+                    fatalError(error.localizedDescription)
                 }
             }
         })

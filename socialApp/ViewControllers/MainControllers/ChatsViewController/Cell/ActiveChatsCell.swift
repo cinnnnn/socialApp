@@ -42,17 +42,19 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     //MARK: - configure
     func configure(with value: MChat) {
         
+        displayLink?.invalidate()
         let imageURL = URL(string: value.friendUserImageString)
         frendImage.sd_setImage(with: imageURL, completed: nil)
         frendName.text = value.friendUserName
         lastMessage.text = value.lastMessage
         dateOfMessage.text = value.date.getPeriod()
         
+        dateOfLastMessage = value.date
+        
         displayLink = CADisplayLink(target: self, selector: #selector(dateUpdate))
         displayLink?.preferredFramesPerSecond = 1
         displayLink?.add(to: .main, forMode: .common)
     
-        dateOfLastMessage = value.date
         unreadMessage.setupCount(countOfMessages: value.unreadChatMessageCount)
 
     }
@@ -63,7 +65,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        print(#function)
+        
         frendImage.layer.cornerRadius = frendImage.frame.height / 2
         unreadMessage.updateBackgroundView()
     }

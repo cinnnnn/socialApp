@@ -41,6 +41,7 @@ class CountOfUnreadMessageView: UIView {
     }
     
     func setupCount(countOfMessages: Int) {
+        isHidden = countOfMessages == 0 ? true : false
         countLabel.text = String(countOfMessages)
         
     }
