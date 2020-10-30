@@ -28,7 +28,7 @@ class RequestChatDataProvider: RequestChatListenerDelegate {
 extension RequestChatDataProvider {
     //MARK: setup listner
     func setupListener(likeDislikeDelegate: LikeDislikeListenerDelegate) {
-        requestChats = []
+        
         ListenerService.shared.addRequestChatsListener(userID: userID,
                                                        requestChatDelegate: self,
                                                        likeDislikeDelegate: likeDislikeDelegate)
@@ -42,7 +42,6 @@ extension RequestChatDataProvider {
     //MARK: reload listner
     func reloadListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate) {
         requestChats = []
-        
         requestChatCollectionViewDelegate?.reloadData()
         //reload request listner
         removeListener()

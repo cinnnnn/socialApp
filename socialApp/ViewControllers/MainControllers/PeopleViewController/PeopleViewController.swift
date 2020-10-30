@@ -67,7 +67,7 @@ class PeopleViewController: UIViewController {
         guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
         guard let acceptChatDelegate = acceptChatDelegate else { fatalError("Can't get acceptChatDelegate")}
         
-        print(acceptChatDelegate.acceptChats)
+        print("Accept chats ",acceptChatDelegate.acceptChats)
         peopleDelegate?.setupListener(currentPeople: currentPeople,
                                             likeDislikeDelegate: likeDislikeDelegate,
                                             acceptChatsDelegate: acceptChatDelegate)
@@ -203,6 +203,7 @@ extension PeopleViewController: PeopleCollectionViewDelegate {
     
     //MARK:  reloadData
     func reloadData(reloadSection: Bool = false, animating: Bool = true) {
+        
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
         guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }

@@ -20,6 +20,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     let unreadMessage = CountOfUnreadMessageView()
     var dateOfLastMessage: Date?
     var displayLink: CADisplayLink?
+    var timer: Timer?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,7 +43,8 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     //MARK: - configure
     func configure(with value: MChat) {
         
-        displayLink?.invalidate()
+        timer?.invalidate()
+        
         let imageURL = URL(string: value.friendUserImageString)
         frendImage.sd_setImage(with: imageURL, completed: nil)
         frendName.text = value.friendUserName
@@ -51,10 +53,13 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         
         dateOfLastMessage = value.date
         
-        displayLink = CADisplayLink(target: self, selector: #selector(dateUpdate))
-        displayLink?.preferredFramesPerSecond = 1
-        displayLink?.add(to: .main, forMode: .common)
     
+        let timeInterval = TimeInterval(10)
+        timer = Timer(timeInterval: timeInterval, target: self, selector: #selector(dateUpdate), userInfo: nil, repeats: true)
+        if let timer = timer {
+            RunLoop.current.add(timer, forMode: .common)
+        }
+        
         unreadMessage.setupCount(countOfMessages: value.unreadChatMessageCount)
 
     }
@@ -72,7 +77,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        displayLink?.invalidate()
+        timer?.invalidate()
     }
 }
 

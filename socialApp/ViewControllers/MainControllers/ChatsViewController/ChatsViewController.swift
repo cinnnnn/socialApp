@@ -22,6 +22,7 @@ class ChatsViewController: UIViewController {
         self.currentPeople = currentPeople
         self.acceptChatDelegate = acceptChatDelegate
         super.init(nibName: nil, bundle: nil)
+        setupListeners()
     }
     
     required init?(coder: NSCoder) {
@@ -38,17 +39,12 @@ class ChatsViewController: UIViewController {
         setupCollectionView()
         setupDataSource()
         loadSectionHedear()
-        setupListeners()
+        reloadDataSource(searchText: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateCurrentPeople()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        reloadDataSource(searchText: nil)
     }
     
     private func setupListeners() {
@@ -64,7 +60,7 @@ class ChatsViewController: UIViewController {
     //MARK:  setupCollectionView
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.bounds,
-                                          collectionViewLayout: setupCompositionalLayout(isEmptyActiveSection: true))
+                                          collectionViewLayout: setupCompositionalLayout(isEmptyActiveSection: false))
         
         guard let collectionView = collectionView else { fatalError("CollectionView is nil")}
         
@@ -153,7 +149,7 @@ extension ChatsViewController {
         
         section.interGroupSpacing = 15
         
-        section.contentInsets = NSDirectionalEdgeInsets(top: 15,
+        section.contentInsets = NSDirectionalEdgeInsets(top: 40,
                                                         leading: 20,
                                                         bottom: 0,
                                                         trailing: 20)
@@ -194,7 +190,7 @@ extension ChatsViewController {
         
         section.orthogonalScrollingBehavior = .continuous
         section.interGroupSpacing = 15
-        section.contentInsets = NSDirectionalEdgeInsets(top: 15,
+        section.contentInsets = NSDirectionalEdgeInsets(top: 40,
                                                         leading: 20,
                                                         bottom: 15,
                                                         trailing: 20)
@@ -235,30 +231,22 @@ extension ChatsViewController {
     
     //MARK:  supplementaryViewProvider
     private func loadSectionHedear() {
+        
         dataSource?.supplementaryViewProvider = {
-            collectionView, kind, indexPath in
+            [weak self] collectionView, kind, indexPath in
             guard let reuseSectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeader.reuseId, for: indexPath) as? SectionHeader else { fatalError("Can't create new sectionHeader") }
             
             guard let section = SectionsChats(rawValue: indexPath.section) else { fatalError("Unknown section")}
             
-            guard let itemsCount = self.dataSource?.snapshot().numberOfItems(inSection: section) else { fatalError("Unknow items count in section")}
-            
-            reuseSectionHeader.configure(text: section.description(count: itemsCount),
+            guard let itemsInSection = self?.collectionView?.numberOfItems(inSection: indexPath.section) else { fatalError("Can't get count of items")}
+
+            reuseSectionHeader.configure(text: section.description(count: itemsInSection),
                                          font: .avenirRegular(size: 12),
                                          textColor: UIColor.myGrayColor())
             
+        
             return reuseSectionHeader
         }
-    }
-    
- 
-    
-    //MARK:  updateHeader
-    private func updateHeader() {
-        guard var snapshot = dataSource?.snapshot() else { fatalError("Snapshot not exist")}
-        let activeSection = snapshot.sectionIdentifiers
-        snapshot.reloadSections(activeSection)
-        dataSource?.apply(snapshot, animatingDifferences: false)
     }
 }
 
@@ -267,53 +255,63 @@ extension ChatsViewController: AcceptChatCollectionViewDelegate {
     //MARK:  reloadDataSource
      func reloadDataSource(searchText: String?){
         guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
-        let sortedChats = sortedAcceptChats.filter { activeChat -> Bool in
-            activeChat.contains(element: searchText)
+        let filtredAcceptChats = sortedAcceptChats.filter { acceptChat -> Bool in
+            acceptChat.contains(element: searchText)
         }
         
-        let newChats = sortedChats.filter({ chat -> Bool in
-            chat.isNewChat
-        })
-        let activeChats = sortedChats.filter({ chat -> Bool in
-            !chat.isNewChat
-        })
-        
-        if let collectionView = collectionView {
-            collectionView.setCollectionViewLayout(setupCompositionalLayout(isEmptyActiveSection: activeChats.isEmpty),
-                                                   animated: false) {[weak self] finished in
-                if finished {
-                    
-                    var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
-                    snapshot.appendSections([.newChats,.activeChats])
-                    snapshot.appendItems(newChats, toSection: .newChats)
-                    snapshot.appendItems(activeChats, toSection: .activeChats)
-                    self?.dataSource?.apply(snapshot, animatingDifferences: true)
-                    
-                    self?.updateHeader()
-                }
-            }
+        let newChats = filtredAcceptChats.filter { filtredAcceptChat -> Bool in
+            filtredAcceptChat.isNewChat
         }
+        
+        let activeChats = filtredAcceptChats.filter { filtredAcceptChat -> Bool in
+            !filtredAcceptChat.isNewChat
+        }
+       
+        
+//        if let collectionView = collectionView {
+//            collectionView.setCollectionViewLayout(setupCompositionalLayout(isEmptyActiveSection: activeChats.isEmpty),
+//                                                   animated: false) {[weak self] finished in
+//                if finished {
+//
+//
+//                }
+//            }
+//        }
+        
+        var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
+        snapshot.appendSections([.newChats,.activeChats])
+        snapshot.appendItems(newChats, toSection: .newChats)
+        snapshot.appendItems(activeChats, toSection: .activeChats)
+        dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        //for update header
+        guard let snapshot2 = dataSource?.snapshot() else { return }
+        dataSource?.apply(snapshot2, animatingDifferences: false)
     }
     
     //MARK:  updateDataSource
-     func updateDataSource(searchText: String?){
-        guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
-        let activeChats = sortedAcceptChats.filter({ chat -> Bool in
-            !chat.isNewChat
-        })
+    func updateDataSource(){
+        guard let acceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
         
-        if let collectionView = collectionView {
-            collectionView.setCollectionViewLayout(setupCompositionalLayout(isEmptyActiveSection: activeChats.isEmpty),
-                                                   animated: false) {[weak self] finished in
-                if finished {
-                    
-                    //for correct update cell data in collectionView
-                    guard var snapshot = self?.dataSource?.snapshot() else { return }
-                    snapshot.appendItems(activeChats, toSection: .activeChats)
-                    self?.dataSource?.apply(snapshot, animatingDifferences: false)
-                }
-            }
+        let activeChats = acceptChats.filter { acceptChat -> Bool in
+            !acceptChat.isNewChat
         }
+        
+        
+        //for correct update cell data in collectionView
+        guard var snapshot = dataSource?.snapshot() else { return }
+        snapshot.deleteItems(activeChats)
+        snapshot.appendItems(activeChats)
+        dataSource?.apply(snapshot, animatingDifferences: false)
+//        if let collectionView = collectionView {
+//            collectionView.setCollectionViewLayout(setupCompositionalLayout(isEmptyActiveSection: activeChats.isEmpty),
+//                                                   animated: false) {[weak self] finished in
+//                if finished {
+//
+//
+//                }
+//            }
+//        }
     }
 }
 

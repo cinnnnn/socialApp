@@ -143,7 +143,7 @@ extension RequestsViewController {
         
         section.orthogonalScrollingBehavior = .continuous
         section.interGroupSpacing = 15
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10,
+        section.contentInsets = NSDirectionalEdgeInsets(top: 40,
                                                         leading: 20,
                                                         bottom: 0,
                                                         trailing: 20)
@@ -196,13 +196,6 @@ extension RequestsViewController {
         }
     }
     
-    //MARK:  updateHeader
-    private func updateHeader() {
-        guard var snapshot = dataSource?.snapshot() else { return }
-        let activeSection = snapshot.sectionIdentifiers
-        snapshot.reloadSections(activeSection)
-        dataSource?.apply(snapshot, animatingDifferences: false)
-    }
 }
 
 extension RequestsViewController: RequestChatCollectionViewDelegate {
@@ -213,8 +206,10 @@ extension RequestsViewController: RequestChatCollectionViewDelegate {
         snapshot.appendSections([.requestChats])
         snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
         dataSource?.apply(snapshot, animatingDifferences: true)
-        
-        updateHeader()
+
+        //for update header
+        guard let snapshot2 = dataSource?.snapshot() else { return }
+        dataSource?.apply(snapshot2, animatingDifferences: false)
     }
 }
 
@@ -228,8 +223,6 @@ extension RequestsViewController: UICollectionViewDelegate {
         case .requestChats:
             let peopleVC = PeopleInfoViewController(peopleID: item.friendId, withLikeButtons: true)
             peopleVC.requestChatsDelegate = requestChatDelegate
-            peopleVC.likeDislikeDelegate = likeDislikeDelegate
-            peopleVC.acceptChatsDelegate = acceptChatDelegate
             peopleVC.peopleDelegate = peopleDelegate
             peopleVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(peopleVC, animated: true)

@@ -54,7 +54,7 @@ protocol RequestChatCollectionViewDelegate: class {
 
 protocol AcceptChatCollectionViewDelegate: class {
     func reloadDataSource(searchText: String?)
-    func updateDataSource(searchText: String?)
+    func updateDataSource()
 }
 
 protocol MessageControllerDelegate: class {
@@ -93,7 +93,7 @@ protocol AcceptChatListenerDelegate: class {
     var sortedAcceptChats: [MChat] { get }
     var acceptChatCollectionViewDelegate: AcceptChatCollectionViewDelegate? { get set }
     
-    func reloadData(changeType: MTypeOfListenerChanges)
+    func reloadData(changeType: MTypeOfListenerChanges) 
     func getAcceptChats(complition: @escaping (Result<[MChat], Error>) -> Void)
     func setupListener()
     func removeListener()

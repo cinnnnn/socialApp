@@ -77,50 +77,6 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                                                object: nil)
     }
     
-    //MARK: addMessageListener
-    private func addMessageListener() {
-        messageDelegate.setupListener(chat: chat)
-    }
-    
-    //MARK: newMessage
-    func newMessage() {
-        
-        messagesCollectionView.reloadData()
-        
-        DispatchQueue.main.async {
-            self.messagesCollectionView.scrollToBottom(animated: false)
-        }
-    }
-    
-    //MARK: sendImage
-    private func sendImage(image: UIImage) {
-        StorageService.shared.uploadChatImage(image: image,
-                                              currentUserID: user.senderId,
-                                              chat: chat) {[weak self] result in
-            switch result {
-            
-            case .success(let url):
-                guard let sender = self?.user else { return }
-                guard let chat = self?.chat else { return }
-                var imageMessage = MMessage(user: sender, image: image)
-                imageMessage.imageURL = url
-                FirestoreService.shared.sendMessage(chat: chat,
-                                                    currentUser: sender,
-                                                    message: imageMessage) { result in
-                    switch result {
-                    
-                    case .success():
-                        return
-                    case .failure(let error):
-                        fatalError(error.localizedDescription)
-                    }
-                }
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
-        }
-    }
-    
     //MARK: configureInputBar
     private func configureInputBar() {
         messageInputBar.isTranslucent = false
@@ -160,6 +116,49 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         messageInputBar.setStackViewItems([cameraItem], forStack: .left, animated: false)
     }
     
+    //MARK: addMessageListener
+    private func addMessageListener() {
+        messageDelegate.setupListener(chat: chat)
+    }
+    
+    //MARK: newMessage
+    func newMessage() {
+        
+        messagesCollectionView.reloadData()
+        
+        DispatchQueue.main.async {
+            self.messagesCollectionView.scrollToBottom(animated: true)
+        }
+    }
+    
+    //MARK: sendImage
+    private func sendImage(image: UIImage) {
+        StorageService.shared.uploadChatImage(image: image,
+                                              currentUserID: user.senderId,
+                                              chat: chat) {[weak self] result in
+            switch result {
+            
+            case .success(let url):
+                guard let sender = self?.user else { return }
+                guard let chat = self?.chat else { return }
+                var imageMessage = MMessage(user: sender, image: image)
+                imageMessage.imageURL = url
+                FirestoreService.shared.sendMessage(chat: chat,
+                                                    currentUser: sender,
+                                                    message: imageMessage) { result in
+                    switch result {
+                    
+                    case .success():
+                        return
+                    case .failure(let error):
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            case .failure(let error):
+                fatalError(error.localizedDescription)
+            }
+        }
+    }
 }
 
 //MARK: objc
@@ -208,16 +207,9 @@ extension ChatViewController {
     //MARK: profileTapped
     @objc private func chatSettingsTapped() {
         
-        FirestoreService.shared.unMatch(currentUser: user, chat: chat) {[weak self] result in
-            switch result {
-            
-            case .success(_):
-                self?.isInitiateDeleteChat = true
-                self?.navigationController?.popToRootViewController(animated: true)
-            case .failure(_):
-                return
-            }
-        }
+        FirestoreService.shared.deleteChat(currentUserID: user.senderId, friendID: chat.friendId)
+        isInitiateDeleteChat = true
+        navigationController?.popToRootViewController(animated: true)
     }
 }
 

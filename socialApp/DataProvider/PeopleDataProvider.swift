@@ -31,13 +31,14 @@ class PeopleDataProvider: PeopleListenerDelegate {
     }
     
     func reloadData(reloadSection: Bool, animating: Bool) {
+        
         peopleCollectionViewDelegate?.reloadData(reloadSection: reloadSection, animating: animating)
     }
     
     
     //MARK: work with listner
     func setupListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate) {
-        peopleNearby = []
+        
         ListenerService.shared.addPeopleListener(currentPeople: currentPeople,
                                                  peopleDelegate: self,
                                                  likeDislikeDelegate: likeDislikeDelegate,
@@ -51,8 +52,8 @@ class PeopleDataProvider: PeopleListenerDelegate {
     func reloadListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate) {
         peopleNearby = []
       //  guard let updatePeople = UserDefaultsService.shared.getMpeople() else { return }
-        reloadData(reloadSection: false, animating: false)
         removeListener()
+        reloadData(reloadSection: false, animating: false)
         setupListener(currentPeople: currentPeople, likeDislikeDelegate: likeDislikeDelegate, acceptChatsDelegate: acceptChatsDelegate)
     }
 }

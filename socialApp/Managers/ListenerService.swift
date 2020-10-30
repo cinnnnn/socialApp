@@ -78,13 +78,14 @@ class ListenerService {
                 switch changes.type {
                 
                 case .added:
+                    
                     if Validators.shared.listnerAddPeopleValidator(currentPeople: currentPeople,
                                                                    newPeople: user,
                                                                    peopleDelegate: peopleDelegate,
                                                                    likeDislikeDelegate: likeDislikeDelegate,
                                                                    acceptChatsDelegate: acceptChatsDelegate,
                                                                    isUpdate: false) {
-                
+                        print("accept chats ",  acceptChatsDelegate.acceptChats.count, " \(user.displayName)")
                         peopleDelegate.peopleNearby.append(user)
                         peopleDelegate.reloadData(reloadSection: false, animating: true)
                     }
@@ -194,7 +195,6 @@ class ListenerService {
                                  requestChatDelegate: RequestChatListenerDelegate,
                                  likeDislikeDelegate: LikeDislikeListenerDelegate) {
         
-        print(#function)
         self.requestChatsListner = requestChatsRef.addSnapshotListener({ snapshot, error in
             guard let snapshot = snapshot else { return }
             
@@ -239,7 +239,7 @@ class ListenerService {
                                 requestChatDelegate.requestChats.remove(at: index)
                                 requestChatDelegate.reloadData(changeType: .addOrDelete)
                             } else {
-                                fatalError(FirestoreError.cantDeleteElementInCollection.localizedDescription)
+                                break
                             }
                         }
                     //failure get people info
@@ -257,14 +257,11 @@ class ListenerService {
     
     //MARK: acceptChatsListener
     func addAcceptChatsListener(acceptChatDelegate: AcceptChatListenerDelegate) {
-        
         self.acceptChatsListner = acceptChatsRef.addSnapshotListener({ snapshot, error in
             guard let snapshot = snapshot else { return }
             
             snapshot.documentChanges.forEach { changes in
                 guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
-                
-                let chats = acceptChatDelegate.acceptChats
                 
                 //get actual information for user in chat
                 FirestoreService.shared.getUserData(userID: chat.friendId) { result in
@@ -277,19 +274,22 @@ class ListenerService {
                         switch changes.type {
                         
                         case .added:
+                            
+                            if !acceptChatDelegate.acceptChats.contains(chat) {
                             acceptChatDelegate.acceptChats.append(chat)
                             acceptChatDelegate.reloadData(changeType: .addOrDelete)
+                            }
                         case .modified:
-                            if let index = chats.firstIndex(of: chat) {
+                            if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
                                 acceptChatDelegate.acceptChats[index] = chat
                                 acceptChatDelegate.reloadData(changeType: .update)
                             }
                         case .removed:
-                            if let index = chats.firstIndex(of: chat) {
+                            if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
                                 acceptChatDelegate.acceptChats.remove(at: index)
                                 acceptChatDelegate.reloadData(changeType: .addOrDelete)
                             } else {
-                                fatalError(FirestoreError.cantDeleteElementInCollection.localizedDescription)
+                                break
                             }
                         }
                     //failure get people info
@@ -341,14 +341,8 @@ class ListenerService {
             }
             
             //read all message in this chat
-            FirestoreService.shared.readAllMessageInChat(userID: userID, chat: chat) { result in
-                switch result {
+            FirestoreService.shared.readAllMessageInChat(userID: userID, chat: chat) { _ in
                 
-                case .success():
-                    break
-                case .failure(let error):
-                    fatalError(error.localizedDescription)
-                }
             }
         })
     }

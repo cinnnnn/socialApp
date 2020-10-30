@@ -13,9 +13,7 @@ class PeopleInfoViewController: UIViewController {
     var peopleID: String
     var withLikeButtons: Bool
     weak var requestChatsDelegate: RequestChatListenerDelegate?
-    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var peopleDelegate: PeopleListenerDelegate?
-    weak var acceptChatsDelegate: AcceptChatListenerDelegate?
     
     var currentPeople: MPeople?
     var people: MPeople?
@@ -83,9 +81,8 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
      func likePeople(people: MPeople) {
         guard let currentPeople = currentPeople else { return }
         guard let requestChatsDelegate = requestChatsDelegate else { fatalError("Can't get requestChatsDelegate") }
-        guard let likeDislikeDelegate = likeDislikeDelegate else {  fatalError("Can't get likeDislikeDelegate")  }
         guard let peopleDelegate = peopleDelegate else {  fatalError("Can't get peopleDelegate")  }
-        guard let acceptChatsDelegate = acceptChatsDelegate else {  fatalError("Can't get peopleDelegate")  }
+      
         //save like to firestore
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
@@ -93,14 +90,19 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
             switch result {
             
             case .success(_):
+                
+                peopleDelegate.peopleNearby.removeAll { peopleDelegate -> Bool in
+                    peopleDelegate.senderId == people.senderId
+                }
+              
                 self?.peopleView.likeButton.isHidden = true
                 self?.peopleView.dislikeButton.isHidden = true
-                requestChatsDelegate.reloadListener(currentPeople: currentPeople,
-                                                    likeDislikeDelegate: likeDislikeDelegate)
-                peopleDelegate.reloadListener(currentPeople: currentPeople,
-                                              likeDislikeDelegate: likeDislikeDelegate,
-                                              acceptChatsDelegate: acceptChatsDelegate)
                 
+                requestChatsDelegate.reloadData(changeType: .addOrDelete)
+                //for correct renew last people, need reload section
+                peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
+                
+               
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
@@ -110,9 +112,7 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
      func dislikePeople(people: MPeople) {
         guard let currentPeople = currentPeople else { return }
         guard let requestChatsDelegate = requestChatsDelegate else { fatalError("Can't get requestChatsDelegate") }
-        guard let likeDislikeDelegate = likeDislikeDelegate else {  fatalError("Can't get likeDislikeDelegate")  }
         guard let peopleDelegate = peopleDelegate else {  fatalError("Can't get peopleDelegate")  }
-        guard let acceptChatsDelegate = acceptChatsDelegate else {  fatalError("Can't get peopleDelegate")  }
         //save dislike from firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
@@ -120,13 +120,16 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
             switch result {
             
             case .success(_):
+                peopleDelegate.peopleNearby.removeAll { peopleDelegate -> Bool in
+                    peopleDelegate.senderId == people.senderId
+                }
+                
                 self?.peopleView.likeButton.isHidden = true
                 self?.peopleView.dislikeButton.isHidden = true
-                requestChatsDelegate.reloadListener(currentPeople: currentPeople,
-                                                    likeDislikeDelegate: likeDislikeDelegate)
-                peopleDelegate.reloadListener(currentPeople: currentPeople,
-                                              likeDislikeDelegate: likeDislikeDelegate,
-                                              acceptChatsDelegate: acceptChatsDelegate)
+                
+                requestChatsDelegate.reloadData(changeType: .addOrDelete)
+                //for correct renew last people, need reload section
+                peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
                 
             case .failure(let error):
                 fatalError(error.localizedDescription)

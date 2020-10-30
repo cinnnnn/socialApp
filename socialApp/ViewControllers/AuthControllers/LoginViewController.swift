@@ -160,9 +160,7 @@ extension LoginViewController {
                         }
                     }
                 //error of logIn
-                case .failure(let eror):
-                    let myError = eror.localizedDescription
-                    print(myError)
+                case .failure( _):
                     self?.showAlert(title: "Ошибка входа",
                                     text: "Некорректная комбинация email/пароль",
                                     buttonText: "Попробую еще")

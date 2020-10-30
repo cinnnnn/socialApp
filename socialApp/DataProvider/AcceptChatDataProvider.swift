@@ -32,14 +32,14 @@ class AcceptChatDataProvider: AcceptChatListenerDelegate {
             acceptChatCollectionViewDelegate?.reloadDataSource(searchText: nil)
             
         case .update:
-            acceptChatCollectionViewDelegate?.updateDataSource(searchText: nil)
+            acceptChatCollectionViewDelegate?.updateDataSource()
         }
     }
 }
 
 extension AcceptChatDataProvider {
     func setupListener() {
-        acceptChats = []
+        print("setup chat listner")
         ListenerService.shared.addAcceptChatsListener(acceptChatDelegate: self)
     }
     
@@ -51,7 +51,6 @@ extension AcceptChatDataProvider {
     //MARK:  setupListeners
      func getAcceptChats(complition: @escaping (Result<[MChat], Error>) -> Void) {
         
-        let strongSelf = self
         //first get list of like people
         FirestoreService.shared.getUserCollection(userID: userID,
                                                   collection: MFirestorCollection.acceptChats) {[weak self] result in
@@ -60,8 +59,6 @@ extension AcceptChatDataProvider {
             
             case .success(let acceptChats):
                 self?.acceptChats = acceptChats
-                //get list of dislike people
-                ListenerService.shared.addAcceptChatsListener(acceptChatDelegate: strongSelf )
                 complition(.success(acceptChats))
             case .failure(let error):
                 complition(.failure(error))

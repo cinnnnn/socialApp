@@ -237,7 +237,6 @@ extension AppSettingsViewController {
             guard let password = alert.textFields?.first?.text else { return }
             guard let mail = self?.currentPeople.mail else { return }
             
-            print(password, mail)
             AuthService.shared.reAuthentificate(credential: nil,
                                                 email: mail,
                                                 password: password) { result in
