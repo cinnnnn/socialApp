@@ -67,7 +67,6 @@ class PeopleViewController: UIViewController {
         guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
         guard let acceptChatDelegate = acceptChatDelegate else { fatalError("Can't get acceptChatDelegate")}
         
-        print("Accept chats ",acceptChatDelegate.acceptChats)
         peopleDelegate?.setupListener(currentPeople: currentPeople,
                                             likeDislikeDelegate: likeDislikeDelegate,
                                             acceptChatsDelegate: acceptChatDelegate)

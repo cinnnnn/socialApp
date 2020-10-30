@@ -59,7 +59,7 @@ extension RequestChatDataProvider {
     func getRequestChats(complition: @escaping (Result<[MChat], Error>) -> Void) {
     
         FirestoreService.shared.getUserCollection(userID: userID,
-                                                  collection: MFirestorCollection.likePeople) {[weak self] result in
+                                                  collection: MFirestorCollection.requestsChats) {[weak self] result in
             switch result {
             
             case .success(let requestChats):

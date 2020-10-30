@@ -39,7 +39,6 @@ class AcceptChatDataProvider: AcceptChatListenerDelegate {
 
 extension AcceptChatDataProvider {
     func setupListener() {
-        print("setup chat listner")
         ListenerService.shared.addAcceptChatsListener(acceptChatDelegate: self)
     }
     

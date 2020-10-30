@@ -119,8 +119,13 @@ class Validators {
     //MARK: listnerAddRequestValidator
     func listnerAddRequestValidator(userID: String,
                                     newRequestChat: MChat,
+                                    requestDelegate: RequestChatListenerDelegate,
                                     likeDislikeDelegate: LikeDislikeListenerDelegate) -> Bool {
         
+       //if already have in request, don't add him to collection
+        guard !requestDelegate.requestChats.contains(where: { requestChat -> Bool in
+            requestChat.friendId == newRequestChat.friendId
+        }) else { return false }
         //if this user have dislike, don't add him to collection
         guard !likeDislikeDelegate.dislikePeople.contains(where: { dislikeChat -> Bool in
             dislikeChat.friendId == newRequestChat.friendId

@@ -85,7 +85,7 @@ class ListenerService {
                                                                    likeDislikeDelegate: likeDislikeDelegate,
                                                                    acceptChatsDelegate: acceptChatsDelegate,
                                                                    isUpdate: false) {
-                        print("accept chats ",  acceptChatsDelegate.acceptChats.count, " \(user.displayName)")
+                       
                         peopleDelegate.peopleNearby.append(user)
                         peopleDelegate.reloadData(reloadSection: false, animating: true)
                     }
@@ -211,12 +211,12 @@ class ListenerService {
                         chat.friendUserImageString = people.userImage
                         chat.friendUserName = people.displayName
                         
-
                         switch changes.type {
                         
                         case .added:
                             if Validators.shared.listnerAddRequestValidator(userID: userID,
                                                                             newRequestChat: chat,
+                                                                            requestDelegate: requestChatDelegate,
                                                                             likeDislikeDelegate: likeDislikeDelegate) {
                                 requestChatDelegate.requestChats.append(chat)
                                 requestChatDelegate.reloadData(changeType: .addOrDelete)
@@ -228,6 +228,7 @@ class ListenerService {
                             } else {
                                 if Validators.shared.listnerAddRequestValidator(userID: userID,
                                                                                 newRequestChat: chat,
+                                                                                requestDelegate: requestChatDelegate,
                                                                                 likeDislikeDelegate: likeDislikeDelegate) {
                                     requestChatDelegate.requestChats.append(chat)
                                 }

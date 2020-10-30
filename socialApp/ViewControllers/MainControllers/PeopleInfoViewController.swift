@@ -102,7 +102,6 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
                 //for correct renew last people, need reload section
                 peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
                 
-               
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
