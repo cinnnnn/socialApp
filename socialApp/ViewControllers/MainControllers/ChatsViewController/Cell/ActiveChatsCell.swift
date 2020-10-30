@@ -17,7 +17,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     let frendName = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
     let lastMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .myLabelColor(), linesCount: 2)
     let dateOfMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
-    let unreadMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myWhiteColor())
+    let unreadMessage = CountOfUnreadMessageView()
     var dateOfLastMessage: Date?
     var displayLink: CADisplayLink?
     
@@ -50,10 +50,11 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         
         displayLink = CADisplayLink(target: self, selector: #selector(dateUpdate))
         displayLink?.preferredFramesPerSecond = 1
-        displayLink?.add(to: .main, forMode: .default)
+        displayLink?.add(to: .main, forMode: .common)
     
         dateOfLastMessage = value.date
-        unreadMessage.text = String(value.unreadChatMessageCount)
+        unreadMessage.setupCount(countOfMessages: value.unreadChatMessageCount)
+
     }
     
     required init?(coder: NSCoder) {
@@ -62,8 +63,9 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        print(#function)
         frendImage.layer.cornerRadius = frendImage.frame.height / 2
-        unreadMessage.layer.cornerRadius = unreadMessage.frame.width / 2
+        unreadMessage.updateBackgroundView()
     }
     
     override func prepareForReuse() {

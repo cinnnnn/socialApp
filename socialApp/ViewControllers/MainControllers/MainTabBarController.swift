@@ -211,7 +211,7 @@ extension MainTabBarController {
         navController.navigationBar.shadowImage = UIImage()
         navController.navigationBar.tintColor = .myLabelColor()
         navController.navigationBar.barTintColor = .myWhiteColor()
-        navController.navigationBar.backgroundColor = .myWhiteColor()
+       // navController.navigationBar.backgroundColor = .myWhiteColor()
         navController.navigationBar.titleTextAttributes = [.font: UIFont.avenirBold(size: 16)]
         navController.navigationBar.largeTitleTextAttributes = [.font: UIFont.avenirBold(size: 38)]
         return navController

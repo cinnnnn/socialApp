@@ -42,7 +42,7 @@ class EditSearchSettingsViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
@@ -107,6 +107,9 @@ class EditSearchSettingsViewController: UIViewController {
         let currentLocationIndex = MVirtualLocation.index(location: newLocation)
         guard let virtualLocation = MVirtualLocation(rawValue: currentLocationIndex) else { return }
         
+        guard let strongLikeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
+        guard let strongAcceptChatsDelegate = acceptChatsDelegate else { fatalError("Can't get acceptChatsDelegate")}
+        
         LocationService.shared.getCoordinate(userID: currentPeople.senderId,
                                              virtualLocation: virtualLocation) { [weak self] isAllowPermission in
            //if permission deniy, open settings
@@ -126,12 +129,10 @@ class EditSearchSettingsViewController: UIViewController {
             switch result {
             
             case .success(let mPeople):
-                guard let likeDislikeDelegate = self?.likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
-                guard let acceptChatsDelegate = self?.acceptChatsDelegate else { fatalError("Can't get acceptChatsDelegate")}
                 //reload peopleListner
                 self?.peopleListnerDelegate?.reloadListener(currentPeople: mPeople,
-                                                            likeDislikeDelegate: likeDislikeDelegate,
-                                                            acceptChatsDelegate: acceptChatsDelegate)
+                                                            likeDislikeDelegate: strongLikeDislikeDelegate,
+                                                            acceptChatsDelegate: strongAcceptChatsDelegate)
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

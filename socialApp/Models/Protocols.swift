@@ -57,6 +57,13 @@ protocol AcceptChatCollectionViewDelegate: class {
     func updateDataSource(searchText: String?)
 }
 
+protocol MessageControllerDelegate: class {
+    var isInitiateDeleteChat: Bool { get set }
+    
+    func newMessage()
+    func showChatAlert(text: String)
+    
+}
 
 //MARK: listner Firestore protocols
 protocol LikeDislikeListenerDelegate: class {
@@ -103,6 +110,14 @@ protocol PeopleListenerDelegate: class {
     //work with collectionView
     func updateData()
     func reloadData(reloadSection: Bool, animating: Bool)
+}
+
+protocol MessageListenerDelegate: class {
+    var messages:[MMessage] { get set }
+    var messageControllerDelegate: MessageControllerDelegate? { get set }
+    
+    func setupListener(chat: MChat)
+    func removeListener()
 }
 
 protocol ActiveChatListenerDelegate: class {

@@ -53,6 +53,7 @@ class RequestsViewController: UIViewController {
         setupDataSource()
         loadSectionHedear()
         setupListeners()
+        reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -338,12 +338,12 @@ extension ChatsViewController: UICollectionViewDelegate {
         switch section {
         case .newChats:
             
-            let chatVC = ChatViewController(people: currentPeople, chat: item)
+            let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: MessagesDataProvider())
             navigationController?.pushViewController(chatVC, animated: true)
             
         case .activeChats:
             
-            let chatVC = ChatViewController(people: currentPeople, chat: item)
+            let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: MessagesDataProvider())
             navigationController?.pushViewController(chatVC, animated: true)
         }
     }

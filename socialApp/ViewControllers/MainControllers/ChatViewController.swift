@@ -11,11 +11,12 @@ import MessageKit
 import SDWebImage
 import InputBarAccessoryView
 
-class ChatViewController: MessagesViewController  {
+class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     private let user:MPeople
     private let chat:MChat
-    private var messages:[MMessage] = []
+    
+    var messageDelegate: MessageListenerDelegate
     lazy var isInitiateDeleteChat = false
     
     override func viewDidLoad() {
@@ -26,17 +27,19 @@ class ChatViewController: MessagesViewController  {
         messagesCollectionView.messageCellDelegate = self
         
         messageInputBar.delegate = self
-
+        messageDelegate.messageControllerDelegate = self
+        
         configure()
         configureInputBar()
         configureCameraBar()
-    
+        
         addMessageListener()
     }
     
-    init(people: MPeople, chat: MChat) {
+    init(people: MPeople, chat: MChat, messageDelegate: MessageListenerDelegate) {
         self.user = people
         self.chat = chat
+        self.messageDelegate = messageDelegate
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -46,7 +49,7 @@ class ChatViewController: MessagesViewController  {
     }
     
     deinit {
-        ListenerService.shared.removeMessageListener()
+        messageDelegate.removeListener()
     }
     
     //MARK: configure
@@ -58,7 +61,7 @@ class ChatViewController: MessagesViewController  {
             layout.textMessageSizeCalculator.outgoingAvatarSize = .zero
             layout.textMessageSizeCalculator.incomingAvatarSize = .zero
         }
-    
+        
         navigationItem.titleView = ChatTitleStackView(chat: chat, target: self, profileTappedAction: #selector(profileTapped))
         navigationItem.backButtonTitle = ""
         let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"),
@@ -66,7 +69,7 @@ class ChatViewController: MessagesViewController  {
                                             target: self,
                                             action: #selector(chatSettingsTapped))
         navigationItem.rightBarButtonItem = barButtonItem
-            
+        
         //add screenshot observer
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(screenshotTaken),
@@ -76,30 +79,12 @@ class ChatViewController: MessagesViewController  {
     
     //MARK: addMessageListener
     private func addMessageListener() {
-        ListenerService.shared.messageListener(chat: chat) {[weak self] result in
-            switch result {
-            
-            case .success(let message):
-                self?.newMessage(message: message)
-                
-            case .failure(let error):
-                guard let isInitiateDeleteChat = self?.isInitiateDeleteChat else { return }
-                //if user don't press delete chat, show alert and close chat
-                if !isInitiateDeleteChat {
-                self?.showDeleteChatAlert(text: error.localizedDescription)
-                }
-            }
-        }
+        messageDelegate.setupListener(chat: chat)
     }
     
     //MARK: newMessage
-    private func newMessage(message: MMessage) {
+    func newMessage() {
         
-        guard !messages.contains(message) else { return }
-        messages.append(message)
-        messages.sort { lhs, rhs -> Bool in
-            lhs.sentDate < rhs.sentDate
-        }
         messagesCollectionView.reloadData()
         
         DispatchQueue.main.async {
@@ -121,11 +106,11 @@ class ChatViewController: MessagesViewController  {
                 imageMessage.imageURL = url
                 FirestoreService.shared.sendMessage(chat: chat,
                                                     currentUser: sender,
-                                                    message: imageMessage) {[weak self] result in
+                                                    message: imageMessage) { result in
                     switch result {
                     
                     case .success():
-                        self?.newMessage(message: imageMessage)
+                        return
                     case .failure(let error):
                         fatalError(error.localizedDescription)
                     }
@@ -245,12 +230,12 @@ extension ChatViewController {
                                            preferredStyle: .actionSheet)
         let cameraAction = UIAlertAction(title: "Открыть камеру",
                                          style: .default) { _ in
-                                            
-                                            complition(UIImagePickerController.SourceType.camera)
+            
+            complition(UIImagePickerController.SourceType.camera)
         }
         let libraryAction = UIAlertAction(title: "Выбрать из галереи",
                                           style: .default) { _ in
-                                            complition(UIImagePickerController.SourceType.photoLibrary)
+            complition(UIImagePickerController.SourceType.photoLibrary)
         }
         let cancelAction = UIAlertAction(title: "Отмена",
                                          style: .default) { _ in
@@ -266,7 +251,7 @@ extension ChatViewController {
     }
     
     //MARK: showDeleteChatAlert
-    private func showDeleteChatAlert(text: String) {
+    func showChatAlert(text: String) {
         let alert = UIAlertController(title: nil,
                                       message: text,
                                       preferredStyle: .alert)
@@ -303,11 +288,12 @@ extension ChatViewController: MessagesDataSource {
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        messages[indexPath.section]
+        return messageDelegate.messages[indexPath.section]
+        
     }
     
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
-        messages.count
+        return messageDelegate.messages.count
     }
     
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
@@ -320,15 +306,15 @@ extension ChatViewController: MessagesDataSource {
             return attributedDateString
         } else {
             //if from previus message more then 10 minets show time
-            let timeDifference = messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
+            let timeDifference = messageDelegate.messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
             
             if timeDifference > 1 {
                 return attributedDateString
-            } else {
-                return nil
             }
         }
+        return nil
     }
+    
     func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if message.sender.senderId == MAdmin.id.rawValue {
             return NSAttributedString(string: message.sender.displayName,
@@ -352,13 +338,12 @@ extension ChatViewController: MessagesLayoutDelegate {
             return 30
         } else {
             //if from previus message more then 10 minets set new height
-            let timeDifference = messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
+            let timeDifference = messageDelegate.messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
             if timeDifference > 1 {
                 return 30
-            } else {
-                return 0
             }
         }
+        return 0
     }
     
     func messageTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
@@ -397,7 +382,7 @@ extension ChatViewController: MessagesDisplayDelegate {
     }
     
     func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
-
+        
         switch message.kind {
         case .photo(let photoItem):
             if let url = photoItem.url {
