@@ -28,9 +28,10 @@ class AcceptChatDataProvider: AcceptChatListenerDelegate {
     func reloadData(changeType: MTypeOfListenerChanges) {
         
         switch changeType {
-        case .addOrDelete:
+        case .add:
             acceptChatCollectionViewDelegate?.reloadDataSource(searchText: nil)
-            
+        case .delete:
+            acceptChatCollectionViewDelegate?.updateForDeleteDataSource()
         case .update:
             acceptChatCollectionViewDelegate?.updateDataSource()
         }

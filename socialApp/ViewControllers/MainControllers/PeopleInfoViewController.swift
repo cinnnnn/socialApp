@@ -98,7 +98,7 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
                 self?.peopleView.likeButton.isHidden = true
                 self?.peopleView.dislikeButton.isHidden = true
                 
-                requestChatsDelegate.reloadData(changeType: .addOrDelete)
+                requestChatsDelegate.reloadData(changeType: .add)
                 //for correct renew last people, need reload section
                 peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
                 
@@ -126,7 +126,7 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
                 self?.peopleView.likeButton.isHidden = true
                 self?.peopleView.dislikeButton.isHidden = true
                 
-                requestChatsDelegate.reloadData(changeType: .addOrDelete)
+                requestChatsDelegate.reloadData(changeType: .add)
                 //for correct renew last people, need reload section
                 peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
                 

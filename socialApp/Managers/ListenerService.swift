@@ -219,7 +219,7 @@ class ListenerService {
                                                                             requestDelegate: requestChatDelegate,
                                                                             likeDislikeDelegate: likeDislikeDelegate) {
                                 requestChatDelegate.requestChats.append(chat)
-                                requestChatDelegate.reloadData(changeType: .addOrDelete)
+                                requestChatDelegate.reloadData(changeType: .add)
                             }
                             
                         case .modified:
@@ -238,7 +238,7 @@ class ListenerService {
                         case .removed:
                             if let index = chats.firstIndex(of: chat) {
                                 requestChatDelegate.requestChats.remove(at: index)
-                                requestChatDelegate.reloadData(changeType: .addOrDelete)
+                                requestChatDelegate.reloadData(changeType: .add)
                             } else {
                                 break
                             }
@@ -278,7 +278,7 @@ class ListenerService {
                             
                             if !acceptChatDelegate.acceptChats.contains(chat) {
                             acceptChatDelegate.acceptChats.append(chat)
-                            acceptChatDelegate.reloadData(changeType: .addOrDelete)
+                            acceptChatDelegate.reloadData(changeType: .add)
                             }
                         case .modified:
                             if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
@@ -288,7 +288,7 @@ class ListenerService {
                         case .removed:
                             if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
                                 acceptChatDelegate.acceptChats.remove(at: index)
-                                acceptChatDelegate.reloadData(changeType: .addOrDelete)
+                                acceptChatDelegate.reloadData(changeType: .delete)
                             } else {
                                 break
                             }
@@ -334,16 +334,15 @@ class ListenerService {
                 case .added:
                     
                     complition(.success(message))
+                    //read all message in this chat
+                    FirestoreService.shared.readAllMessageInChat(userID: userID, chat: chat) { _ in
+                        
+                    }
                 case .modified:
                     break
                 case .removed:
                     complition(.failure(MessageError.deleteChat))
                 }
-            }
-            
-            //read all message in this chat
-            FirestoreService.shared.readAllMessageInChat(userID: userID, chat: chat) { _ in
-                
             }
         })
     }

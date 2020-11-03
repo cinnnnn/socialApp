@@ -24,11 +24,11 @@ class PeopleView: UIView {
     let geoImage = UIImageView(systemName: "location.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
     let infoImage = UIImageView(systemName: "info.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
     let likeImage = UIImageView(systemName: "info.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
-    let dislikeButton = UIButton(image: UIImage(systemName: "xmark",
+    let dislikeButton = LikeDisklikeButton(image: UIImage(systemName: "xmark",
                                                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .large)) ?? #imageLiteral(resourceName: "reject"),
                                  tintColor: .myLabelColor(),
                                  backgroundColor: .myLightGrayColor())
-    let likeButton = UIButton(image: UIImage(systemName: "suit.heart",
+    let likeButton = LikeDisklikeButton(image: UIImage(systemName: "suit.heart",
                                              withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .large)) ?? #imageLiteral(resourceName: "reject"),
                               tintColor: .myWhiteColor(),
                               backgroundColor: .myLabelColor())
@@ -66,6 +66,9 @@ class PeopleView: UIView {
         advertLabel.attributedText = NSMutableAttributedString(string: value.advert, attributes: attributes)
         
         infoLabel.text = [value.dateOfBirth.getStringAge(), value.gender, value.sexuality].joined(separator: ", ").lowercased()
+        
+        likeButton.actionPeople = value
+        dislikeButton.actionPeople = value
         
         let locationIndex = value.searchSettings[MSearchSettings.currentLocation.rawValue] ?? MSearchSettings.currentLocation.defaultValue
         let virtualLocation = MVirtualLocation(rawValue: locationIndex)

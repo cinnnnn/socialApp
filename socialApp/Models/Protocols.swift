@@ -54,6 +54,7 @@ protocol RequestChatCollectionViewDelegate: class {
 
 protocol AcceptChatCollectionViewDelegate: class {
     func reloadDataSource(searchText: String?)
+    func updateForDeleteDataSource()
     func updateDataSource()
 }
 

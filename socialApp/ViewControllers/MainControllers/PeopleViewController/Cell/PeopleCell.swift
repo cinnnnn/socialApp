@@ -30,16 +30,16 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     func setup() {
         layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         clipsToBounds = true
-        
-        peopleView.likeButton.addTarget(self, action: #selector(likeTapped), for: .touchUpInside)
-        peopleView.dislikeButton.addTarget(self, action: #selector(dislikeTapped), for: .touchUpInside)
+        peopleView.likeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
+        peopleView.dislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
     }
+    
     func configure(with value: MPeople, complition: @escaping()-> Void) {
         
-        person = value
         peopleView.configure(with: value) {
             complition()
         }
+        
     }
     
     override func prepareForReuse() {
@@ -53,16 +53,16 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
 }
 
 extension PeopleCell {
-    @objc private func likeTapped() {
-        if let person = person {
-            likeDislikeDelegate?.likePeople(people: person)
-        }
+    @objc private func likeTapped(sender: Any) {
+        guard let sender = sender as? LikeDisklikeButton else { return }
+        guard let people = sender.actionPeople else { return }
+        likeDislikeDelegate?.likePeople(people: people)
     }
     
-    @objc private func dislikeTapped() {
-        if let person = person {
-            likeDislikeDelegate?.dislikePeople(people: person)
-        }
+    @objc private func dislikeTapped(sender: Any) {
+        guard let sender = sender as? LikeDisklikeButton else { return }
+        guard let people = sender.actionPeople else { return }
+        likeDislikeDelegate?.dislikePeople(people: people)
     }
 }
 

@@ -9,6 +9,7 @@
 import Foundation
 
 enum MTypeOfListenerChanges {
-    case addOrDelete
+    case add
     case update
+    case delete
 }

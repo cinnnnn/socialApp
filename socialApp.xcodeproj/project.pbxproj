@@ -87,6 +87,7 @@
 		FB8C3D94253A51BF00184FB5 /* RequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D93253A51BE00184FB5 /* RequestsViewController.swift */; };
 		FB8C3D98253A525500184FB5 /* SectionsRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D97253A525500184FB5 /* SectionsRequests.swift */; };
 		FB8C3D9C253A589B00184FB5 /* RequestChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D9B253A589B00184FB5 /* RequestChatCell.swift */; };
+		FBA2AA282550601A00A471F6 /* LikeDisklikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB26EAE254585DB0081CF2C /* ChatTitleStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */; };
 		FBB26EB42546E49B0081CF2C /* MAdmin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EB32546E49B0081CF2C /* MAdmin.swift */; };
@@ -215,6 +216,7 @@
 		FB8C3D93253A51BE00184FB5 /* RequestsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsViewController.swift; sourceTree = "<group>"; };
 		FB8C3D97253A525500184FB5 /* SectionsRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsRequests.swift; sourceTree = "<group>"; };
 		FB8C3D9B253A589B00184FB5 /* RequestChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestChatCell.swift; sourceTree = "<group>"; };
+		FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeDisklikeButton.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTitleStackView.swift; sourceTree = "<group>"; };
 		FBB26EB32546E49B0081CF2C /* MAdmin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAdmin.swift; sourceTree = "<group>"; };
@@ -645,6 +647,7 @@
 				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
 				FB8C3D5E25348F4900184FB5 /* OneLineButton.swift */,
 				FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */,
+				FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
 				FB8C3D80253606FE00184FB5 /* Foundation */,
 				FB61B54524FE6921002761ED /* UIkit */,
@@ -880,6 +883,7 @@
 				FB21A1AD24C89F68000A2E91 /* BundleDecode.swift in Sources */,
 				FB79DA8B252DF0D600A7AA56 /* MProfileSettings.swift in Sources */,
 				FB3727992541CAD600906FBE /* EditSearchSettingsViewController.swift in Sources */,
+				FBA2AA282550601A00A471F6 /* LikeDisklikeButton.swift in Sources */,
 				FB15FCF32513A71F00B765D3 /* MMessage.swift in Sources */,
 				FBB26EDB254B03760081CF2C /* RequestChatDataProvider.swift in Sources */,
 				FBB26EC72548452C0081CF2C /* MAppSettings.swift in Sources */,

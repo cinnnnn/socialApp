@@ -229,6 +229,8 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
     
      func likePeople(people: MPeople) {
         //save like to firestore
+        print("Like \(people.displayName)")
+        print("Request chats \(requestChatDelegate?.requestChats.count)")
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
                                            requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result in
@@ -250,6 +252,7 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
     
     func dislikePeople(people: MPeople) {
         //save dislike from firestore
+        print("dislike \(people.displayName)")
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
                                               requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result in

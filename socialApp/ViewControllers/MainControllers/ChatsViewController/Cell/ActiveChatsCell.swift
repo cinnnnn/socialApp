@@ -21,6 +21,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     var dateOfLastMessage: Date?
     var displayLink: CADisplayLink?
     var timer: Timer?
+    var value: MChat?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,8 +44,6 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     //MARK: - configure
     func configure(with value: MChat) {
         
-        timer?.invalidate()
-        
         let imageURL = URL(string: value.friendUserImageString)
         frendImage.sd_setImage(with: imageURL, completed: nil)
         frendName.text = value.friendUserName
@@ -53,15 +52,19 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         
         dateOfLastMessage = value.date
         
-    
-        let timeInterval = TimeInterval(10)
-        timer = Timer(timeInterval: timeInterval, target: self, selector: #selector(dateUpdate), userInfo: nil, repeats: true)
-        if let timer = timer {
-            RunLoop.current.add(timer, forMode: .common)
+        if timer == nil {
+            print("create timer for \(value.friendUserName)")
+            let timeInterval = TimeInterval(5)
+            timer = Timer(timeInterval: timeInterval, target: self, selector: #selector(dateUpdate), userInfo: nil, repeats: true)
+            timer?.tolerance = 1
+            if let timer = timer {
+                RunLoop.current.add(timer, forMode: .common)
+            }
+            self.value = value
         }
         
         unreadMessage.setupCount(countOfMessages: value.unreadChatMessageCount)
-
+        
     }
     
     required init?(coder: NSCoder) {
@@ -78,6 +81,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         timer?.invalidate()
+        timer = nil
     }
 }
 
@@ -86,6 +90,7 @@ extension ActiveChatsCell {
     @objc private func dateUpdate() {
         guard let date = dateOfLastMessage else { return }
         dateOfMessage.text = date.getPeriod()
+        print(date, "for user \(value?.friendUserName)")
     }
 }
 

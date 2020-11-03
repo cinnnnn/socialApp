@@ -35,6 +35,7 @@ class RequestsViewController: UIViewController {
         self.likeDislikeDelegate = likeDislikeDelegate
         self.acceptChatDelegate = acceptChatDelegate
         super.init(nibName: nil, bundle: nil)
+        setupListeners()
     }
     
     required init?(coder: NSCoder) {
@@ -52,7 +53,6 @@ class RequestsViewController: UIViewController {
         setupCollectionView()
         setupDataSource()
         loadSectionHedear()
-        setupListeners()
         reloadData()
     }
     
@@ -205,11 +205,13 @@ extension RequestsViewController: RequestChatCollectionViewDelegate {
         var snapshot = NSDiffableDataSourceSnapshot<SectionsRequests, MChat>()
         snapshot.appendSections([.requestChats])
         snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
-        dataSource?.apply(snapshot, animatingDifferences: true)
+        dataSource?.apply(snapshot, animatingDifferences: true) { [weak self] in
+            //for update header
+            guard let snapshot2 = self?.dataSource?.snapshot() else { return }
+            self?.dataSource?.apply(snapshot2, animatingDifferences: false)
+        }
 
-        //for update header
-        guard let snapshot2 = dataSource?.snapshot() else { return }
-        dataSource?.apply(snapshot2, animatingDifferences: false)
+        
     }
 }
 
