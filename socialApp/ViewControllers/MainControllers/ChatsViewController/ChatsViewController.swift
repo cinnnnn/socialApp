@@ -109,13 +109,19 @@ extension ChatsViewController {
     private func setupCompositionalLayout(isEmptyActiveSection: Bool, isEmptyNewSection: Bool) -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             
+            var mySectionIndex = sectionIndex
+            
+            if isEmptyNewSection && !isEmptyActiveSection{
+                mySectionIndex += 1
+            }
+            print("isemptyActive \(isEmptyActiveSection) is empty new \(isEmptyNewSection)")
             guard let section = SectionsChats(rawValue: sectionIndex) else { fatalError("Unknown section")}
             
             switch section {
-            case .activeChats:
-                return self.createActiveChatsLayout(isEmpty: isEmptyActiveSection)
             case .newChats:
                 return self.createWaitingChatsLayout(isEmpty: isEmptyNewSection)
+            case .activeChats:
+                return self.createActiveChatsLayout(isEmpty: isEmptyActiveSection)
             }
         }
         print("layout")
@@ -142,7 +148,7 @@ extension ChatsViewController {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let grupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: isEmpty ? .absolute(0.0) : .fractionalWidth(1/5))
+                                              heightDimension: .estimated(70))
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: grupSize,
                                                        subitems: [item])
@@ -154,14 +160,14 @@ extension ChatsViewController {
         if !isEmpty {
             let sectionHeader = createSectionHeader()
             section.boundarySupplementaryItems = [sectionHeader]
+            section.interGroupSpacing = 15
+            section.contentInsets = NSDirectionalEdgeInsets(top: 40,
+                                                            leading: 20,
+                                                            bottom: 0,
+                                                            trailing: 20)
         }
         
-        section.interGroupSpacing = 15
         
-        section.contentInsets = NSDirectionalEdgeInsets(top: 20,
-                                                        leading: 20,
-                                                        bottom: 0,
-                                                        trailing: 20)
         
         
         return section
@@ -173,22 +179,17 @@ extension ChatsViewController {
                                               heightDimension: .fractionalHeight(1))
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                     leading: 0,
-                                                     bottom: 0,
-                                                     trailing: 0)
-        
-        let grupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/5),
-                                              heightDimension: isEmpty ? .absolute(0.0) : .fractionalWidth(1/5))
+
+        let grupSize = NSCollectionLayoutSize(widthDimension: .estimated(70),
+                                              heightDimension: isEmpty ? .absolute(0.1) : .estimated(70))
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: grupSize,
                                                        subitems: [item])
         
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                      leading: 0,
-                                                      bottom: 0,
-                                                      trailing: 0)
+//        group.contentInsets = NSDirectionalEdgeInsets(top: 0,
+//                                                      leading: 0,
+//                                                      bottom: 0,
+//                                                      trailing: 0)
         
         let section = NSCollectionLayoutSection(group: group)
         
@@ -196,15 +197,13 @@ extension ChatsViewController {
         if !isEmpty {
             let sectionHeader = createSectionHeader()
             section.boundarySupplementaryItems = [sectionHeader]
+            section.orthogonalScrollingBehavior = .continuous
+            section.interGroupSpacing = 15
+            section.contentInsets = NSDirectionalEdgeInsets(top: 40,
+                                                            leading: 20,
+                                                            bottom: 15,
+                                                            trailing: 20)
         }
-        
-        
-        section.orthogonalScrollingBehavior = .continuous
-        section.interGroupSpacing = 15
-        section.contentInsets = NSDirectionalEdgeInsets(top: 20,
-                                                        leading: 20,
-                                                        bottom: 15,
-                                                        trailing: 20)
         return section
     }
 }
@@ -278,14 +277,16 @@ extension ChatsViewController: AcceptChatCollectionViewDelegate {
         let activeChats = filtredAcceptChats.filter { filtredAcceptChat -> Bool in
             !filtredAcceptChat.isNewChat
         }
+        
         if let dataSource = dataSource {
+            
             //for correct update cell data in collectionView
-            print("1")
             var snapshot = dataSource.snapshot()
             snapshot.deleteAllItems()
             snapshot.appendSections([.newChats, .activeChats])
             snapshot.appendItems(newChats, toSection: .newChats)
             snapshot.appendItems(activeChats, toSection: .activeChats)
+        
             dataSource.apply(snapshot, animatingDifferences: false) { [weak self] in
                 self?.collectionView?.collectionViewLayout.invalidateLayout()
                 self?.collectionView?.layoutIfNeeded()
@@ -293,7 +294,7 @@ extension ChatsViewController: AcceptChatCollectionViewDelegate {
                                                                                              isEmptyNewSection: newChats.isEmpty) ?? UICollectionViewFlowLayout(),
                                                               animated: false)
                 DispatchQueue.global().async {
-                    //if only one chat in collection, and this is update, need second renew, for correct update header (change new to active chat)
+                  //  if only one chat in collection, and this is update, need second renew, for correct update header (change new to active chat)
                     if filtredAcceptChats.count == 1 {
                         if var snapshot2 = self?.dataSource?.snapshot() {
                             snapshot2.deleteAllItems()
@@ -303,13 +304,13 @@ extension ChatsViewController: AcceptChatCollectionViewDelegate {
                             self?.dataSource?.apply(snapshot2)
                         }
                     }
-                }
+               }
             }
 
         } else {
-            print("2")
+            
             var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
-            snapshot.appendSections([.newChats,.activeChats])
+            snapshot.appendSections([.newChats, .activeChats])
             snapshot.appendItems(newChats, toSection: .newChats)
             snapshot.appendItems(activeChats, toSection: .activeChats)
             dataSource?.apply(snapshot, animatingDifferences: false, completion: { [weak self] in

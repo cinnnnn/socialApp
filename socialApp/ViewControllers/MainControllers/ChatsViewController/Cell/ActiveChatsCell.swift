@@ -90,7 +90,6 @@ extension ActiveChatsCell {
     @objc private func dateUpdate() {
         guard let date = dateOfLastMessage else { return }
         dateOfMessage.text = date.getPeriod()
-        print(date, "for user \(value?.friendUserName)")
     }
 }
 
