@@ -96,6 +96,7 @@
 		FBA2AA3C255300C200A471F6 /* UniversallSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA3B255300C200A471F6 /* UniversallSwitchCell.swift */; };
 		FBA2AA442553072800A471F6 /* UniversalInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA432553072800A471F6 /* UniversalInfoCell.swift */; };
 		FBA2AA482553086D00A471F6 /* SetupChatMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA472553086D00A471F6 /* SetupChatMenu.swift */; };
+		FBA2AA4B2554747000A471F6 /* MatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA4A2554746E00A471F6 /* MatchViewController.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB26EAE254585DB0081CF2C /* ChatTitleStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */; };
 		FBB26EB42546E49B0081CF2C /* MAdmin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EB32546E49B0081CF2C /* MAdmin.swift */; };
@@ -233,6 +234,7 @@
 		FBA2AA3B255300C200A471F6 /* UniversallSwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversallSwitchCell.swift; sourceTree = "<group>"; };
 		FBA2AA432553072800A471F6 /* UniversalInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalInfoCell.swift; sourceTree = "<group>"; };
 		FBA2AA472553086D00A471F6 /* SetupChatMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupChatMenu.swift; sourceTree = "<group>"; };
+		FBA2AA4A2554746E00A471F6 /* MatchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchViewController.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTitleStackView.swift; sourceTree = "<group>"; };
 		FBB26EB32546E49B0081CF2C /* MAdmin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAdmin.swift; sourceTree = "<group>"; };
@@ -327,6 +329,7 @@
 				FB1062DB24B09F6C0012C4D4 /* EditProfileViewController.swift */,
 				FB3727982541CAD500906FBE /* EditSearchSettingsViewController.swift */,
 				FBB26EC2254843C50081CF2C /* AppSettingsViewController.swift */,
+				FBA2AA4A2554746E00A471F6 /* MatchViewController.swift */,
 				FB09107D24FA73B2006B72D5 /* SendRequestViewController.swift */,
 				FB79DA9B2530E9A800A7AA56 /* EditPhotoViewController */,
 				FB79DA81252DECEB00A7AA56 /* ProfileViewController */,
@@ -854,6 +857,7 @@
 				FB1062DE24B0C8DF0012C4D4 /* EditableProfileImageView.swift in Sources */,
 				FBB26ED3254AFD130081CF2C /* AcceptChatDataProvider.swift in Sources */,
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
+				FBA2AA4B2554747000A471F6 /* MatchViewController.swift in Sources */,
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
 				FBB3B25F2509011200440632 /* StorageService.swift in Sources */,
 				FBA2AA2B2552D3F400A471F6 /* UniversalTableView.swift in Sources */,
