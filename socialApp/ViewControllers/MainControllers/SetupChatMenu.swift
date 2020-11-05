@@ -107,22 +107,7 @@ extension SetupChatMenu {
             tableView.deselectRow(at: indexPath, animated: false)
             
         case .unmatch:
-            FirestoreService.shared.unMatch(currentUser: currentUser, chat: chat) {[weak self] result in
-                switch result {
-                
-                case .success(_):
-                    //setup current user is initiator of delete chat
-                    if let messageController = self?.messageControllerDelegate {
-                        messageController.isInitiateDeleteChat = true
-                    }
-                    self?.tableView.deselectRow(at: indexPath, animated: true)
-                    self?.navigationController?.popToRootViewController(animated: true)
-                    
-                case .failure(let error):
-                    self?.errorAlert(text: error.localizedDescription)
-                }
-            }
-            tableView.deselectRow(at: indexPath, animated: true)
+            unMatchAlert(pressedIndexPath: indexPath)
             
         case .reportUser:
             tableView.deselectRow(at: indexPath, animated: true)
@@ -160,6 +145,43 @@ extension SetupChatMenu {
                                       buttonText: "Понял",
                                       style: .alert)
         alert.setMyLightStyle()
+        present(alert, animated: true, completion: nil)
+    }
+    //MARK:  terminateAccauntAlert
+    private func unMatchAlert(pressedIndexPath: IndexPath) {
+        let strongCurrentUser = currentUser
+        let strongChat = chat
+        let alert = UIAlertController(title: "Удалить собеседника из пар?",
+                                      message: "Восстановить будет невозможно, а так же он не будет появляться в результатах поиска",
+                                      preferredStyle: .actionSheet)
+        
+        let okAction = UIAlertAction(title: "Удалить",
+                                     style: .destructive) {[weak self] _ in
+            FirestoreService.shared.unMatch(currentUser: strongCurrentUser, chat: strongChat) {[weak self] result in
+                switch result {
+                
+                case .success(_):
+                    //setup current user is initiator of delete chat
+                    if let messageController = self?.messageControllerDelegate {
+                        messageController.isInitiateDeleteChat = true
+                    }
+                    self?.navigationController?.popToRootViewController(animated: true)
+                    
+                case .failure(let error):
+                    self?.errorAlert(text: error.localizedDescription)
+                }
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: "Продолжу общение",
+                                         style: .default) { [weak self] _ in
+            self?.tableView.deselectRow(at: pressedIndexPath, animated: true)
+        }
+        
+        alert.setMyLightStyle()
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        
         present(alert, animated: true, completion: nil)
     }
 }

@@ -114,7 +114,6 @@ extension AppSettingsViewController {
                 switch section {
                 
                 case .appSettings:
-                    
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SettingsCell.reuseID, for: indexpath) as? SettingsCell else { fatalError("Can't dequeue cell type SettingsCell")}
                     
                     cell.configure(settings: item)
