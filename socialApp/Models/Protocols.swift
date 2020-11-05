@@ -78,7 +78,7 @@ protocol RequestChatCollectionViewDelegate: class {
 }
 
 protocol AcceptChatCollectionViewDelegate: class {
-    func reloadDataSource()
+    func reloadDataSource(changeType: MTypeOfListenerChanges)
 }
 
 protocol MessageControllerDelegate: class {

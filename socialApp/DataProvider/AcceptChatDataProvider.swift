@@ -30,15 +30,15 @@ class AcceptChatDataProvider: AcceptChatListenerDelegate {
         
         switch changeType {
         case .add:
-            acceptChatCollectionViewDelegate?.reloadDataSource()
+            acceptChatCollectionViewDelegate?.reloadDataSource(changeType: changeType)
         case .delete:
-            acceptChatCollectionViewDelegate?.reloadDataSource()
+            acceptChatCollectionViewDelegate?.reloadDataSource(changeType: changeType)
         case .update:
             //if chat update, send to messageCollectionView this chat
             if let chat = chat {
                 messageCollectionViewDelegate?.chatsCollectionWasUpdate(chat: chat)
             }
-            acceptChatCollectionViewDelegate?.reloadDataSource()
+            acceptChatCollectionViewDelegate?.reloadDataSource(changeType: changeType)
         }
     }
 }

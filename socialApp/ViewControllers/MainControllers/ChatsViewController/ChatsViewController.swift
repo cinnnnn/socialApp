@@ -17,10 +17,12 @@ class ChatsViewController: UIViewController {
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
     var currentPeople: MPeople
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
+    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     
-    init(currentPeople: MPeople, acceptChatDelegate: AcceptChatListenerDelegate?) {
+    init(currentPeople: MPeople, acceptChatDelegate: AcceptChatListenerDelegate?, likeDislikeDelegate: LikeDislikeListenerDelegate?) {
         self.currentPeople = currentPeople
         self.acceptChatDelegate = acceptChatDelegate
+        self.likeDislikeDelegate = likeDislikeDelegate
         
         super.init(nibName: nil, bundle: nil)
         setupListeners()
@@ -46,6 +48,7 @@ class ChatsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateCurrentPeople()
+        tabBarController?.tabBar.isHidden = false
     }
     
     private func setupListeners() {
@@ -295,16 +298,23 @@ extension ChatsViewController {
 
 extension ChatsViewController: AcceptChatCollectionViewDelegate {
     //MARK:  reloadDataSource
-    func reloadDataSource(){
-        renewDataSource(searchText: nil)
+    func reloadDataSource(changeType: MTypeOfListenerChanges){
         
-        guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
-        //  if only one chat in collection, and this is update, need second renew, for correct update header (change new to active chat)
-        if sortedAcceptChats.count == 1 {
+        switch changeType {
+        case .delete:
+        //chat can delete only if user unmatch, when user unmatch people it is add to dislike collection
+        //we need update dislike collection
+            likeDislikeDelegate?.getDislike(complition: { _ in })
+            fallthrough
+        default:
             renewDataSource(searchText: nil)
+            guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
+            //  if only one chat in collection, and this is update, need second renew, for correct update header (change new to active chat)
+            if sortedAcceptChats.count == 1 {
+                renewDataSource(searchText: nil)
+            }
         }
     }
-    
 }
 
 //MARK: UISearchBarDelegate

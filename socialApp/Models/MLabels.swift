@@ -19,4 +19,6 @@ enum MLabels: String {
     case emptyNearbyPeople = "Рядом никого"
     case requestMessage = "Привет"
     case screenshotTaken = " сделал(а) скриншот чата"
+    case userStopChatTimer = " хочет продолжить общение и отключил таймер удаления чата"
+    case chatTimerIsStop = "Таймер удаления остановлен, чат не будет удален, приятного общения"
 }

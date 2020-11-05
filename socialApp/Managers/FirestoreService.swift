@@ -405,15 +405,15 @@ class FirestoreService {
     }
     
     //MARK: deactivateChatTimer
-    func deactivateChatTimer(userID: String, chat: MChat, complition: @escaping (Result<(),Error>)-> Void) {
+    func deactivateChatTimer(currentUser: MPeople, chat: MChat, complition: @escaping (Result<(),Error>)-> Void) {
         let refCurrentChatCollection = db.collection([MFirestorCollection.users.rawValue,
-                                                      userID,
+                                                      currentUser.senderId,
                                                       MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
         let refFriendChatCollection = db.collection([MFirestorCollection.users.rawValue,
                                                      chat.friendId,
                                                      MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
         let currentChatDocument = refCurrentChatCollection.document(chat.friendId)
-        let friendChatDocument = refFriendChatCollection.document(userID)
+        let friendChatDocument = refFriendChatCollection.document(currentUser.senderId)
         
         if chat.friendIsWantStopTimer {
             //if friend already want to stop chat timer, set timer is stoped to friend chat
@@ -429,6 +429,10 @@ class FirestoreService {
                         if let error = error  {
                             complition(.failure(error))
                         } else {
+                            //send admin message about the chat timer is stop
+                            FirestoreService.shared.sendAdminMessage(currentUser: currentUser,
+                                                                     chat: chat,
+                                                                     text: MLabels.chatTimerIsStop.rawValue) { _ in }
                             complition(.success(()))
                         }
                     }
@@ -447,6 +451,10 @@ class FirestoreService {
                             complition(.failure(error!))
                             return
                         }
+                        //send admin message about the current user send request to stop chat
+                        FirestoreService.shared.sendAdminMessage(currentUser: currentUser,
+                                                                 chat: chat,
+                                                                 text: currentUser.displayName + MLabels.userStopChatTimer.rawValue) { _ in }
                         complition(.success(()))
                     }
                 }
@@ -520,6 +528,24 @@ class FirestoreService {
                 }
             }
         }  
+    }
+    
+    //MARK: sendAdminMessage
+    func sendAdminMessage(currentUser:MPeople, chat: MChat, text: String, complition: @escaping(Result<(),Error>)-> Void) {
+        let sender = MSender.getAdminSender()
+        let message = MMessage(user: sender, content: text)
+        
+        FirestoreService.shared.sendMessage(chat: chat,
+                                            currentUser: currentUser,
+                                            message: message) { result in
+            switch result {
+            
+            case .success():
+                complition(.success(()))
+            case .failure(let error):
+                complition(.failure(error))
+            }
+        }
     }
 }
 

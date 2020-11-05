@@ -10,7 +10,7 @@ import UIKit
 
 class SetupChatMenu: UniversalTableView {
     
-    var currentUser: MPeople
+    let currentUser: MPeople
     var chat: MChat
     weak var messageControllerDelegate: MessageControllerDelegate?
     
@@ -34,10 +34,9 @@ class SetupChatMenu: UniversalTableView {
         tableView.delegate = self
         tableView.dataSource = self
     }
-    
-    
 }
 
+//MARK: tableViewDelegate
 extension SetupChatMenu {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         MChatSettings.allCases.count
@@ -51,27 +50,32 @@ extension SetupChatMenu {
         }
     }
     
+    //MARK: cellForRowAt
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let menu = MChatSettings(rawValue: indexPath.row)  else { fatalError("Unknown menu index")}
         switch menu {
         
         case .disableTimer:
             if let cell = tableView.dequeueReusableCell(withIdentifier: UniversallSwitchCell.reuseID, for: indexPath) as? UniversallSwitchCell {
+                let strongChat = chat
                 cell.configure(with: MChatSettings.disableTimer,
                                withImage: false,
-                               switchIsOn: chat.timerOfLifeIsStoped) { [weak self] in
+                               switchIsOn: chat.currentUserIsWantStopTimer) { [weak self] in
+                    let timeToDelete = self?.calculateTextToDeleteChat()
+                    if let timeToDelete = timeToDelete {
+                        cell.moreInfoLabel.text = timeToDelete
+                    }
+                    if strongChat.currentUserIsWantStopTimer {
+                        cell.switchControl.isEnabled = false
+                    }
+                }
+                cell.setupTimerUpdate(timerInterval: 1, tolerance: 0.1) { [weak self] in
                     let timeToDelete = self?.calculateTextToDeleteChat()
                     if let timeToDelete = timeToDelete {
                         cell.moreInfoLabel.text = timeToDelete
                     }
                 }
-                cell.setupTimerUpdate(timerInterval: 1, tolerance: 0.5) { [weak self] in
-                    let timeToDelete = self?.calculateTextToDeleteChat()
-                    if let timeToDelete = timeToDelete {
-                        cell.moreInfoLabel.text = timeToDelete
-                    }
-                }
-                cell.setupSwitchAction(target: self, selector: #selector(changeDethTimerSwitch),forEvent: .valueChanged)
+                cell.setupSwitchAction(target: self, selector: #selector(changeDethTimerSwitch(sender:)),forEvent: .valueChanged)
                 return cell
             } else {
                 return UITableViewCell()
@@ -93,6 +97,7 @@ extension SetupChatMenu {
         }
     }
     
+    //MARK: didSelectRowAt
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let menu = MChatSettings(rawValue: indexPath.row)  else { fatalError("Unknown menu index")}
         
@@ -126,8 +131,24 @@ extension SetupChatMenu {
 }
 //MARK: objc
 extension SetupChatMenu {
-    @objc func changeDethTimerSwitch() {
+    
+    
+    //MARK: changeDethTimerSwitch
+    @objc func changeDethTimerSwitch(sender: Any?) {
         print("change")
+        guard let sender = sender as? UISwitch else { fatalError("Unknown sender") }
+        FirestoreService.shared.deactivateChatTimer(currentUser: currentUser,
+                                                    chat: chat) {[weak self] result in
+            switch result {
+            
+            case .success():
+                self?.chat.currentUserIsWantStopTimer = true
+                sender.isEnabled = false
+                
+            case .failure(let error):
+                self?.errorAlert(text: error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -165,7 +186,7 @@ extension SetupChatMenu {
             if chat.currentUserIsWantStopTimer {
                 return  """
                         \(fistLine)
-                        Для остановки необходимо дождаться подтверждения собеседника,
+                        Для остановки необходимо дождаться подтверждение от собеседника,
                         Чат будет удален через \(timeToDeleteChat)
                         """
             } else {

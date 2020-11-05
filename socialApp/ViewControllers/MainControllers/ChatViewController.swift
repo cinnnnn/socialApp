@@ -203,21 +203,12 @@ extension ChatViewController {
     
     //MARK: screenshotTaken
     @objc private func screenshotTaken(){
-        let sender = MSender.getAdminSender()
-        let text = user.displayName + MLabels.screenshotTaken.rawValue
-        let message = MMessage(user: sender, content: text)
         
-        FirestoreService.shared.sendMessage(chat: chat,
-                                            currentUser: user,
-                                            message: message) { result in
-            switch result {
-            
-            case .success():
-                break
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
-        }
+        let text = user.displayName + MLabels.screenshotTaken.rawValue
+        
+        FirestoreService.shared.sendAdminMessage(currentUser: user,
+                                                 chat: chat,
+                                                 text: text) {_ in}
     }
     
     //MARK: profileTapped

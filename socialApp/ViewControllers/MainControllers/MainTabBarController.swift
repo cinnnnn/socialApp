@@ -175,7 +175,8 @@ extension MainTabBarController {
         requestChatsDelegate?.requestChatCollectionViewDelegate = requsetsVC
         
         let chatsVC = ChatsViewController(currentPeople: currentPeople,
-                                          acceptChatDelegate: acceptChatsDelegate)
+                                          acceptChatDelegate: acceptChatsDelegate,
+                                          likeDislikeDelegate: likeDislikeDelegate)
         
         acceptChatsDelegate?.acceptChatCollectionViewDelegate = chatsVC
         
