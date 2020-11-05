@@ -14,7 +14,8 @@ import InputBarAccessoryView
 class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     private let user:MPeople
-    private let chat:MChat
+    private var chat:MChat
+    weak var acceptChatDelegate: AcceptChatListenerDelegate?
     
     var messageDelegate: MessageListenerDelegate
     lazy var isInitiateDeleteChat = false
@@ -29,11 +30,19 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         messageInputBar.delegate = self
         messageDelegate.messageControllerDelegate = self
         
+        acceptChatDelegate?.messageCollectionViewDelegate = self
+        
         configure()
         configureInputBar()
         configureCameraBar()
         
         addMessageListener()
+        readAllMessageInChat()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        readAllMessageInChat()
     }
     
     init(people: MPeople, chat: MChat, messageDelegate: MessageListenerDelegate) {
@@ -52,9 +61,28 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         messageDelegate.removeListener()
     }
     
+    //MARK: addMessageListener
+    private func addMessageListener() {
+        messageDelegate.setupListener(chat: chat)
+    }
+    
+     func chatsCollectionWasUpdate(chat: MChat) {
+        if chat.friendId == self.chat.friendId {
+            print("updated")
+            self.chat = chat
+        }
+    }
+    
+    private func readAllMessageInChat() {
+        FirestoreService.shared.readAllMessageInChat(userID: user.senderId, chat: chat) { _ in
+            
+        }
+    }
+    
     //MARK: configure
     private func configure() {
         showMessageTimestampOnSwipeLeft = true
+        
         
         //delete avatar from message
         if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {
@@ -116,14 +144,9 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         messageInputBar.setStackViewItems([cameraItem], forStack: .left, animated: false)
     }
     
-    //MARK: addMessageListener
-    private func addMessageListener() {
-        messageDelegate.setupListener(chat: chat)
-    }
     
     //MARK: newMessage
     func newMessage() {
-        
         messagesCollectionView.reloadData()
         
         DispatchQueue.main.async {
@@ -207,9 +230,10 @@ extension ChatViewController {
     //MARK: profileTapped
     @objc private func chatSettingsTapped() {
         
-        FirestoreService.shared.deleteChat(currentUserID: user.senderId, friendID: chat.friendId)
-        isInitiateDeleteChat = true
-        navigationController?.popToRootViewController(animated: true)
+        let settingsVC = SetupChatMenu(currentUser: user, chat: chat)
+        settingsVC.messageControllerDelegate = self
+        settingsVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(settingsVC, animated: true)
     }
 }
 

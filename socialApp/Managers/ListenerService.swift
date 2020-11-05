@@ -264,38 +264,39 @@ class ListenerService {
             snapshot.documentChanges.forEach { changes in
                 guard var chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
                 
-                //get actual information for user in chat
-                FirestoreService.shared.getUserData(userID: chat.friendId) { result in
-                    switch result {
-                    
-                    case .success(let people):
-                        chat.friendUserImageString = people.userImage
-                        chat.friendUserName = people.displayName
+                
+                switch changes.type {
+                
+                case .added:
+                    //get actual information for user in chat
+                    FirestoreService.shared.getUserData(userID: chat.friendId) { result in
+                        switch result {
                         
-                        switch changes.type {
-                        
-                        case .added:
+                        case .success(let people):
+                            chat.friendUserImageString = people.userImage
+                            chat.friendUserName = people.displayName
                             
                             if !acceptChatDelegate.acceptChats.contains(chat) {
-                            acceptChatDelegate.acceptChats.append(chat)
-                            acceptChatDelegate.reloadData(changeType: .add)
+                                acceptChatDelegate.acceptChats.append(chat)
+                                acceptChatDelegate.reloadData(changeType: .add, chat: chat)
                             }
-                        case .modified:
-                            if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
-                                acceptChatDelegate.acceptChats[index] = chat
-                                acceptChatDelegate.reloadData(changeType: .update)
-                            }
-                        case .removed:
-                            if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
-                                acceptChatDelegate.acceptChats.remove(at: index)
-                                acceptChatDelegate.reloadData(changeType: .delete)
-                            } else {
-                                break
-                            }
+                        //failure get people info
+                        case .failure(let error):
+                            fatalError(error.localizedDescription)
                         }
-                    //failure get people info
-                    case .failure(let error):
-                        fatalError(error.localizedDescription)
+                    }
+                    
+                case .modified:
+                    if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
+                        acceptChatDelegate.acceptChats[index] = chat
+                        acceptChatDelegate.reloadData(changeType: .update, chat: chat)
+                    }
+                case .removed:
+                    if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
+                        acceptChatDelegate.acceptChats.remove(at: index)
+                        acceptChatDelegate.reloadData(changeType: .delete, chat: chat)
+                    } else {
+                        break
                     }
                 }
             }
@@ -308,10 +309,6 @@ class ListenerService {
     
     //MARK: messageListener
     func messageListener(chat:MChat, complition: @escaping (Result<MMessage,Error>)->Void) {
-        guard let userID = currentUser?.email else {
-            complition(.failure(AuthError.userError))
-            return
-        }
         
         messageListner = acceptChatsRef.document(chat.friendId).collection(MFirestorCollection.messages.rawValue).addSnapshotListener({ snapshot, error in
             guard let snapshot = snapshot else { fatalError("Cant get snapshot of message")}
@@ -332,12 +329,8 @@ class ListenerService {
                 switch document.type {
                 
                 case .added:
-                    
                     complition(.success(message))
-                    //read all message in this chat
-                    FirestoreService.shared.readAllMessageInChat(userID: userID, chat: chat) { _ in
-                        
-                    }
+                    
                 case .modified:
                     break
                 case .removed:

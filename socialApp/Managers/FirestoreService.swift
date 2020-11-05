@@ -241,6 +241,9 @@ class FirestoreService {
                                 isNewChat: false,
                                 friendId: fromUser.senderId,
                                 unreadChatMessageCount: 0,
+                                friendIsWantStopTimer: false,
+                                currentUserIsWantStopTimer: false,
+                                timerOfLifeIsStoped: false,
                                 createChatDate: Date(),
                                 date: Date())
         
@@ -285,6 +288,9 @@ class FirestoreService {
                                 isNewChat: true,
                                 friendId: currentPeople.senderId,
                                 unreadChatMessageCount: 0,
+                                friendIsWantStopTimer: false,
+                                currentUserIsWantStopTimer: false,
+                                timerOfLifeIsStoped: false,
                                 createChatDate: Date(),
                                 date: Date())
         var likeChat = MChat(friendUserName: likePeople.displayName,
@@ -293,6 +299,9 @@ class FirestoreService {
                              isNewChat: true,
                              friendId: likePeople.senderId,
                              unreadChatMessageCount: 0,
+                             friendIsWantStopTimer: false,
+                             currentUserIsWantStopTimer: false,
+                             timerOfLifeIsStoped: false,
                              createChatDate: Date(),
                              date: Date())
         
@@ -359,6 +368,9 @@ class FirestoreService {
                                 isNewChat: true,
                                 friendId: dislikeForPeople.senderId,
                                 unreadChatMessageCount: 0,
+                                friendIsWantStopTimer: false,
+                                currentUserIsWantStopTimer: false,
+                                timerOfLifeIsStoped: false,
                                 createChatDate: Date(),
                                 date: Date())
         //if dislike people contains in current user request chat, than delete his request
@@ -390,7 +402,56 @@ class FirestoreService {
                 complition(.success(()))
             }
         }
+    }
+    
+    //MARK: deactivateChatTimer
+    func deactivateChatTimer(userID: String, chat: MChat, complition: @escaping (Result<(),Error>)-> Void) {
+        let refCurrentChatCollection = db.collection([MFirestorCollection.users.rawValue,
+                                                      userID,
+                                                      MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        let refFriendChatCollection = db.collection([MFirestorCollection.users.rawValue,
+                                                     chat.friendId,
+                                                     MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
+        let currentChatDocument = refCurrentChatCollection.document(chat.friendId)
+        let friendChatDocument = refFriendChatCollection.document(userID)
         
+        if chat.friendIsWantStopTimer {
+            //if friend already want to stop chat timer, set timer is stoped to friend chat
+            friendChatDocument.updateData([MChat.CodingKeys.friendIsWantStopTimer.rawValue : true,
+                                           MChat.CodingKeys.timerOfLifeIsStoped.rawValue: true]) { error in
+                if let error = error  {
+                    complition(.failure(error))
+                } else {
+                    //set timer is stoped to current chat
+                    currentChatDocument.updateData([MChat.CodingKeys.friendIsWantStopTimer.rawValue : true,
+                                                    MChat.CodingKeys.timerOfLifeIsStoped.rawValue: true,
+                                                    MChat.CodingKeys.currentUserIsWantStopTimer.rawValue: true]) { error in
+                        if let error = error  {
+                            complition(.failure(error))
+                        } else {
+                            complition(.success(()))
+                        }
+                    }
+                }
+            }
+            
+        } else {
+            //if friend doesn't want stop timer, set to friend's chat, that you want to stop timer
+            friendChatDocument.updateData([MChat.CodingKeys.friendIsWantStopTimer.rawValue : true]) { error in
+                if let error = error {
+                    complition(.failure(error))
+                } else {
+                    //set current user want stop timer
+                    currentChatDocument.updateData([MChat.CodingKeys.currentUserIsWantStopTimer.rawValue: true]) { error in
+                        guard error == nil else {
+                            complition(.failure(error!))
+                            return
+                        }
+                        complition(.success(()))
+                    }
+                }
+            }
+        }
     }
     
     //MARK: sendMessage
@@ -398,7 +459,6 @@ class FirestoreService {
                      currentUser: MPeople,
                      message: MMessage,
                      complition: @escaping(Result<Void, Error>)-> Void) {
-        
         let refFriendChat = db.collection([MFirestorCollection.users.rawValue,
                                            chat.friendId,
                                            MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
@@ -419,27 +479,43 @@ class FirestoreService {
                     } else {
                         //set new lastMessage to activeChats, set to active chat and increment unread message
                         if let messageContent = message.content {
-                            refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
-                                                                                  MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                                  MChat.CodingKeys.isNewChat.rawValue: false,
-                                                                                  MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))],
-                                                                                 merge: true)
-                            refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
-                                                                           MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                           MChat.CodingKeys.isNewChat.rawValue: false],
-                                                                          merge: true)
+                            refFriendChat.document(currentUser.senderId).updateData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
+                                                                                     MChat.CodingKeys.date.rawValue: message.sentDate,
+                                                                                     MChat.CodingKeys.isNewChat.rawValue: false,
+                                                                                     MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))]) { error in
+                                if let error = error {
+                                    complition(.failure(error))
+                                }
+                            }
+                            refSenderChat.document(chat.friendId).updateData([MChat.CodingKeys.lastMessage.rawValue: messageContent,
+                                                                              MChat.CodingKeys.date.rawValue: message.sentDate,
+                                                                              MChat.CodingKeys.isNewChat.rawValue: false]) { error in
+                                if let error = error {
+                                    complition(.failure(error))
+                                } else {
+                                    complition(.success(()))
+                                }
+                            }
                         } else if let _ = message.imageURL {
-                            refFriendChat.document(currentUser.senderId).setData([MChat.CodingKeys.lastMessage.rawValue: "Фото 📷",
-                                                                                  MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                                  MChat.CodingKeys.isNewChat.rawValue: false,
-                                                                                  MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))],
-                                                                                 merge: true)
-                            refSenderChat.document(chat.friendId).setData([MChat.CodingKeys.lastMessage.rawValue: "Фото 📷",
-                                                                           MChat.CodingKeys.date.rawValue: message.sentDate,
-                                                                           MChat.CodingKeys.isNewChat.rawValue: false],
-                                                                          merge: true)
+                            refFriendChat.document(currentUser.senderId).updateData([MChat.CodingKeys.lastMessage.rawValue: "Фото 📷",
+                                                                                     MChat.CodingKeys.date.rawValue: message.sentDate,
+                                                                                     MChat.CodingKeys.isNewChat.rawValue: false,
+                                                                                     MChat.CodingKeys.unreadChatMessageCount.rawValue : FieldValue.increment(Int64(1))]) { error in
+                                if let error = error {
+                                    complition(.failure(error))
+                                }
+                            }
+                            refSenderChat.document(chat.friendId).updateData([MChat.CodingKeys.lastMessage.rawValue: "Фото 📷",
+                                                                              MChat.CodingKeys.date.rawValue: message.sentDate,
+                                                                              MChat.CodingKeys.isNewChat.rawValue: false]) { error in
+                                if let error = error {
+                                    complition(.failure(error))
+                                } else {
+                                    complition(.success(()))
+                                }
+                            }
                         }
-                        complition(.success(()))
+                        
                     }
                 }
             }
@@ -592,6 +668,9 @@ extension FirestoreService {
                                 isNewChat: true,
                                 friendId: chat.friendId,
                                 unreadChatMessageCount: 0,
+                                friendIsWantStopTimer: false,
+                                currentUserIsWantStopTimer: false,
+                                timerOfLifeIsStoped: false,
                                 createChatDate: Date(),
                                 date: Date())
         

@@ -16,6 +16,9 @@ struct MChat: Hashable, Codable, ReprasentationModel {
     var isNewChat: Bool
     var friendId: String
     var unreadChatMessageCount: Int
+    var friendIsWantStopTimer: Bool
+    var currentUserIsWantStopTimer: Bool
+    var timerOfLifeIsStoped: Bool
     var createChatDate: Date
     var date: Date
     
@@ -25,6 +28,9 @@ struct MChat: Hashable, Codable, ReprasentationModel {
          isNewChat: Bool,
          friendId:String,
          unreadChatMessageCount: Int,
+         friendIsWantStopTimer: Bool,
+         currentUserIsWantStopTimer: Bool,
+         timerOfLifeIsStoped: Bool,
          createChatDate: Date,
          date:Date) {
         self.friendUserName = friendUserName
@@ -33,6 +39,9 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         self.isNewChat = isNewChat
         self.friendId = friendId
         self.unreadChatMessageCount = unreadChatMessageCount
+        self.friendIsWantStopTimer = friendIsWantStopTimer
+        self.currentUserIsWantStopTimer = currentUserIsWantStopTimer
+        self.timerOfLifeIsStoped = timerOfLifeIsStoped
         self.createChatDate = createChatDate
         self.date = date
     }
@@ -63,6 +72,18 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         
         if let unreadChatMessageCount = documet["unreadChatMessageCount"] as? Int {
             self.unreadChatMessageCount = unreadChatMessageCount
+        } else { return nil }
+        
+        if let friendIsWantStopTimer = documet["friendIsWantStopTimer"] as? Bool {
+            self.friendIsWantStopTimer = friendIsWantStopTimer
+        } else { return nil }
+        
+        if let currentUserIsWantStopTimer = documet["currentUserIsWantStopTimer"] as? Bool {
+            self.currentUserIsWantStopTimer = currentUserIsWantStopTimer
+        } else { return nil }
+        
+        if let timerOfLifeIsStoped = documet["timerOfLifeIsStoped"] as? Bool {
+            self.timerOfLifeIsStoped = timerOfLifeIsStoped
         } else { return nil }
         
         if let createChatDate = documet["createChatDate"] as? Timestamp {
@@ -102,6 +123,18 @@ struct MChat: Hashable, Codable, ReprasentationModel {
             self.unreadChatMessageCount = unreadChatMessageCount
         } else { return nil }
         
+        if let friendIsWantStopTimer = documet["friendIsWantStopTimer"] as? Bool {
+            self.friendIsWantStopTimer = friendIsWantStopTimer
+        } else { return nil }
+        
+        if let currentUserIsWantStopTimer = documet["currentUserIsWantStopTimer"] as? Bool {
+            self.currentUserIsWantStopTimer = currentUserIsWantStopTimer
+        } else { return nil }
+        
+        if let timerOfLifeIsStoped = documet["timerOfLifeIsStoped"] as? Bool {
+            self.timerOfLifeIsStoped = timerOfLifeIsStoped
+        } else { return nil }
+        
         if let createChatDate = documet["createChatDate"] as? Timestamp {
             self.createChatDate = createChatDate.dateValue()
         } else { return nil }
@@ -119,6 +152,9 @@ struct MChat: Hashable, Codable, ReprasentationModel {
             "isNewChat": isNewChat,
             "friendId": friendId,
             "unreadChatMessageCount": unreadChatMessageCount,
+            "friendIsWantStopTimer": friendIsWantStopTimer,
+            "currentUserIsWantStopTimer": currentUserIsWantStopTimer,
+            "timerOfLifeIsStoped": timerOfLifeIsStoped,
             "createChatDate": createChatDate,
             "date": date
         ]
@@ -132,6 +168,9 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         case isNewChat
         case friendId
         case unreadChatMessageCount
+        case friendIsWantStopTimer
+        case currentUserIsWantStopTimer
+        case timerOfLifeIsStoped
         case createChatDate
         case date
     }
@@ -142,6 +181,11 @@ struct MChat: Hashable, Codable, ReprasentationModel {
     
     static func == (lhs: MChat, rhs: MChat) -> Bool {
         return lhs.friendId == rhs.friendId
+    }
+    
+    static func getDefaultPeriodMinutesOfLifeChat() -> Int {
+        //period of life is 1440 minute = 1 day
+        1440
     }
     
     func contains(element: String?) -> Bool {

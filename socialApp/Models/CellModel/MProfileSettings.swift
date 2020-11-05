@@ -16,7 +16,6 @@ enum MProfileSettings: Int, CollectionCellModel {
     case appSettings
     case adminPanel
     
-    
     func image() -> UIImage  {
         switch self {
         
@@ -46,6 +45,20 @@ enum MProfileSettings: Int, CollectionCellModel {
             return "Настройки"
         case .adminPanel:
             return "Панель администратора"
+        }
+    }
+    func cellType() -> MCellType {
+        switch self {
+        case .profileInfo:
+            return .infoCell
+        case .setupProfile:
+            return .buttonCell
+        case .setupSearch:
+            return .buttonCell
+        case .appSettings:
+            return .buttonCell
+        case .adminPanel:
+            return .buttonCell
         }
     }
 }

@@ -13,7 +13,7 @@ import AuthenticationServices
 import Lottie
 
 class AuthViewController: UIViewController {
-        
+    
     let loginButton = UIButton(newBackgroundColor: nil,
                                title: "Войти с Email",
                                titleColor: .myGrayColor(),

@@ -53,7 +53,6 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         dateOfLastMessage = value.date
         
         if timer == nil {
-            print("create timer for \(value.friendUserName)")
             let timeInterval = TimeInterval(5)
             timer = Timer(timeInterval: timeInterval, target: self, selector: #selector(dateUpdate), userInfo: nil, repeats: true)
             timer?.tolerance = 1

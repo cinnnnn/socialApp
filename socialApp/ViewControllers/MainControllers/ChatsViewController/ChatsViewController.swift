@@ -23,7 +23,6 @@ class ChatsViewController: UIViewController {
         self.acceptChatDelegate = acceptChatDelegate
         
         super.init(nibName: nil, bundle: nil)
-        
         setupListeners()
     }
     
@@ -41,7 +40,7 @@ class ChatsViewController: UIViewController {
         setupCollectionView()
         setupDataSource()
         loadSectionHedear()
-        reloadDataSource(searchText: nil)
+        renewDataSource(searchText: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,13 +48,8 @@ class ChatsViewController: UIViewController {
         updateCurrentPeople()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        //reloadDataSource(searchText: nil)
-    }
-    
     private func setupListeners() {
-        acceptChatDelegate?.setupListener()
+        acceptChatDelegate?.setupAcceptChatListener()
     }
     
     private func updateCurrentPeople() {
@@ -88,7 +82,6 @@ class ChatsViewController: UIViewController {
                                                                                          isEmptyNewSection: false))
         
         guard let collectionView = collectionView else { fatalError("CollectionView is nil")}
-        
     
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .myWhiteColor()
@@ -109,12 +102,6 @@ extension ChatsViewController {
     private func setupCompositionalLayout(isEmptyActiveSection: Bool, isEmptyNewSection: Bool) -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             
-            var mySectionIndex = sectionIndex
-            
-            if isEmptyNewSection && !isEmptyActiveSection{
-                mySectionIndex += 1
-            }
-            print("isemptyActive \(isEmptyActiveSection) is empty new \(isEmptyNewSection)")
             guard let section = SectionsChats(rawValue: sectionIndex) else { fatalError("Unknown section")}
             
             switch section {
@@ -124,7 +111,6 @@ extension ChatsViewController {
                 return self.createActiveChatsLayout(isEmpty: isEmptyActiveSection)
             }
         }
-        print("layout")
         return layout
     }
     
@@ -166,9 +152,6 @@ extension ChatsViewController {
                                                             bottom: 0,
                                                             trailing: 20)
         }
-        
-        
-        
         
         return section
     }
@@ -254,17 +237,11 @@ extension ChatsViewController {
                                          font: .avenirRegular(size: 12),
                                          textColor: UIColor.myGrayColor())
             
-        
             return reuseSectionHeader
         }
     }
-}
-
-
-extension ChatsViewController: AcceptChatCollectionViewDelegate {
-    //MARK:  reloadDataSource
-    func reloadDataSource(searchText: String?){
-        print(#function)
+    
+    private func renewDataSource(searchText: String?) {
         guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
         let filtredAcceptChats = sortedAcceptChats.filter { acceptChat -> Bool in
             acceptChat.contains(element: searchText)
@@ -286,62 +263,58 @@ extension ChatsViewController: AcceptChatCollectionViewDelegate {
             snapshot.appendSections([.newChats, .activeChats])
             snapshot.appendItems(newChats, toSection: .newChats)
             snapshot.appendItems(activeChats, toSection: .activeChats)
-        
+            
             dataSource.apply(snapshot, animatingDifferences: false) { [weak self] in
+               
                 self?.collectionView?.collectionViewLayout.invalidateLayout()
                 self?.collectionView?.layoutIfNeeded()
                 self?.collectionView?.setCollectionViewLayout(self?.setupCompositionalLayout(isEmptyActiveSection: activeChats.isEmpty,
                                                                                              isEmptyNewSection: newChats.isEmpty) ?? UICollectionViewFlowLayout(),
                                                               animated: false)
-                DispatchQueue.global().async {
-                  //  if only one chat in collection, and this is update, need second renew, for correct update header (change new to active chat)
-                    if filtredAcceptChats.count == 1 {
-                        if var snapshot2 = self?.dataSource?.snapshot() {
-                            snapshot2.deleteAllItems()
-                            snapshot2.appendSections([.newChats, .activeChats])
-                            snapshot2.appendItems(newChats, toSection: .newChats)
-                            snapshot2.appendItems(activeChats, toSection: .activeChats)
-                            self?.dataSource?.apply(snapshot2)
-                        }
-                    }
-               }
             }
-
-        } else {
             
+            
+        } else {
             var snapshot = NSDiffableDataSourceSnapshot<SectionsChats,MChat>()
             snapshot.appendSections([.newChats, .activeChats])
             snapshot.appendItems(newChats, toSection: .newChats)
             snapshot.appendItems(activeChats, toSection: .activeChats)
+            
             dataSource?.apply(snapshot, animatingDifferences: false, completion: { [weak self] in
+                
                 self?.collectionView?.collectionViewLayout.invalidateLayout()
                 self?.collectionView?.layoutIfNeeded()
                 self?.collectionView?.setCollectionViewLayout(self?.setupCompositionalLayout(isEmptyActiveSection: activeChats.isEmpty,
-                                                                                isEmptyNewSection: newChats.isEmpty) ?? UICollectionViewFlowLayout(),
-                                                       animated: false)
+                                                                                             isEmptyNewSection: newChats.isEmpty) ?? UICollectionViewFlowLayout(),
+                                                              animated: false)
+                
             })
         }
     }
-    
-    func updateForDeleteDataSource() {
-       reloadDataSource(searchText: nil)
-    }
-    
-    //MARK:  updateDataSource
-    func updateDataSource(){
-        reloadDataSource(searchText: nil)
-    }
 }
 
+extension ChatsViewController: AcceptChatCollectionViewDelegate {
+    //MARK:  reloadDataSource
+    func reloadDataSource(){
+        renewDataSource(searchText: nil)
+        
+        guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
+        //  if only one chat in collection, and this is update, need second renew, for correct update header (change new to active chat)
+        if sortedAcceptChats.count == 1 {
+            renewDataSource(searchText: nil)
+        }
+    }
+    
+}
 
 //MARK: UISearchBarDelegate
 extension ChatsViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        reloadDataSource(searchText: searchText)
+        renewDataSource(searchText: searchText)
     }
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        reloadDataSource(searchText: nil)
+        renewDataSource(searchText: nil)
     }
 }
 
@@ -355,11 +328,14 @@ extension ChatsViewController: UICollectionViewDelegate {
         case .newChats:
             
             let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: MessagesDataProvider())
+            chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
+            
             
         case .activeChats:
             
             let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: MessagesDataProvider())
+            chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
         }
     }

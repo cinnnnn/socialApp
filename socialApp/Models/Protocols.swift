@@ -21,11 +21,6 @@ protocol PeopleConfigurationCell: class {
     func configure(with value: MPeople, complition:@escaping()->Void)
 }
 
-protocol CollectionCellModel {
-    func image() -> UIImage
-    func description() -> String
-}
-
 protocol ReprasentationModel {
     var reprasentation:[String : Any]{ get }
     init?(documentSnap: DocumentSnapshot)
@@ -42,7 +37,37 @@ protocol LikeDislikeTappedDelegate: class {
     func dislikePeople(people: MPeople)
 }
 
-//MARK: collection view protocol
+protocol CollectionCellModel {
+    func image() -> UIImage
+    func description() -> String
+}
+
+//MARK: - universal collection view
+
+protocol UniversalSection{
+    func description() -> String
+}
+
+protocol UnversalButtonCell {
+    static var reuseID: String { get }
+    func configure(with value: UniversalCollectionCellModel, withImage: Bool)
+}
+
+protocol UnversalSwitchCell {
+    static var reuseID: String { get }
+    func configure(with value: UniversalCollectionCellModel,
+                   withImage: Bool,
+                   switchIsOn: Bool,
+                   configureFunc: (()->Void)? )
+}
+
+protocol UniversalCollectionCellModel{
+    func image() -> UIImage?
+    func description() -> String
+    func typeOfCell() -> MCellType
+}
+
+//MARK: - collection view protocol
 protocol PeopleCollectionViewDelegate: class {
     func updateData()
     func reloadData(reloadSection: Bool, animating: Bool)
@@ -53,9 +78,7 @@ protocol RequestChatCollectionViewDelegate: class {
 }
 
 protocol AcceptChatCollectionViewDelegate: class {
-    func reloadDataSource(searchText: String?)
-    func updateForDeleteDataSource()
-    func updateDataSource()
+    func reloadDataSource()
 }
 
 protocol MessageControllerDelegate: class {
@@ -63,10 +86,11 @@ protocol MessageControllerDelegate: class {
     
     func newMessage()
     func showChatAlert(text: String)
+    func chatsCollectionWasUpdate(chat: MChat)
     
 }
 
-//MARK: listner Firestore protocols
+//MARK: - listner Firestore protocols
 protocol LikeDislikeListenerDelegate: class {
     var likePeople: [MChat] { get set }
     var dislikePeople: [MChat] { get set }
@@ -93,11 +117,12 @@ protocol AcceptChatListenerDelegate: class {
     var acceptChats: [MChat] { get set }
     var sortedAcceptChats: [MChat] { get }
     var acceptChatCollectionViewDelegate: AcceptChatCollectionViewDelegate? { get set }
+    var messageCollectionViewDelegate: MessageControllerDelegate? { get set }
     
-    func reloadData(changeType: MTypeOfListenerChanges) 
+    func reloadData(changeType: MTypeOfListenerChanges, chat: MChat?)
     func getAcceptChats(complition: @escaping (Result<[MChat], Error>) -> Void)
-    func setupListener()
-    func removeListener()
+    func setupAcceptChatListener()
+    func removeAcceptChatListener()
 }
 
 protocol PeopleListenerDelegate: class {

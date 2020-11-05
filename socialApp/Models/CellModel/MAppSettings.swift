@@ -38,6 +38,17 @@ enum MAppSettings: Int, CaseIterable, CollectionCellModel {
             return "Удалить аккаунт"
         }
     }
+    
+    func cellType() -> MCellType {
+        switch self {
+        case .about:
+            return .buttonCell
+        case .logOut:
+            return .buttonCell
+        case .terminateAccaunt:
+            return .buttonCell
+        }
+    }
 }
 
 extension MAppSettings: Hashable {

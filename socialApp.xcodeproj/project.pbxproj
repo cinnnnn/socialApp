@@ -88,6 +88,14 @@
 		FB8C3D98253A525500184FB5 /* SectionsRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D97253A525500184FB5 /* SectionsRequests.swift */; };
 		FB8C3D9C253A589B00184FB5 /* RequestChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D9B253A589B00184FB5 /* RequestChatCell.swift */; };
 		FBA2AA282550601A00A471F6 /* LikeDisklikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */; };
+		FBA2AA2B2552D3F400A471F6 /* UniversalTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA2A2552D3F300A471F6 /* UniversalTableView.swift */; };
+		FBA2AA2E2552D7D000A471F6 /* MCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA2D2552D7D000A471F6 /* MCellType.swift */; };
+		FBA2AA322552D9BB00A471F6 /* SectionsChatSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA312552D9BB00A471F6 /* SectionsChatSettings.swift */; };
+		FBA2AA352552F84F00A471F6 /* UniversalButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA342552F84F00A471F6 /* UniversalButtonCell.swift */; };
+		FBA2AA392552FCE300A471F6 /* MChatSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA382552FCE300A471F6 /* MChatSettings.swift */; };
+		FBA2AA3C255300C200A471F6 /* UniversallSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA3B255300C200A471F6 /* UniversallSwitchCell.swift */; };
+		FBA2AA442553072800A471F6 /* UniversalInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA432553072800A471F6 /* UniversalInfoCell.swift */; };
+		FBA2AA482553086D00A471F6 /* SetupChatMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA2AA472553086D00A471F6 /* SetupChatMenu.swift */; };
 		FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */; };
 		FBB26EAE254585DB0081CF2C /* ChatTitleStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */; };
 		FBB26EB42546E49B0081CF2C /* MAdmin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EB32546E49B0081CF2C /* MAdmin.swift */; };
@@ -217,6 +225,14 @@
 		FB8C3D97253A525500184FB5 /* SectionsRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsRequests.swift; sourceTree = "<group>"; };
 		FB8C3D9B253A589B00184FB5 /* RequestChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestChatCell.swift; sourceTree = "<group>"; };
 		FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeDisklikeButton.swift; sourceTree = "<group>"; };
+		FBA2AA2A2552D3F300A471F6 /* UniversalTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalTableView.swift; sourceTree = "<group>"; };
+		FBA2AA2D2552D7D000A471F6 /* MCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCellType.swift; sourceTree = "<group>"; };
+		FBA2AA312552D9BB00A471F6 /* SectionsChatSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsChatSettings.swift; sourceTree = "<group>"; };
+		FBA2AA342552F84F00A471F6 /* UniversalButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalButtonCell.swift; sourceTree = "<group>"; };
+		FBA2AA382552FCE300A471F6 /* MChatSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MChatSettings.swift; sourceTree = "<group>"; };
+		FBA2AA3B255300C200A471F6 /* UniversallSwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversallSwitchCell.swift; sourceTree = "<group>"; };
+		FBA2AA432553072800A471F6 /* UniversalInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalInfoCell.swift; sourceTree = "<group>"; };
+		FBA2AA472553086D00A471F6 /* SetupChatMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupChatMenu.swift; sourceTree = "<group>"; };
 		FBA94D1D24F55CBE000DA5D5 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTitleStackView.swift; sourceTree = "<group>"; };
 		FBB26EB32546E49B0081CF2C /* MAdmin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAdmin.swift; sourceTree = "<group>"; };
@@ -296,7 +312,6 @@
 		FB18217824B225BD00FFFC87 /* AuthControllers */ = {
 			isa = PBXGroup;
 			children = (
-				FB8C3D742535DA5900184FB5 /* PopUpViewControllers */,
 				FBEF607B24A602070005F947 /* AuthViewController.swift */,
 				FB1062D924AE69240012C4D4 /* LoginViewController.swift */,
 				FB66288024A93ADC00650820 /* RegisterEmailViewController.swift */,
@@ -319,6 +334,7 @@
 				FB8C3D9F253A58C600184FB5 /* RequestsViewController */,
 				FBA94D1F24F55D54000DA5D5 /* ChatsViewController */,
 				FB61A78B251E1342005DCC78 /* ChatViewController.swift */,
+				FBA2AA472553086D00A471F6 /* SetupChatMenu.swift */,
 				FBB26EBB2546F3250081CF2C /* PeopleInfoViewController.swift */,
 			);
 			path = MainControllers;
@@ -340,17 +356,17 @@
 				FBA2B7B32540676900D0F463 /* Animation */,
 				FBB4F35D2512728900ACFE90 /* Error */,
 				FB37278B25419C4800906FBE /* People */,
+				FBA2AA372552FC9F00A471F6 /* CellModel */,
+				FB3C5BD6253C896100CD44E6 /* Sections */,
+				FBA2AA2D2552D7D000A471F6 /* MCellType.swift */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 				FB15FCF22513A71F00B765D3 /* MMessage.swift */,
-				FB79DA8A252DF0D600A7AA56 /* MProfileSettings.swift */,
-				FBB26EC62548452C0081CF2C /* MAppSettings.swift */,
 				FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */,
 				FB8C3D8A25371AE900184FB5 /* MLabels.swift */,
 				FB79DA4B2523577100A7AA56 /* MMediaItem.swift */,
 				FB3C5BD2253B399100CD44E6 /* MFirestorCollection.swift */,
 				FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */,
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
-				FB3C5BD6253C896100CD44E6 /* Sections */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -399,6 +415,7 @@
 				FBF6289624F678EA00DCD4AC /* SectionsPeople.swift */,
 				FB79DA7E252DE71900A7AA56 /* SectionsProfile.swift */,
 				FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */,
+				FBA2AA312552D9BB00A471F6 /* SectionsChatSettings.swift */,
 				FB79DA982530E86D00A7AA56 /* SectionEditPhotos.swift */,
 			);
 			path = Sections;
@@ -521,6 +538,27 @@
 				FB8C3D9B253A589B00184FB5 /* RequestChatCell.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		FBA2AA372552FC9F00A471F6 /* CellModel */ = {
+			isa = PBXGroup;
+			children = (
+				FBB26EC62548452C0081CF2C /* MAppSettings.swift */,
+				FB79DA8A252DF0D600A7AA56 /* MProfileSettings.swift */,
+				FBA2AA382552FCE300A471F6 /* MChatSettings.swift */,
+			);
+			path = CellModel;
+			sourceTree = "<group>";
+		};
+		FBA2AA3E2553068100A471F6 /* UniversalTableView */ = {
+			isa = PBXGroup;
+			children = (
+				FBA2AA2A2552D3F300A471F6 /* UniversalTableView.swift */,
+				FBA2AA342552F84F00A471F6 /* UniversalButtonCell.swift */,
+				FBA2AA3B255300C200A471F6 /* UniversallSwitchCell.swift */,
+				FBA2AA432553072800A471F6 /* UniversalInfoCell.swift */,
+			);
+			path = UniversalTableView;
 			sourceTree = "<group>";
 		};
 		FBA2B7B32540676900D0F463 /* Animation */ = {
@@ -660,6 +698,8 @@
 		FBEF609424A90DD60005F947 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				FB8C3D742535DA5900184FB5 /* PopUpViewControllers */,
+				FBA2AA3E2553068100A471F6 /* UniversalTableView */,
 				FB18217824B225BD00FFFC87 /* AuthControllers */,
 				FB18217924B225C500FFFC87 /* MainControllers */,
 			);
@@ -791,6 +831,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB3C5BDE253F5F3900CD44E6 /* RoundButton.swift in Sources */,
+				FBA2AA442553072800A471F6 /* UniversalInfoCell.swift in Sources */,
 				FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */,
 				FBB26EBC2546F3250081CF2C /* PeopleInfoViewController.swift in Sources */,
 				FB3727602540D7EC00906FBE /* AnimationCustomView.swift in Sources */,
@@ -809,12 +850,15 @@
 				FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */,
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
 				FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */,
+				FBA2AA482553086D00A471F6 /* SetupChatMenu.swift in Sources */,
 				FB1062DE24B0C8DF0012C4D4 /* EditableProfileImageView.swift in Sources */,
 				FBB26ED3254AFD130081CF2C /* AcceptChatDataProvider.swift in Sources */,
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
 				FBEF609124A90AEC0005F947 /* UILabelExtension.swift in Sources */,
 				FBB3B25F2509011200440632 /* StorageService.swift in Sources */,
+				FBA2AA2B2552D3F400A471F6 /* UniversalTableView.swift in Sources */,
 				FBB4F35F2512737400ACFE90 /* FirestoreError.swift in Sources */,
+				FBA2AA352552F84F00A471F6 /* UniversalButtonCell.swift in Sources */,
 				FB8C3D6A2535D71B00184FB5 /* InterestsSelectionViewController.swift in Sources */,
 				FB207CB42520C544007AA232 /* MessageError.swift in Sources */,
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
@@ -833,6 +877,7 @@
 				FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,
 				FB61A78C251E1342005DCC78 /* ChatViewController.swift in Sources */,
+				FBA2AA322552D9BB00A471F6 /* SectionsChatSettings.swift in Sources */,
 				FB3C5BD3253B399100CD44E6 /* MFirestorCollection.swift in Sources */,
 				FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */,
 				FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */,
@@ -846,6 +891,7 @@
 				FBB26EC3254843C60081CF2C /* AppSettingsViewController.swift in Sources */,
 				FB09108024FA93E2006B72D5 /* UITextViewExtension.swift in Sources */,
 				FB79DA7F252DE71900A7AA56 /* SectionsProfile.swift in Sources */,
+				FBA2AA2E2552D7D000A471F6 /* MCellType.swift in Sources */,
 				FBB26EE8254C12AC0081CF2C /* CountOfUnreadMessageView.swift in Sources */,
 				FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */,
 				FB3727942541A18600906FBE /* MVirtualLocation.swift in Sources */,
@@ -853,6 +899,7 @@
 				FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */,
 				FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */,
 				FB8C3D7D253606EE00184FB5 /* LocaleExtension.swift in Sources */,
+				FBA2AA3C255300C200A471F6 /* UniversallSwitchCell.swift in Sources */,
 				FB79DA56252501E100A7AA56 /* UIApplicationExtension.swift in Sources */,
 				FB8C3D3F25339DE200184FB5 /* GenderSelectionViewController.swift in Sources */,
 				FB1062D824AE494A0012C4D4 /* OneLineTextField.swift in Sources */,
@@ -874,6 +921,7 @@
 				FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */,
 				FBF6289524F678C300DCD4AC /* SectionsChats.swift in Sources */,
 				FB09107E24FA73B2006B72D5 /* SendRequestViewController.swift in Sources */,
+				FBA2AA392552FCE300A471F6 /* MChatSettings.swift in Sources */,
 				FB8C3D8B25371AE900184FB5 /* MLabels.swift in Sources */,
 				FB79DA6E252C942B00A7AA56 /* MLocation.swift in Sources */,
 				FBEF607824A602070005F947 /* AppDelegate.swift in Sources */,

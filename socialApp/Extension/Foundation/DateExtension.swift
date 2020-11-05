@@ -104,4 +104,50 @@ extension Date {
             return "Только что"
         }
     }
+    
+    func checkPeriodIsPassed(periodMinuteCount: Int) -> Bool {
+        let calendar = Calendar.current
+        let timePeriod = calendar.dateComponents([.minute], from: self, to: Date())
+        if let minute = timePeriod.minute, minute >= periodMinuteCount {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func getPeriodToDate(periodMinuteCount: Int) -> String {
+        let calendar = Calendar.current
+        guard let deleteDate = calendar.date(byAdding: .minute, value: periodMinuteCount, to: self) else { return ""}
+        let timeToDeleteDate = calendar.dateComponents([.day,.hour,.minute], from: Date(), to: deleteDate)
+        if let day = timeToDeleteDate.day, day > 0 {
+            switch day {
+            case let currentDay where (day % 10 == 1) && (day != 11):
+                return String("\(currentDay) день")
+            case let currentDay where (day % 10 >= 2) && (day % 10 <= 4) && (( day < 12) || (day > 14)):
+                return String("\(currentDay) дня")
+            default:
+                return String("\(day) дней")
+            }
+        } else if let hour = timeToDeleteDate.hour, hour > 0 {
+            switch hour {
+            case let currentHour where (hour % 10 == 1) && (hour != 11):
+                return String("\(currentHour) час")
+            case let currentHour where (hour % 10 >= 2) && (hour % 10 <= 4) && (( hour < 12) || (hour > 14)):
+                return String("\(currentHour) часа")
+            default:
+                return String("\(hour) часов")
+            }
+        } else if let minute = timeToDeleteDate.minute, minute > 0 {
+            switch minute {
+            case let currentMinute where (minute % 10 == 1) && (minute != 11):
+                return String("\(currentMinute) минута")
+            case let currentMinute where (minute % 10 >= 2) && (minute % 10 <= 4) && (( minute < 12) || (minute > 14)):
+                return String("\(currentMinute) минуты")
+            default:
+                return String("\(minute) минут")
+            }
+        } else {
+            return "0 минут"
+        }
+    }
 }
