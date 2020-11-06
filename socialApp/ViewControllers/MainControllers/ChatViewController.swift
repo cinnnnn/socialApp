@@ -16,8 +16,8 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     private let user:MPeople
     private var chat:MChat
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
+    weak var messageDelegate: MessageListenerDelegate?
     
-    var messageDelegate: MessageListenerDelegate
     lazy var isInitiateDeleteChat = false
     
     override func viewDidLoad() {
@@ -28,7 +28,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         messagesCollectionView.messageCellDelegate = self
         
         messageInputBar.delegate = self
-        messageDelegate.messageControllerDelegate = self
+        messageDelegate?.messageControllerDelegate = self
         
         acceptChatDelegate?.messageCollectionViewDelegate = self
         
@@ -45,7 +45,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         readAllMessageInChat()
     }
     
-    init(people: MPeople, chat: MChat, messageDelegate: MessageListenerDelegate) {
+    init(people: MPeople, chat: MChat, messageDelegate: MessageListenerDelegate?) {
         self.user = people
         self.chat = chat
         self.messageDelegate = messageDelegate
@@ -58,12 +58,12 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     }
     
     deinit {
-        messageDelegate.removeListener()
+        messageDelegate?.removeListener()
     }
     
     //MARK: addMessageListener
     private func addMessageListener() {
-        messageDelegate.setupListener(chat: chat)
+        messageDelegate?.setupListener(chat: chat)
     }
     
      func chatsCollectionWasUpdate(chat: MChat) {
@@ -295,12 +295,13 @@ extension ChatViewController: MessagesDataSource {
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
+        guard let messageDelegate = messageDelegate else { fatalError("Can' get messageDelegate") }
         return messageDelegate.messages[indexPath.section]
         
     }
     
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
-        return messageDelegate.messages.count
+        return messageDelegate?.messages.count ?? 0
     }
     
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
@@ -312,6 +313,7 @@ extension ChatViewController: MessagesDataSource {
         if indexPath.section == 0 {
             return attributedDateString
         } else {
+            guard let messageDelegate = messageDelegate else { return nil }
             //if from previus message more then 10 minets show time
             let timeDifference = messageDelegate.messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
             
@@ -344,6 +346,7 @@ extension ChatViewController: MessagesLayoutDelegate {
         if indexPath.section == 0 {
             return 30
         } else {
+            guard let messageDelegate = messageDelegate else { return 0 }
             //if from previus message more then 10 minets set new height
             let timeDifference = messageDelegate.messages[indexPath.section - 1].sentDate.distance(to: message.sentDate) / 600
             if timeDifference > 1 {

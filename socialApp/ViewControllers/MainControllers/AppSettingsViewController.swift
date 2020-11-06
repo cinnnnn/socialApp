@@ -147,10 +147,7 @@ extension AppSettingsViewController: UICollectionViewDelegate {
             switch cell {
             
             case .about:
-                let vc = MatchViewController()
-                vc.modalTransitionStyle = .crossDissolve
-                vc.modalPresentationStyle = .popover
-                present(vc, animated: true, completion: nil)
+                break
             case .logOut:
                 signOutAlert(pressedIndexPath: indexPath)
             case .terminateAccaunt:

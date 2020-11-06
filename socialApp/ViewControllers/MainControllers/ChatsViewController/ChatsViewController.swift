@@ -18,11 +18,17 @@ class ChatsViewController: UIViewController {
     var currentPeople: MPeople
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
+    weak var messageDelegate: MessageListenerDelegate?
     
-    init(currentPeople: MPeople, acceptChatDelegate: AcceptChatListenerDelegate?, likeDislikeDelegate: LikeDislikeListenerDelegate?) {
+    init(currentPeople: MPeople,
+         acceptChatDelegate: AcceptChatListenerDelegate?,
+         likeDislikeDelegate: LikeDislikeListenerDelegate?,
+         messageDelegate: MessageListenerDelegate?) {
+        
         self.currentPeople = currentPeople
         self.acceptChatDelegate = acceptChatDelegate
         self.likeDislikeDelegate = likeDislikeDelegate
+        self.messageDelegate = messageDelegate
         
         super.init(nibName: nil, bundle: nil)
         setupListeners()
@@ -337,14 +343,14 @@ extension ChatsViewController: UICollectionViewDelegate {
         switch section {
         case .newChats:
             
-            let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: MessagesDataProvider())
+            let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: messageDelegate)
             chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
             
             
         case .activeChats:
             
-            let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: MessagesDataProvider())
+            let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: messageDelegate)
             chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
         }

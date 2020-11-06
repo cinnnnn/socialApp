@@ -10,8 +10,13 @@ import Foundation
 
 class MessagesDataProvider: MessageListenerDelegate {
     
+    let userID: String
     var messages:[MMessage] = []
     weak var messageControllerDelegate: MessageControllerDelegate?
+    
+    init(userID: String) {
+        self.userID = userID
+    }
 }
 
 extension MessagesDataProvider {

@@ -110,6 +110,7 @@ extension SetupChatMenu {
             unMatchAlert(pressedIndexPath: indexPath)
             
         case .reportUser:
+            PopUpService.shared.showMatchPopUP(currentPeople: currentUser, chat: chat)
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }

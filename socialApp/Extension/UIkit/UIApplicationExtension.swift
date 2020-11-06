@@ -20,4 +20,17 @@ extension UIApplication {
         }
         return statusBarHeight
     }
+    
+    static func getCurrentViewController() -> UIViewController? {
+
+        if let rootController = shared.windows.filter({ $0.isKeyWindow }).first?.rootViewController {
+           var currentController: UIViewController! = rootController
+           while( currentController.presentedViewController != nil ) {
+               currentController = currentController.presentedViewController
+           }
+           return currentController
+       }
+       return nil
+
+   }
 }

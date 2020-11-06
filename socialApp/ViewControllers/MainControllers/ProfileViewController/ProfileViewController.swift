@@ -69,9 +69,7 @@ extension ProfileViewController {
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupLayout())
         
-        
         collectionView.backgroundColor = .myWhiteColor()
-        
         collectionView.delegate = self
         
         collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: ProfileCell.reuseID)

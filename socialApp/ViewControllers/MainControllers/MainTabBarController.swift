@@ -18,6 +18,7 @@ class MainTabBarController: UITabBarController{
     var requestChatsDelegate: RequestChatListenerDelegate?
     var peopleDelegate: PeopleListenerDelegate?
     var likeDislikeDelegate: LikeDislikeListenerDelegate?
+    var messageDelegate: MessageListenerDelegate?
     
     init(userID: String) {
         self.userID = userID
@@ -43,6 +44,13 @@ extension MainTabBarController {
         requestChatsDelegate = RequestChatDataProvider(userID: userID)
         acceptChatsDelegate = AcceptChatDataProvider(userID: userID)
         peopleDelegate = PeopleDataProvider(userID: userID)
+        messageDelegate = MessagesDataProvider(userID: userID)
+        
+        PopUpService.shared.likeDislikeDelegate = likeDislikeDelegate
+        PopUpService.shared.requestChatsDelegate = requestChatsDelegate
+        PopUpService.shared.acceptChatsDelegate = acceptChatsDelegate
+        PopUpService.shared.peopleDelegate = peopleDelegate
+        PopUpService.shared.messageDelegate = messageDelegate
     }
     
     private func loadIsComplite(isComplite: Bool) {
@@ -176,7 +184,8 @@ extension MainTabBarController {
         
         let chatsVC = ChatsViewController(currentPeople: currentPeople,
                                           acceptChatDelegate: acceptChatsDelegate,
-                                          likeDislikeDelegate: likeDislikeDelegate)
+                                          likeDislikeDelegate: likeDislikeDelegate,
+                                          messageDelegate: messageDelegate)
         
         acceptChatsDelegate?.acceptChatCollectionViewDelegate = chatsVC
         
