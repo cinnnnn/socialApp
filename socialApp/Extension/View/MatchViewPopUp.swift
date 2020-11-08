@@ -15,10 +15,10 @@ class MatchViewPopUp: UIView {
     let friendPhoto = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
     let aboutFriend = UILabel(labelText: "", textFont: .avenirRegular(size: 16))
     let info = UILabel(labelText: "Веди себя хорошоо", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
-    let okButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Позже", titleColor: .myGrayColor())
+    let dismisButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Позже", titleColor: .myGrayColor())
     let chatButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Начать общение", titleColor: .myLabelColor())
     weak var stackView: UIStackView?  {
-        let stackView = UIStackView(arrangedSubviews: [okButton,chatButton])
+        let stackView = UIStackView(arrangedSubviews: [dismisButton,chatButton])
         stackView.axis = .horizontal
         stackView.spacing = 30
         stackView.distribution = .equalSpacing
@@ -27,14 +27,12 @@ class MatchViewPopUp: UIView {
     }
     let chat: MChat
     let currentPeople: MPeople
-    weak var messageDelegate: MessageListenerDelegate?
-    weak var acceptChatsDelegate: AcceptChatListenerDelegate?
+    var okAction: () -> ()
     
-    init(currentPeople: MPeople, chat: MChat, messageDelegate: MessageListenerDelegate?, acceptDelegate: AcceptChatListenerDelegate?) {
-        self.messageDelegate = messageDelegate
-        self.acceptChatsDelegate = acceptDelegate
+    init(currentPeople: MPeople, chat: MChat, okAction: @escaping ()->()) {
         self.currentPeople = currentPeople
         self.chat = chat
+        self.okAction = okAction
         super.init(frame: UIScreen.main.bounds)
         setup()
         setupConstraints()
@@ -58,24 +56,21 @@ class MatchViewPopUp: UIView {
     }
     
     private func setupButton() {
-        okButton.addTarget(self, action: #selector(okTapped), for: .touchUpInside)
+        dismisButton.addTarget(self, action: #selector(dismisTapped), for: .touchUpInside)
         chatButton.addTarget(self, action: #selector(chatTapped), for: .touchUpInside)
     }
 }
 
 extension MatchViewPopUp {
-    @objc func okTapped() {
-        print(#function)
+    @objc func dismisTapped() {
         SwiftEntryKit.dismiss()
     }
     
     @objc func chatTapped() {
-        
-        print("Tapped")
+        okAction()
         SwiftEntryKit.dismiss()
     }
 }
-
 
 extension MatchViewPopUp {
     private func setupConstraints() {
@@ -84,7 +79,7 @@ extension MatchViewPopUp {
         friendPhoto.translatesAutoresizingMaskIntoConstraints = false
         aboutFriend.translatesAutoresizingMaskIntoConstraints = false
         info.translatesAutoresizingMaskIntoConstraints = false
-        okButton.translatesAutoresizingMaskIntoConstraints = false
+        dismisButton.translatesAutoresizingMaskIntoConstraints = false
         chatButton.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(friendPhoto)
@@ -114,7 +109,7 @@ extension MatchViewPopUp {
             info.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             info.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50),
         ])

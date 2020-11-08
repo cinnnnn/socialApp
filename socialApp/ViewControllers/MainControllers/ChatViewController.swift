@@ -20,6 +20,23 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     lazy var isInitiateDeleteChat = false
     
+    init(people: MPeople, chat: MChat, messageDelegate: MessageListenerDelegate?, acceptChatDelegate: AcceptChatListenerDelegate?) {
+        self.user = people
+        self.chat = chat
+        self.messageDelegate = messageDelegate
+        self.acceptChatDelegate = acceptChatDelegate
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        messageDelegate?.removeListener()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         messagesCollectionView.messagesDataSource = self
@@ -42,24 +59,10 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        acceptChatDelegate?.selectedChat = nil
         readAllMessageInChat()
     }
     
-    init(people: MPeople, chat: MChat, messageDelegate: MessageListenerDelegate?) {
-        self.user = people
-        self.chat = chat
-        self.messageDelegate = messageDelegate
-        
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    deinit {
-        messageDelegate?.removeListener()
-    }
     
     //MARK: addMessageListener
     private func addMessageListener() {
@@ -75,14 +78,13 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     private func readAllMessageInChat() {
         FirestoreService.shared.readAllMessageInChat(userID: user.senderId, chat: chat) { _ in
-            
         }
     }
     
     //MARK: configure
     private func configure() {
         showMessageTimestampOnSwipeLeft = true
-        
+        acceptChatDelegate?.selectedChat = chat
         
         //delete avatar from message
         if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {

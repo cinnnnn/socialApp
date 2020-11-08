@@ -16,7 +16,6 @@ class ChatsViewController: UIViewController {
     var collectionView: UICollectionView?
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
     var currentPeople: MPeople
-    var selectedChat: MChat?
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var messageDelegate: MessageListenerDelegate?
@@ -55,7 +54,6 @@ class ChatsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateCurrentPeople()
-        selectedChat = nil
         tabBarController?.tabBar.isHidden = false
     }
     
@@ -346,16 +344,20 @@ extension ChatsViewController: UICollectionViewDelegate {
         switch section {
         case .newChats:
             
-            selectedChat = item
-            let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: messageDelegate)
+            let chatVC = ChatViewController(people: currentPeople,
+                                            chat: item,
+                                            messageDelegate: messageDelegate,
+                                            acceptChatDelegate: acceptChatDelegate)
             chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
             
             
         case .activeChats:
             
-            selectedChat = item
-            let chatVC = ChatViewController(people: currentPeople, chat: item, messageDelegate: messageDelegate)
+            let chatVC = ChatViewController(people: currentPeople,
+                                            chat: item,
+                                            messageDelegate: messageDelegate,
+                                            acceptChatDelegate: acceptChatDelegate)
             chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
         }

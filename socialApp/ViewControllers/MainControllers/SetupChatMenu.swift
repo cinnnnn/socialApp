@@ -117,12 +117,16 @@ extension SetupChatMenu {
 //                                              font: .avenirBold(size: 14)) {
 //                print("Azazaza")
 //            }
-            //PopUpService.shared.showMatchPopUP(currentPeople: currentUser, chat: chat)
+            let strongCurrentUser = currentUser
+            let strongChat = chat
+            PopUpService.shared.showMatchPopUP(currentPeople: currentUser, chat: chat) {[weak self] messageDelegate, acceptChatDelegate in
+                let vc = ChatViewController(people: strongCurrentUser,
+                                            chat: strongChat,
+                                            messageDelegate: messageDelegate,
+                                            acceptChatDelegate: acceptChatDelegate)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
             
-            PopUpService.shared.showMessagePopUp(header: chat.friendUserName,
-                                                 text: chat.lastMessage,
-                                                 time: chat.date.getShortFormattedDate(),
-                                                 imageStringURL: chat.friendUserImageString)
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }

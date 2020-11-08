@@ -22,24 +22,32 @@ class PopUpService {
     private init() {}
 }
 
+
 extension PopUpService {
-    func showMatchPopUP(currentPeople: MPeople, chat: MChat) {
+    
+    //MARK: showMatchPopUP
+    func showMatchPopUP(currentPeople: MPeople, chat: MChat, action: @escaping(MessageListenerDelegate, AcceptChatListenerDelegate)->()) {
         let matchPopUpView = MatchViewPopUp(currentPeople: currentPeople,
-                                            chat: chat,
-                                            messageDelegate: messageDelegate,
-                                            acceptDelegate: acceptChatsDelegate)
+                                            chat: chat) { [weak self] in
+            if let messageDelegate = self?.messageDelegate, let acceptChatsDelegate = self?.acceptChatsDelegate {
+                action(messageDelegate, acceptChatsDelegate)
+            }
+        }
         
         var attributesMatchView = EKAttributes()
+        attributesMatchView.displayMode = .inferred
+        attributesMatchView.statusBar = .inferred
         attributesMatchView.displayDuration = .infinity
         attributesMatchView.entryInteraction = .absorbTouches
-        attributesMatchView.screenInteraction = .absorbTouches
-        attributesMatchView.screenBackground = .visualEffect(style: .standard)
+        attributesMatchView.screenInteraction = .dismiss
+        attributesMatchView.screenBackground = .color(color: EKColor.init(UIColor.myLabelColor().withAlphaComponent(0.5)))
         attributesMatchView.position = .bottom
         attributesMatchView.hapticFeedbackType = .warning
         attributesMatchView.positionConstraints.safeArea = .overridden
         SwiftEntryKit.display(entry: matchPopUpView, using: attributesMatchView)
     }
     
+    //MARK: showInfoPopUp
     func showInfoPopUp(header: String,
                        text: String,
                        cancelButtonText: String,
@@ -91,6 +99,7 @@ extension PopUpService {
         SwiftEntryKit.display(entry: infoView, using: infoPopUpAttributes)
     }
     
+    //MARK: showMessagePopUp
     func showMessagePopUp(header: String, text: String, time: String, imageStringURL: String){
         
         var attributes = EKAttributes()
@@ -138,7 +147,6 @@ extension PopUpService {
         
         let imageURL = URL(string: imageStringURL)
         
-        
         //load image and then show popUp
         SDWebImageManager.shared.loadImage(with: imageURL,
                                            options: .highPriority,
@@ -166,10 +174,5 @@ extension PopUpService {
             
             SwiftEntryKit.display(entry: contentView, using: attributes)
         }
-        
-        
-        
-        
-        
     }
 }

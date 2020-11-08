@@ -18,6 +18,7 @@ class AcceptChatDataProvider: AcceptChatListenerDelegate {
         }
         return accept
     }
+    var selectedChat: MChat?
     
     weak var acceptChatCollectionViewDelegate: AcceptChatCollectionViewDelegate?
     weak var messageCollectionViewDelegate: MessageControllerDelegate?
@@ -41,7 +42,7 @@ class AcceptChatDataProvider: AcceptChatListenerDelegate {
             //show popUp notification if message is changed
             if messageIsChanged == true {
                 //and this chat don't open 
-                if chat.friendId != acceptChatCollectionViewDelegate?.selectedChat?.friendId || acceptChatCollectionViewDelegate?.selectedChat == nil {
+                if chat.friendId != selectedChat?.friendId || selectedChat == nil {
                     PopUpService.shared.showMessagePopUp(header: chat.friendUserName,
                                                          text: chat.lastMessage,
                                                          time: chat.date.getFormattedDate(format: "HH:mm"),

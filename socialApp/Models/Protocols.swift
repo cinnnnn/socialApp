@@ -78,7 +78,6 @@ protocol RequestChatCollectionViewDelegate: class {
 }
 
 protocol AcceptChatCollectionViewDelegate: class {
-    var selectedChat: MChat? { get set }
     func reloadDataSource(changeType: MTypeOfListenerChanges)
 }
 
@@ -117,6 +116,7 @@ protocol RequestChatListenerDelegate: class {
 protocol AcceptChatListenerDelegate: class {
     var acceptChats: [MChat] { get set }
     var sortedAcceptChats: [MChat] { get }
+    var selectedChat: MChat? { get set }
     var acceptChatCollectionViewDelegate: AcceptChatCollectionViewDelegate? { get set }
     var messageCollectionViewDelegate: MessageControllerDelegate? { get set }
     
