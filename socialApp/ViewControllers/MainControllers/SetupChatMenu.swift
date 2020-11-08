@@ -110,7 +110,19 @@ extension SetupChatMenu {
             unMatchAlert(pressedIndexPath: indexPath)
             
         case .reportUser:
-            PopUpService.shared.showMatchPopUP(currentPeople: currentUser, chat: chat)
+//            PopUpService.shared.showInfoPopUp(header:  "Чат будет удален через 2 часа",
+//                                              text: "Eсли хочешь продолжить общение отключи таймер",
+//                                              cancelButtonText: "Позже",
+//                                              okButtonText: "Отключить таймер",
+//                                              font: .avenirBold(size: 14)) {
+//                print("Azazaza")
+//            }
+            //PopUpService.shared.showMatchPopUP(currentPeople: currentUser, chat: chat)
+            
+            PopUpService.shared.showMessagePopUp(header: chat.friendUserName,
+                                                 text: chat.lastMessage,
+                                                 time: chat.date.getShortFormattedDate(),
+                                                 imageStringURL: chat.friendUserImageString)
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }

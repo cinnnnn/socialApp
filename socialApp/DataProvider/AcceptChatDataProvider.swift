@@ -26,7 +26,7 @@ class AcceptChatDataProvider: AcceptChatListenerDelegate {
         self.userID = userID
     }
     
-    func reloadData(changeType: MTypeOfListenerChanges, chat: MChat?) {
+    func reloadData(changeType: MTypeOfListenerChanges, chat: MChat, messageIsChanged: Bool?) {
         
         switch changeType {
         case .add:
@@ -35,10 +35,19 @@ class AcceptChatDataProvider: AcceptChatListenerDelegate {
             acceptChatCollectionViewDelegate?.reloadDataSource(changeType: changeType)
         case .update:
             //if chat update, send to messageCollectionView this chat
-            if let chat = chat {
-                messageCollectionViewDelegate?.chatsCollectionWasUpdate(chat: chat)
-            }
+            messageCollectionViewDelegate?.chatsCollectionWasUpdate(chat: chat)
             acceptChatCollectionViewDelegate?.reloadDataSource(changeType: changeType)
+            
+            //show popUp notification if message is changed
+            if messageIsChanged == true {
+                //and this chat don't open 
+                if chat.friendId != acceptChatCollectionViewDelegate?.selectedChat?.friendId || acceptChatCollectionViewDelegate?.selectedChat == nil {
+                    PopUpService.shared.showMessagePopUp(header: chat.friendUserName,
+                                                         text: chat.lastMessage,
+                                                         time: chat.date.getFormattedDate(format: "HH:mm"),
+                                                         imageStringURL: chat.friendUserImageString)
+                }
+            }
         }
     }
 }

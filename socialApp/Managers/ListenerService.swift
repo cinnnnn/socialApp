@@ -278,7 +278,7 @@ class ListenerService {
                             
                             if !acceptChatDelegate.acceptChats.contains(chat) {
                                 acceptChatDelegate.acceptChats.append(chat)
-                                acceptChatDelegate.reloadData(changeType: .add, chat: chat)
+                                acceptChatDelegate.reloadData(changeType: .add, chat: chat, messageIsChanged: true)
                             }
                         //failure get people info
                         case .failure(let error):
@@ -288,13 +288,14 @@ class ListenerService {
                     
                 case .modified:
                     if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
+                        let messageIsChange = acceptChatDelegate.acceptChats[index].lastMessage == chat.lastMessage ? false : true
                         acceptChatDelegate.acceptChats[index] = chat
-                        acceptChatDelegate.reloadData(changeType: .update, chat: chat)
+                        acceptChatDelegate.reloadData(changeType: .update, chat: chat, messageIsChanged: messageIsChange)
                     }
                 case .removed:
                     if let index = acceptChatDelegate.acceptChats.firstIndex(of: chat) {
                         acceptChatDelegate.acceptChats.remove(at: index)
-                        acceptChatDelegate.reloadData(changeType: .delete, chat: chat)
+                        acceptChatDelegate.reloadData(changeType: .delete, chat: chat, messageIsChanged: nil)
                     } else {
                         break
                     }
