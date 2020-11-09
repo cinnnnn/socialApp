@@ -57,6 +57,11 @@ class PeopleViewController: UIViewController {
         setupListner()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     //MARK:  setup VC
     private func setup() {
         view.backgroundColor = .myWhiteColor()
@@ -231,7 +236,7 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
         //save like to firestore
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
-                                           requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result in
+                                           requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result, isMatch  in
             switch result {
             
             case .success(let likeChat):
@@ -241,7 +246,18 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
                 }
                 //for correct reload last element, need reload section
                 self?.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false)
-                
+                if isMatch {
+                    guard let currentPeople = self?.currentPeople else { return }
+                    PopUpService.shared.showMatchPopUP(currentPeople: currentPeople, chat: likeChat) { messageDelegate, acceptChatDelegate in
+                        let chatVC = ChatViewController(people: currentPeople,
+                                                        chat: likeChat,
+                                                        messageDelegate: messageDelegate,
+                                                        acceptChatDelegate: acceptChatDelegate)
+                        chatVC.hidesBottomBarWhenPushed = true
+                        
+                        self?.navigationController?.pushViewController(chatVC, animated: true)
+                    }
+                }
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

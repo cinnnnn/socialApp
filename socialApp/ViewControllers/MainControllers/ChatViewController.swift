@@ -99,7 +99,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                                             target: self,
                                             action: #selector(chatSettingsTapped))
         navigationItem.rightBarButtonItem = barButtonItem
-        
+        navigationController?.navigationBar.isHidden = false
         //add screenshot observer
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(screenshotTaken),

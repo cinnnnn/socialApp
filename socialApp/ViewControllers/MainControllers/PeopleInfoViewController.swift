@@ -86,7 +86,7 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
         //save like to firestore
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
-                                           requestChats: requestChatsDelegate.requestChats ) {[weak self] result in
+                                           requestChats: requestChatsDelegate.requestChats ) {[weak self] result, isMatch in
             switch result {
             
             case .success(_):

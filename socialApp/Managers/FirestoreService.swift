@@ -268,7 +268,7 @@ class FirestoreService {
     }
     
     //MARK: likePeople
-    func likePeople(currentPeople: MPeople, likePeople: MPeople,message: String = "", requestChats: [MChat], complition: @escaping(Result<MChat,Error>)->Void) {
+    func likePeople(currentPeople: MPeople, likePeople: MPeople,message: String = "", requestChats: [MChat], complition: @escaping(_ result: Result<MChat,Error>, _ isMatch: Bool)->Void) {
         
         let collectionLikeUserRequestRef = db.collection([MFirestorCollection.users.rawValue, likePeople.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
         let collectionLikeUserAcceptChatRef = db.collection([MFirestorCollection.users.rawValue, likePeople.senderId, MFirestorCollection.acceptChats.rawValue].joined(separator: "/"))
@@ -329,7 +329,7 @@ class FirestoreService {
                 } else {
                     try collectionCurrentAcceptChatRef.document(likePeople.senderId).setData(from: likeChat)
                 }
-            } catch { complition(.failure(error))}
+            } catch { complition(.failure(error), false)}
             
             do { //add to acceptChat to like user
                 if !chat.lastMessage.isEmpty {
@@ -342,16 +342,16 @@ class FirestoreService {
                 } else {
                     try collectionLikeUserAcceptChatRef.document(currentPeople.senderId).setData(from: requestChat)
                 }
-            } catch { complition(.failure(error))}
-            complition(.success(likeChat))
+            } catch { complition(.failure(error), false)}
+            complition(.success(likeChat), true)
             //if don't have request from like user
         } else {
             do { //add chat request for like user
                 try collectionLikeUserRequestRef.document(currentPeople.senderId).setData(from: requestChat, merge: true)
                 //add chat to like collection current user
                 try collectionCurrentLikeRef.document(likePeople.senderId).setData(from:likeChat)
-                complition(.success(likeChat))
-            } catch { complition(.failure(error)) }
+                complition(.success(likeChat), false)
+            } catch { complition(.failure(error), false) }
         }
     }
     
