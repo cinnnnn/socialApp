@@ -46,11 +46,11 @@ extension MainTabBarController {
         peopleDelegate = PeopleDataProvider(userID: userID)
         messageDelegate = MessagesDataProvider(userID: userID)
         
-        PopUpService.shared.likeDislikeDelegate = likeDislikeDelegate
-        PopUpService.shared.requestChatsDelegate = requestChatsDelegate
-        PopUpService.shared.acceptChatsDelegate = acceptChatsDelegate
-        PopUpService.shared.peopleDelegate = peopleDelegate
-        PopUpService.shared.messageDelegate = messageDelegate
+        PopUpService.shared.setupDelegate(acceptChatsDelegate: acceptChatsDelegate,
+                                          requestChatsDelegate: requestChatsDelegate,
+                                          peopleDelegate: peopleDelegate,
+                                          likeDislikeDelegate: likeDislikeDelegate,
+                                          messageDelegate: messageDelegate)
     }
     
     private func loadIsComplite(isComplite: Bool) {

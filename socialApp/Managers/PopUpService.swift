@@ -13,17 +13,27 @@ import SDWebImage
 class PopUpService {
     static let shared = PopUpService()
     
-    weak var acceptChatsDelegate: AcceptChatListenerDelegate?
-    weak var requestChatsDelegate: RequestChatListenerDelegate?
-    weak var peopleDelegate: PeopleListenerDelegate?
-    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
-    weak var messageDelegate: MessageListenerDelegate?
+    private weak var acceptChatsDelegate: AcceptChatListenerDelegate?
+    private weak var requestChatsDelegate: RequestChatListenerDelegate?
+    private weak var peopleDelegate: PeopleListenerDelegate?
+    private weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
+    private weak var messageDelegate: MessageListenerDelegate?
     
     private init() {}
 }
 
-
 extension PopUpService {
+    
+    func setupDelegate(acceptChatsDelegate: AcceptChatListenerDelegate?,
+                       requestChatsDelegate: RequestChatListenerDelegate?,
+                       peopleDelegate: PeopleListenerDelegate?,
+                       likeDislikeDelegate: LikeDislikeListenerDelegate?,
+                       messageDelegate: MessageListenerDelegate?) {
+        self.acceptChatsDelegate = acceptChatsDelegate
+        self.requestChatsDelegate  = requestChatsDelegate
+        self.peopleDelegate = peopleDelegate
+        self.messageDelegate = messageDelegate
+    }
     
     //MARK: showMatchPopUP
     func showMatchPopUP(currentPeople: MPeople, chat: MChat, action: @escaping(MessageListenerDelegate, AcceptChatListenerDelegate)->()) {
@@ -34,21 +44,106 @@ extension PopUpService {
             }
         }
         
-        var attributesMatchView = EKAttributes()
-        attributesMatchView.displayMode = .inferred
-        attributesMatchView.statusBar = .inferred
-        attributesMatchView.displayDuration = .infinity
-        attributesMatchView.entryInteraction = .absorbTouches
-        attributesMatchView.screenInteraction = .dismiss
-        attributesMatchView.screenBackground = .color(color: EKColor.init(UIColor.myLabelColor().withAlphaComponent(0.5)))
-        attributesMatchView.position = .bottom
-        attributesMatchView.hapticFeedbackType = .warning
-        attributesMatchView.positionConstraints.safeArea = .overridden
-        SwiftEntryKit.display(entry: matchPopUpView, using: attributesMatchView)
+        var attributes = EKAttributes()
+        attributes.name = "Bottom Match"
+        attributes.displayMode = .inferred
+        attributes.statusBar = .inferred
+        attributes.displayDuration = .infinity
+        attributes.entryInteraction = .absorbTouches
+        attributes.screenInteraction = .dismiss
+        attributes.screenBackground = .color(color: EKColor.init(UIColor.myLabelColor().withAlphaComponent(0.5)))
+        attributes.position = .bottom
+        attributes.hapticFeedbackType = .warning
+        attributes.positionConstraints.safeArea = .overridden
+        SwiftEntryKit.display(entry: matchPopUpView, using: attributes)
+    }
+    
+    //MARK: bottomPopUp
+    func bottomPopUp(header: String,
+                     text: String,
+                     image: UIImage?,
+                     cancelButtonText: String,
+                     okButtonText: String,
+                     okAction: @escaping ()->()) {
+       
+        var themeImage: EKPopUpMessage.ThemeImage?
+        
+        if let image = image {
+            themeImage = EKPopUpMessage.ThemeImage(
+                image: EKProperty.ImageContent(
+                    image: image,
+                    displayMode: EKAttributes.DisplayMode.inferred,
+                    size: CGSize(width: 60, height: 60),
+                    tint: EKColor.init(.myLabelColor()),
+                    contentMode: .scaleAspectFit
+                )
+            )
+        }
+         
+        let title = EKProperty.LabelContent(
+            text: header,
+            style: .init(
+                font: .avenirBold(size: 14),
+                color: EKColor.init(.myLabelColor()),
+                alignment: .center,
+                displayMode: EKAttributes.DisplayMode.inferred
+            ),
+            accessibilityIdentifier: "title"
+        )
+        let description = EKProperty.LabelContent(
+            text: text,
+            style: .init(
+                font: .avenirBold(size: 14),
+                color: EKColor.init(.myLabelColor()),
+                alignment: .center,
+                displayMode: EKAttributes.DisplayMode.inferred
+            ),
+            accessibilityIdentifier: "description"
+        )
+        let okButton = EKProperty.ButtonContent(
+            label: .init(
+                text: okButtonText,
+                style: .init(
+                    font: .avenirBold(size: 14),
+                    color: EKColor.init(.myLabelColor()),
+                    displayMode: EKAttributes.DisplayMode.inferred
+                )
+            ),
+            backgroundColor: EKColor.init(.myWhiteColor()),
+            highlightedBackgroundColor: EKColor.init(.myLightGrayColor()),
+            displayMode: EKAttributes.DisplayMode.inferred,
+            accessibilityIdentifier: "okButton")
+        
+        
+        let message = EKPopUpMessage(
+            themeImage: themeImage,
+            title: title,
+            description: description,
+            button: okButton) {
+            okAction()
+            SwiftEntryKit.dismiss()
+        }
+        let contentView = EKPopUpMessageView(with: message)
+        
+        var attributes = EKAttributes()
+        attributes.displayMode = .inferred
+        attributes.scroll = .edgeCrossingDisabled(swipeable: true)
+        attributes.entranceAnimation = .init(
+            translate: .init(
+                duration: 0.5,
+                spring: .init(damping: 1, initialVelocity: 0)
+            )
+        )
+        attributes.entryBackground = .color(color: .init(.myWhiteColor()))
+        attributes.positionConstraints = .fullWidth
+        attributes.positionConstraints.safeArea = .empty(fillSafeArea: true)
+        attributes.roundCorners = .top(radius: 20)
+        
+        SwiftEntryKit.display(entry: contentView, using: attributes)
     }
     
     //MARK: showInfoPopUp
-    func showInfoPopUp(header: String,
+    func showInfoWithButtonPopUp(header: String,
                        text: String,
                        cancelButtonText: String,
                        okButtonText: String,
@@ -90,7 +185,7 @@ extension PopUpService {
         let infoView = EKAlertMessageView(with: message)
         
         var infoPopUpAttributes = EKAttributes()
-        infoPopUpAttributes.displayDuration = 5
+        infoPopUpAttributes.displayDuration = 10
         infoPopUpAttributes.position = .top
         infoPopUpAttributes.hapticFeedbackType = .warning
         infoPopUpAttributes.positionConstraints.safeArea = .empty(fillSafeArea: true)
@@ -104,6 +199,7 @@ extension PopUpService {
         
         var attributes = EKAttributes()
         attributes = .topToast
+        attributes.name = "Top Message"
         attributes.hapticFeedbackType = .success
         attributes.displayMode = .inferred
         attributes.statusBar = .inferred
@@ -174,5 +270,36 @@ extension PopUpService {
             
             SwiftEntryKit.display(entry: contentView, using: attributes)
         }
+    }
+    
+    //MARK: show info
+    func showInfo(text: String){
+        var attributes = EKAttributes()
+        attributes = .topNote
+        attributes.displayMode = .inferred
+        attributes.displayDuration = 3
+        attributes.name = "Top Info"
+        attributes.hapticFeedbackType = .success
+        attributes.popBehavior = .animated(animation: .translation)
+        attributes.entryBackground = .color(color: .init(.myLabelColor()))
+        attributes.shadow = .active(
+            with: .init(
+                color: .init(.myLabelColor()),
+                opacity: 0.5,
+                radius: 2
+            )
+        )
+        let text = text
+        let style = EKProperty.LabelStyle(
+            font: .avenirRegular(size: 14),
+            color: .init(.myWhiteColor()),
+            alignment: .center
+        )
+        let labelContent = EKProperty.LabelContent(
+            text: text,
+            style: style
+        )
+        let contentView = EKNoteMessageView(with: labelContent)
+        SwiftEntryKit.display(entry: contentView, using: attributes)
     }
 }

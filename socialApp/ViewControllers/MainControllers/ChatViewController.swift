@@ -35,6 +35,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     deinit {
         messageDelegate?.removeListener()
+        print(#function)
     }
     
     override func viewDidLoad() {
@@ -55,6 +56,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         
         addMessageListener()
         readAllMessageInChat()
+        showTimerPopUp()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -156,6 +158,28 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         }
     }
     
+    //MARK: showTimerPopUp
+    private func showTimerPopUp() {
+        let strongUser = user
+        let strongChat = chat
+        let timeToDeleteChat = chat.createChatDate.getPeriodToDate(periodMinuteCount: MChat.getDefaultPeriodMinutesOfLifeChat())
+        
+        if !chat.currentUserIsWantStopTimer {
+            PopUpService.shared.showInfoWithButtonPopUp(header: "Чат будет удален через \(timeToDeleteChat)",
+                                              text: "Отправь запрос на остановку таймера, если собеседник подтвердит, чат не будет удален",
+                                              cancelButtonText: "Позже",
+                                              okButtonText: "Отправить",
+                                              font: .avenirBold(size: 14)) {
+                FirestoreService.shared.deactivateChatTimer(currentUser: strongUser, chat: strongChat) { _  in }
+            }
+        } else if !chat.friendIsWantStopTimer {
+            PopUpService.shared.showInfo(text: """
+                                                Собеседник не отключил таймер,
+                                                чат будет удален через \(timeToDeleteChat)
+                                               """)
+        }
+    }
+    
     //MARK: sendImage
     private func sendImage(image: UIImage) {
         StorageService.shared.uploadChatImage(image: image,
@@ -188,7 +212,6 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
 
 //MARK: objc
 extension ChatViewController {
-    
     
     //MARK: tuppedSendImage
     @objc private func tuppedSendImage() {

@@ -238,7 +238,7 @@ class ListenerService {
                         case .removed:
                             if let index = chats.firstIndex(of: chat) {
                                 requestChatDelegate.requestChats.remove(at: index)
-                                requestChatDelegate.reloadData(changeType: .add)
+                                requestChatDelegate.reloadData(changeType: .delete)
                             } else {
                                 break
                             }

@@ -50,6 +50,9 @@ extension RequestChatDataProvider {
     
     //MARK: reloadData
     func reloadData(changeType: MTypeOfListenerChanges) {
+        if changeType == .add {
+            PopUpService.shared.showInfo(text: MLabels.newRequest.rawValue)
+        }
         requestChatCollectionViewDelegate?.reloadData()
     }
 }

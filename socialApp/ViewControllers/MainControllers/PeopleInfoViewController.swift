@@ -89,7 +89,7 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
                                            requestChats: requestChatsDelegate.requestChats ) {[weak self] result, isMatch in
             switch result {
             
-            case .success(_):
+            case .success(let likeChat):
                 
                 peopleDelegate.peopleNearby.removeAll { peopleDelegate -> Bool in
                     peopleDelegate.senderId == people.senderId
@@ -98,10 +98,21 @@ extension PeopleInfoViewController: LikeDislikeTappedDelegate {
                 self?.peopleView.likeButton.isHidden = true
                 self?.peopleView.dislikeButton.isHidden = true
                 
-                requestChatsDelegate.reloadData(changeType: .add)
+                requestChatsDelegate.reloadData(changeType: .delete)
                 //for correct renew last people, need reload section
                 peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
                 
+                if isMatch {
+                    PopUpService.shared.showMatchPopUP(currentPeople: currentPeople,
+                                                       chat: likeChat) { messageDelegate, acceptChatDelegate in
+                        let chatVC = ChatViewController(people: currentPeople,
+                                                        chat: likeChat,
+                                                        messageDelegate: messageDelegate,
+                                                        acceptChatDelegate: acceptChatDelegate)
+                        chatVC.hidesBottomBarWhenPushed = true
+                        self?.navigationController?.pushViewController(chatVC, animated: true)
+                    }
+                }
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

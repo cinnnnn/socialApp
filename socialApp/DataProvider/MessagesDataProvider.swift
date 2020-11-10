@@ -22,6 +22,7 @@ class MessagesDataProvider: MessageListenerDelegate {
 extension MessagesDataProvider {
     
     func setupListener(chat: MChat) {
+        
         ListenerService.shared.messageListener(chat: chat) {[weak self] result in
             switch result {
             
@@ -45,6 +46,7 @@ extension MessagesDataProvider {
     }
     
     func removeListener() {
+        messages = []
         ListenerService.shared.removeMessageListener()
     }
 }

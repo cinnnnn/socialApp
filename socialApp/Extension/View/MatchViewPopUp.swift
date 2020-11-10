@@ -46,6 +46,9 @@ class MatchViewPopUp: UIView {
     
     private func setup() {
         backgroundColor = .myWhiteColor()
+        layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
+        clipsToBounds = true
         friendPhoto.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         friendPhoto.clipsToBounds = true
         

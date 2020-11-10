@@ -120,8 +120,9 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                             }
                         }
                     //Error Apple login
-                    case .failure(_):
-                        self?.appleSignInAlerController()
+                    case .failure(let error):
+                        fatalError(error.localizedDescription)
+                       // self?.appleSignInAlerController()
                     }
                 }
             //Error get credential for Apple Auth

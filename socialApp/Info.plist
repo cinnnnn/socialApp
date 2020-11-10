@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Flava</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -23,7 +25,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>art.jedi-tones.socialApp</string>
+				<string>art.jedi-tones.Flava</string>
 			</array>
 		</dict>
 	</array>
@@ -34,7 +36,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>"Получения изображения с камеры"</string>
+	<string>&quot;Получения изображения с камеры&quot;</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Необхдимо разрешить использование геолокации, для поиска ближайших к вам людей</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

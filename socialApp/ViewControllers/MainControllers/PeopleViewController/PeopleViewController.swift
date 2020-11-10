@@ -241,6 +241,7 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
             
             case .success(let likeChat):
                 //delete like people from array
+                self?.likeDislikeDelegate?.likePeople.append(likeChat)
                 self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == likeChat.friendId
                 }
@@ -303,7 +304,7 @@ extension PeopleViewController {
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }

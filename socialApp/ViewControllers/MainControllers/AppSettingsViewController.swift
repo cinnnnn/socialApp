@@ -9,6 +9,7 @@
 import UIKit
 import FirebaseAuth
 import AuthenticationServices
+import SDWebImage
 
 class AppSettingsViewController: UIViewController {
     
@@ -147,7 +148,17 @@ extension AppSettingsViewController: UICollectionViewDelegate {
             switch cell {
             
             case .about:
-                break
+                if let imageURL = URL(string: currentPeople.userImage) {
+                    SDWebImageManager.shared.loadImage(with: imageURL,
+                                                       options: .highPriority,
+                                                       progress: nil) { (image, data, error, cache, bool, url) in
+                        
+                        PushNotificationService.shared.scheduleNotification(title: "New alert",
+                                                                        body: "Azazazazazza",
+                                                                        image: image)
+                    }
+                }
+                
             case .logOut:
                 signOutAlert(pressedIndexPath: indexPath)
             case .terminateAccaunt:
@@ -276,6 +287,7 @@ extension AppSettingsViewController {
     }
 }
 
+//MARK: UITextFieldDelegate
 extension AppSettingsViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.selectAll(nil)
