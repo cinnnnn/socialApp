@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>aps-environment</key>
-	<string>development</string>
-	<key>com.apple.developer.applesignin</key>
-	<array>
-		<string>Default</string>
-	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.CY-07EB0D24-9283-11E7-ADF0-5718D65F0A41.com.cydia.Extender</string>

@@ -10,5 +10,5 @@ import Foundation
 
 enum MAdmin: String {
     case id = "Admin"
-    case displayName = "Команда Chi"
+    case displayName = "Flava"
 }

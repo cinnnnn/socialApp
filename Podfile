@@ -12,6 +12,7 @@ pod 'Firebase/Auth'
 pod 'Firebase/Firestore'
 pod 'FirebaseFirestoreSwift'
 pod 'Firebase/Storage'
+pod 'Firebase/Messaging'
 
 pod 'SDWebImage', '~> 5.0'
 pod 'MessageKit'
@@ -29,3 +30,4 @@ post_install do |installer|
     end
   end
 end
+

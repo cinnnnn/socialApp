@@ -12,15 +12,16 @@ import FirebaseAuth
 class MainTabBarController: UITabBarController{
     
     var userID: String
+    var isNewLogin: Bool
     let loadingView = LoadingView(isHidden: false)
-    
     var acceptChatsDelegate: AcceptChatListenerDelegate?
     var requestChatsDelegate: RequestChatListenerDelegate?
     var peopleDelegate: PeopleListenerDelegate?
     var likeDislikeDelegate: LikeDislikeListenerDelegate?
     var messageDelegate: MessageListenerDelegate?
     
-    init(userID: String) {
+    init(userID: String, isNewLogin: Bool) {
+        self.isNewLogin = isNewLogin
         self.userID = userID
         super.init(nibName: nil, bundle: nil)
     }
@@ -51,6 +52,16 @@ extension MainTabBarController {
                                           peopleDelegate: peopleDelegate,
                                           likeDislikeDelegate: likeDislikeDelegate,
                                           messageDelegate: messageDelegate)
+        
+       
+    }
+    
+    private func subscribeToPushNotification() {
+        if isNewLogin {
+            guard let acceptChatsDelegate = acceptChatsDelegate else { return }
+            PushMessagingService.shared.logInSubscribe(currentUserID: userID,
+                                                       acceptChats: acceptChatsDelegate.acceptChats)
+        }
     }
     
     private func loadIsComplite(isComplite: Bool) {
@@ -99,6 +110,7 @@ extension MainTabBarController {
                                                     case .success(_):
                                                         self?.loadIsComplite(isComplite: true)
                                                         self?.setupControllers(currentPeople: mPeople)
+                                                        self?.subscribeToPushNotification()
                                                         
                                                     case .failure(let error):
                                                         self?.showAlert(title: "Ошибка, мы работаем над ней",

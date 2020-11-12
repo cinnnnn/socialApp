@@ -10,14 +10,17 @@ import UIKit
 import FirebaseAuth
 import AuthenticationServices
 import SDWebImage
+import FirebaseMessaging
 
 class AppSettingsViewController: UIViewController {
     
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionAppSettings, MAppSettings>?
     private var currentPeople: MPeople
+    weak var acceptChatDelegate: AcceptChatListenerDelegate?
     
-    init(currentPeople: MPeople) {
+    init(currentPeople: MPeople, acceptChatDelegate: AcceptChatListenerDelegate?) {
+        self.acceptChatDelegate = acceptChatDelegate
         self.currentPeople = currentPeople
         super.init(nibName: nil, bundle: nil)
     }
@@ -148,16 +151,18 @@ extension AppSettingsViewController: UICollectionViewDelegate {
             switch cell {
             
             case .about:
-                if let imageURL = URL(string: currentPeople.userImage) {
-                    SDWebImageManager.shared.loadImage(with: imageURL,
-                                                       options: .highPriority,
-                                                       progress: nil) { (image, data, error, cache, bool, url) in
-                        
-                        PushNotificationService.shared.scheduleNotification(title: "New alert",
-                                                                        body: "Azazazazazza",
-                                                                        image: image)
-                    }
-                }
+             //   let userToken = "eesaFEPOZ0uhiw5HiwJLYd:APA91bFevw6kK2BtIkfNacNU44bQ6p12I_OxjUqwFSHf8fd6QKCsI7zBhPcf19ukKcC7om4OsPbKECsNxEMMjCZjUBnpWZCtpEAgnkg36TS_BlzO2ehd9MOS7lTrzWFG-zD3YK7_DBYA"
+//                if let imageURL = URL(string: currentPeople.userImage) {
+//                    SDWebImageManager.shared.loadImage(with: imageURL,
+//                                                       options: .highPriority,
+//                                                       progress: nil) { (image, data, error, cache, bool, url) in
+//
+//                        PushNotificationService.shared.scheduleNotification(title: "New alert",
+//                                                                        body: "Azazazazazza",
+//                                                                        image: image)
+//                    }
+//                }
+                print("\n BADGE COUNT: \(UserDefaults.extensions.integer(forKey: "badge"))\n")
                 
             case .logOut:
                 signOutAlert(pressedIndexPath: indexPath)
@@ -172,6 +177,9 @@ extension AppSettingsViewController: UICollectionViewDelegate {
 extension AppSettingsViewController {
     //MARK:  signOutAlert
     private func signOutAlert(pressedIndexPath: IndexPath) {
+        guard let acceptChatDelegate = acceptChatDelegate else { return }
+        let strongCurrentPeople = currentPeople
+        
         let alert = UIAlertController(title: nil,
                                       message: nil,
                                       preferredStyle: .actionSheet)
@@ -183,7 +191,8 @@ extension AppSettingsViewController {
             AuthService.shared.signOut { result in
                 switch result {
                 case .success(_):
-                    return
+                    PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,
+                                                                  acceptChats: acceptChatDelegate.acceptChats)
                 case .failure(let error):
                     fatalError(error.localizedDescription)
                 }
@@ -238,6 +247,9 @@ extension AppSettingsViewController {
     
     //MARK:  emailLoginAlert
     private func emailLoginAlert() {
+        let strongCurrentPeople = currentPeople
+        guard let acceptChatDelegate = acceptChatDelegate else { return }
+        
         let alert = UIAlertController(title: "Введи свой пароль от почты:",
                                       message: currentPeople.mail,
                                       preferredStyle: .alert)
@@ -255,6 +267,8 @@ extension AppSettingsViewController {
                 
                 case .success(_):
                     self?.deleteAllUserData()
+                    PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,
+                                                                  acceptChats: acceptChatDelegate.acceptChats)
                 case .failure(let error):
                     self?.reAuthErrorAlert(text: error.localizedDescription)
                 }
@@ -319,6 +333,9 @@ extension AppSettingsViewController: ASAuthorizationControllerDelegate {
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         
+        guard let acceptChatDelegate = acceptChatDelegate else { return }
+        let strongCurrentPeople = currentPeople
+        
         AuthService.shared.didCompleteWithAuthorizationApple(authorization: authorization) {  [weak self] result in
             
             switch result {
@@ -331,6 +348,8 @@ extension AppSettingsViewController: ASAuthorizationControllerDelegate {
                     
                     case .success(_):
                         //after reAuth, delete all user data
+                        PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,
+                                                                      acceptChats: acceptChatDelegate.acceptChats)
                         self?.deleteAllUserData()
                     case .failure(let error):
                         self?.reAuthErrorAlert(text: error.localizedDescription)

@@ -99,6 +99,8 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                             switch result {
                             
                             case .success(let id):
+                                //subscribe to notification topics
+                                PushMessagingService.shared.subscribeMainTopic(userID: id)
                                 //check mPeople data for next VC
                                 FirestoreService.shared.getUserData(userID: id) { result in
                                     switch result {
@@ -162,7 +164,7 @@ extension AuthViewController {
 extension AuthViewController: NavigationDelegate {
     
     func toMainTabBarController(userID: String){
-        let mainTabBarVC = MainTabBarController(userID: userID)
+        let mainTabBarVC = MainTabBarController(userID: userID, isNewLogin: true)
         mainTabBarVC.modalPresentationStyle = .fullScreen
         mainTabBarVC.modalTransitionStyle = .crossDissolve
         present(mainTabBarVC, animated: false, completion: nil)

@@ -25,6 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             //try reload, to check profile is avalible on server
             user.reload {[weak self] error in
                 if let _ = error {
+                    //if profile don't avalible, log out
                     AuthService.shared.signOut { result in
                         switch result {
                         case .success(_):
@@ -36,12 +37,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     }
                 } else {
                     if let userID = user.email {
-                        self?.window?.rootViewController = MainTabBarController(userID: userID)
+                        //if user avalible, go to main controller
+                        self?.window?.rootViewController = MainTabBarController(userID: userID,
+                                                                                isNewLogin: false)
                     }
                 }
             }
         } else {
-           
+           //if don't have avalible current auth in firebase, set root authVc
             window?.rootViewController = makeRootVC(viewController: AuthViewController(), withNavContoller: true)
         }
         
@@ -57,6 +60,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         UIApplication.shared.applicationIconBadgeNumber = 0
+        UserDefaults.extensions.badge = 0
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

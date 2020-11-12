@@ -304,6 +304,9 @@ class FirestoreService {
                              timerOfLifeIsStoped: false,
                              createChatDate: Date(),
                              date: Date())
+        //subscribe to push notification topic
+        PushMessagingService.shared.subscribeToChatNotification(currentUserID: currentPeople.senderId,
+                                                                chatUserID: likeChat.friendId)
         
         //if like people contains in current user request chat than add to newChat and delete in request
         let requestChatFromLikeUser = requestChats.filter { requestChat -> Bool in
@@ -339,17 +342,32 @@ class FirestoreService {
                     requestMessage.messageId = likeUserMessageRef.path
                     //if with first message, create message in collection
                     likeUserMessageRef.setData(requestMessage.reprasentation)
+                    PushMessagingService.shared.sendMessageToUser(currentUser: currentPeople,
+                                                                  toUserID: likeChat,
+                                                                  header: "У тебя новая пара с \(currentPeople.displayName)",
+                                                                  text: "Начни общение, иначе чат удалится через сутки")
+                    complition(.success(likeChat), true)
                 } else {
                     try collectionLikeUserAcceptChatRef.document(currentPeople.senderId).setData(from: requestChat)
+                    PushMessagingService.shared.sendMessageToUser(currentUser: currentPeople,
+                                                                  toUserID: likeChat,
+                                                                  header: "У тебя новая пара с \(currentPeople.displayName)",
+                                                                  text: "Начни общение, иначе чат удалится через сутки")
+                    complition(.success(likeChat), true)
                 }
             } catch { complition(.failure(error), false)}
-            complition(.success(likeChat), true)
+            
             //if don't have request from like user
         } else {
             do { //add chat request for like user
                 try collectionLikeUserRequestRef.document(currentPeople.senderId).setData(from: requestChat, merge: true)
                 //add chat to like collection current user
                 try collectionCurrentLikeRef.document(likePeople.senderId).setData(from:likeChat)
+                
+                PushMessagingService.shared.sendPushMessageToUser(userID: likePeople.senderId,
+                                                                  header: "У тебя новый лайк",
+                                                                  text: "Скорее заходи, возможно это взаимно",
+                                                                  category: MActionType.request)
                 complition(.success(likeChat), false)
             } catch { complition(.failure(error), false) }
         }
@@ -373,6 +391,10 @@ class FirestoreService {
                                 timerOfLifeIsStoped: false,
                                 createChatDate: Date(),
                                 date: Date())
+        //unsubscribe from push notificasion
+        PushMessagingService.shared.unSubscribeToChatNotification(currentUserID: currentPeople.senderId,
+                                                                  chatUserID: dislikeChat.friendId)
+        
         //if dislike people contains in current user request chat, than delete his request
         let requestChatFromLikeUser = requestChats.filter { requestChat -> Bool in
             requestChat.containsID(ID: dislikeForPeople.senderId)

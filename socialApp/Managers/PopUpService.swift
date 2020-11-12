@@ -185,7 +185,7 @@ extension PopUpService {
         let infoView = EKAlertMessageView(with: message)
         
         var infoPopUpAttributes = EKAttributes()
-        infoPopUpAttributes.displayDuration = 10
+        infoPopUpAttributes.displayDuration = 4
         infoPopUpAttributes.position = .top
         infoPopUpAttributes.hapticFeedbackType = .warning
         infoPopUpAttributes.positionConstraints.safeArea = .empty(fillSafeArea: true)

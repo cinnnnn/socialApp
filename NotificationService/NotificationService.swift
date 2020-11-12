@@ -2,11 +2,12 @@
 //  NotificationService.swift
 //  NotificationService
 //
-//  Created by Денис Щиголев on 10.11.2020.
+//  Created by Денис Щиголев on 11.11.2020.
 //  Copyright © 2020 Денис Щиголев. All rights reserved.
 //
 
 import UserNotifications
+import UIKit
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -17,19 +18,35 @@ class NotificationService: UNNotificationServiceExtension {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         
-       
-        guard let bestAttemptContent = bestAttemptContent,
-              let apsData = bestAttemptContent.userInfo["aps"] as? [String:Any],
-              let attachmentURLString = apsData["attachment-url"] as? String,
-              let attachmetURL = URL(string: attachmentURLString) else { return }
-       
-        dowloadFromURL(url: attachmetURL) { attachment in
-            if let attachment = attachment {
-                bestAttemptContent.attachments = [attachment]
-                bestAttemptContent.body = "Ловите фоточку Дениса"
-                contentHandler(bestAttemptContent)
+        if let bestAttemptContent = bestAttemptContent {
+            if let badgeCount = bestAttemptContent.badge as? Int {
+              switch badgeCount {
+              case 0:
+                UserDefaults.extensions.badge = 0
+                bestAttemptContent.badge = 0
+              default:
+                let current = UserDefaults.extensions.badge
+                print(current)
+                let new = current + badgeCount
+
+                UserDefaults.extensions.badge = new
+                bestAttemptContent.badge = NSNumber(value: new)
+              }
             }
+            contentHandler(bestAttemptContent)
         }
+//        guard let bestAttemptContent = bestAttemptContent,
+//              let apsData = bestAttemptContent.userInfo["aps"] as? [String:Any],
+//              let attachmentURLString = apsData["attachment-url"] as? String,
+//              let attachmetURL = URL(string: attachmentURLString) else { return }
+//
+//        dowloadFromURL(url: attachmetURL) { attachment in
+//            if let attachment = attachment {
+//                bestAttemptContent.attachments = [attachment]
+//                bestAttemptContent.body = "Ловите фоточку Дениса"
+//                contentHandler(bestAttemptContent)
+//            }
+//        }
     }
     
     override func serviceExtensionTimeWillExpire() {

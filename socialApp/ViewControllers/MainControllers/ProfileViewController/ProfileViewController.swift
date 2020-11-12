@@ -214,7 +214,8 @@ extension ProfileViewController: UICollectionViewDelegate {
                 collectionView.deselectItem(at: indexPath, animated: true)
                 
             case .appSettings:
-                let vc = AppSettingsViewController(currentPeople: currentPeople)
+                let vc = AppSettingsViewController(currentPeople: currentPeople,
+                                                   acceptChatDelegate: acceptChatsDelegate)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 

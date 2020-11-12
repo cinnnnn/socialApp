@@ -450,14 +450,19 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         let sender = MSender(senderId: user.senderId, displayName: user.displayName)
         let message = MMessage(user: sender, content: text)
-        
+        let strongChat = chat
+        let strongUser = user
         FirestoreService.shared.sendMessage(chat: chat,
                                             currentUser: user,
                                             message: message) { result in
             switch result {
             
             case .success():
-                break
+                //send notification to friend
+                PushMessagingService.shared.sendMessageToUser(currentUser: strongUser,
+                                                              toUserID: strongChat,
+                                                              header: strongUser.displayName,
+                                                              text: text)
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

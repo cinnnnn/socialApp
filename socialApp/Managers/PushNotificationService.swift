@@ -8,6 +8,7 @@
 
 import UserNotifications
 import UIKit
+import FirebaseMessaging
 
 class PushNotificationService: NSObject {
     
@@ -40,24 +41,21 @@ class PushNotificationService: NSObject {
     }
     
     func scheduleNotification(title:String, body: String, image: UIImage? ) {
-    
+        let id = "Local notification"
+        let triger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.sound = UNNotificationSound.default
         content.badge = 1
-        content.categoryIdentifier = "mainAction"
+        content.categoryIdentifier = MActionType.systemMessage.rawValue
         
         if let image = image {
             if let attachment = UNNotificationAttachment.create(identifier: "photo", image: image, options: nil) {
                 content.attachments = [attachment]
             }
         }
-        
-        let triger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        
-        let id = "Local notification"
-        
+
         let request = UNNotificationRequest(identifier: id, content: content, trigger: triger)
         notificationCenter.add(request) { error in
             if let error = error {
@@ -67,19 +65,22 @@ class PushNotificationService: NSObject {
     }
     
     private func addActionCategory() {
-        let actionCategory = "mainAction"
-        let snoozeAction = UNNotificationAction(identifier: "snooze", title: "Отложить", options: [])
-        let okAction = UNNotificationAction(identifier: "view", title: "Посмотреть", options: [.authenticationRequired])
-        let cancelAction = UNNotificationAction(identifier: "cancel", title: "Закрыть", options: [.destructive])
+        let categoryName = MActionType.message.rawValue
+        let readAction = UNNotificationAction(identifier: "readAction",
+                                                title: "Перейти к диалогу",
+                                                options: [.authenticationRequired])
+
+        let cancelAction = UNNotificationAction(identifier: "cancel",
+                                                title: "Отмена",
+                                                options: [.destructive])
         
-        let category = UNNotificationCategory(identifier: actionCategory,
-                                              actions: [snoozeAction,okAction,cancelAction],
+        let category = UNNotificationCategory(identifier: categoryName,
+                                              actions: [readAction,cancelAction],
                                               intentIdentifiers: [],
                                               options: [])
         
         notificationCenter.setNotificationCategories([category])
     }
-
 }
 
 extension PushNotificationService: UNUserNotificationCenterDelegate {
@@ -88,6 +89,8 @@ extension PushNotificationService: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+       
+        
         completionHandler([.sound])
     }
     
@@ -96,8 +99,17 @@ extension PushNotificationService: UNUserNotificationCenterDelegate {
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         
-        if response.notification.request.identifier == "Local notification" {
-            print("handle notification")
+        let userInfo = response.notification.request.content.userInfo
+        Messaging.messaging().appDidReceiveMessage(userInfo)
+        
+//        if response.notification.request.identifier == "Local notification" {
+//
+//        }
+      
+        if let userName = userInfo["user"] as? String {
+            
+                print("\n USER is \(userName) \n")
+            
         }
         
         switch response.actionIdentifier {
@@ -115,6 +127,4 @@ extension PushNotificationService: UNUserNotificationCenterDelegate {
         
         completionHandler()
     }
-    
-    
 }

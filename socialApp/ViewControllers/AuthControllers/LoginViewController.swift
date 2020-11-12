@@ -141,6 +141,7 @@ extension LoginViewController {
                                       password: passwordTextField.text) {[weak self] result in
                 switch result {
                 case .success( let user):
+                    
                     //if correct login user, than close LoginVC and check setProfile info
                     FirestoreService.shared.getUserData(userID: user.email! ) { result in
                         switch result {
@@ -149,7 +150,8 @@ extension LoginViewController {
                             if mPeople.gender == "" || mPeople.lookingFor == "" {
                                 self?.navigationDelegate?.toCompliteRegistration(userID: mPeople.senderId)
                             } else {
-                                let mainVC = MainTabBarController(userID: mPeople.senderId)
+                                let mainVC = MainTabBarController(userID: mPeople.senderId,
+                                                                  isNewLogin: true)
                                 mainVC.modalPresentationStyle = .fullScreen
                                 self?.present(mainVC, animated: true, completion: nil)
                             }

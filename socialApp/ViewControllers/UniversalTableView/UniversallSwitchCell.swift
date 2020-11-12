@@ -17,6 +17,7 @@ class UniversallSwitchCell: UITableViewCell, UnversalSwitchCell {
     let moreInfoLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor(), linesCount: 0)
     let switchControl = UISwitch()
     var withImage = false
+    var timer: Timer?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -26,6 +27,10 @@ class UniversallSwitchCell: UITableViewCell, UnversalSwitchCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        timer?.invalidate()
     }
     
     private func setup() {
@@ -60,7 +65,7 @@ class UniversallSwitchCell: UITableViewCell, UnversalSwitchCell {
     
     func setupTimerUpdate(timerInterval: Int, tolerance: Double, updateFunc: @escaping ()-> Void) {
         let timeUpdateInterval = TimeInterval(timerInterval)
-        Timer.scheduledTimer(withTimeInterval: timeUpdateInterval, repeats: true) { timer in
+        timer = Timer.scheduledTimer(withTimeInterval: timeUpdateInterval, repeats: true) { timer in
             timer.tolerance = tolerance
             updateFunc()
         }
