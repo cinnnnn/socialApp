@@ -33,4 +33,13 @@ extension String.StringInterpolation {
             appendLiteral(result)
         }
     }
+    
+    mutating func appendInterpolation(price: Double) {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+
+        if let result = formatter.string(from: price as NSNumber) {
+            appendLiteral(result)
+        }
+    }
 }

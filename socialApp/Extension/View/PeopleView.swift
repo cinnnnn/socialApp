@@ -13,7 +13,7 @@ class PeopleView: UIView {
     
     let scrollView = UIScrollView()
     let galleryScrollView = GalleryScrollView(imagesURL: [])
-    let peopleName = UILabel(labelText: "asdasd", textFont: .avenirBold(size: 38), linesCount: 0)
+    let peopleName = UILabel(labelText: "Name", textFont: .avenirBold(size: 30), linesCount: 0)
     var infoLabel = UILabel(labelText: "0.00KM", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
     var distanceLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
     var advertLabel = UILabel(labelText: "",
@@ -124,7 +124,7 @@ extension PeopleView {
             galleryScrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             galleryScrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             galleryScrollView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            galleryScrollView.heightAnchor.constraint(equalTo: galleryScrollView.widthAnchor, multiplier: 1.3),
+            galleryScrollView.heightAnchor.constraint(equalTo: galleryScrollView.widthAnchor, multiplier: 1.2),
             
             peopleName.leadingAnchor.constraint(equalTo: leadingAnchor),
             peopleName.trailingAnchor.constraint(equalTo: trailingAnchor),

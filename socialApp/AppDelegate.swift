@@ -18,6 +18,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         FirebaseApp.configure()
+        PurchasesService.shared.setupPurchases { isSuccess in
+            if isSuccess {
+                PurchasesService.shared.getProducts()
+            }
+        }
         PushMessagingService.shared.registerDelegate()
         PushNotificationService.shared.requestNotificationAuth()
         

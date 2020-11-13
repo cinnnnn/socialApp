@@ -151,18 +151,9 @@ extension AppSettingsViewController: UICollectionViewDelegate {
             switch cell {
             
             case .about:
-             //   let userToken = "eesaFEPOZ0uhiw5HiwJLYd:APA91bFevw6kK2BtIkfNacNU44bQ6p12I_OxjUqwFSHf8fd6QKCsI7zBhPcf19ukKcC7om4OsPbKECsNxEMMjCZjUBnpWZCtpEAgnkg36TS_BlzO2ehd9MOS7lTrzWFG-zD3YK7_DBYA"
-//                if let imageURL = URL(string: currentPeople.userImage) {
-//                    SDWebImageManager.shared.loadImage(with: imageURL,
-//                                                       options: .highPriority,
-//                                                       progress: nil) { (image, data, error, cache, bool, url) in
-//
-//                        PushNotificationService.shared.scheduleNotification(title: "New alert",
-//                                                                        body: "Azazazazazza",
-//                                                                        image: image)
-//                    }
-//                }
-                print("\n BADGE COUNT: \(UserDefaults.extensions.integer(forKey: "badge"))\n")
+            let vc = PurchasesViewController()
+                vc.modalPresentationStyle = .fullScreen
+                present(vc, animated: true, completion: nil)
                 
             case .logOut:
                 signOutAlert(pressedIndexPath: indexPath)
