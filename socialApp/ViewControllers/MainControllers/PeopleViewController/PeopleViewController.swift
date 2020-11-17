@@ -11,7 +11,7 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 
-class PeopleViewController: UIViewController {
+class PeopleViewController: UIViewController, UICollectionViewDelegate {
     
     var currentPeople: MPeople
     weak var peopleDelegate: PeopleListenerDelegate?
@@ -60,6 +60,7 @@ class PeopleViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.isHidden = true
+        updateCurrentPeople()
     }
     
     //MARK:  setup VC
@@ -75,6 +76,13 @@ class PeopleViewController: UIViewController {
         peopleDelegate?.setupListener(currentPeople: currentPeople,
                                             likeDislikeDelegate: likeDislikeDelegate,
                                             acceptChatsDelegate: acceptChatDelegate)
+    }
+    
+    private func updateCurrentPeople() {
+        print(#function)
+        if let people = UserDefaultsService.shared.getMpeople() {
+            currentPeople = people
+        }
     }
     
     //MARK: setupCollectionView
@@ -222,26 +230,52 @@ extension PeopleViewController: PeopleCollectionViewDelegate {
     }
 }
 
-
-
-//MARK:  UICollectionViewDelegate
-extension PeopleViewController: UICollectionViewDelegate {
+extension PeopleViewController {
     
-}
-
-//MARK: likeDislikeDelegate
-extension PeopleViewController: LikeDislikeTappedDelegate {
+    //MARK: checkLikeIsAvalible
+    private func checkLikeIsAvalible(complition: @escaping() -> Void) {
+        FirestoreService.shared.addLikeCount(currentPeople: currentPeople) {[weak self] result in
+            switch result {
+            
+            case .success(let mPeople):
+                self?.currentPeople = mPeople
+                complition()
+            case .failure(let error):
+                //if error of count likes
+                if error as? UserError == UserError.freeCountOfLike {
+                    PopUpService.shared.bottomPopUp(header: "На сегодня лайки закончились",
+                                                    text: "Хочешь еще? Безлимитные лайки и многое другое с подпиской Flava Premium",
+                                                    image: nil,
+                                                    okButtonText: "Перейти на Flava premium") { [ weak self] in
+                        
+                        guard let currentPeople = self?.currentPeople else { return }
+                        let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+                        purchasVC.modalPresentationStyle = .fullScreen
+                        self?.present(purchasVC, animated: true, completion: nil)
+                    }
+                } else {
+                    fatalError(error.localizedDescription)
+                }
+            }
+        }
+    }
     
-     func likePeople(people: MPeople) {
-        //save like to firestore
+    //MARK: saveLikeToFireStore
+    private func saveLikeToFireStore(people: MPeople) {
+        
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
                                            requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result, isMatch  in
             switch result {
             
             case .success(let likeChat):
-                //delete like people from array
-                self?.likeDislikeDelegate?.likePeople.append(likeChat)
+                
+                
+                //add to local likePeople collection only when, current like is not match
+                if !isMatch {
+                    self?.likeDislikeDelegate?.likePeople.append(likeChat)
+                }
+                
                 self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == likeChat.friendId
                 }
@@ -264,10 +298,20 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
             }
         }
     }
+}
+//MARK: likeDislikeDelegate
+extension PeopleViewController: LikeDislikeTappedDelegate {
+    
+     func likePeople(people: MPeople) {
+        
+        //check like  is avalible
+        checkLikeIsAvalible { [weak self] in
+            self?.saveLikeToFireStore(people: people)
+        }
+    }
     
     func dislikePeople(people: MPeople) {
         //save dislike from firestore
-        print("dislike \(people.displayName)")
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
                                               requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result in

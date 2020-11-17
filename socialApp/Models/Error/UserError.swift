@@ -13,6 +13,7 @@ enum UserError {
     case getUserData
     case incorrectSetProfile
     case notAvailableUser
+    case freeCountOfLike
 }
 
 extension UserError: LocalizedError {
@@ -27,6 +28,8 @@ extension UserError: LocalizedError {
             return NSLocalizedString("Профиль не заполнен, продложим регистрацию", comment: "")
         case .notAvailableUser:
             return NSLocalizedString("Данные текущего пользователя не существуют", comment: "")
+        case .freeCountOfLike:
+            return NSLocalizedString("На сегодня лайки закончились. Хочешь еще? Безлимитные лайки и многое другое с подпиской Flava Premium", comment: "")
         }
     }
 }

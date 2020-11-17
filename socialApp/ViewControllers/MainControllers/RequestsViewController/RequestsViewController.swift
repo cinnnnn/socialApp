@@ -58,9 +58,8 @@ class RequestsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateCurrentPeople { [weak self] in
-            self?.reloadData()
-        }
+        updateCurrentPeople()
+        reloadData()
     }
     
     private func setupListeners() {
@@ -70,10 +69,9 @@ class RequestsViewController: UIViewController {
         requestChatDelegate.setupListener(likeDislikeDelegate: likeDislikeDelegate)
     }
     
-    private func updateCurrentPeople(complition: @escaping()->Void) {
+    private func updateCurrentPeople() {
         if let people = UserDefaultsService.shared.getMpeople() {
             currentPeople = people
-            complition()
         }
     }
     
@@ -207,7 +205,6 @@ extension RequestsViewController: RequestChatCollectionViewDelegate {
         
         guard let sortedRequestChats = requestChatDelegate?.sortedRequestChats else { fatalError("can't get sorted chats")}
         if let dataSource = dataSource {
-            print("1")
             var snapshot = dataSource.snapshot()
             snapshot.deleteAllItems()
             snapshot.appendSections([.requestChats])
@@ -215,7 +212,6 @@ extension RequestsViewController: RequestChatCollectionViewDelegate {
             dataSource.apply(snapshot, animatingDifferences: false)
         } else {
             var snapshot = NSDiffableDataSourceSnapshot<SectionsRequests, MChat>()
-            print("2")
             snapshot.appendSections([.requestChats])
             snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
             dataSource?.apply(snapshot, animatingDifferences: true) { [weak self] in

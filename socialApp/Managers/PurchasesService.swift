@@ -126,8 +126,6 @@ class PurchasesService: NSObject {
         }
     }
     
-
-    
     public func validateReceipt(){
         
         #if DEBUG

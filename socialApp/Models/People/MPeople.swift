@@ -28,6 +28,7 @@ struct MPeople: Hashable, Codable, SenderType {
     var goldMemberPurches: MPurchases?
     var likeCount: Int
     var lastActiveDate: Date
+    var lastLikeDate: Date
     var isTestUser: Bool
     var isIncognito: Bool
     var isBlocked: Bool
@@ -56,6 +57,7 @@ struct MPeople: Hashable, Codable, SenderType {
          goldMemeberPurches: MPurchases,
          likeCount: Int,
          lastActiveDate: Date,
+         lastLikeDate: Date,
          isTestUser: Bool,
          isIncognito: Bool,
          isBlocked: Bool,
@@ -83,6 +85,7 @@ struct MPeople: Hashable, Codable, SenderType {
         self.goldMemberPurches = goldMemeberPurches
         self.likeCount = likeCount
         self.lastActiveDate = lastActiveDate
+        self.lastLikeDate = lastLikeDate
         self.isTestUser = isTestUser
         self.isIncognito = isIncognito
         self.isBlocked = isBlocked
@@ -118,6 +121,9 @@ struct MPeople: Hashable, Codable, SenderType {
         }
         if let lastActiveDate = documet["lastActiveDate"] as? Timestamp  { self.lastActiveDate = lastActiveDate.dateValue() } else {
             self.lastActiveDate = Date()
+        }
+        if let lastLikeDate = documet["v"] as? Timestamp  { self.lastLikeDate = lastLikeDate.dateValue() } else {
+            self.lastLikeDate = Date()
         }
         if let likeCount = documet["likeCount"] as? Int  { self.likeCount = likeCount } else {
             self.likeCount = 0
@@ -208,6 +214,9 @@ struct MPeople: Hashable, Codable, SenderType {
         if let lastActiveDate = documet["lastActiveDate"] as? Timestamp  { self.lastActiveDate = lastActiveDate.dateValue() } else {
             self.lastActiveDate = Date()
         }
+        if let lastLikeDate = documet["v"] as? Timestamp  { self.lastLikeDate = lastLikeDate.dateValue() } else {
+            self.lastLikeDate = Date()
+        }
         if let goldMemberPurches = documet["goldMemberPurches"] as? String { self.goldMemberPurches = MPurchases(rawValue: goldMemberPurches)} else {
             self.goldMemberPurches = nil
         }
@@ -289,6 +298,7 @@ struct MPeople: Hashable, Codable, SenderType {
         guard let goldMemberDate = data["goldMemberDate"] as? Date else { return nil }
         guard let goldMemberPurches = data["goldMemberPurches"] as? MPurchases else { return nil }
         guard let lastActiveDate = data["lastActiveDate"] as? Date else { return nil }
+        guard let lastLikeDate = data["lastLikeDate"] as? Date else { return nil }
         guard let likeCount = data["likeCount"] as? Int else { return nil }
         guard let isIncognito = data["isIncognito"] as? Bool else { return nil }
         guard let isTestUser = data["isTestUser"] as? Bool else { return nil }
@@ -316,6 +326,7 @@ struct MPeople: Hashable, Codable, SenderType {
         self.goldMemberDate = goldMemberDate
         self.goldMemberPurches = goldMemberPurches
         self.lastActiveDate = lastActiveDate
+        self.lastLikeDate = lastLikeDate
         self.likeCount = likeCount
         self.isIncognito = isIncognito
         self.isTestUser = isTestUser
@@ -345,6 +356,7 @@ struct MPeople: Hashable, Codable, SenderType {
         case goldMemberDate
         case goldMemberPurches
         case lastActiveDate
+        case lastLikeDate
         case likeCount
         case isIncognito
         case isTestUser

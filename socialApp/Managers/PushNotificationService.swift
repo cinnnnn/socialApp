@@ -9,6 +9,7 @@
 import UserNotifications
 import UIKit
 import FirebaseMessaging
+import ApphudSDK
 
 class PushNotificationService: NSObject {
     
@@ -105,16 +106,12 @@ extension PushNotificationService: UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         
         let userInfo = response.notification.request.content.userInfo
-        Messaging.messaging().appDidReceiveMessage(userInfo)
         
-//        if response.notification.request.identifier == "Local notification" {
-//
-//        }
+        Apphud.handlePushNotification(apsInfo: userInfo)
+        Messaging.messaging().appDidReceiveMessage(userInfo)
       
         if let userName = userInfo["user"] as? String {
-            
                 print("\n USER is \(userName) \n")
-            
         }
         
         switch response.actionIdentifier {

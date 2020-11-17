@@ -46,6 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Apphud.submitPushNotificationsToken(token: deviceToken, callback: nil)
         let deviceTokenString = deviceToken.map { String(format: "%02x", $0) }.joined()
         print(deviceTokenString)
     }

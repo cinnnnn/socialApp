@@ -10,16 +10,12 @@ import UIKit
 import SDWebImage
 
 class RequestChatCell: UICollectionViewCell, SelfConfiguringCell {
- 
-    
 
-    
     static var reuseID: String = "RequestChatCell"
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
     let frendName = UILabel(labelText: "", textFont: .avenirBold(size: 16),aligment: .center, linesCount: 0)
     let animateProfileBack = AnimationCustomView(name: "loading_grayCircle", loopMode: .loop, contentMode: .scaleAspectFit)
    
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -36,10 +32,8 @@ class RequestChatCell: UICollectionViewCell, SelfConfiguringCell {
         
         if currentUser.isGoldMember || currentUser.isTestUser {
             frendImage.sd_setImage(with: imageURL, completed: nil)
-            print("gold")
         } else {
             frendImage.sd_setImage(with: imageURL) {[weak self] image, error, cache, url in
-                print("!gold")
                 self?.frendImage.image = image?.sd_blurredImage(withRadius: 100)
             }
         }

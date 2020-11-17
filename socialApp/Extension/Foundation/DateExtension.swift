@@ -115,6 +115,11 @@ extension Date {
         }
     }
     
+    func checkIsToday() -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDateInToday(self)
+    }
+    
     func getPeriodToDate(periodMinuteCount: Int) -> String {
         let calendar = Calendar.current
         guard let deleteDate = calendar.date(byAdding: .minute, value: periodMinuteCount, to: self) else { return ""}

@@ -106,7 +106,7 @@ class PurchasesViewController: UIViewController {
                     FirestoreService.shared.saveIsGoldMember(id: strongCurrentPeople.senderId,
                                                              isGoldMember: true,
                                                              goldMemberDate: dateToContine,
-                                                             goldMemberPurches: MPurchases(rawValue: subscristion.productId)) { result in
+                                                             goldMemberPurches: identifier ) { result in
                         switch result {
                         
                         case .success():
@@ -115,7 +115,7 @@ class PurchasesViewController: UIViewController {
                             PopUpService.shared.showInfo(text: "Подписка удалась, но при сохранении возникла ошибка: \(error.localizedDescription)")
                         }
                     }
-                } else {
+                } else  {
                     PopUpService.shared.showInfo(text: "Подписка не удалась")
                 }
             case .failure(let error):

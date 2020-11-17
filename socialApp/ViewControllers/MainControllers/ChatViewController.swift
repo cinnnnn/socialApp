@@ -35,7 +35,6 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     deinit {
         messageDelegate?.removeListener()
-        print(#function)
     }
     
     override func viewDidLoad() {
@@ -73,7 +72,6 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
      func chatsCollectionWasUpdate(chat: MChat) {
         if chat.friendId == self.chat.friendId {
-            print("updated")
             self.chat = chat
         }
     }

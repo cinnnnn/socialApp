@@ -357,7 +357,7 @@ extension ChatsViewController: UICollectionViewDelegate {
                                             acceptChatDelegate: acceptChatDelegate)
             chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
-            
+            FirestoreService.shared.updateLastActiveDate(id: currentPeople.senderId)
             
         case .activeChats:
             
@@ -367,6 +367,7 @@ extension ChatsViewController: UICollectionViewDelegate {
                                             acceptChatDelegate: acceptChatDelegate)
             chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
+            FirestoreService.shared.updateLastActiveDate(id: currentPeople.senderId)
         }
     }
 }

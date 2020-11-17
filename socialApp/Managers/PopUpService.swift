@@ -144,6 +144,7 @@ extension PopUpService {
         var attributes = EKAttributes()
         attributes.displayMode = .inferred
         attributes.screenInteraction = .dismiss
+        attributes.entryInteraction = .absorbTouches
         attributes.position = .bottom
         attributes.displayDuration = .infinity
         attributes.scroll = .edgeCrossingDisabled(swipeable: true)
