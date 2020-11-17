@@ -98,10 +98,10 @@ class FirestoreService {
         var currentLikeCount = currentPeople.likeCount
         
         //check last like for do need reset count
-        if !currentPeople.lastLikeDate.checkIsToday() {
-            currentLikeCount = 0
-        } else {
+        if currentPeople.lastLikeDate.checkIsToday() {
             currentLikeCount += 1
+        } else {
+            currentLikeCount = 0
         }
         
         guard currentLikeCount <= freeLikeCount || currentPeople.isGoldMember || currentPeople.isTestUser else {

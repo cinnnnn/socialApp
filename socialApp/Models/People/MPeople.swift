@@ -122,7 +122,7 @@ struct MPeople: Hashable, Codable, SenderType {
         if let lastActiveDate = documet["lastActiveDate"] as? Timestamp  { self.lastActiveDate = lastActiveDate.dateValue() } else {
             self.lastActiveDate = Date()
         }
-        if let lastLikeDate = documet["v"] as? Timestamp  { self.lastLikeDate = lastLikeDate.dateValue() } else {
+        if let lastLikeDate = documet["lastLikeDate"] as? Timestamp  { self.lastLikeDate = lastLikeDate.dateValue() } else {
             self.lastLikeDate = Date()
         }
         if let likeCount = documet["likeCount"] as? Int  { self.likeCount = likeCount } else {
@@ -214,7 +214,7 @@ struct MPeople: Hashable, Codable, SenderType {
         if let lastActiveDate = documet["lastActiveDate"] as? Timestamp  { self.lastActiveDate = lastActiveDate.dateValue() } else {
             self.lastActiveDate = Date()
         }
-        if let lastLikeDate = documet["v"] as? Timestamp  { self.lastLikeDate = lastLikeDate.dateValue() } else {
+        if let lastLikeDate = documet["lastLikeDate"] as? Timestamp  { self.lastLikeDate = lastLikeDate.dateValue() } else {
             self.lastLikeDate = Date()
         }
         if let goldMemberPurches = documet["goldMemberPurches"] as? String { self.goldMemberPurches = MPurchases(rawValue: goldMemberPurches)} else {
