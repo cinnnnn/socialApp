@@ -11,6 +11,7 @@ import FirebaseAuth
 import AuthenticationServices
 import SDWebImage
 import FirebaseMessaging
+import ApphudSDK
 
 class AppSettingsViewController: UIViewController {
     
@@ -151,7 +152,7 @@ extension AppSettingsViewController: UICollectionViewDelegate {
             switch cell {
             
             case .about:
-            let vc = PurchasesViewController()
+            let vc = PurchasesViewController(currentPeople: currentPeople)
                 vc.modalPresentationStyle = .fullScreen
                 present(vc, animated: true, completion: nil)
                 
@@ -182,6 +183,7 @@ extension AppSettingsViewController {
             AuthService.shared.signOut { result in
                 switch result {
                 case .success(_):
+                    Apphud.logout()
                     PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,
                                                                   acceptChats: acceptChatDelegate.acceptChats)
                 case .failure(let error):
@@ -258,6 +260,7 @@ extension AppSettingsViewController {
                 
                 case .success(_):
                     self?.deleteAllUserData()
+                    Apphud.logout()
                     PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,
                                                                   acceptChats: acceptChatDelegate.acceptChats)
                 case .failure(let error):
@@ -342,6 +345,7 @@ extension AppSettingsViewController: ASAuthorizationControllerDelegate {
                         PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,
                                                                       acceptChats: acceptChatDelegate.acceptChats)
                         self?.deleteAllUserData()
+                        Apphud.logout()
                     case .failure(let error):
                         self?.reAuthErrorAlert(text: error.localizedDescription)
                     }

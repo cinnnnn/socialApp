@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseAuth
+import ApphudSDK
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -15,7 +16,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
@@ -29,6 +29,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     AuthService.shared.signOut { result in
                         switch result {
                         case .success(_):
+                            Apphud.logout()
                             self?.window?.rootViewController = self?.makeRootVC(viewController: AuthViewController(), withNavContoller: true)
                             
                         case .failure(let error):
@@ -47,7 +48,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
            //if don't have avalible current auth in firebase, set root authVc
             window?.rootViewController = makeRootVC(viewController: AuthViewController(), withNavContoller: true)
         }
-        
         window?.makeKeyAndVisible()
     }
 

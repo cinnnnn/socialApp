@@ -29,13 +29,18 @@ class PurchaseButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup(header: String, product: SKProduct, monthCount: Int, basePricePerMonth: NSDecimalNumber, backgroundColor: UIColor) {
+    func setup(header: String, product: SKProduct, monthCount: Int, basePricePerMonth: NSDecimalNumber, backgroundColor: UIColor, selectBackground: UIColor) {
         
         self.monthCount = monthCount
         self.basePricePerMonth = basePricePerMonth
         self.product = product
         self.headerLabel.text = header
-        self.backgroundColor = backgroundColor
+        
+        if isSelected {
+            self.backgroundColor = selectBackground
+        } else {
+            self.backgroundColor = backgroundColor
+        }
         
         let pricePerMoth = Double(truncating: product.price) / Double(monthCount)
         let savingInfoPercent = 100 - (pricePerMoth / Double(truncating: basePricePerMonth) * 100)

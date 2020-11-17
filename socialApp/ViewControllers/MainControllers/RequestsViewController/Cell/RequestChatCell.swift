@@ -10,6 +10,9 @@ import UIKit
 import SDWebImage
 
 class RequestChatCell: UICollectionViewCell, SelfConfiguringCell {
+ 
+    
+
     
     static var reuseID: String = "RequestChatCell"
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
@@ -28,9 +31,18 @@ class RequestChatCell: UICollectionViewCell, SelfConfiguringCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with value: MChat) {
+    func configure(with value: MChat, currentUser: MPeople) {
         let imageURL = URL(string: value.friendUserImageString )
-        frendImage.sd_setImage(with: imageURL, completed: nil)
+        
+        if currentUser.isGoldMember || currentUser.isTestUser {
+            frendImage.sd_setImage(with: imageURL, completed: nil)
+            print("gold")
+        } else {
+            frendImage.sd_setImage(with: imageURL) {[weak self] image, error, cache, url in
+                print("!gold")
+                self?.frendImage.image = image?.sd_blurredImage(withRadius: 100)
+            }
+        }
         frendName.text = value.friendUserName
     }
     

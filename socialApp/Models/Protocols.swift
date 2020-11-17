@@ -13,7 +13,7 @@ import FirebaseFirestore
 // configure cell of collectionView
 protocol SelfConfiguringCell: class {
     static var reuseID: String { get }
-    func configure(with value: MChat)
+    func configure(with value: MChat, currentUser: MPeople)
 }
 
 protocol PeopleConfigurationCell: class {

@@ -14,7 +14,7 @@ class NewChatsCell: UICollectionViewCell,SelfConfiguringCell {
     
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
     
-    func configure(with value: MChat) {
+    func configure(with value: MChat, currentUser: MPeople) {
        
         let imageURL = URL(string: value.friendUserImageString )
         frendImage.sd_setImage(with: imageURL, completed: nil)

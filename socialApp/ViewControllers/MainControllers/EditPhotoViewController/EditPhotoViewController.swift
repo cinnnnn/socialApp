@@ -54,7 +54,7 @@ class EditPhotoViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        scrollView.updateContentView()
+        scrollView.updateContentView(bottomOffset: 45)
     }
     
     //MARK: setup
@@ -66,10 +66,10 @@ class EditPhotoViewController: UIViewController {
         profileImage.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         profileImage.clipsToBounds = true
         scrollView.showsVerticalScrollIndicator = false
+        scrollView.layoutSubviews()
         
         view.backgroundColor = .myWhiteColor()
         navigationItem.title = "Галерея"
-        
         
         addImageButton.addTarget(self, action: #selector(addImageButtonTap), for: .touchUpInside)
         
@@ -81,7 +81,6 @@ class EditPhotoViewController: UIViewController {
                                                              action: #selector(saveButtonTapped)),
                                              animated: false)
         }
-        
     }
     
     //MARK: updateProfileData
@@ -121,6 +120,7 @@ extension EditPhotoViewController {
             guard let sourceType = sourceType else { return }
             picker.sourceType = sourceType
             self?.present(picker, animated: true, completion: nil)
+            
         }
     }
     

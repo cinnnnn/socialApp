@@ -8,11 +8,13 @@
 
 import UIKit
 import StoreKit
+import ApphudSDK
 
 class PurchasesViewController: UIViewController {
     
+    let currentPeople: MPeople
     let scrollView = UIScrollView()
-    
+    let loadingView = LoadingView(name: "loading_simpleBlackCube", isHidden: true, contentMode: .scaleAspectFit)
     let header = UILabel(labelText: "Перейти на Flava premium",
                          textFont: .avenirBold(size: 18))
     
@@ -41,11 +43,24 @@ class PurchasesViewController: UIViewController {
     let threeMonthButton = PurchaseButton()
     let oneYearButton = PurchaseButton()
     
+    init(currentPeople: MPeople) {
+        self.currentPeople = currentPeople
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
         setup()
-        
+        setupListners()
     }
     
     override func viewWillLayoutSubviews() {
@@ -56,65 +71,153 @@ class PurchasesViewController: UIViewController {
     //MARK: setup
     private func setup() {
         view.backgroundColor = .myWhiteColor()
-        let products = PurchasesService.shared.products
-        let basePrisePerMonth = products.firstIndex { product -> Bool in
-            product.productIdentifier == MPurchases.oneMonth.rawValue
-        }
-        guard let indexBasePrisePerMonth = basePrisePerMonth else { fatalError("Can't get index of one month product") }
         
-        products.forEach { product in
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+        restorePurchaseButton.addTarget(self, action: #selector(restorePurchaseTapped), for: .touchUpInside)
+        
+        sevenDayButton.addTarget(self, action: #selector(sevenDaysTapped), for: .touchUpInside)
+        oneMonthButton.addTarget(self, action: #selector(oneMonthTapped), for: .touchUpInside)
+        threeMonthButton.addTarget(self, action: #selector(threeMonthTapped), for: .touchUpInside)
+        oneYearButton.addTarget(self, action: #selector(oneYearTapped), for: .touchUpInside)
+        
+        updateProduct()
+
+    }
+    
+    private func setupListners() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateProduct),
+                                               name: NSNotification.Name(rawValue: PurchasesService.productNotificationIdentifier),
+                                               object: nil)
+    }
+    
+    //MARK: purchas
+    private func purchase(identifier: MPurchases) {
+        loadingView.show()
+        let strongCurrentPeople = currentPeople
+        PurchasesService.shared.purcheWithApphud(product: identifier) {[weak self] result in
+            self?.loadingView.hide()
+            switch result {
+            
+            case .success(let subscristion):
+                if subscristion.isActive() {
+                    let dateToContine = subscristion.expiresDate
+                    
+                    FirestoreService.shared.saveIsGoldMember(id: strongCurrentPeople.senderId,
+                                                             isGoldMember: true,
+                                                             goldMemberDate: dateToContine,
+                                                             goldMemberPurches: MPurchases(rawValue: subscristion.productId)) { result in
+                        switch result {
+                        
+                        case .success():
+                            PopUpService.shared.showInfo(text: "Flava premium приобретен до \(dateToContine.getShortFormattedDate())")
+                        case .failure(let error):
+                            PopUpService.shared.showInfo(text: "Подписка удалась, но при сохранении возникла ошибка: \(error.localizedDescription)")
+                        }
+                    }
+                } else {
+                    PopUpService.shared.showInfo(text: "Подписка не удалась")
+                }
+            case .failure(let error):
+                PopUpService.shared.showInfo(text: "Ошибка \(error.localizedDescription)")
+            }
+        }
+    }
+}
+
+//MARK: objc
+extension PurchasesViewController {
+    
+    @objc private func updateProduct(){
+      
+        guard
+            let monthProduct = PurchasesService.shared.products.filter({ $0.productIdentifier == MPurchases.oneMonth.rawValue }).first
+        else { fatalError("Can't get month product") }
+        
+        PurchasesService.shared.products.forEach { product in
             switch product.productIdentifier {
             case MPurchases.sevenDays.rawValue:
                 sevenDayButton.setup(header: "Неделя",
                                      product: product,
                                      monthCount: 0,
-                                     basePricePerMonth: products[indexBasePrisePerMonth].price,
-                                     backgroundColor: .myPurpleColor())
+                                     basePricePerMonth: monthProduct.price,
+                                     backgroundColor: .myPurpleColor(),
+                                     selectBackground: .myPinkColor())
             case MPurchases.oneMonth.rawValue:
                 oneMonthButton.setup(header: "Месяц",
                                      product: product,
                                      monthCount: 1,
-                                     basePricePerMonth: products[indexBasePrisePerMonth].price,
-                                     backgroundColor: .myPurpleColor())
+                                     basePricePerMonth: monthProduct.price,
+                                     backgroundColor: .myPurpleColor(),
+                                     selectBackground: .myPinkColor())
             case MPurchases.threeMonth.rawValue:
                 threeMonthButton.setup(header: "Три месяца",
-                                     product: product,
-                                     monthCount: 3,
-                                     basePricePerMonth: products[indexBasePrisePerMonth].price,
-                                     backgroundColor: .myPurpleColor())
+                                       product: product,
+                                       monthCount: 3,
+                                       basePricePerMonth: monthProduct.price,
+                                       backgroundColor: .myPurpleColor(),
+                                       selectBackground: .myPinkColor())
             case MPurchases.oneYear.rawValue:
                 oneYearButton.setup(header: "Год",
-                                     product: product,
-                                     monthCount: 12,
-                                     basePricePerMonth: products[indexBasePrisePerMonth].price,
-                                     backgroundColor: .myPurpleColor())
+                                    product: product,
+                                    monthCount: 12,
+                                    basePricePerMonth: monthProduct.price,
+                                    backgroundColor: .myPurpleColor(),
+                                    selectBackground: .myPinkColor())
             default:
                 break
             }
         }
-        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
-
     }
     
-   
-}
-
-//MARK: objc
-extension PurchasesViewController {
-    @objc func sevenDaysTapped() {
-        dismiss(animated: true, completion: nil)
-    }
-    @objc func oneMonthTapped() {
-        dismiss(animated: true, completion: nil)
-    }
-    @objc func threeMonthTapped() {
-        dismiss(animated: true, completion: nil)
-    }
-    @objc func oneYearTapped() {
-        dismiss(animated: true, completion: nil)
+    //MARK: restorePurchaseTapped
+    @objc func restorePurchaseTapped() {
+        let strongCurrentPeople = currentPeople
+        loadingView.show()
+        PurchasesService.shared.restorePurchasesWithApphud {[weak self] result in
+            self?.loadingView.hide()
+            switch result {
+            
+            case .success(_):
+                if Apphud.hasActiveSubscription(){
+                    guard let subscription = Apphud.subscription() else { fatalError() }
+                    PopUpService.shared.showInfo(text: "Подписка до: \(subscription.expiresDate.getShortFormattedDate()) была восстановлена")
+                    FirestoreService.shared.saveIsGoldMember(id: strongCurrentPeople.senderId,
+                                                             isGoldMember: true,
+                                                             goldMemberDate: subscription.expiresDate,
+                                                             goldMemberPurches: MPurchases(rawValue: subscription.productId)) { result in
+                        switch result {
+                        
+                        case .success():
+                            PopUpService.shared.showInfo(text: "Flava premium восстановлен до \(subscription.expiresDate)")
+                        case .failure(let error):
+                            PopUpService.shared.showInfo(text: "Flava premium восстановлен, но при сохранении возникла ошибка: \(error.localizedDescription)")
+                        }
+                    }
+                } else {
+                    PopUpService.shared.showInfo(text: "Активные подписки не найдены")
+                }
+            case .failure(let error):
+                PopUpService.shared.showInfo(text: "Ошибка \(error.localizedDescription)")
+            }
+        }
     }
     
-    @objc func closeTapped() {
+    @objc private func sevenDaysTapped() {
+        purchase(identifier: .sevenDays)
+    }
+    @objc private func oneMonthTapped() {
+        purchase(identifier: .oneMonth)
+    }
+    @objc private func threeMonthTapped() {
+        purchase(identifier: .threeMonth)
+    }
+
+    @objc private func oneYearTapped() {
+        purchase(identifier: .oneYear)
+    }
+    
+    @objc private func closeTapped() {
         dismiss(animated: true, completion: nil)
     }
 }
@@ -133,10 +236,12 @@ extension PurchasesViewController {
         oneMonthButton.translatesAutoresizingMaskIntoConstraints = false
         threeMonthButton.translatesAutoresizingMaskIntoConstraints = false
         oneYearButton.translatesAutoresizingMaskIntoConstraints = false
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(scrollView)
         view.addSubview(header)
         view.addSubview(closeButton)
+        view.addSubview(loadingView)
         scrollView.addSubview(infoAboutSubscribe)
         scrollView.addSubview(restorePurchaseButton)
         scrollView.addSubview(termsOfServiceButton)
@@ -147,6 +252,11 @@ extension PurchasesViewController {
         scrollView.addSubview(oneYearButton)
         
         NSLayoutConstraint.activate([
+            loadingView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             header.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             header.trailingAnchor.constraint(equalTo: closeButton.leadingAnchor, constant: -20),

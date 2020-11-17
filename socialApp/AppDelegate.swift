@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseStorage
+import ApphudSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 PurchasesService.shared.getProducts()
             }
         }
+        
         PushMessagingService.shared.registerDelegate()
         PushNotificationService.shared.requestNotificationAuth()
         

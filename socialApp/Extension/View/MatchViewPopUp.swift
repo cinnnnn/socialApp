@@ -14,7 +14,7 @@ class MatchViewPopUp: UIView {
     
     let friendPhoto = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
     let aboutFriend = UILabel(labelText: "", textFont: .avenirRegular(size: 16))
-    let info = UILabel(labelText: "Веди себя хорошоо", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
+    let info = UILabel(labelText: "Чувства взаимны. Будь смелей и веди себя хорошо", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let dismisButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Позже", titleColor: .myGrayColor())
     let chatButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Начать общение", titleColor: .myLabelColor())
     weak var stackView: UIStackView?  {
@@ -55,7 +55,7 @@ class MatchViewPopUp: UIView {
         if let imageURL = URL(string: chat.friendUserImageString) {
             friendPhoto.sd_setImage(with: imageURL, completed: nil)
         }
-        aboutFriend.text = "У тебя пара с \(chat.friendUserName)"
+        aboutFriend.text = "У тебя связь с \(chat.friendUserName)"
     }
     
     private func setupButton() {

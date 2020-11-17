@@ -21,6 +21,7 @@ class PushNotificationService: NSObject {
         addActionCategory()
     }
     
+    //MARK: requestNotificationAuth
     func requestNotificationAuth() {
         notificationCenter.requestAuthorization(options: [.alert,.badge,.sound,.announcement]) { [weak self] isGranted, error in
             
@@ -30,6 +31,7 @@ class PushNotificationService: NSObject {
         }
     }
     
+    //MARK: getNotificationSettings
     private func getNotificationSettings() {
         notificationCenter.getNotificationSettings { settings in
             guard settings.authorizationStatus == .authorized else { return }
@@ -40,6 +42,7 @@ class PushNotificationService: NSObject {
         }
     }
     
+    //MARK: scheduleNotification
     func scheduleNotification(title:String, body: String, image: UIImage? ) {
         let id = "Local notification"
         let triger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
@@ -64,6 +67,8 @@ class PushNotificationService: NSObject {
         }  
     }
     
+    
+    //MARK: addActionCategory
     private func addActionCategory() {
         let categoryName = MActionType.message.rawValue
         let readAction = UNNotificationAction(identifier: "readAction",

@@ -42,7 +42,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         
     }
     //MARK: - configure
-    func configure(with value: MChat) {
+    func configure(with value: MChat, currentUser: MPeople) {
         
         let imageURL = URL(string: value.friendUserImageString)
         frendImage.sd_setImage(with: imageURL, completed: nil)
@@ -63,7 +63,6 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         }
         
         unreadMessage.setupCount(countOfMessages: value.unreadChatMessageCount)
-        
     }
     
     required init?(coder: NSCoder) {

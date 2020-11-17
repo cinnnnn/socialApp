@@ -125,7 +125,6 @@
 		FBB3D49F255D6AA900A3B832 /* MTopics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3D49E255D6AA800A3B832 /* MTopics.swift */; };
 		FBB3D4A3255DAD2500A3B832 /* MActionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3D4A2255DAD2500A3B832 /* MActionType.swift */; };
 		FBB3D4A7255DBB5600A3B832 /* UserDefaultsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3D4A6255DBB5600A3B832 /* UserDefaultsExtension.swift */; };
-		FBB3D4AA255DBB5B00A3B832 /* UserDefaultsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3D4A6255DBB5600A3B832 /* UserDefaultsExtension.swift */; };
 		FBB4F354251110AE00ACFE90 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB4F353251110AE00ACFE90 /* RadioButton.swift */; };
 		FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB4F3572511526C00ACFE90 /* CryptoService.swift */; };
 		FBB4F35A25116D7300ACFE90 /* DefaultImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB4F35925116D7300ACFE90 /* DefaultImage.swift */; };
@@ -155,6 +154,8 @@
 		FBFFB85E255F1429007343ED /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFFB85D255F1429007343ED /* StoreKit.framework */; };
 		FBFFB862255F14F6007343ED /* MPurchases.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB861255F14F6007343ED /* MPurchases.swift */; };
 		FBFFB866255F15AC007343ED /* PurchasesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB865255F15AC007343ED /* PurchasesService.swift */; };
+		FBFFB86E25629E85007343ED /* MRecieptAppStrore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */; };
+		FBFFB8952562C3F6007343ED /* UserDefaultsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3D4A6255DBB5600A3B832 /* UserDefaultsExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -339,6 +340,7 @@
 		FBFFB85D255F1429007343ED /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		FBFFB861255F14F6007343ED /* MPurchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPurchases.swift; sourceTree = "<group>"; };
 		FBFFB865255F15AC007343ED /* PurchasesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesService.swift; sourceTree = "<group>"; };
+		FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MRecieptAppStrore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -434,6 +436,7 @@
 				FBA2AA2D2552D7D000A471F6 /* MCellType.swift */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 				FBFFB861255F14F6007343ED /* MPurchases.swift */,
+				FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */,
 				FB15FCF22513A71F00B765D3 /* MMessage.swift */,
 				FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */,
 				FB8C3D8A25371AE900184FB5 /* MLabels.swift */,
@@ -600,6 +603,7 @@
 		FB8C3D80253606FE00184FB5 /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
+				FBB3D4A6255DBB5600A3B832 /* UserDefaultsExtension.swift */,
 				FB79DA4825234EDA00A7AA56 /* DateExtension.swift */,
 				FB8C3D782535F4C500184FB5 /* StringExtension.swift */,
 				FBE5A1082559D87000060D97 /* UNNotificationAttachment.swift */,
@@ -663,13 +667,13 @@
 			isa = PBXGroup;
 			children = (
 				FB61B54624FE7F22002761ED /* AuthService.swift */,
+				FBB4F3572511526C00ACFE90 /* CryptoService.swift */,
 				FBE5A1052559C15100060D97 /* PushNotificationService.swift */,
 				FB454E4A255BEEED007D1E71 /* PushMessagingService.swift */,
 				FBE5A0F625558C3400060D97 /* PopUpService.swift */,
-				FBB4F3572511526C00ACFE90 /* CryptoService.swift */,
+				FBFFB865255F15AC007343ED /* PurchasesService.swift */,
 				FBB3B25E2509011200440632 /* StorageService.swift */,
 				FBF293DC25065E2800F7B5F1 /* FirestoreService.swift */,
-				FBFFB865255F15AC007343ED /* PurchasesService.swift */,
 				FBB3B268250F82B800440632 /* ListenerService.swift */,
 				FBF293D824FFB33300F7B5F1 /* Validators.swift */,
 				FB61A7FA251E6311005DCC78 /* UserDefaultsService.swift */,
@@ -791,7 +795,6 @@
 				FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */,
 				FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
-				FBB3D4A6255DBB5600A3B832 /* UserDefaultsExtension.swift */,
 				FB8C3D80253606FE00184FB5 /* Foundation */,
 				FB61B54524FE6921002761ED /* UIkit */,
 				FB21A1AE24C8A152000A2E91 /* activeChats.json */,
@@ -965,7 +968,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FBB3D4AA255DBB5B00A3B832 /* UserDefaultsExtension.swift in Sources */,
+				FBFFB8952562C3F6007343ED /* UserDefaultsExtension.swift in Sources */,
 				FB454E68255C0067007D1E71 /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -979,6 +982,7 @@
 				FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */,
 				FBB26EBC2546F3250081CF2C /* PeopleInfoViewController.swift in Sources */,
 				FB3727602540D7EC00906FBE /* AnimationCustomView.swift in Sources */,
+				FBFFB86E25629E85007343ED /* MRecieptAppStrore.swift in Sources */,
 				FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */,
 				FBB3B265250ACA0700440632 /* MGender.swift in Sources */,
 				FB8C3D432533A22800184FB5 /* SelectionTableViewCell.swift in Sources */,

@@ -58,7 +58,9 @@ class RequestsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateCurrentPeople()
+        updateCurrentPeople { [weak self] in
+            self?.reloadData()
+        }
     }
     
     private func setupListeners() {
@@ -68,9 +70,10 @@ class RequestsViewController: UIViewController {
         requestChatDelegate.setupListener(likeDislikeDelegate: likeDislikeDelegate)
     }
     
-    private func updateCurrentPeople() {
+    private func updateCurrentPeople(complition: @escaping()->Void) {
         if let people = UserDefaultsService.shared.getMpeople() {
             currentPeople = people
+            complition()
         }
     }
     
@@ -153,20 +156,13 @@ extension RequestsViewController {
 
 //MARK:  DiffableDataSource
 extension RequestsViewController {
-    //MARK:  configure  cell
-    private func configure<T: SelfConfiguringCell>(cellType: T.Type, value: MChat, indexPath: IndexPath) -> T {
-        guard let cell = collectionView?.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)") }
-        
-        cell.configure(with: value)
-        return cell
-    }
-    
+
     //MARK:  setupDataSource
     private func setupDataSource(){
         guard let collectionView = collectionView else { fatalError("CollectionView is nil")}
         dataSource = UICollectionViewDiffableDataSource<SectionsRequests, MChat>(
             collectionView: collectionView,
-            cellProvider: { [weak self] (collectionView, indexPath, chat) -> UICollectionViewCell? in
+            cellProvider: {[weak self] collectionView, indexPath, chat -> UICollectionViewCell? in
                 
                 guard let section = SectionsRequests(rawValue: indexPath.section) else {
                     fatalError("Unknown Section")
@@ -174,7 +170,14 @@ extension RequestsViewController {
                 
                 switch section {
                 case .requestChats:
-                    return self?.configure(cellType: RequestChatCell.self, value: chat, indexPath: indexPath)
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RequestChatCell.reuseID,
+                                                                        for: indexPath) as? RequestChatCell else {
+                        fatalError("Can't dequeue cell type \(RequestChatCell.self)")
+                    }
+                    if let currentPeople = self?.currentPeople {
+                        cell.configure(with: chat, currentUser: currentPeople)
+                    }
+                    return cell
                 }
             })
     }
@@ -201,17 +204,26 @@ extension RequestsViewController {
 extension RequestsViewController: RequestChatCollectionViewDelegate {
     //MARK: reloadRequestData
     func reloadData() {
-        guard let sortedRequestChats = requestChatDelegate?.sortedRequestChats else { fatalError("can't get sorted chats")}
-        var snapshot = NSDiffableDataSourceSnapshot<SectionsRequests, MChat>()
-        snapshot.appendSections([.requestChats])
-        snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
-        dataSource?.apply(snapshot, animatingDifferences: true) { [weak self] in
-            //for update header
-            guard let snapshot2 = self?.dataSource?.snapshot() else { return }
-            self?.dataSource?.apply(snapshot2, animatingDifferences: false)
-        }
-
         
+        guard let sortedRequestChats = requestChatDelegate?.sortedRequestChats else { fatalError("can't get sorted chats")}
+        if let dataSource = dataSource {
+            print("1")
+            var snapshot = dataSource.snapshot()
+            snapshot.deleteAllItems()
+            snapshot.appendSections([.requestChats])
+            snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
+            dataSource.apply(snapshot, animatingDifferences: false)
+        } else {
+            var snapshot = NSDiffableDataSourceSnapshot<SectionsRequests, MChat>()
+            print("2")
+            snapshot.appendSections([.requestChats])
+            snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
+            dataSource?.apply(snapshot, animatingDifferences: true) { [weak self] in
+                //for update header
+                guard let snapshot2 = self?.dataSource?.snapshot() else { return }
+                self?.dataSource?.apply(snapshot2, animatingDifferences: false)
+            }
+        }
     }
 }
 

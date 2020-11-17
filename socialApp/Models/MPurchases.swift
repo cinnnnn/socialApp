@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum MPurchases: String {
+enum MPurchases: String, Codable {
     case sevenDays = "Flava_premium_7_days"
     case oneMonth = "Flava_premium_30_day"
     case threeMonth = "Flava_premium_90_days"

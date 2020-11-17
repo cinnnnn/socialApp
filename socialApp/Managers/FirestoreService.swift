@@ -58,6 +58,37 @@ class FirestoreService {
                                                 }
                                             })
     }
+    
+    //MARK: saveIsGoldMember
+    func saveIsGoldMember(id: String,
+                          isGoldMember: Bool,
+                          goldMemberDate: Date?,
+                          goldMemberPurches: MPurchases?,
+                          complition: @escaping (Result<Void, Error>) -> Void){
+        var dictinaryForSave: [String : Any] = [MPeople.CodingKeys.isGoldMember.rawValue: isGoldMember]
+        if let goldMemberPurches = goldMemberPurches {
+            dictinaryForSave[MPeople.CodingKeys.goldMemberPurches.rawValue] = goldMemberPurches.rawValue
+        }
+        if let goldMemberDate = goldMemberDate {
+            dictinaryForSave[MPeople.CodingKeys.goldMemberDate.rawValue] = goldMemberDate
+        }
+        usersReference.document(id).setData(dictinaryForSave,
+                                            merge: true,
+                                            completion: { error in
+                                                if let error = error {
+                                                    complition(.failure(error))
+                                                } else {
+                                                    if var people = UserDefaultsService.shared.getMpeople() {
+                                                        people.isGoldMember = isGoldMember
+                                                        people.goldMemberDate = goldMemberDate
+                                                        people.goldMemberPurches = goldMemberPurches
+                                                        UserDefaultsService.shared.saveMpeople(people: people)
+                                                    }
+                                                    complition(.success(()))
+                                                }
+                                            })
+    }
+    
     //MARK:  saveFirstSetupNameGender
     func saveFirstSetupNameGender(id: String,
                                   userName: String,
@@ -78,7 +109,7 @@ class FirestoreService {
                                              MPeople.CodingKeys.isActive.rawValue: true,
                                              MPeople.CodingKeys.isAdmin.rawValue: false,
                                              MPeople.CodingKeys.isBlocked.rawValue: false,
-                                             MPeople.CodingKeys.goldMember.rawValue: false,
+                                             MPeople.CodingKeys.isGoldMember.rawValue: false,
                                              MPeople.CodingKeys.searchSettings.rawValue: searchSettings],
                                             merge: true,
                                             completion: { (error) in

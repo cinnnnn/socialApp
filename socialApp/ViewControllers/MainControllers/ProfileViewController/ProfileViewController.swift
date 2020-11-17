@@ -18,6 +18,7 @@ class ProfileViewController: UIViewController {
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MProfileSettings>?
     private var currentPeople: MPeople
+    private var refreshControl = UIRefreshControl()
     
     init(currentPeople: MPeople,
          peopleListnerDelegate: PeopleListenerDelegate?,
@@ -55,6 +56,7 @@ class ProfileViewController: UIViewController {
         
         navigationItem.backButtonTitle = ""
         navigationItem.largeTitleDisplayMode = .never
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
     
     private func updateCurrentPeople() {
@@ -71,6 +73,7 @@ extension ProfileViewController {
         
         collectionView.backgroundColor = .myWhiteColor()
         collectionView.delegate = self
+        collectionView.refreshControl = refreshControl
         
         collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: ProfileCell.reuseID)
         collectionView.register(SettingsCell.self, forCellWithReuseIdentifier: SettingsCell.reuseID)
@@ -230,6 +233,23 @@ extension ProfileViewController: UICollectionViewDelegate {
     }
 }
 
+//MARK: objc
+extension ProfileViewController {
+    @objc private func refresh() {
+        FirestoreService.shared.getUserData(userID: currentPeople.senderId) {[weak self] result in
+            switch result {
+            
+            case .success(let mPeople):
+                self?.collectionView.refreshControl?.endRefreshing()
+                self?.currentPeople = mPeople
+                UserDefaultsService.shared.saveMpeople(people: mPeople)
+                self?.updateSections()
+            case .failure(_):
+                break
+            }
+        }
+    }
+}
 //MARK: setupConstraints
 extension ProfileViewController {
     private func setupConstraints() {

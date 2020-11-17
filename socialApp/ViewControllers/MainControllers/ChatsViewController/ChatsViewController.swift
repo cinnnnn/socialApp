@@ -203,15 +203,16 @@ extension ChatsViewController {
 //MARK:  DiffableDataSource
 extension ChatsViewController {
     //MARK:  configure  cell
-    private func configure<T: SelfConfiguringCell>(cellType: T.Type, value: MChat, indexPath: IndexPath) -> T {
+    private func configure<T: SelfConfiguringCell>(cellType: T.Type, currentUser: MPeople, value: MChat, indexPath: IndexPath) -> T {
         guard let cell = collectionView?.dequeueReusableCell(withReuseIdentifier: cellType.reuseID, for: indexPath) as? T else { fatalError("Can't dequeue cell type \(cellType)") }
         
-        cell.configure(with: value)
+        cell.configure(with: value,currentUser: currentUser)
         return cell
     }
     
     //MARK:  setupDataSource
     private func setupDataSource(){
+        let strongCurrentPeople = currentPeople
         guard let collectionView = collectionView else { fatalError("CollectionView is nil")}
         dataSource = UICollectionViewDiffableDataSource<SectionsChats, MChat>(
             collectionView: collectionView,
@@ -223,10 +224,16 @@ extension ChatsViewController {
                 
                 switch section {
                 case .activeChats:
-                    return self?.configure(cellType: ActiveChatsCell.self, value: chat, indexPath: indexPath)
+                    return self?.configure(cellType: ActiveChatsCell.self,
+                                           currentUser: strongCurrentPeople,
+                                           value: chat,
+                                           indexPath: indexPath)
                     
                 case .newChats:
-                    return self?.configure(cellType: NewChatsCell.self, value: chat, indexPath: indexPath)
+                    return self?.configure(cellType: NewChatsCell.self,
+                                           currentUser: strongCurrentPeople,
+                                           value: chat,
+                                           indexPath: indexPath)
                 }
             })
     }
@@ -309,7 +316,7 @@ extension ChatsViewController: AcceptChatCollectionViewDelegate {
         
         switch changeType {
         case .delete:
-        //chat can delete only if user unmatch, when user unmatch people it is add to dislike collection
+        //chat can be deleted only if user unmatch, when user unmatch people it is add to dislike collection
         //we need update dislike collection
             likeDislikeDelegate?.getDislike(complition: { _ in })
             fallthrough

@@ -18,7 +18,7 @@ class PeopleInfoViewController: UIViewController {
     var currentPeople: MPeople?
     var people: MPeople?
     let peopleView = PeopleView()
-    let loadingView = LoadingView(isHidden: false)
+    let loadingView = LoadingView(name: "logo_neverAlone", isHidden: false)
     
     init(peopleID: String, withLikeButtons: Bool) {
         self.peopleID = peopleID

@@ -23,11 +23,17 @@ struct MPeople: Hashable, Codable, SenderType {
     var dateOfBirth: Date
     var sexuality: String
     var lookingFor: String
-    var goldMember: Bool
-    var goldMemberDate: Date
+    var isGoldMember: Bool
+    var goldMemberDate: Date?
+    var goldMemberPurches: MPurchases?
+    var likeCount: Int
+    var lastActiveDate: Date
+    var isTestUser: Bool
+    var isIncognito: Bool
     var isBlocked: Bool
     var isAdmin: Bool
     var isActive: Bool
+    var isFakeUser: Bool?
     var authType: MAuthType
     var reportList: [MReports:String]
     
@@ -45,11 +51,17 @@ struct MPeople: Hashable, Codable, SenderType {
          dateOfBirth: Date,
          sexuality: String,
          lookingFor: String,
-         goldMember: Bool,
+         isGoldMember: Bool,
          goldMemberDate: Date,
+         goldMemeberPurches: MPurchases,
+         likeCount: Int,
+         lastActiveDate: Date,
+         isTestUser: Bool,
+         isIncognito: Bool,
          isBlocked: Bool,
          isAdmin: Bool,
          isActive: Bool,
+         isFakeUser: Bool,
          reportList: [MReports:String],
          authType: MAuthType,
          searchSettings: [String: Int],
@@ -66,11 +78,17 @@ struct MPeople: Hashable, Codable, SenderType {
         self.dateOfBirth = dateOfBirth
         self.sexuality = sexuality
         self.lookingFor = lookingFor
-        self.goldMember = goldMember
+        self.isGoldMember = isGoldMember
         self.goldMemberDate = goldMemberDate
+        self.goldMemberPurches = goldMemeberPurches
+        self.likeCount = likeCount
+        self.lastActiveDate = lastActiveDate
+        self.isTestUser = isTestUser
+        self.isIncognito = isIncognito
         self.isBlocked = isBlocked
         self.isAdmin = isAdmin
         self.isActive = isActive
+        self.isFakeUser = isFakeUser
         self.reportList = reportList
         self.authType = authType
         self.searchSettings = searchSettings
@@ -78,9 +96,11 @@ struct MPeople: Hashable, Codable, SenderType {
         self.distance = distance
     }
     
-    //for get document from Firestore
+    //MARK: documentSnapshot
+    // for get document from Firestore
     init?(documentSnap: DocumentSnapshot){
         guard let documet = documentSnap.data()  else { return nil }
+        
         if let displayName = documet["displayName"] as? String { self.displayName = displayName } else { displayName = ""}
         if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
         if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }
@@ -89,21 +109,44 @@ struct MPeople: Hashable, Codable, SenderType {
         if let dateOfBirth = documet["dateOfBirth"] as? Timestamp { self.dateOfBirth = dateOfBirth.dateValue() } else { self.dateOfBirth = Date()}
         if let sexuality = documet["sexuality"] as? String { self.sexuality = sexuality } else { self.sexuality = ""}
         if let lookingFor = documet["lookingFor"] as? String { self.lookingFor = lookingFor } else { self.lookingFor = ""}
-        if let goldMember = documet["goldMember"] as? Bool { self.goldMember = goldMember } else { self.goldMember = false}
-        if let goldMemberDate = documet["goldMemberDate"] as? Timestamp { self.goldMemberDate = goldMemberDate.dateValue() } else { self.goldMemberDate = Date()}
+        if let isGoldMember = documet["isGoldMember"] as? Bool { self.isGoldMember = isGoldMember } else { self.isGoldMember = false}
+        if let goldMemberDate = documet["goldMemberDate"] as? Timestamp { self.goldMemberDate = goldMemberDate.dateValue() } else {
+            self.goldMemberDate = nil
+        }
+        if let goldMemberPurches = documet["goldMemberPurches"] as? String { self.goldMemberPurches = MPurchases(rawValue: goldMemberPurches)} else {
+            self.goldMemberPurches = nil
+        }
+        if let lastActiveDate = documet["lastActiveDate"] as? Timestamp  { self.lastActiveDate = lastActiveDate.dateValue() } else {
+            self.lastActiveDate = Date()
+        }
+        if let likeCount = documet["likeCount"] as? Int  { self.likeCount = likeCount } else {
+            self.likeCount = 0
+        }
+        if let isIncognito = documet["isIncognito"] as? Bool  { self.isIncognito = isIncognito } else {
+            self.isIncognito = false
+        }
+        if let isTestUser = documet["isTestUser"] as? Bool  { self.isTestUser = isTestUser } else {
+            self.isTestUser = false
+        }
         if let isBlocked = documet["isBlocked"] as? Bool { self.isBlocked = isBlocked } else { self.isBlocked = false}
         if let isAdmin = documet["isAdmin"] as? Bool { self.isAdmin = isAdmin } else { self.isAdmin = false}
         if let isActive = documet["isActive"] as? Bool { self.isActive = isActive} else { self.isActive = false}
-        if let reportList = documet["reportList"] as? [MReports:String] { self.reportList = reportList} else { self.reportList = [:]}
+        if let isFakeUser = documet["isFakeUser"] as? Bool { self.isFakeUser = isFakeUser} else { self.isFakeUser = nil}
+        if let reportList = documet["reportList"] as? [MReports:String] { self.reportList = reportList} else {
+            self.reportList = [:]
+            
+        }
         if let location = documet["location"] as? [String:Double] {
             let latitude = location[MLocation.latitude.rawValue] ?? MLocation.latitude.defaultValue
             let longitude = location[MLocation.longitude.rawValue] ?? MLocation.longitude.defaultValue
             let clLocation = CLLocationCoordinate2D(latitude: latitude,
                                                     longitude: longitude)
             self.location = clLocation
-        } else { self.location = CLLocationCoordinate2D(latitude: MLocation.latitude.defaultValue,
-                                                        longitude: MLocation.longitude.defaultValue)}
-        
+        } else {
+            self.location = CLLocationCoordinate2D(latitude: MLocation.latitude.defaultValue,
+                                                        longitude: MLocation.longitude.defaultValue)
+            
+        }
         if let searchSettings = documet["searchSettings"] as? [String: Int] {
             if let distance = searchSettings[MSearchSettings.distance.rawValue] {
                 self.searchSettings = [MSearchSettings.distance.rawValue : distance]
@@ -145,6 +188,7 @@ struct MPeople: Hashable, Codable, SenderType {
         self.senderId = senderId
     }
     
+    //MARK: QueryDocumentSnapshot
     //for init with ListenerService
     init?(documentSnap: QueryDocumentSnapshot){
         let documet = documentSnap.data()
@@ -157,11 +201,29 @@ struct MPeople: Hashable, Codable, SenderType {
         if let dateOfBirth = documet["dateOfBirth"] as? Timestamp { self.dateOfBirth = dateOfBirth.dateValue() } else { self.dateOfBirth = Date()}
         if let sexuality = documet["sexuality"] as? String { self.sexuality = sexuality } else { self.sexuality = ""}
         if let lookingFor = documet["lookingFor"] as? String { self.lookingFor = lookingFor } else { self.lookingFor = ""}
-        if let goldMember = documet["goldMember"] as? Bool { self.goldMember = goldMember } else { self.goldMember = false}
-        if let goldMemberDate = documet["goldMemberDate"] as? Timestamp { self.goldMemberDate = goldMemberDate.dateValue() } else { self.goldMemberDate = Date()}
+        if let isGoldMember = documet["isGoldMember"] as? Bool { self.isGoldMember = isGoldMember } else { self.isGoldMember = false}
+        if let goldMemberDate = documet["goldMemberDate"] as? Timestamp { self.goldMemberDate = goldMemberDate.dateValue() } else {
+            self.goldMemberDate = nil
+        }
+        if let lastActiveDate = documet["lastActiveDate"] as? Timestamp  { self.lastActiveDate = lastActiveDate.dateValue() } else {
+            self.lastActiveDate = Date()
+        }
+        if let goldMemberPurches = documet["goldMemberPurches"] as? String { self.goldMemberPurches = MPurchases(rawValue: goldMemberPurches)} else {
+            self.goldMemberPurches = nil
+        }
+        if let likeCount = documet["likeCount"] as? Int  { self.likeCount = likeCount } else {
+            self.likeCount = 0
+        }
+        if let isIncognito = documet["isIncognito"] as? Bool  { self.isIncognito = isIncognito } else {
+            self.isIncognito = false
+        }
+        if let isTestUser = documet["isTestUser"] as? Bool  { self.isTestUser = isTestUser } else {
+            self.isTestUser = false
+        }
         if let isBlocked = documet["isBlocked"] as? Bool { self.isBlocked = isBlocked } else { self.isBlocked = false}
         if let isAdmin = documet["isAdmin"] as? Bool { self.isAdmin = isAdmin } else { self.isAdmin = false}
         if let isActive = documet["isActive"] as? Bool { self.isActive = isActive} else { self.isActive = false}
+        if let isFakeUser = documet["isFakeUser"] as? Bool { self.isFakeUser = isFakeUser} else { self.isFakeUser = nil}
         if let reportList = documet["reportList"] as? [MReports:String] { self.reportList = reportList} else { self.reportList = [:]}
         if let location = documet["location"] as? [String:Double] {
             let latitude = location[MLocation.latitude.rawValue] ?? MLocation.latitude.defaultValue
@@ -223,11 +285,17 @@ struct MPeople: Hashable, Codable, SenderType {
         guard let dateOfBirth = data["dateOfBirth"] as? Date else { return nil }
         guard let sexuality = data["sexuality"] as? String else { return nil }
         guard let lookingFor = data["lookingFor"] as? String else { return nil }
-        guard let goldMember = data["goldMember"] as? Bool else { return nil }
+        guard let isGoldMember = data["isGoldMember"] as? Bool else { return nil }
         guard let goldMemberDate = data["goldMemberDate"] as? Date else { return nil }
+        guard let goldMemberPurches = data["goldMemberPurches"] as? MPurchases else { return nil }
+        guard let lastActiveDate = data["lastActiveDate"] as? Date else { return nil }
+        guard let likeCount = data["likeCount"] as? Int else { return nil }
+        guard let isIncognito = data["isIncognito"] as? Bool else { return nil }
+        guard let isTestUser = data["isTestUser"] as? Bool else { return nil }
         guard let isBlocked = data["isBlocked"] as? Bool else { return nil }
         guard let isAdmin = data["isAdmin"] as? Bool else { return nil }
         guard let isActive = data["isActive"] as? Bool else { return nil }
+        guard let isFakeUser = data["isFakeUser"] as? Bool else { return nil }
         guard let reportList = data["reportList"] as? [MReports:String] else { return nil }
         guard let location = data["location"] as? CLLocationCoordinate2D else { return nil }
         guard let mail = data["mail"] as? String else { return nil }
@@ -244,11 +312,17 @@ struct MPeople: Hashable, Codable, SenderType {
         self.dateOfBirth = dateOfBirth
         self.sexuality = sexuality
         self.lookingFor = lookingFor
-        self.goldMember = goldMember
+        self.isGoldMember = isGoldMember
         self.goldMemberDate = goldMemberDate
+        self.goldMemberPurches = goldMemberPurches
+        self.lastActiveDate = lastActiveDate
+        self.likeCount = likeCount
+        self.isIncognito = isIncognito
+        self.isTestUser = isTestUser
         self.isBlocked = isBlocked
         self.isAdmin = isAdmin
         self.isActive = isActive
+        self.isFakeUser = isFakeUser
         self.reportList = reportList
         self.location = location
         self.mail = mail
@@ -267,11 +341,17 @@ struct MPeople: Hashable, Codable, SenderType {
         case dateOfBirth
         case sexuality
         case lookingFor
-        case goldMember
+        case isGoldMember
         case goldMemberDate
+        case goldMemberPurches
+        case lastActiveDate
+        case likeCount
+        case isIncognito
+        case isTestUser
         case isBlocked
         case isAdmin
         case isActive
+        case isFakeUser
         case reportList
         case location
         case mail

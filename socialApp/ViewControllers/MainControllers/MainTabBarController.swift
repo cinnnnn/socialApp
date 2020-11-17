@@ -8,12 +8,13 @@
 
 import UIKit
 import FirebaseAuth
+import ApphudSDK
 
 class MainTabBarController: UITabBarController{
     
     var userID: String
     var isNewLogin: Bool
-    let loadingView = LoadingView(isHidden: false)
+    let loadingView = LoadingView(name: "logo_neverAlone", isHidden: false)
     var acceptChatsDelegate: AcceptChatListenerDelegate?
     var requestChatsDelegate: RequestChatListenerDelegate?
     var peopleDelegate: PeopleListenerDelegate?
@@ -36,6 +37,7 @@ class MainTabBarController: UITabBarController{
         loadIsComplite(isComplite: false)
         setupDataDelegate()
         getPeopleData()
+        setupApphud()
     }
 }
 
@@ -72,6 +74,12 @@ extension MainTabBarController {
             loadingView.show()
         }
     }
+    
+    private func setupApphud() {
+        Apphud.start(apiKey: "app_LDXecjNbEuvUBtpd3J9kw75A6cH14n", userID: userID, observerMode: false)
+    }
+    
+    
 }
 
 extension MainTabBarController {
@@ -80,6 +88,7 @@ extension MainTabBarController {
         FirestoreService.shared.getUserData(userID: userID) {[weak self] result in
             switch result {
             case .success(let mPeople):
+                
                 UserDefaultsService.shared.saveMpeople(people: mPeople)
                 if let virtualLocation = MVirtualLocation(rawValue: mPeople.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
                     LocationService.shared.getCoordinate(userID: mPeople.senderId,
@@ -93,6 +102,7 @@ extension MainTabBarController {
                             switch result {
                             
                             case .success(_):
+                                
                                 //get dislike users
                                 self?.likeDislikeDelegate?.getDislike(complition: { result in
                                     switch result {
@@ -111,6 +121,7 @@ extension MainTabBarController {
                                                         self?.loadIsComplite(isComplite: true)
                                                         self?.setupControllers(currentPeople: mPeople)
                                                         self?.subscribeToPushNotification()
+                                                        PurchasesService.shared.checkSubscribtion(currentPeople: mPeople)
                                                         
                                                     case .failure(let error):
                                                         self?.showAlert(title: "Ошибка, мы работаем над ней",
@@ -146,6 +157,7 @@ extension MainTabBarController {
                 AuthService.shared.signOut { result in
                     switch result {
                     case .success(_):
+                        Apphud.logout()
                         self?.dismiss(animated: true) {
                             let authVC = AuthViewController()
                             authVC.modalPresentationStyle = .fullScreen

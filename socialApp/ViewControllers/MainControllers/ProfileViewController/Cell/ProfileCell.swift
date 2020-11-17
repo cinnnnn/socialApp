@@ -14,9 +14,23 @@ class ProfileCell: UICollectionViewCell {
     static let reuseID = "ProfileCell"
     
     let profileImage = UIImageView()
-    let profileName = UILabel(labelText: "",textFont: .avenirBold(size: 24), aligment: .center, linesCount: 0)
-    let info = UILabel(labelText: "", textFont: .avenirRegular(size: 16),textColor: .myGrayColor(),aligment: .center, linesCount: 0)
-    let animateProfileBack = AnimationCustomView(name: "loading_grayCircle", loopMode: .loop, contentMode: .scaleAspectFit)
+    let profileName = UILabel(labelText: "",
+                              textFont: .avenirBold(size: 24),
+                              aligment: .left,
+                              linesCount: 0)
+    let info = UILabel(labelText: "",
+                       textFont: .avenirRegular(size: 16),
+                       textColor: .myGrayColor(),
+                       aligment: .left,
+                       linesCount: 0)
+    let infoPremium = UILabel(labelText: "",
+                              textFont: .avenirBold(size: 16),
+                              textColor: .myPurpleColor(),
+                              aligment: .left,
+                              linesCount: 0)
+    let animateProfileBack = AnimationCustomView(name: "loading_grayCircle",
+                                                 loopMode: .loop,
+                                                 contentMode: .scaleAspectFit)
    
     
     override init(frame: CGRect) {
@@ -44,13 +58,16 @@ class ProfileCell: UICollectionViewCell {
         }
         profileName.text = people.displayName
         info.text = [people.dateOfBirth.getStringAge(), people.gender, people.sexuality].joined(separator: ", ").lowercased()
-        
+        if people.isGoldMember ||  people.isTestUser{
+            infoPremium.text = "Flava premium"
+        } else {
+            infoPremium.text = ""
+        }
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         profileImage.layer.cornerRadius = profileImage.frame.width / 2
-        
     }
     
     private func setupConstraints(){
@@ -59,11 +76,13 @@ class ProfileCell: UICollectionViewCell {
         addSubview(profileImage)
         addSubview(profileName)
         addSubview(info)
+        addSubview(infoPremium)
         
         profileName.translatesAutoresizingMaskIntoConstraints = false
         profileImage.translatesAutoresizingMaskIntoConstraints = false
         info.translatesAutoresizingMaskIntoConstraints = false
         animateProfileBack.translatesAutoresizingMaskIntoConstraints = false
+        infoPremium.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             animateProfileBack.topAnchor.constraint(equalTo: topAnchor),
@@ -80,7 +99,11 @@ class ProfileCell: UICollectionViewCell {
             profileName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             profileName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             
-            info.topAnchor.constraint(equalTo: profileName.bottomAnchor, constant: 0),
+            infoPremium.topAnchor.constraint(equalTo: profileName.bottomAnchor, constant: 0),
+            infoPremium.leadingAnchor.constraint(equalTo: profileName.leadingAnchor),
+            infoPremium.trailingAnchor.constraint(equalTo: profileName.trailingAnchor),
+            
+            info.topAnchor.constraint(equalTo: infoPremium.bottomAnchor, constant: 0),
             info.leadingAnchor.constraint(equalTo: profileName.leadingAnchor),
             info.trailingAnchor.constraint(equalTo: profileName.trailingAnchor),
             info.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25)

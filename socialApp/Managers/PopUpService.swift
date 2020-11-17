@@ -58,11 +58,27 @@ extension PopUpService {
         SwiftEntryKit.display(entry: matchPopUpView, using: attributes)
     }
     
+    func showAnimateView(name: String) {
+        let view = LoadingView(name: "logo_neverAlone", isHidden: false)
+        
+        var attributes = EKAttributes()
+        attributes.name = "Animation view"
+        attributes.displayMode = .inferred
+        attributes.statusBar = .inferred
+        attributes.displayDuration = .infinity
+        attributes.entryInteraction = .absorbTouches
+        attributes.screenInteraction = .dismiss
+        attributes.screenBackground = .color(color: EKColor.init(UIColor.myLabelColor().withAlphaComponent(0.5)))
+        attributes.position = .bottom
+        attributes.hapticFeedbackType = .warning
+        attributes.positionConstraints.safeArea = .overridden
+        SwiftEntryKit.display(entry: view, using: attributes)
+    }
+    
     //MARK: bottomPopUp
     func bottomPopUp(header: String,
                      text: String,
                      image: UIImage?,
-                     cancelButtonText: String,
                      okButtonText: String,
                      okAction: @escaping ()->()) {
        
@@ -93,7 +109,7 @@ extension PopUpService {
         let description = EKProperty.LabelContent(
             text: text,
             style: .init(
-                font: .avenirBold(size: 14),
+                font: .avenirRegular(size: 14),
                 color: EKColor.init(.myLabelColor()),
                 alignment: .center,
                 displayMode: EKAttributes.DisplayMode.inferred
@@ -127,6 +143,9 @@ extension PopUpService {
         
         var attributes = EKAttributes()
         attributes.displayMode = .inferred
+        attributes.screenInteraction = .dismiss
+        attributes.position = .bottom
+        attributes.displayDuration = .infinity
         attributes.scroll = .edgeCrossingDisabled(swipeable: true)
         attributes.entranceAnimation = .init(
             translate: .init(
@@ -134,7 +153,7 @@ extension PopUpService {
                 spring: .init(damping: 1, initialVelocity: 0)
             )
         )
-        attributes.entryBackground = .color(color: .init(.myWhiteColor()))
+        attributes.entryBackground = .visualEffect(style: .init(style: .systemMaterial))
         attributes.positionConstraints = .fullWidth
         attributes.positionConstraints.safeArea = .empty(fillSafeArea: true)
         attributes.roundCorners = .top(radius: 20)
@@ -152,30 +171,30 @@ extension PopUpService {
         let simpleMessage = EKSimpleMessage(image: nil,
                                             title: .init(text: header,
                                                          style: .init(font: font,
-                                                                      color: EKColor(light: .myWhiteColor(), dark: .myWhiteColor()),
+                                                                      color: EKColor(.myLabelColor()),
                                                                       alignment: .center,
                                                                       displayMode: .inferred,
                                                                       numberOfLines: 1)),
                                             description: .init(text: text,
                                                                style: .init(font: .avenirRegular(size: 14),
-                                                                            color: EKColor(light: .myWhiteColor(), dark: .myWhiteColor()),
+                                                                            color: EKColor(.myLabelColor()),
                                                                             alignment: .center,
                                                                             displayMode: .inferred,
                                                                             numberOfLines: 0)))
         let okButtonContent = EKProperty.ButtonContent.init(label: .init(text: okButtonText,
                                                                          style: .init(font: font,
-                                                                                      color: .init(.myWhiteColor()))),
-                                                            backgroundColor: EKColor.init(.myLabelColor()),
-                                                            highlightedBackgroundColor: EKColor.init(.myGrayColor())) {
+                                                                                      color: .init(.myLabelColor()))),
+                                                            backgroundColor: .init(.myLightGrayColor()),
+                                                            highlightedBackgroundColor: .init(.myGrayColor())) {
             SwiftEntryKit.dismiss()
             okButtonAction()
         }
         
         let cancelButtonContent = EKProperty.ButtonContent.init(label: .init(text: cancelButtonText,
                                                                              style: .init(font: font,
-                                                                                          color: .init(.myWhiteColor()))),
-                                                                backgroundColor: EKColor.init(.myLabelColor()),
-                                                                highlightedBackgroundColor: EKColor.init(.myGrayColor())) {
+                                                                                          color: .init(.myLabelColor()))),
+                                                                backgroundColor: .init(.myLightGrayColor()),
+                                                                highlightedBackgroundColor: .init(.myGrayColor())) {
             SwiftEntryKit.dismiss()
         }
         
@@ -190,7 +209,7 @@ extension PopUpService {
         infoPopUpAttributes.hapticFeedbackType = .warning
         infoPopUpAttributes.positionConstraints.safeArea = .empty(fillSafeArea: true)
         infoPopUpAttributes.entryInteraction = .absorbTouches
-        infoPopUpAttributes.entryBackground = .color(color: EKColor.init(.myLabelColor()))
+        infoPopUpAttributes.entryBackground = .color(color: .init(.myLightGrayColor()))
         SwiftEntryKit.display(entry: infoView, using: infoPopUpAttributes)
     }
     
@@ -203,24 +222,17 @@ extension PopUpService {
         attributes.hapticFeedbackType = .success
         attributes.displayMode = .inferred
         attributes.statusBar = .inferred
-        attributes.entryBackground = .color(color: EKColor.init(.myLabelColor()))
+        attributes.entryBackground = .color(color: .init(.myLightGrayColor()))
         attributes.entranceAnimation = .translation
         attributes.exitAnimation = .translation
         attributes.scroll = .edgeCrossingDisabled(swipeable: true)
         attributes.displayDuration = 4
-        attributes.shadow = .active(
-            with: .init(
-                color: .init(.myLabelColor()),
-                opacity: 0.5,
-                radius: 10
-            )
-        )
         
         let title = EKProperty.LabelContent(
             text: header,
             style: .init(
                 font: .avenirBold(size: 12),
-                color: .init(.myWhiteColor()),
+                color: .init(.myLabelColor()),
                 displayMode: .inferred
             )
         )
@@ -228,7 +240,7 @@ extension PopUpService {
             text: text,
             style: .init(
                 font: .avenirRegular(size: 12),
-                color: .init(.myWhiteColor()),
+                color: .init(.myLabelColor()),
                 displayMode: .inferred
             )
         )
@@ -236,7 +248,7 @@ extension PopUpService {
             text: time,
             style: .init(
                 font: .avenirRegular(size: 12),
-                color: .init(.myWhiteColor()),
+                color: .init(.myLabelColor()),
                 displayMode: .inferred
             )
         )
@@ -281,18 +293,12 @@ extension PopUpService {
         attributes.name = "Top Info"
         attributes.hapticFeedbackType = .success
         attributes.popBehavior = .animated(animation: .translation)
-        attributes.entryBackground = .color(color: .init(.myLabelColor()))
-        attributes.shadow = .active(
-            with: .init(
-                color: .init(.myLabelColor()),
-                opacity: 0.5,
-                radius: 2
-            )
-        )
+        attributes.entryBackground = .color(color: .init(.myLightGrayColor()))
+    
         let text = text
         let style = EKProperty.LabelStyle(
             font: .avenirRegular(size: 14),
-            color: .init(.myWhiteColor()),
+            color: .init(.myLabelColor()),
             alignment: .center
         )
         let labelContent = EKProperty.LabelContent(

@@ -18,6 +18,7 @@ pod 'SDWebImage', '~> 5.0'
 pod 'MessageKit'
 pod 'lottie-ios'
 pod 'SwiftEntryKit', '1.2.6'
+pod "ApphudSDK"
 
 end
 

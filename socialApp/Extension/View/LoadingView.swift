@@ -10,25 +10,19 @@ import UIKit
 
 class LoadingView: UIView {
     
-    let logoImage = AnimationCustomView(name: "logo_neverAlone", loopMode: .loop, contentMode: .scaleAspectFill)
+    var logoImage: AnimationCustomView?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
-    convenience init(isHidden: Bool) {
+    convenience init(name: String, isHidden: Bool, contentMode: UIView.ContentMode = .scaleAspectFill) {
         self.init()
+        self.logoImage = AnimationCustomView(name: name, loopMode: .loop, contentMode: contentMode)
         self.isHidden = isHidden
         if !isHidden {
-            logoImage.animationView.play()
+            logoImage?.animationView.play()
         }
         setup()
         setupConstraints()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     private func setup() {
         backgroundColor = .myWhiteColor()
@@ -36,16 +30,16 @@ class LoadingView: UIView {
     
     func show() {
         isHidden = false
-        logoImage.layer.opacity = 1
-        logoImage.animationView.play()
+        logoImage?.layer.opacity = 1
+        logoImage?.animationView.play()
     }
     
     func hide() {
         UIView.animate(withDuration: 1) { [weak self] in
-            self?.logoImage.layer.opacity = 0
+            self?.logoImage?.layer.opacity = 0
         } completion: { [weak self] isComplite in
             if isComplite {
-                self?.logoImage.animationView.stop()
+                self?.logoImage?.animationView.stop()
                 self?.isHidden = true
             }
         }
@@ -55,6 +49,7 @@ class LoadingView: UIView {
 extension LoadingView {
     //MARK: SetupConstraints
     private func setupConstraints() {
+        guard let logoImage = logoImage else { return }
         addSubview(logoImage)
         
         logoImage.translatesAutoresizingMaskIntoConstraints = false
