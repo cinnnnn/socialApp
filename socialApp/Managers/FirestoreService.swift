@@ -513,10 +513,11 @@ class FirestoreService {
         let currentChatDocument = refCurrentChatCollection.document(chat.friendId)
         let friendChatDocument = refFriendChatCollection.document(currentUser.senderId)
         
-        if chat.friendIsWantStopTimer {
+        if chat.friendIsWantStopTimer || currentUser.isGoldMember || currentUser.isTestUser {
             //if friend already want to stop chat timer, set timer is stoped to friend chat
             friendChatDocument.updateData([MChat.CodingKeys.friendIsWantStopTimer.rawValue : true,
-                                           MChat.CodingKeys.timerOfLifeIsStoped.rawValue: true]) { error in
+                                           MChat.CodingKeys.timerOfLifeIsStoped.rawValue: true,
+                                           MChat.CodingKeys.currentUserIsWantStopTimer.rawValue : true]) { error in
                 if let error = error  {
                     complition(.failure(error))
                 } else {
@@ -528,9 +529,15 @@ class FirestoreService {
                             complition(.failure(error))
                         } else {
                             //send admin message about the chat timer is stop
+                            var messageText = ""
+                            if currentUser.isGoldMember || currentUser.isTestUser {
+                                messageText = "\(currentUser.displayName)\(MLabels.chatTimerIsStopWithPremium.rawValue)"
+                            } else {
+                                messageText = MLabels.chatTimerIsStop.rawValue
+                            }
                             FirestoreService.shared.sendAdminMessage(currentUser: currentUser,
                                                                      chat: chat,
-                                                                     text: MLabels.chatTimerIsStop.rawValue) { _ in }
+                                                                     text: messageText) { _ in }
                             complition(.success(()))
                         }
                     }

@@ -160,13 +160,22 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     private func showTimerPopUp() {
         let strongUser = user
         let strongChat = chat
+        var messageText = ""
+        var okButtonText = ""
         let timeToDeleteChat = chat.createChatDate.getPeriodToDate(periodMinuteCount: MChat.getDefaultPeriodMinutesOfLifeChat())
+        if strongUser.isGoldMember || strongUser.isTestUser {
+            messageText = "У тебя Flava premium, можешь остановить таймер удаления без подтверждения собеседника"
+            okButtonText = "Остановить таймер"
+        } else {
+            messageText = "Отправь запрос на остановку таймера, если собеседник подтвердит, чат не будет удален"
+            okButtonText = "Отправить"
+        }
         
         if !chat.currentUserIsWantStopTimer {
             PopUpService.shared.showInfoWithButtonPopUp(header: "Чат будет удален через \(timeToDeleteChat)",
-                                              text: "Отправь запрос на остановку таймера, если собеседник подтвердит, чат не будет удален",
+                                              text: messageText,
                                               cancelButtonText: "Позже",
-                                              okButtonText: "Отправить",
+                                              okButtonText: okButtonText,
                                               font: .avenirBold(size: 14)) {
                 FirestoreService.shared.deactivateChatTimer(currentUser: strongUser, chat: strongChat) { _  in }
             }

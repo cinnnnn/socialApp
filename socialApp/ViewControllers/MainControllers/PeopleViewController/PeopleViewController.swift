@@ -300,7 +300,20 @@ extension PeopleViewController {
     }
 }
 //MARK: likeDislikeDelegate
-extension PeopleViewController: LikeDislikeTappedDelegate {
+extension PeopleViewController: PeopleButtonTappedDelegate {
+    
+    func timeTapped() {
+        PopUpService.shared.bottomPopUp(header: "Хочешь видеть время последней активности пользователя?",
+                                        text: "Последняя активность, безлимитные лайки и многое другое с подпиской Flava Premium",
+                                        image: nil,
+                                        okButtonText: "Перейти на Flava premium") { [ weak self] in
+            
+            guard let currentPeople = self?.currentPeople else { return }
+            let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+            purchasVC.modalPresentationStyle = .fullScreen
+            self?.present(purchasVC, animated: true, completion: nil)
+        }
+    }
     
      func likePeople(people: MPeople) {
         

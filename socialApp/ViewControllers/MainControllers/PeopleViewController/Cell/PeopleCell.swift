@@ -13,7 +13,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     static var reuseID = "PeopleCell"
     
-    weak var likeDislikeDelegate: LikeDislikeTappedDelegate?
+    weak var likeDislikeDelegate: PeopleButtonTappedDelegate?
     var person: MPeople?
     let peopleView = PeopleView()
     
@@ -28,9 +28,9 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     }
     
     func setup() {
-      
         peopleView.likeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
         peopleView.dislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
+        peopleView.timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
     }
     
     func configure(with value: MPeople, currentPeople: MPeople, complition: @escaping()-> Void) {
@@ -62,6 +62,10 @@ extension PeopleCell {
         guard let sender = sender as? LikeDisklikeButton else { return }
         guard let people = sender.actionPeople else { return }
         likeDislikeDelegate?.dislikePeople(people: people)
+    }
+    
+    @objc private func timeTapped() {
+        likeDislikeDelegate?.timeTapped()
     }
 }
 

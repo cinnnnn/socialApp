@@ -53,9 +53,9 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         dateOfLastMessage = value.date
         
         if timer == nil {
-            let timeInterval = TimeInterval(5)
+            let timeInterval = TimeInterval(1)
             timer = Timer(timeInterval: timeInterval, target: self, selector: #selector(dateUpdate), userInfo: nil, repeats: true)
-            timer?.tolerance = 1
+            timer?.tolerance = 0.5
             if let timer = timer {
                 RunLoop.current.add(timer, forMode: .common)
             }

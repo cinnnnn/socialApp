@@ -85,12 +85,14 @@ class PeopleView: UIView {
         
         if currentPeople.isGoldMember || currentPeople.isTestUser {
             if value.lastActiveDate.checkIsToday() {
-                timeButton.infoLabel.text = "Недавняя активность: сегодня"
+                timeButton.infoLabel.text = "Недавняя активность в \(value.lastActiveDate.getFormattedDate(format: "HH:mm", withTime: true))"
             } else {
                 timeButton.infoLabel.text = "Последняя активность: \(value.lastActiveDate.getShortFormattedDate())"
             }
+            timeButton.isEnabled = false
         } else {
             timeButton.infoLabel.text = "Последняя активность"
+            timeButton.isEnabled = true
         }
     }
     

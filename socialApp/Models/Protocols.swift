@@ -32,9 +32,10 @@ protocol NavigationDelegate: class {
     func toCompliteRegistration(userID: String)
 }
 
-protocol LikeDislikeTappedDelegate: class {
+protocol PeopleButtonTappedDelegate: class {
     func likePeople(people: MPeople)
     func dislikePeople(people: MPeople)
+    func timeTapped()
 }
 
 protocol CollectionCellModel {

@@ -44,6 +44,7 @@ class PeopleInfoViewController: UIViewController {
         peopleView.dislikeButton.isHidden = !withLikeButtons
         peopleView.likeButton.addTarget(self, action: #selector(likeTapped), for: .touchUpInside)
         peopleView.dislikeButton.addTarget(self, action: #selector(dislikeTapped), for: .touchUpInside)
+        peopleView.timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
         peopleView.layoutIfNeeded()
         
         currentPeople = UserDefaultsService.shared.getMpeople()
@@ -77,8 +78,24 @@ extension PeopleInfoViewController {
         guard let people = people else { return }
         dislikePeople(people: people)
     }
+    
 }
-extension PeopleInfoViewController: LikeDislikeTappedDelegate {
+
+extension PeopleInfoViewController: PeopleButtonTappedDelegate {
+    
+    @objc func timeTapped() {
+        PopUpService.shared.bottomPopUp(header: "Хочешь видеть время последней активности пользователя?",
+                                        text: "Последняя активность, и многое другое с подпиской Flava Premium",
+                                        image: nil,
+                                        okButtonText: "Перейти на Flava premium") { [ weak self] in
+            
+            guard let currentPeople = self?.currentPeople else { return }
+            let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+            purchasVC.modalPresentationStyle = .fullScreen
+            self?.present(purchasVC, animated: true, completion: nil)
+        }
+    }
+    
      func likePeople(people: MPeople) {
         guard let currentPeople = currentPeople else { return }
         guard let requestChatsDelegate = requestChatsDelegate else { fatalError("Can't get requestChatsDelegate") }
