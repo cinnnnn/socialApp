@@ -23,8 +23,8 @@ class EditSearchSettingsViewController: UIViewController {
                                 textColor: .myGrayColor())
     let distanceSlider = UISlider()
     let ageRangePicker = UIPickerView()
-    let lookingForButton = OneLineButton(header: "Ищу", info: "")
-    let currentLocationButton = OneLineButton(header: "Локация", info: "")
+    let lookingForButton = OneLineButtonWithHeader(header: "Ищу", info: "")
+    let currentLocationButton = OneLineButtonWithHeader(header: "Локация", info: "")
     
     
     init(currentPeople: MPeople,

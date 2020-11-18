@@ -77,7 +77,7 @@
 		FB8C3D3F25339DE200184FB5 /* GenderSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D3E25339DE200184FB5 /* GenderSelectionViewController.swift */; };
 		FB8C3D432533A22800184FB5 /* SelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D422533A22800184FB5 /* SelectionTableViewCell.swift */; };
 		FB8C3D552533E09900184FB5 /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D542533E09900184FB5 /* SelectionViewController.swift */; };
-		FB8C3D5F25348F4900184FB5 /* OneLineButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D5E25348F4900184FB5 /* OneLineButton.swift */; };
+		FB8C3D5F25348F4900184FB5 /* OneLineButtonWithHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D5E25348F4900184FB5 /* OneLineButtonWithHeader.swift */; };
 		FB8C3D652534A74900184FB5 /* SelectionTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D642534A74900184FB5 /* SelectionTableViewHeader.swift */; };
 		FB8C3D6A2535D71B00184FB5 /* InterestsSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D692535D71B00184FB5 /* InterestsSelectionViewController.swift */; };
 		FB8C3D6E2535D94D00184FB5 /* DateOfBirthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D6D2535D94D00184FB5 /* DateOfBirthViewController.swift */; };
@@ -156,6 +156,7 @@
 		FBFFB866255F15AC007343ED /* PurchasesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB865255F15AC007343ED /* PurchasesService.swift */; };
 		FBFFB86E25629E85007343ED /* MRecieptAppStrore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */; };
 		FBFFB8952562C3F6007343ED /* UserDefaultsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3D4A6255DBB5600A3B832 /* UserDefaultsExtension.swift */; };
+		FBFFB89B256535F8007343ED /* OneLikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB89A256535F8007343ED /* OneLikeButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -256,7 +257,7 @@
 		FB8C3D3E25339DE200184FB5 /* GenderSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelectionViewController.swift; sourceTree = "<group>"; };
 		FB8C3D422533A22800184FB5 /* SelectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewCell.swift; sourceTree = "<group>"; };
 		FB8C3D542533E09900184FB5 /* SelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionViewController.swift; sourceTree = "<group>"; };
-		FB8C3D5E25348F4900184FB5 /* OneLineButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneLineButton.swift; sourceTree = "<group>"; };
+		FB8C3D5E25348F4900184FB5 /* OneLineButtonWithHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneLineButtonWithHeader.swift; sourceTree = "<group>"; };
 		FB8C3D642534A74900184FB5 /* SelectionTableViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionTableViewHeader.swift; sourceTree = "<group>"; };
 		FB8C3D692535D71B00184FB5 /* InterestsSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestsSelectionViewController.swift; sourceTree = "<group>"; };
 		FB8C3D6D2535D94D00184FB5 /* DateOfBirthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateOfBirthViewController.swift; sourceTree = "<group>"; };
@@ -269,6 +270,7 @@
 		FB8C3D93253A51BE00184FB5 /* RequestsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsViewController.swift; sourceTree = "<group>"; };
 		FB8C3D97253A525500184FB5 /* SectionsRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsRequests.swift; sourceTree = "<group>"; };
 		FB8C3D9B253A589B00184FB5 /* RequestChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestChatCell.swift; sourceTree = "<group>"; };
+		FB9B684325654ACF00DE0E64 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
 		FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeDisklikeButton.swift; sourceTree = "<group>"; };
 		FBA2AA2A2552D3F300A471F6 /* UniversalTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalTableView.swift; sourceTree = "<group>"; };
 		FBA2AA2D2552D7D000A471F6 /* MCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCellType.swift; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 		FBFFB861255F14F6007343ED /* MPurchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPurchases.swift; sourceTree = "<group>"; };
 		FBFFB865255F15AC007343ED /* PurchasesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesService.swift; sourceTree = "<group>"; };
 		FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MRecieptAppStrore.swift; sourceTree = "<group>"; };
+		FBFFB89A256535F8007343ED /* OneLikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneLikeButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -780,6 +783,7 @@
 				FBEF608224A6020A0005F947 /* LaunchScreen.storyboard */,
 				FBEF608524A6020A0005F947 /* Info.plist */,
 				FBE5A10E255ACF0600060D97 /* GoogleService-Info.plist */,
+				FB9B684325654ACF00DE0E64 /* Configuration.storekit */,
 			);
 			path = socialApp;
 			sourceTree = "<group>";
@@ -791,7 +795,8 @@
 				FBFFB857255ED105007343ED /* PurchaseButton.swift */,
 				FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */,
 				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
-				FB8C3D5E25348F4900184FB5 /* OneLineButton.swift */,
+				FB8C3D5E25348F4900184FB5 /* OneLineButtonWithHeader.swift */,
+				FBFFB89A256535F8007343ED /* OneLikeButton.swift */,
 				FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */,
 				FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
@@ -1002,6 +1007,7 @@
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
 				FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */,
 				FBA2AA482553086D00A471F6 /* SetupChatMenu.swift in Sources */,
+				FBFFB89B256535F8007343ED /* OneLikeButton.swift in Sources */,
 				FB1062DE24B0C8DF0012C4D4 /* EditableProfileImageView.swift in Sources */,
 				FBB26ED3254AFD130081CF2C /* AcceptChatDataProvider.swift in Sources */,
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
@@ -1039,7 +1045,7 @@
 				FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */,
 				FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */,
 				FB79DA9225307FF200A7AA56 /* GalleryScrollView.swift in Sources */,
-				FB8C3D5F25348F4900184FB5 /* OneLineButton.swift in Sources */,
+				FB8C3D5F25348F4900184FB5 /* OneLineButtonWithHeader.swift in Sources */,
 				FBB26ED8254B014A0081CF2C /* LikeDislikeChatDataProvider.swift in Sources */,
 				FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */,
 				FBB4F354251110AE00ACFE90 /* RadioButton.swift in Sources */,

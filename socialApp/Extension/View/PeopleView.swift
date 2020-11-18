@@ -23,7 +23,8 @@ class PeopleView: UIView {
                               linesCount: 5)
     let geoImage = UIImageView(systemName: "location.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
     let infoImage = UIImageView(systemName: "info.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
-    let likeImage = UIImageView(systemName: "info.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
+    let timeImage = UIImageView(systemName: "timer", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
+    let timeButton = OneLikeButton(info: "Последняя активность")
     let dislikeButton = LikeDisklikeButton(image: UIImage(systemName: "xmark",
                                                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .large)) ?? #imageLiteral(resourceName: "reject"),
                                  tintColor: .myLabelColor(),
@@ -48,7 +49,7 @@ class PeopleView: UIView {
         scrollView.showsVerticalScrollIndicator = false
     }
     
-    func configure(with value: MPeople, complition: @escaping()-> Void) {
+    func configure(with value: MPeople, currentPeople: MPeople, complition: @escaping()-> Void) {
         peopleName.text = value.displayName
         
         galleryScrollView.setupImages(imagesURL: [value.userImage] + value.gallery) {
@@ -70,6 +71,7 @@ class PeopleView: UIView {
         likeButton.actionPeople = value
         dislikeButton.actionPeople = value
         
+        
         let locationIndex = value.searchSettings[MSearchSettings.currentLocation.rawValue] ?? MSearchSettings.currentLocation.defaultValue
         let virtualLocation = MVirtualLocation(rawValue: locationIndex)
         switch virtualLocation {
@@ -79,6 +81,16 @@ class PeopleView: UIView {
             distanceLabel.text = MVirtualLocation.forPlay.description()
         default:
             distanceLabel.text = "\(value.distance) км от тебя"
+        }
+        
+        if currentPeople.isGoldMember || currentPeople.isTestUser {
+            if value.lastActiveDate.checkIsToday() {
+                timeButton.infoLabel.text = "Недавняя активность: сегодня"
+            } else {
+                timeButton.infoLabel.text = "Последняя активность: \(value.lastActiveDate.getShortFormattedDate())"
+            }
+        } else {
+            timeButton.infoLabel.text = "Последняя активность"
         }
     }
     
@@ -101,6 +113,8 @@ extension PeopleView {
         scrollView.addSubview(advertLabel)
         scrollView.addSubview(geoImage)
         scrollView.addSubview(infoImage)
+        scrollView.addSubview(timeImage)
+        scrollView.addSubview(timeButton)
         scrollView.addSubview(likeButton)
         scrollView.addSubview(dislikeButton)
         
@@ -112,6 +126,8 @@ extension PeopleView {
         advertLabel.translatesAutoresizingMaskIntoConstraints = false
         geoImage.translatesAutoresizingMaskIntoConstraints = false
         infoImage.translatesAutoresizingMaskIntoConstraints = false
+        timeImage.translatesAutoresizingMaskIntoConstraints = false
+        timeButton.translatesAutoresizingMaskIntoConstraints = false
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         dislikeButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -142,9 +158,15 @@ extension PeopleView {
             distanceLabel.leadingAnchor.constraint(equalTo: geoImage.trailingAnchor, constant: 7),
             distanceLabel.topAnchor.constraint(equalTo: infoLabel.bottomAnchor),
             
+            timeImage.leadingAnchor.constraint(equalTo: infoImage.leadingAnchor),
+            timeImage.topAnchor.constraint(equalTo: distanceLabel.bottomAnchor),
+            
+            timeButton.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 7),
+            timeButton.topAnchor.constraint(equalTo: distanceLabel.bottomAnchor),
+            
             advertLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             advertLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            advertLabel.topAnchor.constraint(equalTo: distanceLabel.bottomAnchor, constant: 20),
+            advertLabel.topAnchor.constraint(equalTo: timeButton.bottomAnchor, constant: 10),
             
             likeButton.trailingAnchor.constraint(equalTo: galleryScrollView.trailingAnchor),
             likeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),

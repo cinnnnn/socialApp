@@ -92,7 +92,8 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         
         collectionView.backgroundColor = nil
         collectionView.delegate = self
-        
+        collectionView.isScrollEnabled = false
+        collectionView.isPagingEnabled = false
         collectionView.alwaysBounceVertical = false
         
         collectionView.register(PeopleCell.self,
@@ -144,16 +145,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         }
         return layout
     }
-    //MARK: configureCell
-    private  func configureCell(value: MPeople, indexPath: IndexPath) -> PeopleCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleCell.reuseID, for: indexPath) as? PeopleCell else { fatalError("Can't dequeue cell type PeopleCell")}
-        cell.likeDislikeDelegate = self
-        cell.configure(with: value) {
-            cell.layoutIfNeeded()
-        }
-        return cell
-    }
-    
+
     //MARK: setupDataSource
     private func setupDiffebleDataSource() {
         dataSource = UICollectionViewDiffableDataSource<SectionsPeople,MPeople>(
@@ -163,8 +155,15 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                 
                 switch section {
                 case .main:
-                    return self?.configureCell(value: people,
-                                               indexPath: indexPath)
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleCell.reuseID, for: indexPath) as? PeopleCell else { fatalError("Can't dequeue cell type PeopleCell")}
+                    cell.likeDislikeDelegate = self
+                    if let currentPeople = self?.currentPeople {
+                        cell.configure(with: people, currentPeople: currentPeople)
+                        {
+                            cell.layoutIfNeeded()
+                        }
+                    }
+                    return cell
                 }
         })
     }
@@ -187,9 +186,10 @@ extension PeopleViewController {
 //MARK: setUIForVisivleCells
 extension PeopleViewController {
     private func setUIForVisivleCells(items: [NSCollectionLayoutVisibleItem], point: CGPoint, enviroment: NSCollectionLayoutEnvironment) {
-       
+        
         items.forEach { visibleItem in
             let distanceFromCenter = abs((visibleItem.frame.midX - point.x) - enviroment.container.contentSize.width / 2.0)
+           
             let minScale: CGFloat = 0.5
             let maxScale: CGFloat = 1
             let scale = max(maxScale - (distanceFromCenter / enviroment.container.contentSize.width / 2), minScale)
@@ -311,6 +311,9 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
     }
     
     func dislikePeople(people: MPeople) {
+        print("Dislike: \(people.displayName)")
+      
+       /*
         //save dislike from firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
@@ -329,6 +332,7 @@ extension PeopleViewController: LikeDislikeTappedDelegate {
                 fatalError(error.localizedDescription)
             }
         }
+         */
     }
 }
 

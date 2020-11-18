@@ -28,15 +28,14 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     }
     
     func setup() {
-        layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
-        clipsToBounds = true
+      
         peopleView.likeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
         peopleView.dislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
     }
     
-    func configure(with value: MPeople, complition: @escaping()-> Void) {
+    func configure(with value: MPeople, currentPeople: MPeople, complition: @escaping()-> Void) {
         
-        peopleView.configure(with: value) {
+        peopleView.configure(with: value, currentPeople: currentPeople) {
             complition()
         }
         

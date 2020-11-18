@@ -18,7 +18,7 @@ protocol SelfConfiguringCell: class {
 
 protocol PeopleConfigurationCell: class {
     static var reuseID: String { get }
-    func configure(with value: MPeople, complition:@escaping()->Void)
+    func configure(with value: MPeople, currentPeople: MPeople, complition:@escaping()->Void)
 }
 
 protocol ReprasentationModel {

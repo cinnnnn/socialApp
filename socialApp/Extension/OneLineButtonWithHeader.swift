@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OneLineButton: UIButton {
+class OneLineButtonWithHeader: UIButton {
     
     let headerLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let infoLabel  = UILabel(labelText: "", textFont: .avenirRegular(size: 16), textColor: .myLabelColor())

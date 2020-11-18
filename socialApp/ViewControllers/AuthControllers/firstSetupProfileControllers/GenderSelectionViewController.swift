@@ -14,9 +14,9 @@ class GenderSelectionViewController: UIViewController {
     var userID: String
     
     let headerLabel = UILabel(labelText: MLabels.genderSelectionHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
-    let genderSelectionButton = OneLineButton(header: "Гендер", info: "Парень")
-    let sexualitySelectionButton = OneLineButton(header: "Сексуальность", info: "Гетеро")
-    let lookingForSelectionButton = OneLineButton(header: "Кого ты ищешь", info: "Девушку")
+    let genderSelectionButton = OneLineButtonWithHeader(header: "Гендер", info: "Парень")
+    let sexualitySelectionButton = OneLineButtonWithHeader(header: "Сексуальность", info: "Гетеро")
+    let lookingForSelectionButton = OneLineButtonWithHeader(header: "Кого ты ищешь", info: "Девушку")
     let nameLabel = UILabel(labelText: "Вымышленное имя", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let nameTextField = OneLineTextField(isSecureText: false, tag: 1)
     weak var navigationDelegate: NavigationDelegate?

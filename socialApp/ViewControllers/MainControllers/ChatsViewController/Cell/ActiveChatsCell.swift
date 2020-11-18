@@ -15,7 +15,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     
     let frendImage = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
     let frendName = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
-    let lastMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .myLabelColor(), linesCount: 2)
+    let lastMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .myGrayColor(), linesCount: 2)
     let dateOfMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
     let unreadMessage = CountOfUnreadMessageView()
     var dateOfLastMessage: Date?
@@ -63,6 +63,9 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         }
         
         unreadMessage.setupCount(countOfMessages: value.unreadChatMessageCount)
+       
+        lastMessage.textColor = value.unreadChatMessageCount > 0 ? .myLabelColor() : .myGrayColor()
+    
     }
     
     required init?(coder: NSCoder) {
@@ -117,7 +120,7 @@ extension ActiveChatsCell {
             frendName.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             
             lastMessage.leadingAnchor.constraint(equalTo: frendName.leadingAnchor),
-            lastMessage.trailingAnchor.constraint(equalTo: dateOfMessage.trailingAnchor),
+            lastMessage.trailingAnchor.constraint(equalTo: unreadMessage.leadingAnchor, constant: -5),
             lastMessage.topAnchor.constraint(equalTo: frendName.bottomAnchor, constant: 5),
             
             dateOfMessage.trailingAnchor.constraint(equalTo: trailingAnchor,constant: -10),

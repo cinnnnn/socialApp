@@ -1,0 +1,111 @@
+{
+  "products" : [
+
+  ],
+  "settings" : {
+    "_timeRate" : 5
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "D235B529",
+      "localizations" : [
+
+      ],
+      "name" : "Flava premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "100",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "B9343752",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "one year premium",
+              "displayName" : "One year",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Flava_premium_1_year",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "One year",
+          "subscriptionGroupID" : "D235B529",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "50",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "59540EA7",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Three month premium",
+              "displayName" : "Three month",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Flava_premium_90_days",
+          "recurringSubscriptionPeriod" : "P3M",
+          "referenceName" : "Three months",
+          "subscriptionGroupID" : "D235B529",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "30",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "43BFF34C",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "One month premium",
+              "displayName" : "One month",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Flava_premium_30_day",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "One month",
+          "subscriptionGroupID" : "D235B529",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "10",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "E783BA16",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Seven days premium",
+              "displayName" : "Seven days",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "Flava_premium_7_days",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Seven days",
+          "subscriptionGroupID" : "D235B529",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 0
+  }
+}

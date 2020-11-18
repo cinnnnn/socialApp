@@ -22,8 +22,8 @@ class EditProfileViewController: UIViewController {
     let aboutLabel = UILabel(labelText: "Обо мне:",
                              textFont: .avenirRegular(size: 16),
                              textColor: .myGrayColor())
-    let genderButton = OneLineButton(header: "Гендер", info: "")
-    let sexualityButton = OneLineButton(header: "Сексуальная ориентация", info: "")
+    let genderButton = OneLineButtonWithHeader(header: "Гендер", info: "")
+    let sexualityButton = OneLineButtonWithHeader(header: "Сексуальная ориентация", info: "")
     let nameTextField = OneLineTextField(isSecureText: false,
                                          tag: 1,
                                          placeHoledText: "Ты можешь быть кем угодно...")
