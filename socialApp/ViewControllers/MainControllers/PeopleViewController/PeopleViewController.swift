@@ -46,6 +46,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
 
     deinit {
         peopleDelegate?.removeListener()
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewDidLoad() {
@@ -73,17 +74,13 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
         guard let acceptChatDelegate = acceptChatDelegate else { fatalError("Can't get acceptChatDelegate")}
         
+        NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
+        NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
         peopleDelegate?.setupListener(currentPeople: currentPeople,
                                             likeDislikeDelegate: likeDislikeDelegate,
                                             acceptChatsDelegate: acceptChatDelegate)
     }
     
-    private func updateCurrentPeople() {
-        print(#function)
-        if let people = UserDefaultsService.shared.getMpeople() {
-            currentPeople = people
-        }
-    }
     
     //MARK: setupCollectionView
     private func setupCollectionView() {
@@ -169,20 +166,6 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     }
 }
 
-//MARK: set empty data
-extension PeopleViewController {
-    private func checkPeopleNearbyIsEmpty()  {
-        //if nearby people empty set
-        guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
-        if sortedPeopleNearby.isEmpty {
-            infoLabel.isHidden = false
-            infoLabel.text = MLabels.emptyNearbyPeople.rawValue
-        } else {
-            infoLabel.isHidden = true
-        }
-    }
-}
-
 //MARK: setUIForVisivleCells
 extension PeopleViewController {
     private func setUIForVisivleCells(items: [NSCollectionLayoutVisibleItem], point: CGPoint, enviroment: NSCollectionLayoutEnvironment) {
@@ -197,6 +180,35 @@ extension PeopleViewController {
         }
     }
 }
+
+extension PeopleViewController {
+    //MARK: updateCurrentPeople
+    @objc private func updateCurrentPeople() {
+        if let people = UserDefaultsService.shared.getMpeople() {
+            currentPeople = people
+        }
+    }
+    
+    //MARK: premiumIsUpdated
+    @objc private func premiumIsUpdated() {
+        reloadData(reloadSection: true, animating: false)
+        print("Premium is updated on people screen")
+    }
+    
+    //MARK: checkPeopleNearbyIsEmpty
+    private func checkPeopleNearbyIsEmpty()  {
+        //if nearby people empty set
+        guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
+        if sortedPeopleNearby.isEmpty {
+            infoLabel.isHidden = false
+            infoLabel.text = MLabels.emptyNearbyPeople.rawValue
+        } else {
+            infoLabel.isHidden = true
+        }
+    }
+}
+
+
 
 //MARK: - PeopleCollectionViewDelegate
 extension PeopleViewController: PeopleCollectionViewDelegate {
@@ -299,7 +311,7 @@ extension PeopleViewController {
         }
     }
 }
-//MARK: likeDislikeDelegate
+//MARK: - likeDislikeDelegate
 extension PeopleViewController: PeopleButtonTappedDelegate {
     
     func timeTapped() {
@@ -325,7 +337,7 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
     
     func dislikePeople(people: MPeople) {
         print("Dislike: \(people.displayName)")
-      
+        print("have active sub: \(PurchasesService.shared.checkActiveSubscribtionWithApphud())")
        /*
         //save dislike from firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,

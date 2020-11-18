@@ -40,7 +40,6 @@ class PurchasesService: NSObject {
         let productRequest = SKProductsRequest(productIdentifiers: identifieres)
         productRequest.delegate = self
         productRequest.start()
-        
     }
     
     public func purches(product identifier: MPurchases) {
@@ -49,34 +48,12 @@ class PurchasesService: NSObject {
         paymentQueue.add(payment)
     }
     
-    public func purcheWithApphud(product identifier: MPurchases, complition: @escaping (Result<ApphudSubscription, Error>) -> Void) {
-        guard let product = products.filter({$0.productIdentifier == identifier.rawValue}).first else { return }
-        Apphud.purchase(product) { result in
-            if let subscribtion = result.subscription {
-                complition(.success(subscribtion))
-            } else {
-                if let error = result.error {
-                    complition(.failure(error))
-                }
-            }
-        }
-    }
-    
     public func restorePurchases() {
         paymentQueue.restoreCompletedTransactions()
     }
+
     
-    public func restorePurchasesWithApphud(complition: @escaping(Result<[ApphudSubscription], Error>)-> Void) {
-        Apphud.restorePurchases { (subscristions, nonRenewPurches, error) in
-            if let error = error {
-                complition(.failure(error))
-            } else if let subscristions = subscristions {
-                complition(.success(subscristions))
-            }
-        }
-    }
-    
-    public func checkSubscribtion(currentPeople: MPeople) {
+    public func checkSubscribtion(currentPeople: MPeople, complition: @escaping (Result<(),Error>) -> Void) {
         restorePurchasesWithApphud { result in
             switch result {
             
@@ -93,13 +70,23 @@ class PurchasesService: NSObject {
                     }
                 }
                 
+                //if status don't change, go to complition
+                guard currentPeople.isGoldMember != isGoldMember,
+                      currentPeople.goldMemberDate != goldMemberDate,
+                      currentPeople.goldMemberPurches != goldMemberPurches else {
+                    complition(.success(()))
+                    return
+                }
+                
+                //if satus change, save to firestore
                 FirestoreService.shared.saveIsGoldMember(id: currentPeople.senderId,
                                                          isGoldMember: isGoldMember,
                                                          goldMemberDate: goldMemberDate,
                                                          goldMemberPurches: goldMemberPurches) {[weak self] result in
                     switch result {
                     
-                    case .success():
+                    case .success(_):
+                        
                         //setup timer to update subscribtion on goldMemberDate
                         if isGoldMember {
                             if let timerToUpdateSubscribtion = self?.timerToUpdateSubscribtion {
@@ -110,18 +97,21 @@ class PurchasesService: NSObject {
                                 self?.timerToUpdateSubscribtion = Timer.scheduledTimer(withTimeInterval: timeIntervalToFire,
                                                                                        repeats: false,
                                                                                        block: { timer in
-                                                                                        self?.checkSubscribtion(currentPeople: currentPeople)
+                                                                                        self?.checkSubscribtion(currentPeople: currentPeople, complition: { _ in })
                                                                                        })
                                 self?.timerToUpdateSubscribtion?.tolerance = 10
                             }
                         }
-                    case .failure(_):
-                        break
+                        complition(.success(()))
+                        
+                    case .failure(let error):
+                        complition(.failure(error))
                     }
                 }
                 
-            case .failure(_):
+            case .failure(let error):
                 PopUpService.shared.showInfo(text: "Не удалось проверить подписку")
+                complition(.failure(error))
             }
         }
     }
@@ -165,6 +155,34 @@ class PurchasesService: NSObject {
     }
 }
 
+//MARK: purchases with apphud
+extension PurchasesService {
+    
+    public func purcheWithApphud(product identifier: MPurchases, complition: @escaping (Result<ApphudPurchaseResult, Error>) -> Void) {
+        guard let product = products.filter({$0.productIdentifier == identifier.rawValue}).first else { return }
+        Apphud.purchase(product) { result in
+            complition(.success(result))
+        }
+    }
+    
+    public func restorePurchasesWithApphud(complition: @escaping(Result<[ApphudSubscription], Error>)-> Void) {
+        Apphud.restorePurchases { (subscristions, nonRenewPurches, error) in
+            if let error = error {
+                complition(.failure(error))
+            } else if let subscristions = subscristions {
+                complition(.success(subscristions))
+            }
+        }
+    }
+    
+    public func checkActiveSubscribtionWithApphud() -> Bool {
+        Apphud.hasActiveSubscription()
+    }
+    
+}
+
+
+//MARK: paymentQueue func
 extension PurchasesService {
     private func failedPurchases(transaction: SKPaymentTransaction) {
         if let paymentError = transaction.error as NSError? {
@@ -190,6 +208,7 @@ extension PurchasesService {
     }
 }
 
+//MARK: SKPaymentTransactionObserver
 extension PurchasesService: SKPaymentTransactionObserver {
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
        /* current use Apphud queue functioal
@@ -218,6 +237,7 @@ extension PurchasesService: SKPaymentTransactionObserver {
     }
 }
 
+//MARK: SKProductsRequestDelegate
 extension PurchasesService: SKProductsRequestDelegate {
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         

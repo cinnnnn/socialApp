@@ -99,9 +99,9 @@ class PurchasesViewController: UIViewController {
             self?.loadingView.hide()
             switch result {
             
-            case .success(let subscristion):
-                if subscristion.isActive() {
-                    let dateToContine = subscristion.expiresDate
+            case .success(let resultOfpurches):
+                if let subscribtion = resultOfpurches.subscription, subscribtion.isActive(){
+                    let dateToContine = subscribtion.expiresDate
                     
                     FirestoreService.shared.saveIsGoldMember(id: strongCurrentPeople.senderId,
                                                              isGoldMember: true,
@@ -109,7 +109,7 @@ class PurchasesViewController: UIViewController {
                                                              goldMemberPurches: identifier ) { result in
                         switch result {
                         
-                        case .success():
+                        case .success(_):
                             PopUpService.shared.showInfo(text: "Flava premium приобретен до \(dateToContine.getShortFormattedDate())")
                         case .failure(let error):
                             PopUpService.shared.showInfo(text: "Подписка удалась, но при сохранении возникла ошибка: \(error.localizedDescription)")
@@ -188,8 +188,8 @@ extension PurchasesViewController {
                                                              goldMemberPurches: MPurchases(rawValue: subscription.productId)) { result in
                         switch result {
                         
-                        case .success():
-                            PopUpService.shared.showInfo(text: "Flava premium восстановлен до \(subscription.expiresDate)")
+                        case .success(_):
+                            PopUpService.shared.showInfo(text: "Flava premium восстановлен до \(subscription.expiresDate.getShortFormattedDate())")
                         case .failure(let error):
                             PopUpService.shared.showInfo(text: "Flava premium восстановлен, но при сохранении возникла ошибка: \(error.localizedDescription)")
                         }

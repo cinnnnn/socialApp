@@ -117,9 +117,11 @@ extension Date {
     
     func checkIsToday() -> Bool {
         let calendar = Calendar.current
-        print(calendar.timeZone.secondsFromGMT())
-        print(self)
         return calendar.isDateInToday(self)
+    }
+    
+    func getDateYearAgo(years: Int) -> Date? {
+        Calendar.current.date(byAdding: .year, value: years, to: self)
     }
     
     func getPeriodToDate(periodMinuteCount: Int) -> String {

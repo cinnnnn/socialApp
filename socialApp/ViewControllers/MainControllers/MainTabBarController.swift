@@ -118,10 +118,14 @@ extension MainTabBarController {
                                                     switch result {
                                                     
                                                     case .success(_):
-                                                        self?.loadIsComplite(isComplite: true)
-                                                        self?.setupControllers(currentPeople: mPeople)
-                                                        self?.subscribeToPushNotification()
-                                                        PurchasesService.shared.checkSubscribtion(currentPeople: mPeople)
+                                                        
+                                                        PurchasesService.shared.checkSubscribtion(currentPeople: mPeople) { _ in
+                                                            
+                                                            self?.loadIsComplite(isComplite: true)
+                                                            self?.setupControllers(currentPeople: mPeople)
+                                                            self?.subscribeToPushNotification()
+        
+                                                        }
                                                         
                                                     case .failure(let error):
                                                         self?.showAlert(title: "Ошибка, мы работаем над ней",

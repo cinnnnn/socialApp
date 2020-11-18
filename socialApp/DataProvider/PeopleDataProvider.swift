@@ -31,12 +31,36 @@ class PeopleDataProvider: PeopleListenerDelegate {
     }
     
     func reloadData(reloadSection: Bool, animating: Bool) {
-        
         peopleCollectionViewDelegate?.reloadData(reloadSection: reloadSection, animating: animating)
     }
+}
+
+extension PeopleDataProvider {
+    //MARK:  get requestChats
+    func getPeople(currentPeople: MPeople,
+                   likeDislikeDelegate: LikeDislikeListenerDelegate,
+                   acceptChatsDelegate: AcceptChatListenerDelegate,
+                   complition: @escaping (Result<[MPeople], Error>) -> Void) {
     
+        FirestoreService.shared.getPeople(currentPeople: currentPeople,
+                                          likeChat: likeDislikeDelegate.likePeople,
+                                          dislikeChat: likeDislikeDelegate.dislikePeople,
+                                          acceptChat: acceptChatsDelegate.acceptChats) {[weak self] result in
+            switch result {
+            
+            case .success(let peoples):
+                self?.reloadData(reloadSection: true, animating: false)
+                complition(.success(peoples))
+            case .failure(let error):
+                complition(.failure(error))
+            }
+        }
+    }
+}
+
+//MARK: - work with listner
+extension PeopleDataProvider {
     
-    //MARK: work with listner
     func setupListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate) {
         
         ListenerService.shared.addPeopleListener(currentPeople: currentPeople,
@@ -56,4 +80,5 @@ class PeopleDataProvider: PeopleListenerDelegate {
         reloadData(reloadSection: false, animating: false)
         setupListener(currentPeople: currentPeople, likeDislikeDelegate: likeDislikeDelegate, acceptChatsDelegate: acceptChatsDelegate)
     }
+    
 }

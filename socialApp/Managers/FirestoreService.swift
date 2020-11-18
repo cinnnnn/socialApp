@@ -64,7 +64,7 @@ class FirestoreService {
                           isGoldMember: Bool,
                           goldMemberDate: Date?,
                           goldMemberPurches: MPurchases?,
-                          complition: @escaping (Result<Void, Error>) -> Void){
+                          complition: @escaping (Result<MPeople, Error>) -> Void){
         var dictinaryForSave: [String : Any] = [MPeople.CodingKeys.isGoldMember.rawValue: isGoldMember,
                                                 MPeople.CodingKeys.lastActiveDate.rawValue : Date()]
         if let goldMemberPurches = goldMemberPurches {
@@ -85,8 +85,13 @@ class FirestoreService {
                                                         people.goldMemberPurches = goldMemberPurches
                                                         people.lastActiveDate = Date()
                                                         UserDefaultsService.shared.saveMpeople(people: people)
+                                                        NotificationCenter.postCurrentUserNeedUpdate()
+                                                        NotificationCenter.postPremiumUpdate()
+                                                        complition(.success(people))
+                                                    } else {
+                                                        complition(.failure(UserDefaultsError.cantGetData))
                                                     }
-                                                    complition(.success(()))
+                                                    
                                                 }
                                             })
     }
@@ -119,6 +124,7 @@ class FirestoreService {
             people.lastLikeDate = Date()
             people.lastActiveDate = Date()
             UserDefaultsService.shared.saveMpeople(people: people)
+            NotificationCenter.postCurrentUserNeedUpdate()
             complition(.success(people))
         } else {
             complition(.failure(UserDefaultsError.cantGetData))
@@ -201,6 +207,7 @@ class FirestoreService {
                     people.sexuality = sexuality
                     people.lastActiveDate = Date()
                     UserDefaultsService.shared.saveMpeople(people: people)
+                    NotificationCenter.postCurrentUserNeedUpdate()
                 }
                 complition(.success(()))
             }
@@ -235,6 +242,7 @@ class FirestoreService {
                                                         people.searchSettings = searchSettings
                                                         people.lastActiveDate = Date()
                                                         UserDefaultsService.shared.saveMpeople(people: people)
+                                                        NotificationCenter.postCurrentUserNeedUpdate()
                                                         complition(.success(people))
                                                     } else {
                                                         complition(.failure(UserDefaultsError.cantGetData))
@@ -300,6 +308,66 @@ class FirestoreService {
         }
     }
     
+    //MARK: getPeople
+    func getPeople(currentPeople: MPeople,
+                   likeChat: [MChat],
+                   dislikeChat: [MChat],
+                   acceptChat: [MChat],
+                   complition: @escaping(Result<[MPeople], Error>)-> Void) {
+        
+        var peopleNearby: [MPeople] = []
+        let likeChatID = likeChat.map { chat -> String in
+            chat.friendId
+        }
+        let dislikeChatID = dislikeChat.map { chat -> String in
+            chat.friendId
+        }
+        let acceptChatID = acceptChat.map { chat -> String in
+            chat.friendId
+        }
+        
+        let usersID = likeChatID + dislikeChatID + acceptChatID
+        
+        let minRange = currentPeople.searchSettings[MSearchSettings.minRange.rawValue] ?? MSearchSettings.minRange.defaultValue
+        let maxRange = currentPeople.searchSettings[MSearchSettings.maxRange.rawValue] ?? MSearchSettings.maxRange.defaultValue
+        let maxYearDateofBirth = Date().getDateYearAgo(years: -maxRange) ?? Date().getDateYearAgo(years: -70)!
+        let minYearDateofBirth = Date().getDateYearAgo(years: -minRange) ?? Date().getDateYearAgo(years: -18)!
+        
+        usersReference.whereField(
+            MPeople.CodingKeys.senderId.rawValue,isNotEqualTo: currentPeople.senderId
+        ).whereField(
+            MPeople.CodingKeys.isActive.rawValue, isEqualTo: true
+        ).whereField(
+            MPeople.CodingKeys.isBlocked.rawValue, isEqualTo: false
+        ).whereField(
+            MPeople.CodingKeys.senderId.rawValue, notIn: [usersID]
+        ).whereField(
+            MPeople.CodingKeys.dateOfBirth.rawValue, isLessThanOrEqualTo: minYearDateofBirth
+        ).whereField(
+            MPeople.CodingKeys.dateOfBirth.rawValue, isGreaterThanOrEqualTo: maxYearDateofBirth
+        ).getDocuments { snapshot, error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                guard let snapshot = snapshot else {
+                    complition(.failure(FirestoreError.snapshotNotExist))
+                    return
+                }
+                snapshot.documents.forEach { queryDocumentSnapshot in
+                    if var people = MPeople(documentSnap: queryDocumentSnapshot) {
+                        //check distance to people and append to him 
+                        let distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: people)
+                        let range = currentPeople.searchSettings[MSearchSettings.distance.rawValue] ?? MSearchSettings.distance.defaultValue
+                        if distance <= range {
+                            people.distance = distance
+                            peopleNearby.append(people)
+                        }
+                    }
+                }
+                complition(.success(peopleNearby))
+            }
+        }
+    }
     
     //MARK: sendChatRequest
     func sendChatRequest(fromUser: MPeople, forFrend: MPeople, text:String?, complition: @escaping(Result<MMessage,Error>)->Void) {
@@ -887,7 +955,7 @@ extension FirestoreService {
                                                                         people.userImage = userImageString
                                                                         people.lastActiveDate = Date()
                                                                         UserDefaultsService.shared.saveMpeople(people: people)
-                                                                        
+                                                                        NotificationCenter.postCurrentUserNeedUpdate()
                                                                     }
                                                                     complition(.success(userImageString))
                                                                 }
@@ -917,6 +985,7 @@ extension FirestoreService {
                         people.userImage = imageURLString
                         people.lastActiveDate = Date()
                         UserDefaultsService.shared.saveMpeople(people: people)
+                        NotificationCenter.postCurrentUserNeedUpdate()
                     }
                     //if success, delete current image from gallery, but save in storage, for use in profileImage
                     self?.deleteFromGallery(imageURLString: imageURLString, deleteInStorage: false, id: id) { result in
@@ -966,6 +1035,7 @@ extension FirestoreService {
                                                                         people.gallery.append(userImageString)
                                                                         people.lastActiveDate = Date()
                                                                         UserDefaultsService.shared.saveMpeople(people: people)
+                                                                        NotificationCenter.postCurrentUserNeedUpdate()
                                                                     }
                                                                     complition(.success(userImageString))
                                                                 }
@@ -989,6 +1059,7 @@ extension FirestoreService {
                                                             people.gallery.append(imageLink)
                                                             people.lastActiveDate = Date()
                                                             UserDefaultsService.shared.saveMpeople(people: people)
+                                                            NotificationCenter.postCurrentUserNeedUpdate()
                                                         }
                                                         complition(.success(imageLink))
                                                     }
@@ -1013,6 +1084,7 @@ extension FirestoreService {
                                                         people.gallery.remove(at: indexOfImage)
                                                         people.lastActiveDate = Date()
                                                         UserDefaultsService.shared.saveMpeople(people: people)
+                                                        NotificationCenter.postCurrentUserNeedUpdate()
                                                     }
                                                     if deleteInStorage {
                                                         //delete image from storage

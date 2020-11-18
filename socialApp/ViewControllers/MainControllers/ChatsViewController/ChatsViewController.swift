@@ -40,6 +40,7 @@ class ChatsViewController: UIViewController {
     
     deinit {
         ListenerService.shared.removeAcceptChatsListener()
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -59,13 +60,11 @@ class ChatsViewController: UIViewController {
     
     private func setupListeners() {
         acceptChatDelegate?.setupAcceptChatListener()
+        NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
+        NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
     }
     
-    private func updateCurrentPeople() {
-        if let people = UserDefaultsService.shared.getMpeople() {
-            currentPeople = people
-        }
-    }
+  
     
     //MARK:  setupNavigationController
     private func setupNavigationController(){
@@ -84,7 +83,24 @@ class ChatsViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     
-    //MARK:  setupCollectionView
+    //MARK: objc
+    
+    @objc private func updateCurrentPeople() {
+        if let people = UserDefaultsService.shared.getMpeople() {
+            currentPeople = people
+        }
+    }
+    
+    @objc private func premiumIsUpdated() {
+        // reloadDataSource(changeType: .update)
+        print("Premium was updated on chats screen")
+    }
+}
+
+
+extension ChatsViewController {
+    
+    //MARK: - setupCollectionView
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.bounds,
                                           collectionViewLayout: setupCompositionalLayout(isEmptyActiveSection: false,
@@ -103,11 +119,7 @@ class ChatsViewController: UIViewController {
         collectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeader.reuseId)
     }
     
-}
-
-//MARK:  setupCompositionLayout
-extension ChatsViewController {
-    
+    //MARK:  setupCompositionLayout
     private func setupCompositionalLayout(isEmptyActiveSection: Bool, isEmptyNewSection: Bool) -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
             

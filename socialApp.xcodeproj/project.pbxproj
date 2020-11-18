@@ -20,8 +20,6 @@
 		FB18217D24B2268E00FFFC87 /* PeopleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217C24B2268E00FFFC87 /* PeopleViewController.swift */; };
 		FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB18217E24B2442800FFFC87 /* UIColorExtension.swift */; };
 		FB207CB42520C544007AA232 /* MessageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB207CB32520C544007AA232 /* MessageError.swift */; };
-		FB21A1AF24C8A152000A2E91 /* activeChats.json in Resources */ = {isa = PBXBuildFile; fileRef = FB21A1AE24C8A152000A2E91 /* activeChats.json */; };
-		FB21A1B324C8A2D1000A2E91 /* waitingChats.json in Resources */ = {isa = PBXBuildFile; fileRef = FB21A1B224C8A2D1000A2E91 /* waitingChats.json */; };
 		FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1B524E55F6C000A2E91 /* ActiveChatsCell.swift */; };
 		FB21A1B824E595CF000A2E91 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1B724E595CF000A2E91 /* Protocols.swift */; };
 		FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BA24E59705000A2E91 /* MChat.swift */; };
@@ -133,6 +131,7 @@
 		FBE5A1062559C15300060D97 /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE5A1052559C15100060D97 /* PushNotificationService.swift */; };
 		FBE5A1092559D87000060D97 /* UNNotificationAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE5A1082559D87000060D97 /* UNNotificationAttachment.swift */; };
 		FBE5A10F255ACF0600060D97 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FBE5A10E255ACF0600060D97 /* GoogleService-Info.plist */; };
+		FBED946A2565909A00DED60A /* NotificationCenterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBED94692565909A00DED60A /* NotificationCenterExtension.swift */; };
 		FBEF607824A602070005F947 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607724A602070005F947 /* AppDelegate.swift */; };
 		FBEF607A24A602070005F947 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607924A602070005F947 /* SceneDelegate.swift */; };
 		FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBEF607B24A602070005F947 /* AuthViewController.swift */; };
@@ -199,8 +198,6 @@
 		FB18217C24B2268E00FFFC87 /* PeopleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleViewController.swift; sourceTree = "<group>"; };
 		FB18217E24B2442800FFFC87 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		FB207CB32520C544007AA232 /* MessageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageError.swift; sourceTree = "<group>"; };
-		FB21A1AE24C8A152000A2E91 /* activeChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = activeChats.json; sourceTree = "<group>"; };
-		FB21A1B224C8A2D1000A2E91 /* waitingChats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = waitingChats.json; sourceTree = "<group>"; };
 		FB21A1B524E55F6C000A2E91 /* ActiveChatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveChatsCell.swift; sourceTree = "<group>"; };
 		FB21A1B724E595CF000A2E91 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		FB21A1BA24E59705000A2E91 /* MChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MChat.swift; sourceTree = "<group>"; };
@@ -319,6 +316,7 @@
 		FBE5A10E255ACF0600060D97 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FBE5A117255AE7D400060D97 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		FBE5A119255AE7D400060D97 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
+		FBED94692565909A00DED60A /* NotificationCenterExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenterExtension.swift; sourceTree = "<group>"; };
 		FBEF607424A602070005F947 /* Flava.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flava.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBEF607724A602070005F947 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBEF607924A602070005F947 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -611,6 +609,7 @@
 				FB8C3D782535F4C500184FB5 /* StringExtension.swift */,
 				FBE5A1082559D87000060D97 /* UNNotificationAttachment.swift */,
 				FB8C3D7C253606ED00184FB5 /* LocaleExtension.swift */,
+				FBED94692565909A00DED60A /* NotificationCenterExtension.swift */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -802,8 +801,6 @@
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
 				FB8C3D80253606FE00184FB5 /* Foundation */,
 				FB61B54524FE6921002761ED /* UIkit */,
-				FB21A1AE24C8A152000A2E91 /* activeChats.json */,
-				FB21A1B224C8A2D1000A2E91 /* waitingChats.json */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -913,14 +910,12 @@
 				FB37274E2540795A00906FBE /* loading_3blackHeart.json in Resources */,
 				FB37276A2540E27500906FBE /* logo_chatVC.json in Resources */,
 				FBEF608424A6020A0005F947 /* LaunchScreen.storyboard in Resources */,
-				FB21A1AF24C8A152000A2E91 /* activeChats.json in Resources */,
 				FB37275C2540D04D00906FBE /* logo_neverAlone.json in Resources */,
 				FB372751254079C100906FBE /* loading_simpleBlackCube.json in Resources */,
 				FB3727672540DFBD00906FBE /* logo_eye.json in Resources */,
 				FB37276D2540F57500906FBE /* loading_grayCircle.json in Resources */,
 				FBE5A10F255ACF0600060D97 /* GoogleService-Info.plist in Resources */,
 				FBEF608124A6020A0005F947 /* Assets.xcassets in Resources */,
-				FB21A1B324C8A2D1000A2E91 /* waitingChats.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1022,6 +1017,7 @@
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
 				FB8C3D3C2533961800184FB5 /* MSexuality.swift in Sources */,
 				FB79DA84252DED1700A7AA56 /* ProfileCell.swift in Sources */,
+				FBED946A2565909A00DED60A /* NotificationCenterExtension.swift in Sources */,
 				FBB26EAE254585DB0081CF2C /* ChatTitleStackView.swift in Sources */,
 				FB3C5BDB253F4A5A00CD44E6 /* MDefaultLayer.swift in Sources */,
 				FBB3D49F255D6AA900A3B832 /* MTopics.swift in Sources */,

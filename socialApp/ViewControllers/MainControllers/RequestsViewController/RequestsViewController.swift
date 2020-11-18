@@ -44,6 +44,7 @@ class RequestsViewController: UIViewController {
     
     deinit {
         requestChatDelegate?.removeListener()
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -67,12 +68,18 @@ class RequestsViewController: UIViewController {
         guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislikeDelegate is nil") }
         
         requestChatDelegate.setupListener(likeDislikeDelegate: likeDislikeDelegate)
+        NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
+        NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
     }
     
-    private func updateCurrentPeople() {
+    @objc private func updateCurrentPeople() {
         if let people = UserDefaultsService.shared.getMpeople() {
             currentPeople = people
         }
+    }
+    
+    @objc private func premiumIsUpdated() {
+        print("Premium is updated on request screen")
     }
     
     private func setupNavigationBar() {
