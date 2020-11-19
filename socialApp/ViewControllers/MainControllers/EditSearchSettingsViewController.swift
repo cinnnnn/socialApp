@@ -57,7 +57,7 @@ class EditSearchSettingsViewController: UIViewController {
     
     private func setup() {
         view.backgroundColor = .myWhiteColor()
-        distanceSlider.maximumValue = Float(MSearchSettings.distance.defaultValue)
+        distanceSlider.maximumValue = 400
         distanceSlider.minimumValue = 5
         distanceSlider.thumbTintColor = .myLabelColor()
         distanceSlider.tintColor = .myLabelColor()
@@ -74,8 +74,8 @@ class EditSearchSettingsViewController: UIViewController {
     private func setupData() {
         if let distance = currentPeople.searchSettings[MSearchSettings.distance.rawValue]{
             distanceSlider.value = Float(distance)
-            
-            if distance == Int(distanceSlider.maximumValue) {
+            let defaultDistance = Int(MSearchSettings.distance.defaultValue)
+            if distance == Int(distanceSlider.maximumValue) || distance == defaultDistance {
                 distanceLabel.text = "Максимальное расстояние: планета Земля"
             } else {
                 distanceLabel.text = "Максимальное расстояние: \(distance) км"
@@ -101,7 +101,13 @@ class EditSearchSettingsViewController: UIViewController {
     
     //MARK: saveData
     private func saveData() {
-        let distance = Int(distanceSlider.value)
+        var distance = 5
+        if distanceSlider.value == distanceSlider.maximumValue {
+             distance = Int(MSearchSettings.distance.defaultValue)
+        } else {
+             distance = Int(distanceSlider.value)
+        }
+        
         guard let lookingFor = lookingForButton.infoLabel.text else { return }
         guard let newLocation = currentLocationButton.infoLabel.text else { return }
         let currentLocationIndex = MVirtualLocation.index(location: newLocation)

@@ -243,7 +243,17 @@ extension ProfileViewController {
                 self?.collectionView.refreshControl?.endRefreshing()
                 self?.currentPeople = mPeople
                 UserDefaultsService.shared.saveMpeople(people: mPeople)
-                self?.updateSections()
+                PurchasesService.shared.checkSubscribtion(currentPeople: mPeople) { result in
+                    switch result {
+                    
+                    case .success():
+                    self?.updateSections()
+                        
+                    case .failure(let error):
+                    PopUpService.shared.showInfo(text: "Ошибка: \(error.localizedDescription)")
+                    }
+                }
+                
             case .failure(_):
                 break
             }

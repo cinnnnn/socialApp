@@ -31,9 +31,8 @@ extension FirestoreService {
             people.senderId
         }
         
-        var usersID = likeChatID + dislikeChatID + acceptChatID + peopleID + [currentPeople.senderId]
+        var usersID = likeChatID + dislikeChatID + acceptChatID + peopleID
         usersID.append(currentPeople.senderId)
-        
         
         let minRange = currentPeople.searchSettings[MSearchSettings.minRange.rawValue] ?? MSearchSettings.minRange.defaultValue
         let maxRange = currentPeople.searchSettings[MSearchSettings.maxRange.rawValue] ?? MSearchSettings.maxRange.defaultValue
@@ -45,7 +44,7 @@ extension FirestoreService {
         ).whereField(
             MPeople.CodingKeys.gender.rawValue, isEqualTo: MLookingFor.compareGender(gender: currentPeople.lookingFor)
         ).whereField(
-            MPeople.CodingKeys.senderId.rawValue, notIn: [usersID]
+            MPeople.CodingKeys.senderId.rawValue, notIn: usersID
         ).getDocuments { snapshot, error in
             if let error = error {
                 complition(.failure(error))

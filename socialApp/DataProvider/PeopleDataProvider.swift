@@ -51,7 +51,7 @@ extension PeopleDataProvider {
             
             case .success(let peoples):
                 self?.peopleNearby = peoples
-                self?.reloadData(reloadSection: false, animating: false)
+                self?.reloadData(reloadSection: peoples.count == 1 ? true : false, animating: false)
                 complition(.success(peoples))
             case .failure(let error):
                 complition(.failure(error))
@@ -71,7 +71,9 @@ extension PeopleDataProvider {
             
             case .success(let peoples):
                 self?.peopleNearby = peoples
-                self?.reloadData(reloadSection: false, animating: false)
+                print("Peoples count: \(peoples.count)")
+                //if peoples count 1, need reload section to correct update collectionView
+                self?.reloadData(reloadSection: true, animating: true)
                 complition(.success(peoples))
             case .failure(let error):
                 complition(.failure(error))

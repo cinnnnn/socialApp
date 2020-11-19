@@ -24,6 +24,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
+    var refreshControl = UIRefreshControl()
     
     init(currentPeople: MPeople,
          peopleDelegate: PeopleListenerDelegate?,
@@ -45,7 +46,6 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     }
 
     deinit {
-       // peopleDelegate?.removeListener()
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -68,6 +68,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     private func setup() {
         view.backgroundColor = .myWhiteColor()
         navigationItem.backButtonTitle = ""
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
     
  
@@ -89,11 +90,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                                         fatalError(error.localizedDescription)
                                     }
                                   })
-        /*
-        peopleDelegate?.setupListener(currentPeople: currentPeople,
-                                            likeDislikeDelegate: likeDislikeDelegate,
-                                            acceptChatsDelegate: acceptChatDelegate)
-         */
+   
     }
     
     
@@ -107,6 +104,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         collectionView.isScrollEnabled = false
         collectionView.isPagingEnabled = false
         collectionView.alwaysBounceVertical = false
+        collectionView.refreshControl = refreshControl
         
         collectionView.register(PeopleCell.self,
                                 forCellWithReuseIdentifier: PeopleCell.reuseID)
@@ -210,6 +208,24 @@ extension PeopleViewController {
         print("Premium is updated on people screen")
     }
     
+    @objc private func refresh() {
+        guard let likeDislikeDelegate = likeDislikeDelegate else { return }
+        guard let acceptChatDelegate = acceptChatDelegate else { return }
+        
+        peopleDelegate?.reloadPeople(currentPeople: currentPeople,
+                                     likeDislikeDelegate: likeDislikeDelegate,
+                                     acceptChatsDelegate: acceptChatDelegate,
+                                     complition: { [weak self] result in
+                                        switch result {
+                                        
+                                        case .success(_):
+                                            self?.refreshControl.endRefreshing()
+                                        case .failure(_):
+                                            PopUpService.shared.showInfo(text: "Не удалось обновить")
+                                        }
+                                     })
+    }
+    
     //MARK: checkPeopleNearbyIsEmpty
     private func checkPeopleNearbyIsEmpty()  {
         //if nearby people empty set
@@ -308,6 +324,7 @@ extension PeopleViewController {
                 }
                 //for correct reload last element, need reload section
                 self?.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false)
+                
                 if isMatch {
                     guard let currentPeople = self?.currentPeople else { return }
                     PopUpService.shared.showMatchPopUP(currentPeople: currentPeople, chat: likeChat) { messageDelegate, acceptChatDelegate in
@@ -353,8 +370,8 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
     func dislikePeople(people: MPeople) {
         print("Dislike: \(people.displayName)")
         print("have active sub: \(PurchasesService.shared.checkActiveSubscribtionWithApphud())")
-       /*
-        //save dislike from firestore
+       
+        //save dislike to firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
                                               requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result in
@@ -365,6 +382,8 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
                 self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
                     people.senderId == dislikeChat.friendId
                 }
+                //append to dislike array, for local changes
+                self?.likeDislikeDelegate?.dislikePeople.append(dislikeChat)
                 //for correct reload last element, need reload section
                 self?.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false)
                 
@@ -372,7 +391,7 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
                 fatalError(error.localizedDescription)
             }
         }
-         */
+         
     }
 }
 
