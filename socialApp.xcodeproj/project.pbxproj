@@ -26,6 +26,10 @@
 		FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BC24E59A31000A2E91 /* GradientView.swift */; };
 		FB21A1BF24E5ADE5000A2E91 /* NewChatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BE24E5ADE5000A2E91 /* NewChatsCell.swift */; };
 		FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */; };
+		FB3351AD256694AE007AFDDF /* FirestoreServiceExtensionImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351AC256694AE007AFDDF /* FirestoreServiceExtensionImage.swift */; };
+		FB3351B1256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */; };
+		FB3351B92566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */; };
+		FB3351C72566A355007AFDDF /* FirestoreServiceExtensionChatAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351C62566A355007AFDDF /* FirestoreServiceExtensionChatAction.swift */; };
 		FB37274E2540795A00906FBE /* loading_3blackHeart.json in Resources */ = {isa = PBXBuildFile; fileRef = FB37274D2540795A00906FBE /* loading_3blackHeart.json */; };
 		FB372751254079C100906FBE /* loading_simpleBlackCube.json in Resources */ = {isa = PBXBuildFile; fileRef = FB372750254079C100906FBE /* loading_simpleBlackCube.json */; };
 		FB37275C2540D04D00906FBE /* logo_neverAlone.json in Resources */ = {isa = PBXBuildFile; fileRef = FB37275B2540D04D00906FBE /* logo_neverAlone.json */; };
@@ -204,6 +208,10 @@
 		FB21A1BC24E59A31000A2E91 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		FB21A1BE24E5ADE5000A2E91 /* NewChatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatsCell.swift; sourceTree = "<group>"; };
 		FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
+		FB3351AC256694AE007AFDDF /* FirestoreServiceExtensionImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionImage.swift; sourceTree = "<group>"; };
+		FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionDeleteData.swift; sourceTree = "<group>"; };
+		FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionGetData.swift; sourceTree = "<group>"; };
+		FB3351C62566A355007AFDDF /* FirestoreServiceExtensionChatAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionChatAction.swift; sourceTree = "<group>"; };
 		FB37274D2540795A00906FBE /* loading_3blackHeart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_3blackHeart.json; sourceTree = "<group>"; };
 		FB372750254079C100906FBE /* loading_simpleBlackCube.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_simpleBlackCube.json; sourceTree = "<group>"; };
 		FB37275B2540D04D00906FBE /* logo_neverAlone.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = logo_neverAlone.json; path = "../../../../../../Графика/socialApp/animation/logo_neverAlone.json"; sourceTree = "<group>"; };
@@ -457,6 +465,34 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		FB3351B425669612007AFDDF /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				FBFFB857255ED105007343ED /* PurchaseButton.swift */,
+				FB8C3D5E25348F4900184FB5 /* OneLineButtonWithHeader.swift */,
+				FBFFB89A256535F8007343ED /* OneLikeButton.swift */,
+				FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */,
+				FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */,
+				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		FB3351B52566962B007AFDDF /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FBA2AA4A2554746E00A471F6 /* MatchViewPopUp.swift */,
+				FB37275F2540D7EC00906FBE /* AnimationCustomView.swift */,
+				FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageView.swift */,
+				FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */,
+				FBF2927E2512828C0090BA9E /* LoadingView.swift */,
+				FBB26EB62546EC220081CF2C /* PeopleView.swift */,
+				FB21A1BC24E59A31000A2E91 /* GradientView.swift */,
+				FB79DA9125307FF200A7AA56 /* GalleryScrollView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		FB37278B25419C4800906FBE /* People */ = {
 			isa = PBXGroup;
 			children = (
@@ -708,14 +744,10 @@
 		FBB26EE3254C12420081CF2C /* View */ = {
 			isa = PBXGroup;
 			children = (
-				FBA2AA4A2554746E00A471F6 /* MatchViewPopUp.swift */,
-				FB37275F2540D7EC00906FBE /* AnimationCustomView.swift */,
-				FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageView.swift */,
-				FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */,
-				FBF2927E2512828C0090BA9E /* LoadingView.swift */,
-				FBB26EB62546EC220081CF2C /* PeopleView.swift */,
-				FB21A1BC24E59A31000A2E91 /* GradientView.swift */,
-				FB79DA9125307FF200A7AA56 /* GalleryScrollView.swift */,
+				FB3351B52566962B007AFDDF /* View */,
+				FB3351B425669612007AFDDF /* Buttons */,
+				FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */,
+				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -777,6 +809,7 @@
 				FB21A1B924E596E3000A2E91 /* Models */,
 				FBB26ED5254AFD420081CF2C /* DataProvider */,
 				FBEF609424A90DD60005F947 /* ViewControllers */,
+				FBB26EE3254C12420081CF2C /* View */,
 				FBEF608F24A908100005F947 /* Extension */,
 				FBEF608024A6020A0005F947 /* Assets.xcassets */,
 				FBEF608224A6020A0005F947 /* LaunchScreen.storyboard */,
@@ -790,15 +823,10 @@
 		FBEF608F24A908100005F947 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				FBB26EE3254C12420081CF2C /* View */,
-				FBFFB857255ED105007343ED /* PurchaseButton.swift */,
-				FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */,
-				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
-				FB8C3D5E25348F4900184FB5 /* OneLineButtonWithHeader.swift */,
-				FBFFB89A256535F8007343ED /* OneLikeButton.swift */,
-				FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */,
-				FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */,
-				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
+				FB3351AC256694AE007AFDDF /* FirestoreServiceExtensionImage.swift */,
+				FB3351C62566A355007AFDDF /* FirestoreServiceExtensionChatAction.swift */,
+				FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */,
+				FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */,
 				FB8C3D80253606FE00184FB5 /* Foundation */,
 				FB61B54524FE6921002761ED /* UIkit */,
 			);
@@ -1023,6 +1051,7 @@
 				FBB3D49F255D6AA900A3B832 /* MTopics.swift in Sources */,
 				FB61A76C251BA06D005DCC78 /* ChatError.swift in Sources */,
 				FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */,
+				FB3351B1256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift in Sources */,
 				FB61A7F8251E3FE4005DCC78 /* MSender.swift in Sources */,
 				FBB3B269250F82B800440632 /* ListenerService.swift in Sources */,
 				FB79DA4F2524D1FB00A7AA56 /* UIScrollViewExtension.swift in Sources */,
@@ -1044,6 +1073,7 @@
 				FB8C3D5F25348F4900184FB5 /* OneLineButtonWithHeader.swift in Sources */,
 				FBB26ED8254B014A0081CF2C /* LikeDislikeChatDataProvider.swift in Sources */,
 				FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */,
+				FB3351AD256694AE007AFDDF /* FirestoreServiceExtensionImage.swift in Sources */,
 				FBB4F354251110AE00ACFE90 /* RadioButton.swift in Sources */,
 				FBEF607C24A602070005F947 /* AuthViewController.swift in Sources */,
 				FBB26EC3254843C60081CF2C /* AppSettingsViewController.swift in Sources */,
@@ -1053,6 +1083,7 @@
 				FBB26EE8254C12AC0081CF2C /* CountOfUnreadMessageView.swift in Sources */,
 				FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */,
 				FBFFB866255F15AC007343ED /* PurchasesService.swift in Sources */,
+				FB3351B92566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift in Sources */,
 				FB3727942541A18600906FBE /* MVirtualLocation.swift in Sources */,
 				FB8C3D832536089A00184FB5 /* UIDatePickerExtension.swift in Sources */,
 				FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */,
@@ -1105,6 +1136,7 @@
 				FB21A1BF24E5ADE5000A2E91 /* NewChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
 				FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */,
+				FB3351C72566A355007AFDDF /* FirestoreServiceExtensionChatAction.swift in Sources */,
 				FBFFB858255ED105007343ED /* PurchaseButton.swift in Sources */,
 				FBFFB862255F14F6007343ED /* MPurchases.swift in Sources */,
 				FB8C3D792535F4C500184FB5 /* StringExtension.swift in Sources */,

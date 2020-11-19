@@ -43,13 +43,35 @@ extension PeopleDataProvider {
                    complition: @escaping (Result<[MPeople], Error>) -> Void) {
     
         FirestoreService.shared.getPeople(currentPeople: currentPeople,
+                                          peoples: peopleNearby,
                                           likeChat: likeDislikeDelegate.likePeople,
                                           dislikeChat: likeDislikeDelegate.dislikePeople,
                                           acceptChat: acceptChatsDelegate.acceptChats) {[weak self] result in
             switch result {
             
             case .success(let peoples):
-                self?.reloadData(reloadSection: true, animating: false)
+                self?.peopleNearby = peoples
+                self?.reloadData(reloadSection: false, animating: false)
+                complition(.success(peoples))
+            case .failure(let error):
+                complition(.failure(error))
+            }
+        }
+    }
+    
+    func reloadPeople(currentPeople: MPeople,
+                    likeDislikeDelegate: LikeDislikeListenerDelegate,
+                    acceptChatsDelegate: AcceptChatListenerDelegate,
+                    complition: @escaping (Result<[MPeople], Error>) -> Void) {
+        peopleNearby = []
+        getPeople(currentPeople: currentPeople,
+                  likeDislikeDelegate: likeDislikeDelegate,
+                  acceptChatsDelegate: acceptChatsDelegate) {[weak self] result in
+            switch result {
+            
+            case .success(let peoples):
+                self?.peopleNearby = peoples
+                self?.reloadData(reloadSection: false, animating: false)
                 complition(.success(peoples))
             case .failure(let error):
                 complition(.failure(error))

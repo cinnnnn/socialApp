@@ -131,6 +131,15 @@ protocol PeopleListenerDelegate: class {
     var peopleNearby: [MPeople] { get set }
     var sortedPeopleNearby: [MPeople] { get }
     var peopleCollectionViewDelegate: PeopleCollectionViewDelegate? { get set }
+    //load data one time
+    func getPeople(currentPeople: MPeople,
+                   likeDislikeDelegate: LikeDislikeListenerDelegate,
+                   acceptChatsDelegate: AcceptChatListenerDelegate,
+                   complition: @escaping (Result<[MPeople], Error>) -> Void)
+    func reloadPeople(currentPeople: MPeople,
+                    likeDislikeDelegate: LikeDislikeListenerDelegate,
+                    acceptChatsDelegate: AcceptChatListenerDelegate,
+                    complition: @escaping (Result<[MPeople], Error>) -> Void)
     //work with listner
     func setupListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate) 
     func removeListener()

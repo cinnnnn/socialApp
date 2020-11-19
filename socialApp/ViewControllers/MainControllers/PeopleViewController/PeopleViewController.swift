@@ -45,7 +45,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     }
 
     deinit {
-        peopleDelegate?.removeListener()
+       // peopleDelegate?.removeListener()
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -70,15 +70,30 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         navigationItem.backButtonTitle = ""
     }
     
+ 
     private func setupListner() {
         guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
         guard let acceptChatDelegate = acceptChatDelegate else { fatalError("Can't get acceptChatDelegate")}
         
         NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
         NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
+        
+        peopleDelegate?.getPeople(currentPeople: currentPeople,
+                                  likeDislikeDelegate: likeDislikeDelegate,
+                                  acceptChatsDelegate: acceptChatDelegate,
+                                  complition: { result in
+                                    switch result {
+                                    case .success(_):
+                                        break
+                                    case .failure(let error):
+                                        fatalError(error.localizedDescription)
+                                    }
+                                  })
+        /*
         peopleDelegate?.setupListener(currentPeople: currentPeople,
                                             likeDislikeDelegate: likeDislikeDelegate,
                                             acceptChatsDelegate: acceptChatDelegate)
+         */
     }
     
     

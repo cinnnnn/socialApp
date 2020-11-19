@@ -129,10 +129,11 @@ class EditSearchSettingsViewController: UIViewController {
             switch result {
             
             case .success(let mPeople):
-                //reload peopleListner
-                self?.peopleListnerDelegate?.reloadListener(currentPeople: mPeople,
-                                                            likeDislikeDelegate: strongLikeDislikeDelegate,
-                                                            acceptChatsDelegate: strongAcceptChatsDelegate)
+                //reload people
+                self?.peopleListnerDelegate?.reloadPeople(currentPeople: mPeople,
+                                                          likeDislikeDelegate: strongLikeDislikeDelegate,
+                                                          acceptChatsDelegate: strongAcceptChatsDelegate,
+                                                          complition: { _ in })
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
