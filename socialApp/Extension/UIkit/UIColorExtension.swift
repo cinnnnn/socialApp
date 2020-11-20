@@ -80,9 +80,18 @@ extension UIColor {
         dynamicColor(light: #colorLiteral(red: 0.8, green: 0.6705882353, blue: 0.8470588235, alpha: 1), dark: #colorLiteral(red: 0.8, green: 0.6705882353, blue: 0.8470588235, alpha: 1))
     }
     
+    static func myFirstSatColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 0.5176470588, green: 0.4549019608, blue: 0.631372549, alpha: 1), dark: #colorLiteral(red: 0.5176470588, green: 0.4549019608, blue: 0.631372549, alpha: 1))
+    }
+    
     static func mySecondColor() -> UIColor {
         dynamicColor(light: #colorLiteral(red: 0.431372549, green: 0.7764705882, blue: 0.7921568627, alpha: 1), dark: #colorLiteral(red: 0.431372549, green: 0.7764705882, blue: 0.7921568627, alpha: 1))
     }
+    
+    static func mySecondSatColor() -> UIColor {
+        dynamicColor(light: #colorLiteral(red: 0.03137254902, green: 0.5921568627, blue: 0.6156862745, alpha: 1), dark: #colorLiteral(red: 0.03137254902, green: 0.5921568627, blue: 0.6156862745, alpha: 1))
+    }
+    
     
     static func myPurpleColor() -> UIColor {
         

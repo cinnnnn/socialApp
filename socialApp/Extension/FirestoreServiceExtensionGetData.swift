@@ -37,10 +37,18 @@ extension FirestoreService {
         let minRange = currentPeople.searchSettings[MSearchSettings.minRange.rawValue] ?? MSearchSettings.minRange.defaultValue
         let maxRange = currentPeople.searchSettings[MSearchSettings.maxRange.rawValue] ?? MSearchSettings.maxRange.defaultValue
         
+       
+        var needCheckActiveUser = MSearchSettings.onlyActive.defaultValue == 0 ? false : true
+        if let currentPeopleSettings = currentPeople.searchSettings[MSearchSettings.onlyActive.rawValue]  {
+            needCheckActiveUser = currentPeopleSettings == 0 ? false : true
+        }
+       
         usersReference.whereField(
             MPeople.CodingKeys.isActive.rawValue, isEqualTo: true
         ).whereField(
             MPeople.CodingKeys.isBlocked.rawValue, isEqualTo: false
+        ).whereField(
+            MPeople.CodingKeys.isIncognito.rawValue, isEqualTo: false
         ).whereField(
             MPeople.CodingKeys.gender.rawValue, isEqualTo: MLookingFor.compareGender(gender: currentPeople.lookingFor)
         ).whereField(
@@ -60,6 +68,11 @@ extension FirestoreService {
                         let range = currentPeople.searchSettings[MSearchSettings.distance.rawValue] ?? MSearchSettings.distance.defaultValue
                         //check dateOfBirth
                         let age = people.dateOfBirth.getAge()
+                        //check is active
+                        if needCheckActiveUser {
+                            guard  people.lastActiveDate.checkIsActiveUser() else { return }
+                        }
+                        
                         if distance <= range && age >= minRange && age <= maxRange {
                             people.distance = distance
                             peopleNearby.append(people)

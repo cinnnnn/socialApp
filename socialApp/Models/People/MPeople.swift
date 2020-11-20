@@ -169,11 +169,17 @@ struct MPeople: Hashable, Codable, SenderType {
             if let currentLocation = searchSettings[MSearchSettings.currentLocation.rawValue] {
                 self.searchSettings[MSearchSettings.currentLocation.rawValue] = currentLocation
             } else { self.searchSettings[MSearchSettings.currentLocation.rawValue] = MSearchSettings.currentLocation.defaultValue }
+            
+            if let onlyActive = searchSettings[MSearchSettings.onlyActive.rawValue] {
+                self.searchSettings[MSearchSettings.onlyActive.rawValue] = onlyActive
+            } else { self.searchSettings[MSearchSettings.onlyActive.rawValue] = MSearchSettings.onlyActive.defaultValue }
+            
         } else {
             self.searchSettings = [MSearchSettings.distance.rawValue : MSearchSettings.distance.defaultValue,
                                    MSearchSettings.minRange.rawValue : MSearchSettings.minRange.defaultValue,
                                    MSearchSettings.maxRange.rawValue : MSearchSettings.maxRange.defaultValue,
-                                   MSearchSettings.currentLocation.rawValue : MSearchSettings.currentLocation.defaultValue]
+                                   MSearchSettings.currentLocation.rawValue : MSearchSettings.currentLocation.defaultValue,
+                                   MSearchSettings.onlyActive.rawValue : MSearchSettings.onlyActive.defaultValue ]
         }
         
         if let authType = documet["authType"] as? String {

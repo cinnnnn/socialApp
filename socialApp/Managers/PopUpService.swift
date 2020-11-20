@@ -121,12 +121,12 @@ extension PopUpService {
                 text: okButtonText,
                 style: .init(
                     font: .avenirBold(size: 14),
-                    color: EKColor.init(.myLabelColor()),
+                    color: EKColor.init(.myWhiteColor()),
                     displayMode: EKAttributes.DisplayMode.inferred
                 )
             ),
-            backgroundColor: EKColor.init(.myWhiteColor()),
-            highlightedBackgroundColor: EKColor.init(.myLightGrayColor()),
+            backgroundColor: EKColor.init(.mySecondColor()),
+            highlightedBackgroundColor: EKColor.init(.mySecondSatColor()),
             displayMode: EKAttributes.DisplayMode.inferred,
             accessibilityIdentifier: "okButton")
         

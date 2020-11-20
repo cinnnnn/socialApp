@@ -21,11 +21,19 @@ class EditSearchSettingsViewController: UIViewController {
     let ageRangeLabel = UILabel(labelText: "Возрастной диапозон:",
                                 textFont: .avenirRegular(size: 16),
                                 textColor: .myGrayColor())
+    let onlyActiveLabel = UILabel(labelText: "Недавно активные",
+                                textFont: .avenirRegular(size: 16),
+                                textColor: .mySecondSatColor())
+    let onlyActiveAboutLabel = UILabel(labelText: "Показывать пользователей, которые были активны в течении недели",
+                                textFont: .avenirRegular(size: 16),
+                                textColor: .mySecondColor(),
+                                linesCount: 0)
+    let onlyActiveSwitch = UISwitch()
     let distanceSlider = UISlider()
     let ageRangePicker = UIPickerView()
     let lookingForButton = OneLineButtonWithHeader(header: "Ищу", info: "")
     let currentLocationButton = OneLineButtonWithHeader(header: "Локация", info: "")
-    
+    let scrollView = UIScrollView()
     
     init(currentPeople: MPeople,
          peopleListnerDelegate: PeopleListenerDelegate?,
@@ -50,9 +58,15 @@ class EditSearchSettingsViewController: UIViewController {
         setupConstraints()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        scrollView.updateContentView(bottomOffset: 45)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         saveData()
+        NotificationCenter.default.removeObserver(self)
     }
     
     private func setup() {
@@ -65,9 +79,19 @@ class EditSearchSettingsViewController: UIViewController {
         ageRangePicker.delegate = self
         ageRangePicker.dataSource = self
         
+        onlyActiveSwitch.tintColor = .mySecondSatColor()
+        onlyActiveSwitch.onTintColor = .mySecondColor()
+        onlyActiveSwitch.thumbTintColor = .myWhiteColor()
+        
         distanceSlider.addTarget(self, action: #selector(changeDistanceSlider), for: .valueChanged)
         lookingForButton.addTarget(self, action: #selector(lookingForTapped), for: .touchUpInside)
         currentLocationButton.addTarget(self, action: #selector(currentLocationTapped), for: .touchUpInside)
+        onlyActiveSwitch.addTarget(self, action: #selector(switchChanged), for: .touchUpInside)
+        
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.layoutSubviews()
+        
+        NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
     }
     
     //MARK: setupData
@@ -97,6 +121,13 @@ class EditSearchSettingsViewController: UIViewController {
     
             lookingForButton.infoLabel.text = currentPeople.lookingFor
         }
+        
+        if let onlyActive = currentPeople.searchSettings[MSearchSettings.onlyActive.rawValue] {
+            onlyActiveSwitch.isOn = onlyActive == 0 ? false : true
+        } else {
+            let defaultValue = MSearchSettings.onlyActive.defaultValue
+            onlyActiveSwitch.isOn = defaultValue == 0 ? false : true
+        }
     }
     
     //MARK: saveData
@@ -123,6 +154,7 @@ class EditSearchSettingsViewController: UIViewController {
                 self?.openSettingsAlert()
             }
         }
+        let onlyActive = onlyActiveSwitch.isOn ? 1 : 0
         
         let minRange = ageRangePicker.selectedRow(inComponent: 0) + MSearchSettings.minRange.defaultValue
         let maxRange = ageRangePicker.selectedRow(inComponent: 1) + MSearchSettings.minRange.defaultValue + 1
@@ -131,7 +163,8 @@ class EditSearchSettingsViewController: UIViewController {
                                                    minRange: minRange,
                                                    maxRange: maxRange,
                                                    currentLocation: currentLocationIndex,
-                                                   lookingFor: lookingFor) {[weak self] result in
+                                                   lookingFor: lookingFor,
+                                                   onlyActive: onlyActive) {[weak self] result in
             switch result {
             
             case .success(let mPeople):
@@ -221,27 +254,63 @@ extension EditSearchSettingsViewController {
         
         present(vc, animated: true, completion: nil)
     }
+    
+    @objc private func switchChanged() {
+        if !PurchasesService.shared.checkActiveSubscribtionWithApphud() {
+            PopUpService.shared.bottomPopUp(header: "Только активные пользователи",
+                                            text: "Данный фильтр доступен с подпиской Flava premium",
+                                            image: nil,
+                                            okButtonText: "Перейти на Flava premium") { [weak self] in
+                guard let currentPeople = self?.currentPeople else { return }
+                let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+                purchasVC.modalPresentationStyle = .fullScreen
+                self?.present(purchasVC, animated: true, completion: nil)
+            }
+            onlyActiveSwitch.isOn.toggle()
+        }
+    }
+    
+    @objc private func premiumIsUpdated() {
+        if let updatedUser = UserDefaultsService.shared.getMpeople() {
+            self.currentPeople = updatedUser
+            setupData()
+        }
+    }
 }
 
 //MARK: setupConstraints
 extension EditSearchSettingsViewController {
     private func setupConstraints() {
-        view.addSubview(distanceLabel)
-        view.addSubview(distanceSlider)
-        view.addSubview(ageRangeLabel)
-        view.addSubview(ageRangePicker)
-        view.addSubview(lookingForButton)
-        view.addSubview(currentLocationButton)
+        view.addSubview(scrollView)
+        scrollView.addSubview(distanceLabel)
+        scrollView.addSubview(distanceSlider)
+        scrollView.addSubview(ageRangeLabel)
+        scrollView.addSubview(ageRangePicker)
+        scrollView.addSubview(lookingForButton)
+        scrollView.addSubview(currentLocationButton)
+        scrollView.addSubview(onlyActiveLabel)
+        scrollView.addSubview(onlyActiveAboutLabel)
+        scrollView.addSubview(onlyActiveSwitch)
         
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         distanceLabel.translatesAutoresizingMaskIntoConstraints = false
         distanceSlider.translatesAutoresizingMaskIntoConstraints = false
         ageRangeLabel.translatesAutoresizingMaskIntoConstraints = false
         ageRangePicker.translatesAutoresizingMaskIntoConstraints = false
         lookingForButton.translatesAutoresizingMaskIntoConstraints = false
         currentLocationButton.translatesAutoresizingMaskIntoConstraints = false
+        onlyActiveLabel.translatesAutoresizingMaskIntoConstraints = false
+        onlyActiveAboutLabel.translatesAutoresizingMaskIntoConstraints = false
+        onlyActiveSwitch.translatesAutoresizingMaskIntoConstraints = false
+        
         
         NSLayoutConstraint.activate([
-            distanceLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+            distanceLabel.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 35),
             distanceLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             distanceLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
@@ -249,7 +318,7 @@ extension EditSearchSettingsViewController {
             distanceSlider.leadingAnchor.constraint(equalTo: distanceLabel.leadingAnchor),
             distanceSlider.trailingAnchor.constraint(equalTo: distanceLabel.trailingAnchor),
             
-            ageRangeLabel.topAnchor.constraint(equalTo: distanceSlider.bottomAnchor, constant: 25),
+            ageRangeLabel.topAnchor.constraint(equalTo: distanceSlider.bottomAnchor, constant: 35),
             ageRangeLabel.leadingAnchor.constraint(equalTo: distanceLabel.leadingAnchor),
             ageRangeLabel.trailingAnchor.constraint(equalTo: distanceLabel.trailingAnchor),
             
@@ -257,15 +326,26 @@ extension EditSearchSettingsViewController {
             ageRangePicker.leadingAnchor.constraint(equalTo: ageRangeLabel.leadingAnchor),
             ageRangePicker.trailingAnchor.constraint(equalTo: ageRangeLabel.trailingAnchor),
             
-            lookingForButton.topAnchor.constraint(equalTo: ageRangePicker.bottomAnchor, constant: 25),
+            lookingForButton.topAnchor.constraint(equalTo: ageRangePicker.bottomAnchor, constant: 35),
             lookingForButton.leadingAnchor.constraint(equalTo: ageRangePicker.leadingAnchor),
             lookingForButton.trailingAnchor.constraint(equalTo: ageRangePicker.trailingAnchor),
             lookingForButton.heightAnchor.constraint(equalToConstant: 70),
             
-            currentLocationButton.topAnchor.constraint(equalTo: lookingForButton.bottomAnchor, constant: 25),
+            currentLocationButton.topAnchor.constraint(equalTo: lookingForButton.bottomAnchor, constant: 35),
             currentLocationButton.leadingAnchor.constraint(equalTo: lookingForButton.leadingAnchor),
             currentLocationButton.trailingAnchor.constraint(equalTo: lookingForButton.trailingAnchor),
             currentLocationButton.heightAnchor.constraint(equalToConstant: 70),
+            
+            onlyActiveLabel.topAnchor.constraint(equalTo: currentLocationButton.bottomAnchor, constant: 35),
+            onlyActiveLabel.leadingAnchor.constraint(equalTo: distanceLabel.leadingAnchor),
+            onlyActiveLabel.trailingAnchor.constraint(equalTo: distanceLabel.trailingAnchor),
+            
+            onlyActiveSwitch.topAnchor.constraint(equalTo: onlyActiveLabel.topAnchor),
+            onlyActiveSwitch.trailingAnchor.constraint(equalTo: distanceLabel.trailingAnchor),
+            
+            onlyActiveAboutLabel.topAnchor.constraint(equalTo: onlyActiveLabel.bottomAnchor, constant: 10),
+            onlyActiveAboutLabel.leadingAnchor.constraint(equalTo: distanceLabel.leadingAnchor),
+            onlyActiveAboutLabel.trailingAnchor.constraint(equalTo: distanceLabel.trailingAnchor, constant: -55),
         ])
     }
 }

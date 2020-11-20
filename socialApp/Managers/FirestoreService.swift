@@ -72,6 +72,7 @@ class FirestoreService {
         if let goldMemberDate = goldMemberDate {
             dictinaryForSave[MPeople.CodingKeys.goldMemberDate.rawValue] = goldMemberDate
         }
+    
         usersReference.document(id).setData(dictinaryForSave,
                                             merge: true,
                                             completion: { error in
@@ -83,6 +84,7 @@ class FirestoreService {
                                                         people.goldMemberDate = goldMemberDate
                                                         people.goldMemberPurches = goldMemberPurches
                                                         people.lastActiveDate = Date()
+                                                        
                                                         UserDefaultsService.shared.saveMpeople(people: people)
                                                         NotificationCenter.postCurrentUserNeedUpdate()
                                                         NotificationCenter.postPremiumUpdate()
@@ -90,9 +92,30 @@ class FirestoreService {
                                                     } else {
                                                         complition(.failure(UserDefaultsError.cantGetData))
                                                     }
-                                                    
                                                 }
                                             })
+    }
+    
+    //MARK: setDefaultPremiumSettings
+    func setDefaultPremiumSettings(currentPeople: MPeople, complition: @escaping (Result<MPeople, Error>) -> Void) {
+        
+        var dictinaryForSave: [String : Any] = [:]
+        //set to default premium search settings
+        dictinaryForSave[MPeople.CodingKeys.searchSettings.rawValue] =  [MSearchSettings.onlyActive.rawValue : MSearchSettings.onlyActive.defaultValue]
+        //set to default incognito status
+        dictinaryForSave[MPeople.CodingKeys.isIncognito.rawValue] = false
+        usersReference.document(currentPeople.senderId).setData(dictinaryForSave,
+                                                                merge: true) { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                if var people = UserDefaultsService.shared.getMpeople() {
+                    people.searchSettings[MSearchSettings.onlyActive.rawValue] = MSearchSettings.onlyActive.defaultValue
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                    NotificationCenter.postCurrentUserNeedUpdate()
+                }
+            }
+        }
     }
     
     //MARK:  addLikeCount
@@ -188,11 +211,13 @@ class FirestoreService {
                               advert: String,
                               gender: String,
                               sexuality: String,
+                              isIncognito: Bool,
                               complition: @escaping (Result<Void,Error>) -> Void) {
         usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : name,
                                              MPeople.CodingKeys.advert.rawValue : advert,
                                              MPeople.CodingKeys.gender.rawValue : gender,
                                              MPeople.CodingKeys.sexuality.rawValue : sexuality,
+                                             MPeople.CodingKeys.isIncognito.rawValue : isIncognito,
                                              MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
                                             merge: true) { error in
             if let error = error {
@@ -204,6 +229,7 @@ class FirestoreService {
                     people.advert = advert
                     people.gender = gender
                     people.sexuality = sexuality
+                    people.isIncognito = isIncognito
                     people.lastActiveDate = Date()
                     UserDefaultsService.shared.saveMpeople(people: people)
                     NotificationCenter.postCurrentUserNeedUpdate()
@@ -220,12 +246,14 @@ class FirestoreService {
                             maxRange: Int,
                             currentLocation: Int,
                             lookingFor: String,
+                            onlyActive: Int,
                             complition: @escaping (Result<MPeople, Error>) -> Void) {
         
         let searchSettings = [MSearchSettings.distance.rawValue : distance,
                               MSearchSettings.minRange.rawValue : minRange,
                               MSearchSettings.maxRange.rawValue : maxRange,
-                              MSearchSettings.currentLocation.rawValue : currentLocation]
+                              MSearchSettings.currentLocation.rawValue : currentLocation,
+                              MSearchSettings.onlyActive.rawValue : onlyActive]
         
         usersReference.document(id).setData([MPeople.CodingKeys.lookingFor.rawValue : lookingFor,
                                              MPeople.CodingKeys.searchSettings.rawValue: searchSettings,

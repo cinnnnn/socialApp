@@ -59,7 +59,7 @@ class PurchasesService: NSObject {
     
     
     //MARK: check subscribtion
-    public func checkSubscribtion(currentPeople: MPeople, complition: @escaping (Result<(),Error>) -> Void) {
+    public func checkSubscribtion(currentPeople: MPeople, isRestore:Bool = false, complition: @escaping (Result<(),Error>) -> Void) {
       
         restorePurchasesWithApphud { result in
             switch result {
@@ -69,12 +69,17 @@ class PurchasesService: NSObject {
                 var goldMemberDate:Date?
                 var goldMemberPurches:MPurchases?
                 
+                //setToDefault premium value
+                //search settings
+                
                 if Apphud.hasActiveSubscription() {
+                    isGoldMember = true
                     if let subscribtion = Apphud.subscription() {
-                        isGoldMember = true
                         goldMemberDate = subscribtion.expiresDate
                         goldMemberPurches = MPurchases(rawValue: subscribtion.productId)
                     }
+                } else if isRestore {
+                    PopUpService.shared.showInfo(text: "Активные подписки не найдены")
                 }
                 
                 //if status don't change, go to complition
@@ -85,6 +90,11 @@ class PurchasesService: NSObject {
                     return
                 }
                 
+                //if is not premium user, change premium settings to defaults
+                if !isGoldMember {
+                    FirestoreService.shared.setDefaultPremiumSettings(currentPeople: currentPeople) { _ in }
+                }
+                
                 //if satus change, save to firestore
                 FirestoreService.shared.saveIsGoldMember(id: currentPeople.senderId,
                                                          isGoldMember: isGoldMember,
@@ -93,8 +103,12 @@ class PurchasesService: NSObject {
                     switch result {
                     
                     case .success(_):
-                        
+                        //if is restore, show popUp
                         complition(.success(()))
+                        
+                        if isRestore, isGoldMember {
+                            PopUpService.shared.showInfo(text: "Flava premium восстановлен")
+                        }
                         
                     case .failure(let error):
                         complition(.failure(error))
@@ -107,7 +121,6 @@ class PurchasesService: NSObject {
             }
         }
     }
-
 }
 
 //MARK: purchases with apphud

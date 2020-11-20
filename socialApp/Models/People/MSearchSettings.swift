@@ -13,6 +13,7 @@ enum MSearchSettings: String {
     case minRange
     case maxRange
     case currentLocation
+    case onlyActive
     
     var defaultValue: Int {
         switch self {
@@ -24,7 +25,9 @@ enum MSearchSettings: String {
             return 18
         case .maxRange:
             return 70
-        case.currentLocation:
+        case .currentLocation:
+            return 0
+        case .onlyActive:
             return 0
         }
     }

@@ -33,6 +33,14 @@ class EditProfileViewController: UIViewController {
     let editPhotosButton = RoundButton(newBackgroundColor: .myFirstButtonColor(),
                                        title: "Редактировать фото",
                                        titleColor: .myFirstButtonLabelColor())
+    let incognitoLabel = UILabel(labelText: "Инкогнито",
+                                textFont: .avenirRegular(size: 16),
+                                textColor: .mySecondSatColor())
+    let incognitoAboutLabel = UILabel(labelText: "Тебя не увидят другие пользователи, пока ты не поставишь им лайк",
+                                textFont: .avenirRegular(size: 16),
+                                textColor: .mySecondColor(),
+                                linesCount: 0)
+    let incognitoSwitch = UISwitch()
     
     
     private var visibleRect: CGPoint?
@@ -58,13 +66,13 @@ class EditProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        registerNotificationForKeyboard()
+        registerNotification()
         setPeopleData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        removeNotificationForKeyboard()
+        NotificationCenter.default.removeObserver(self)
         savePeopleData()
     }
     
@@ -83,12 +91,15 @@ class EditProfileViewController: UIViewController {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.delegate = self
         scrollView.addSingleTapRecognizer(target: self, selector: #selector(endEditing))
+        scrollView.layoutSubviews()
         advertTextView.delegate = self
         nameTextField.delegate = self
         gelleryScrollView.clipsToBounds = true
         advertTextView.addDoneButton()
         editPhotosButton.layoutIfNeeded()
-        scrollView.layoutIfNeeded()
+        incognitoSwitch.tintColor = .mySecondSatColor()
+        incognitoSwitch.onTintColor = .mySecondColor()
+        incognitoSwitch.thumbTintColor = .myWhiteColor()
     }
     
     //MARK:  setupNavigationController
@@ -102,6 +113,7 @@ class EditProfileViewController: UIViewController {
         editPhotosButton.addTarget(self, action: #selector(editPhotosButtonTap), for: .touchUpInside)
         genderButton.addTarget(self, action: #selector(genderSelectTapped), for: .touchUpInside)
         sexualityButton.addTarget(self, action: #selector(sexualitySelectTapped), for: .touchUpInside)
+        incognitoSwitch.addTarget(self, action: #selector(incognitoSwitchChanged), for: .touchUpInside)
     }
 }
 
@@ -121,6 +133,7 @@ extension EditProfileViewController {
         advertTextView.text = people.advert
         genderButton.infoLabel.text = people.gender
         sexualityButton.infoLabel.text = people.sexuality
+        incognitoSwitch.isOn = people.isIncognito
 
     }
     
@@ -129,6 +142,7 @@ extension EditProfileViewController {
         let name = nameTextField.text ?? ""
         let advert = advertTextView.text ?? ""
         let id = currentPeople.senderId
+        let isIncognito = incognitoSwitch.isOn
         
         guard let gender = genderButton.infoLabel.text else { fatalError("Can't get gender from button")}
         guard let sexuality = sexualityButton.infoLabel.text else { fatalError("Can't get sexuality from button")}
@@ -136,7 +150,8 @@ extension EditProfileViewController {
                                                      name: name,
                                                      advert: advert,
                                                      gender: gender,
-                                                     sexuality: sexuality) { result in
+                                                     sexuality: sexuality,
+                                                     isIncognito: isIncognito ) { result in
             switch result {
             
             case .success():
@@ -150,15 +165,12 @@ extension EditProfileViewController {
 
 //MARK: NotificationCenter
 extension EditProfileViewController {
-    private func registerNotificationForKeyboard() {
+    private func registerNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(updateView(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateView(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
     }
     
-    private func removeNotificationForKeyboard() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
 }
 
 //MARK: objc extension
@@ -221,6 +233,30 @@ extension EditProfileViewController {
            // view.frame.origin.y = 0
         }
     }
+    
+    
+    //MARK: incognitoSwitchChanged
+    @objc private func incognitoSwitchChanged(){
+        if !PurchasesService.shared.checkActiveSubscribtionWithApphud() {
+            PopUpService.shared.bottomPopUp(header: "Режим инкогнито",
+                                            text: "Данный режим доступен с подпиской Flava premium",
+                                            image: nil,
+                                            okButtonText: "Перейти на Flava premium") { [weak self] in
+                guard let currentPeople = self?.currentPeople else { return }
+                let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+                purchasVC.modalPresentationStyle = .fullScreen
+                self?.present(purchasVC, animated: true, completion: nil)
+            }
+            incognitoSwitch.isOn.toggle()
+        }
+    }
+    
+    @objc private func premiumIsUpdated() {
+        if let updatedUser = UserDefaultsService.shared.getMpeople() {
+            self.currentPeople = updatedUser
+            setPeopleData()
+        }
+    }
 }
 
 
@@ -260,6 +296,9 @@ extension EditProfileViewController {
         advertTextView.translatesAutoresizingMaskIntoConstraints = false
         genderButton.translatesAutoresizingMaskIntoConstraints = false
         sexualityButton.translatesAutoresizingMaskIntoConstraints = false
+        incognitoLabel.translatesAutoresizingMaskIntoConstraints = false
+        incognitoAboutLabel.translatesAutoresizingMaskIntoConstraints = false
+        incognitoSwitch.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(scrollView)
         scrollView.addSubview(gelleryScrollView)
@@ -270,6 +309,9 @@ extension EditProfileViewController {
         scrollView.addSubview(advertTextView)
         scrollView.addSubview(genderButton)
         scrollView.addSubview(sexualityButton)
+        scrollView.addSubview(incognitoLabel)
+        scrollView.addSubview(incognitoAboutLabel)
+        scrollView.addSubview(incognitoSwitch)
         
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -282,12 +324,12 @@ extension EditProfileViewController {
             gelleryScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
             gelleryScrollView.heightAnchor.constraint(equalTo: gelleryScrollView.widthAnchor),
             
-            editPhotosButton.topAnchor.constraint(equalTo: gelleryScrollView.bottomAnchor, constant: 25),
+            editPhotosButton.topAnchor.constraint(equalTo: gelleryScrollView.bottomAnchor, constant: 35),
             editPhotosButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             editPhotosButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             editPhotosButton.heightAnchor.constraint(equalTo: editPhotosButton.widthAnchor, multiplier: 1.0/7.28),
             
-            nameLabel.topAnchor.constraint(equalTo: editPhotosButton.bottomAnchor, constant: 25),
+            nameLabel.topAnchor.constraint(equalTo: editPhotosButton.bottomAnchor, constant: 35),
             nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
@@ -296,7 +338,7 @@ extension EditProfileViewController {
             nameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             nameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            aboutLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 25),
+            aboutLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 35),
             aboutLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             aboutLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
@@ -304,15 +346,26 @@ extension EditProfileViewController {
             advertTextView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             advertTextView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            genderButton.topAnchor.constraint(equalTo: advertTextView.bottomAnchor, constant: 25),
+            genderButton.topAnchor.constraint(equalTo: advertTextView.bottomAnchor, constant: 35),
             genderButton.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             genderButton.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
             genderButton.heightAnchor.constraint(equalToConstant: 70),
             
-            sexualityButton.topAnchor.constraint(equalTo: genderButton.bottomAnchor, constant: 15),
+            sexualityButton.topAnchor.constraint(equalTo: genderButton.bottomAnchor, constant: 25),
             sexualityButton.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             sexualityButton.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
-            sexualityButton.heightAnchor.constraint(equalToConstant: 70)
+            sexualityButton.heightAnchor.constraint(equalToConstant: 70),
+            
+            incognitoLabel.topAnchor.constraint(equalTo: sexualityButton.bottomAnchor, constant: 35),
+            incognitoLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            incognitoLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
+            
+            incognitoSwitch.topAnchor.constraint(equalTo: incognitoLabel.topAnchor),
+            incognitoSwitch.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
+            
+            incognitoAboutLabel.topAnchor.constraint(equalTo: incognitoSwitch.bottomAnchor, constant: 10),
+            incognitoAboutLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            incognitoAboutLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -55),
         ])
     }
 }

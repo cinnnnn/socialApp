@@ -19,7 +19,7 @@ class PushNotificationService: NSObject {
     private override init() {
         super.init()
         notificationCenter.delegate = self
-        addActionCategory()
+      //  addActionCategory()
     }
     
     //MARK: requestNotificationAuth

@@ -141,29 +141,29 @@ extension PurchasesViewController {
                                      product: product,
                                      monthCount: 0,
                                      basePricePerMonth: monthProduct.price,
-                                     backgroundColor: .myPurpleColor(),
-                                     selectBackground: .myPinkColor())
+                                     backgroundColor: .mySecondColor(),
+                                     selectBackground: .mySecondSatColor())
             case MPurchases.oneMonth.rawValue:
                 oneMonthButton.setup(header: "Месяц",
                                      product: product,
                                      monthCount: 1,
                                      basePricePerMonth: monthProduct.price,
-                                     backgroundColor: .myPurpleColor(),
-                                     selectBackground: .myPinkColor())
+                                     backgroundColor: .mySecondColor(),
+                                     selectBackground: .mySecondSatColor())
             case MPurchases.threeMonth.rawValue:
                 threeMonthButton.setup(header: "Три месяца",
                                        product: product,
                                        monthCount: 3,
                                        basePricePerMonth: monthProduct.price,
-                                       backgroundColor: .myPurpleColor(),
-                                       selectBackground: .myPinkColor())
+                                       backgroundColor: .mySecondColor(),
+                                       selectBackground: .mySecondSatColor())
             case MPurchases.oneYear.rawValue:
                 oneYearButton.setup(header: "Год",
                                     product: product,
                                     monthCount: 12,
                                     basePricePerMonth: monthProduct.price,
-                                    backgroundColor: .myPurpleColor(),
-                                    selectBackground: .myPinkColor())
+                                    backgroundColor: .mySecondColor(),
+                                    selectBackground: .mySecondSatColor())
             default:
                 break
             }
@@ -174,34 +174,13 @@ extension PurchasesViewController {
     @objc func restorePurchaseTapped() {
         let strongCurrentPeople = currentPeople
         loadingView.show()
-        PurchasesService.shared.restorePurchasesWithApphud {[weak self] result in
+        
+        PurchasesService.shared.checkSubscribtion(currentPeople: strongCurrentPeople,
+                                                  isRestore: true) {[weak self] _ in
             self?.loadingView.hide()
-            switch result {
-            
-            case .success(_):
-                if Apphud.hasActiveSubscription(){
-                    guard let subscription = Apphud.subscription() else { fatalError() }
-                    PopUpService.shared.showInfo(text: "Подписка до: \(subscription.expiresDate.getShortFormattedDate()) была восстановлена")
-                    FirestoreService.shared.saveIsGoldMember(id: strongCurrentPeople.senderId,
-                                                             isGoldMember: true,
-                                                             goldMemberDate: subscription.expiresDate,
-                                                             goldMemberPurches: MPurchases(rawValue: subscription.productId)) { result in
-                        switch result {
-                        
-                        case .success(_):
-                            PopUpService.shared.showInfo(text: "Flava premium восстановлен до \(subscription.expiresDate.getShortFormattedDate())")
-                        case .failure(let error):
-                            PopUpService.shared.showInfo(text: "Flava premium восстановлен, но при сохранении возникла ошибка: \(error.localizedDescription)")
-                        }
-                    }
-                } else {
-                    PopUpService.shared.showInfo(text: "Активные подписки не найдены")
-                }
-            case .failure(let error):
-                PopUpService.shared.showInfo(text: "Ошибка \(error.localizedDescription)")
-            }
         }
     }
+
     
     @objc private func sevenDaysTapped() {
         purchase(identifier: .sevenDays)

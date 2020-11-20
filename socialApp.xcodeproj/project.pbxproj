@@ -30,6 +30,7 @@
 		FB3351B1256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */; };
 		FB3351B92566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */; };
 		FB3351C72566A355007AFDDF /* FirestoreServiceExtensionChatAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351C62566A355007AFDDF /* FirestoreServiceExtensionChatAction.swift */; };
+		FB3351CB25682E2F007AFDDF /* MGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351CA25682E2F007AFDDF /* MGallery.swift */; };
 		FB37274E2540795A00906FBE /* loading_3blackHeart.json in Resources */ = {isa = PBXBuildFile; fileRef = FB37274D2540795A00906FBE /* loading_3blackHeart.json */; };
 		FB372751254079C100906FBE /* loading_simpleBlackCube.json in Resources */ = {isa = PBXBuildFile; fileRef = FB372750254079C100906FBE /* loading_simpleBlackCube.json */; };
 		FB37275C2540D04D00906FBE /* logo_neverAlone.json in Resources */ = {isa = PBXBuildFile; fileRef = FB37275B2540D04D00906FBE /* logo_neverAlone.json */; };
@@ -212,6 +213,7 @@
 		FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionDeleteData.swift; sourceTree = "<group>"; };
 		FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionGetData.swift; sourceTree = "<group>"; };
 		FB3351C62566A355007AFDDF /* FirestoreServiceExtensionChatAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionChatAction.swift; sourceTree = "<group>"; };
+		FB3351CA25682E2F007AFDDF /* MGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MGallery.swift; sourceTree = "<group>"; };
 		FB37274D2540795A00906FBE /* loading_3blackHeart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_3blackHeart.json; sourceTree = "<group>"; };
 		FB372750254079C100906FBE /* loading_simpleBlackCube.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading_simpleBlackCube.json; sourceTree = "<group>"; };
 		FB37275B2540D04D00906FBE /* logo_neverAlone.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = logo_neverAlone.json; path = "../../../../../../Графика/socialApp/animation/logo_neverAlone.json"; sourceTree = "<group>"; };
@@ -508,6 +510,7 @@
 				FB8C3D3B2533961800184FB5 /* MSexuality.swift */,
 				FB8C3D382533958900184FB5 /* MLookingFor.swift */,
 				FB8C3D8D25372BEB00184FB5 /* MReports.swift */,
+				FB3351CA25682E2F007AFDDF /* MGallery.swift */,
 			);
 			path = People;
 			sourceTree = "<group>";
@@ -1055,6 +1058,7 @@
 				FB61A7F8251E3FE4005DCC78 /* MSender.swift in Sources */,
 				FBB3B269250F82B800440632 /* ListenerService.swift in Sources */,
 				FB79DA4F2524D1FB00A7AA56 /* UIScrollViewExtension.swift in Sources */,
+				FB3351CB25682E2F007AFDDF /* MGallery.swift in Sources */,
 				FBB26EB42546E49B0081CF2C /* MAdmin.swift in Sources */,
 				FB79DA88252DEDB900A7AA56 /* SettingsCell.swift in Sources */,
 				FB8C3D552533E09900184FB5 /* SelectionViewController.swift in Sources */,

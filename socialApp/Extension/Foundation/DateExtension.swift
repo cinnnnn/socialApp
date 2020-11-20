@@ -115,6 +115,16 @@ extension Date {
         }
     }
     
+    func checkIsActiveUser() -> Bool {
+        let calendar = Calendar.current
+        let timePeriod = calendar.dateComponents([.day], from: self, to: Date())
+        if let day = timePeriod.day, day <= 7 {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     func checkIsToday() -> Bool {
         let calendar = Calendar.current
         return calendar.isDateInToday(self)

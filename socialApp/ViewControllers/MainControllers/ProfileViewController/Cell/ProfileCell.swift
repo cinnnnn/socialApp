@@ -25,7 +25,7 @@ class ProfileCell: UICollectionViewCell {
                        linesCount: 0)
     let infoPremium = UILabel(labelText: "",
                               textFont: .avenirBold(size: 16),
-                              textColor: .myPurpleColor(),
+                              textColor: .mySecondSatColor(),
                               aligment: .left,
                               linesCount: 0)
     let animateProfileBack = AnimationCustomView(name: "loading_grayCircle",
