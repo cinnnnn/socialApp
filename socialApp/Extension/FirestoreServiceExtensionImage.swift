@@ -65,11 +65,11 @@ extension FirestoreService {
     }
     
     //MARK: updateAvatar
-    func updateAvatar(imageURLString: String, currentAvatarURL: String, id: String, complition:@escaping(Result<String, Error>) -> Void) {
+    func updateAvatar(galleryImage: MGallery, currentAvatarURL: String, id: String, complition:@escaping(Result<String, Error>) -> Void) {
         
         //set current image to profile image
         usersReference.document(id).setData(
-            [MPeople.CodingKeys.userImage.rawValue : imageURLString,
+            [MPeople.CodingKeys.userImage.rawValue : galleryImage.photo,
              MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
             merge: true,
             completion: {[weak self] error in
@@ -79,22 +79,26 @@ extension FirestoreService {
                 } else {
                     //edit current user from UserDefaults for save request to server
                     if var people = UserDefaultsService.shared.getMpeople() {
-                        people.userImage = imageURLString
+                        people.userImage = galleryImage.photo
                         people.lastActiveDate = Date()
                         UserDefaultsService.shared.saveMpeople(people: people)
                         NotificationCenter.postCurrentUserNeedUpdate()
                     }
                     //if success, delete current image from gallery, but save in storage, for use in profileImage
-                    self?.deleteFromGallery(imageURLString: imageURLString, deleteInStorage: false, id: id) { result in
+                    self?.deleteFromGallery(galleryImage: galleryImage, deleteInStorage: false, id: id) { result in
                         switch result {
                         
                         case .success(_):
                             //if delete is success, append old profile image to gallery
-                            self?.saveImageToGallery(image: nil, uploadedImageLink: currentAvatarURL, id: id) { result in
+                            self?.saveImageToGallery(image: nil,
+                                                     uploadedImageLink: currentAvatarURL,
+                                                     id: id,
+                                                     isPrivate: false,
+                                                     index: galleryImage.property.index) { result in
                                 switch result {
                                 
                                 case .success(_):
-                                    complition(.success(imageURLString))
+                                    complition(.success(galleryImage.photo))
                                 case .failure(let error):
                                     complition(.failure(error))
                                 }
@@ -109,7 +113,12 @@ extension FirestoreService {
     }
     
     //MARK:  saveImageToGallery
-    func saveImageToGallery(image: UIImage?, uploadedImageLink: String? = nil, id: String, complition: @escaping (Result<String, Error>) -> Void) {
+    func saveImageToGallery(image: UIImage?,
+                            uploadedImageLink: String? = nil,
+                            id: String,
+                            isPrivate: Bool,
+                            index: Int,
+                            complition: @escaping (Result<String, Error>) -> Void) {
         
         //if new image, than upload to Storage
         if uploadedImageLink == nil {
@@ -119,24 +128,27 @@ extension FirestoreService {
                 
                 case .success(let url):
                     let userImageString = url.absoluteString
-                    //save user to FireStore
-                    self?.usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayUnion([userImageString]),
-                                                               MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
-                                                              merge: true,
-                                                              completion: { error in
-                                                                if let error = error {
-                                                                    complition(.failure(error))
-                                                                } else {
-                                                                    //edit current user from UserDefaults for save request to server
-                                                                    if var people = UserDefaultsService.shared.getMpeople() {
-                                                                        people.gallery.append(userImageString)
-                                                                        people.lastActiveDate = Date()
-                                                                        UserDefaultsService.shared.saveMpeople(people: people)
-                                                                        NotificationCenter.postCurrentUserNeedUpdate()
-                                                                    }
-                                                                    complition(.success(userImageString))
-                                                                }
-                                                              })
+                    //save image to FireStore
+                    self?.usersReference.document(id).setData(
+                        [MPeople.CodingKeys.gallery.rawValue : [userImageString : [MGalleryPhotoProperty.CodingKeys.isPrivate.rawValue : isPrivate,
+                                                                                   MGalleryPhotoProperty.CodingKeys.index.rawValue : index]],
+                         MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
+                        merge: true,
+                        completion: { error in
+                            if let error = error {
+                                complition(.failure(error))
+                            } else {
+                                //edit current user from UserDefaults for save request to server
+                                if var people = UserDefaultsService.shared.getMpeople() {
+                                    people.gallery[userImageString] = MGalleryPhotoProperty(isPrivate: isPrivate,
+                                                                                            index: index)
+                                    people.lastActiveDate = Date()
+                                    UserDefaultsService.shared.saveMpeople(people: people)
+                                    NotificationCenter.postCurrentUserNeedUpdate()
+                                }
+                                complition(.success(userImageString))
+                            }
+                        })
                 case .failure(_):
                     fatalError("Cant upload Image")
                 }
@@ -144,31 +156,34 @@ extension FirestoreService {
         } else {
             //if image already upload, append link to gallery array
             guard let imageLink = uploadedImageLink else { return }
-            usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayUnion([imageLink]),
-                                                 MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
-                                                merge: true,
-                                                completion: { error in
-                                                    if let error = error {
-                                                        complition(.failure(error))
-                                                    } else {
-                                                        //edit current user from UserDefaults for save request to server
-                                                        if var people = UserDefaultsService.shared.getMpeople() {
-                                                            people.gallery.append(imageLink)
-                                                            people.lastActiveDate = Date()
-                                                            UserDefaultsService.shared.saveMpeople(people: people)
-                                                            NotificationCenter.postCurrentUserNeedUpdate()
-                                                        }
-                                                        complition(.success(imageLink))
-                                                    }
-                                                })
+            usersReference.document(id).setData(
+                [MPeople.CodingKeys.gallery.rawValue : [imageLink : [MGalleryPhotoProperty.CodingKeys.isPrivate.rawValue : isPrivate,
+                                                                     MGalleryPhotoProperty.CodingKeys.index.rawValue : index]],
+                 MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
+                merge: true,
+                completion: { error in
+                    if let error = error {
+                        complition(.failure(error))
+                    } else {
+                        //edit current user from UserDefaults for save request to server
+                        if var people = UserDefaultsService.shared.getMpeople() {
+                            people.gallery[imageLink] = MGalleryPhotoProperty(isPrivate: isPrivate,
+                                                                              index: index)
+                            people.lastActiveDate = Date()
+                            UserDefaultsService.shared.saveMpeople(people: people)
+                            NotificationCenter.postCurrentUserNeedUpdate()
+                        }
+                        complition(.success(imageLink))
+                    }
+                })
         }
     }
     
     //MARK: deleteFromGallery
-    func deleteFromGallery(imageURLString: String, deleteInStorage:Bool = true,  id: String, complition:@escaping(Result<String, Error>) -> Void) {
+    func deleteFromGallery(galleryImage: MGallery, deleteInStorage:Bool = true,  id: String, complition:@escaping(Result<String, Error>) -> Void) {
         
         //delete image from array in Firestore
-        usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : FieldValue.arrayRemove([imageURLString]),
+        usersReference.document(id).setData([MPeople.CodingKeys.gallery.rawValue : [galleryImage.photo : FieldValue.delete()],
                                              MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
                                             merge: true,
                                             completion: { error in
@@ -177,25 +192,24 @@ extension FirestoreService {
                                                 } else {
                                                     //edit current user from UserDefaults for save request to server
                                                     if var people = UserDefaultsService.shared.getMpeople() {
-                                                        guard let indexOfImage = people.gallery.firstIndex(of: imageURLString) else { return }
-                                                        people.gallery.remove(at: indexOfImage)
+                                                        people.gallery[galleryImage.photo] = nil
                                                         people.lastActiveDate = Date()
                                                         UserDefaultsService.shared.saveMpeople(people: people)
                                                         NotificationCenter.postCurrentUserNeedUpdate()
                                                     }
                                                     if deleteInStorage {
                                                         //delete image from storage
-                                                        StorageService.shared.deleteImage(link: imageURLString) { result in
+                                                        StorageService.shared.deleteImage(link: galleryImage.photo) { result in
                                                             switch result {
                                                             
                                                             case .success(_):
-                                                                complition(.success(imageURLString))
+                                                                complition(.success(galleryImage.photo))
                                                             case .failure(let error):
                                                                 complition(.failure(error))
                                                             }
                                                         }
                                                     } else {
-                                                        complition(.success(imageURLString))
+                                                        complition(.success(galleryImage.photo))
                                                     }
                                                 }
                                             })

@@ -35,7 +35,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     func configure(with value: MPeople, currentPeople: MPeople, complition: @escaping()-> Void) {
         
-        peopleView.configure(with: value, currentPeople: currentPeople) {
+        peopleView.configure(with: value, currentPeople: currentPeople, showPrivatePhoto: false) {
             complition()
         }
         

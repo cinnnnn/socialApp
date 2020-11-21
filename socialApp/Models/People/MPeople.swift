@@ -17,7 +17,7 @@ struct MPeople: Hashable, Codable, SenderType {
     var displayName: String
     var advert: String
     var userImage: String
-    var gallery: [String]
+    var gallery: [String : MGalleryPhotoProperty]
     var mail: String
     var gender: String
     var dateOfBirth: Date
@@ -46,7 +46,7 @@ struct MPeople: Hashable, Codable, SenderType {
          displayName: String,
          advert: String,
          userImage: String,
-         gallery: [String],
+         gallery: [String : MGalleryPhotoProperty],
          mail: String,
          gender: String,
          dateOfBirth: Date,
@@ -107,7 +107,14 @@ struct MPeople: Hashable, Codable, SenderType {
         if let displayName = documet["displayName"] as? String { self.displayName = displayName } else { displayName = ""}
         if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
         if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }
-        if let gallery = documet["gallery"] as? [String] { self.gallery = gallery } else { self.gallery = []}
+        if let gallery = documet["gallery"] as? [String : [String : Any]] {
+            self.gallery = [:]
+            for image in gallery {
+                self.gallery[image.key] = MGalleryPhotoProperty(json: image.value)
+            }
+        } else {
+            self.gallery = [:]
+        }
         if let gender = documet["gender"] as? String { self.gender = gender } else { self.gender = ""}
         if let dateOfBirth = documet["dateOfBirth"] as? Timestamp { self.dateOfBirth = dateOfBirth.dateValue() } else { self.dateOfBirth = Date()}
         if let sexuality = documet["sexuality"] as? String { self.sexuality = sexuality } else { self.sexuality = ""}
@@ -208,7 +215,14 @@ struct MPeople: Hashable, Codable, SenderType {
         if let displayName = documet["displayName"] as? String { self.displayName = displayName } else { displayName = ""}
         if let advert = documet["advert"] as? String { self.advert = advert } else { self.advert = ""}
         if let userImage = documet["userImage"] as? String { self.userImage = userImage } else { self.userImage = "" }
-        if let gallery = documet["gallery"] as? [String] { self.gallery = gallery } else { self.gallery = []}
+        if let gallery = documet["gallery"] as? [String : [String : Any]] {
+            self.gallery = [:]
+            for image in gallery {
+                self.gallery[image.key] = MGalleryPhotoProperty(json: image.value)
+            }
+        } else {
+            self.gallery = [:]
+        }
         if let gender = documet["gender"] as? String { self.gender = gender } else { self.gender = ""}
         if let dateOfBirth = documet["dateOfBirth"] as? Timestamp { self.dateOfBirth = dateOfBirth.dateValue() } else { self.dateOfBirth = Date()}
         if let sexuality = documet["sexuality"] as? String { self.sexuality = sexuality } else { self.sexuality = ""}
@@ -295,7 +309,7 @@ struct MPeople: Hashable, Codable, SenderType {
         guard let displayName = data["displayName"] as? String else { return nil }
         guard let advert = data["advert"] as? String else { return nil }
         guard let userImage = data["userImage"] as? String else { return nil }
-        guard let gallery = data["gallery"] as? [String] else { return nil}
+        guard let gallery = data["gallery"] as? [String: MGalleryPhotoProperty] else { return nil}
         guard let gender = data["gender"] as? String else { return nil }
         guard let dateOfBirth = data["dateOfBirth"] as? Date else { return nil }
         guard let sexuality = data["sexuality"] as? String else { return nil }

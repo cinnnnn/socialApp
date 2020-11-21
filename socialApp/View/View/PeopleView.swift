@@ -12,7 +12,7 @@ import SDWebImage
 class PeopleView: UIView {
     
     let scrollView = UIScrollView()
-    let galleryScrollView = GalleryScrollView(imagesURL: [])
+    let galleryScrollView = GalleryScrollView(profileImage: "", gallery: [:], showPrivate: false, showProtectButton: true)
     let peopleName = UILabel(labelText: "Name", textFont: .avenirBold(size: 30), linesCount: 0)
     var infoLabel = UILabel(labelText: "0.00KM", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
     var distanceLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
@@ -49,10 +49,13 @@ class PeopleView: UIView {
         scrollView.showsVerticalScrollIndicator = false
     }
     
-    func configure(with value: MPeople, currentPeople: MPeople, complition: @escaping()-> Void) {
+    func configure(with value: MPeople, currentPeople: MPeople, showPrivatePhoto: Bool, complition: @escaping()-> Void) {
         peopleName.text = value.displayName
         
-        galleryScrollView.setupImages(imagesURL: [value.userImage] + value.gallery) {
+        galleryScrollView.setupImages(profileImage: value.userImage,
+                                      gallery: value.gallery,
+                                      showPrivate: showPrivatePhoto,
+                                      showProtectButton: !showPrivatePhoto) {
             complition()
         }
         
@@ -70,7 +73,6 @@ class PeopleView: UIView {
         
         likeButton.actionPeople = value
         dislikeButton.actionPeople = value
-        
         
         let locationIndex = value.searchSettings[MSearchSettings.currentLocation.rawValue] ?? MSearchSettings.currentLocation.defaultValue
         let virtualLocation = MVirtualLocation(rawValue: locationIndex)

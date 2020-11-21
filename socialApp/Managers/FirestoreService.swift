@@ -103,7 +103,7 @@ class FirestoreService {
         //set to default premium search settings
         dictinaryForSave[MPeople.CodingKeys.searchSettings.rawValue] =  [MSearchSettings.onlyActive.rawValue : MSearchSettings.onlyActive.defaultValue]
         //set to default incognito status
-        dictinaryForSave[MPeople.CodingKeys.isIncognito.rawValue] = false
+        dictinaryForSave = [MPeople.CodingKeys.isIncognito.rawValue : false]
         usersReference.document(currentPeople.senderId).setData(dictinaryForSave,
                                                                 merge: true) { error in
             if let error = error {
@@ -111,6 +111,7 @@ class FirestoreService {
             } else {
                 if var people = UserDefaultsService.shared.getMpeople() {
                     people.searchSettings[MSearchSettings.onlyActive.rawValue] = MSearchSettings.onlyActive.defaultValue
+                    people.isIncognito = false
                     UserDefaultsService.shared.saveMpeople(people: people)
                     NotificationCenter.postCurrentUserNeedUpdate()
                 }

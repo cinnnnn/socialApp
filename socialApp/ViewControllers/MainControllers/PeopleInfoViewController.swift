@@ -57,7 +57,7 @@ class PeopleInfoViewController: UIViewController {
             case .success(let mPeople):
                 guard let currentPeople = self?.currentPeople else { return }
                 self?.people = mPeople
-                self?.peopleView.configure(with: mPeople, currentPeople: currentPeople) {
+                self?.peopleView.configure(with: mPeople, currentPeople: currentPeople, showPrivatePhoto: true) {
                     self?.loadingView.hide()
                 }
             case .failure(let error):

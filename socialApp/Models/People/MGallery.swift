@@ -8,7 +8,8 @@
 
 import Foundation
 
-enum MGallery: String, Codable {
-    case url
-    case isPrivate
+struct MGallery: Codable, Hashable{
+    var photo: String
+    var property : MGalleryPhotoProperty
+    
 }

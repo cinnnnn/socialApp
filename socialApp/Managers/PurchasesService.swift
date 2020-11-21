@@ -69,9 +69,6 @@ class PurchasesService: NSObject {
                 var goldMemberDate:Date?
                 var goldMemberPurches:MPurchases?
                 
-                //setToDefault premium value
-                //search settings
-                
                 if Apphud.hasActiveSubscription() {
                     isGoldMember = true
                     if let subscribtion = Apphud.subscription() {
@@ -83,8 +80,8 @@ class PurchasesService: NSObject {
                 }
                 
                 //if status don't change, go to complition
-                guard currentPeople.isGoldMember != isGoldMember,
-                      currentPeople.goldMemberDate != goldMemberDate,
+                guard currentPeople.isGoldMember != isGoldMember ||
+                      currentPeople.goldMemberDate != goldMemberDate ||
                       currentPeople.goldMemberPurches != goldMemberPurches else {
                     complition(.success(()))
                     return
@@ -92,6 +89,7 @@ class PurchasesService: NSObject {
                 
                 //if is not premium user, change premium settings to defaults
                 if !isGoldMember {
+                    print("\n CHANGE TO DEFAULT")
                     FirestoreService.shared.setDefaultPremiumSettings(currentPeople: currentPeople) { _ in }
                 }
                 

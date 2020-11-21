@@ -52,9 +52,13 @@ extension UIButton {
         setImage(image, for: .normal)
     }
     
-    convenience init(image: UIImage, tintColor: UIColor, backgroundColor: UIColor, cornerRadius: CGFloat = 0) {
+    convenience init(image: UIImage, isBackGroundImage: Bool = false, tintColor: UIColor, backgroundColor: UIColor, cornerRadius: CGFloat = 0) {
         self.init()
-        setImage(image, for: .normal)
+        if isBackGroundImage {
+            setBackgroundImage(image, for: .normal)
+        } else {
+            setImage(image, for: .normal)
+        }
         imageView?.tintColor = tintColor
         imageView?.backgroundColor = backgroundColor
         self.backgroundColor = backgroundColor

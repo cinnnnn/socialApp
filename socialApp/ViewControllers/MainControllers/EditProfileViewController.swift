@@ -15,7 +15,7 @@ import MapKit
 class EditProfileViewController: UIViewController {
     
     let scrollView = UIScrollView()
-    let gelleryScrollView = GalleryScrollView(imagesURL: [])
+    let gelleryScrollView = GalleryScrollView(profileImage: "", gallery: [:], showPrivate: true, showProtectButton: true)
     let nameLabel = UILabel(labelText: "Вымышленное имя:",
                             textFont: .avenirRegular(size: 16),
                             textColor: .myGrayColor())
@@ -125,9 +125,13 @@ extension EditProfileViewController {
         guard let people = UserDefaultsService.shared.getMpeople() else { return }
         currentPeople = people
         
-        gelleryScrollView.setupImages(imagesURL: [people.userImage] + people.gallery) {
-            self.gelleryScrollView.layoutSubviews()
-        }
+        gelleryScrollView.setupImages(profileImage: people.userImage,
+                                      gallery: people.gallery,
+                                      showPrivate: true,
+                                      showProtectButton: true,
+                                      complition: {
+                                        self.gelleryScrollView.layoutSubviews()
+        })
         
         nameTextField.text = people.displayName
         advertTextView.text = people.advert

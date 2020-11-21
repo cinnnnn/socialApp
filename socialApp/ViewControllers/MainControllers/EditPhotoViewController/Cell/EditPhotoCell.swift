@@ -12,7 +12,12 @@ import SDWebImage
 class EditPhotoCell: UICollectionViewCell {
     static let reuseID = "editPhotoCell"
     
-    let image = UIImageView(image: nil, contentMode: .scaleAspectFill)
+    let image = GalleryImageView(galleryImage: nil,
+                                 isPrivate: false,
+                                 showProtectButton: true,
+                                 showImage: true,
+                                 clipsToBounds: true,
+                                 contentMode: .scaleAspectFill)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,10 +38,10 @@ class EditPhotoCell: UICollectionViewCell {
         image.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
     }
     
-    func configure(imageStringURL: String, complition:@escaping() -> Void) {
-        guard let url = URL(string: imageStringURL) else { return }
-        image.clipsToBounds = true
+    func configure(galleryImage: String, isPrivate: Bool, complition:@escaping() -> Void) {
+        guard let url = URL(string: galleryImage) else { return }
         image.sd_setImage(with: url, completed: nil)
+        image.setup(isPrivate: isPrivate, showImage: true, showProtectButton: true)
         complition()
     }
 }

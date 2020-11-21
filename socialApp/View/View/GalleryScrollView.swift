@@ -11,13 +11,19 @@ import CoreImage.CIFilterBuiltins
 
 class GalleryScrollView: UIScrollView {
     
-    var images: [String] = []
+    var gallery: [String : MGalleryPhotoProperty] = [:]
+    var profileImage = ""
     
-    convenience init(imagesURL: [String]) {
+    convenience init(profileImage: String, gallery: [String : MGalleryPhotoProperty], showPrivate: Bool, showProtectButton: Bool) {
         self.init()
-        self.images = images
+        self.profileImage = profileImage
+        self.gallery = gallery
         setup()
-        setupImages(imagesURL: imagesURL, complition: nil)
+        setupImages(profileImage: profileImage,
+                    gallery: gallery,
+                    showPrivate: showPrivate,
+                    showProtectButton: showProtectButton,
+                    complition: nil)
     }
     
     private func setup() {
@@ -29,13 +35,39 @@ class GalleryScrollView: UIScrollView {
         bounces = false
     }
     
-    func setupImages(imagesURL: [String], complition:(()->Void)?) {
-        for imageStringURL in imagesURL {
-            if let url = URL(string: imageStringURL) {
-                let imageView = UIImageView()
-                imageView.contentMode = .scaleAspectFill
-                imageView.clipsToBounds = true
-                imageView.sd_setImage(with: url, completed: nil)
+    func setupImages(profileImage: String,
+                     gallery: [String : MGalleryPhotoProperty],
+                     showPrivate: Bool,
+                     showProtectButton: Bool,
+                     complition:(()->Void)?) {
+        //add profile image
+        if let url = URL(string: profileImage) {
+            let imageView = GalleryImageView(galleryImage: nil,
+                                             isPrivate: false,
+                                             showProtectButton: false,
+                                             showImage: true,
+                                             clipsToBounds: true,
+                                             contentMode: .scaleAspectFill)
+    
+            imageView.sd_setImage(with: url, completed: nil)
+            
+            addSubview(imageView)
+        }
+        //add gallery photo
+        for image in gallery {
+            if let url = URL(string: image.key) {
+                let imageView = GalleryImageView(galleryImage: nil,
+                                                 isPrivate: image.value.isPrivate,
+                                                 showProtectButton: showProtectButton,
+                                                 showImage: showPrivate,
+                                                 clipsToBounds: true,
+                                                 contentMode: .scaleAspectFill)
+                
+                imageView.sd_setImage(with: url) { _, _, _, _ in
+                   
+                    imageView.setup(isPrivate: image.value.isPrivate, showImage: showPrivate, showProtectButton: showProtectButton)
+                }
+                
                 addSubview(imageView)
             }
         }
@@ -46,7 +78,7 @@ class GalleryScrollView: UIScrollView {
     
     func prepareReuseScrollView() {
         subviews.forEach { view in
-            if let view = view as? UIImageView {
+            if let view = view as? GalleryImageView {
                 view.removeFromSuperview()
             }
         }
@@ -56,7 +88,7 @@ class GalleryScrollView: UIScrollView {
         super.layoutSubviews()
         var countOfView = 0
         for view in subviews {
-            if let view = view as? UIImageView {
+            if let view = view as? GalleryImageView {
                 
                 view.frame = CGRect(x: 0,
                                     y: frame.height * CGFloat(countOfView),
