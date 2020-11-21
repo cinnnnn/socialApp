@@ -13,7 +13,7 @@ class GalleryImageView: UIImageView {
     
     let privateButton = UIButton(image: UIImage(systemName: "lock.shield.fill",
                                                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 38, weight: .black)) ?? #imageLiteral(resourceName: "info"),
-                                 tintColor: .mySecondColor(),
+                                 tintColor: .myWhiteColor(),
                                  backgroundColor: .clear)
     var isPrivate = false
     var showProtectButton = false

@@ -17,11 +17,29 @@ class EditPhotoViewController: UIViewController {
     var collectionView: UICollectionView!
     var dataSource: UICollectionViewDiffableDataSource<SectionEditPhotos, MGallery>?
     
-    let addImageButton = UIButton(image: UIImage(systemName: "plus", withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .bold, scale: .default)) ?? #imageLiteral(resourceName: "plus"))
-    let tipsHeader = UILabel(labelText: "Советы", textFont: .avenirRegular(size: 16))
-    let tips = UILabel(labelText: MLabels.editPhotoTips.rawValue, textFont: .avenirRegular(size: 16), textColor: .myGrayColor(),linesCount: 0)
-    let legalHeader = UILabel(labelText: "Юридическая информация", textFont: .avenirRegular(size: 16))
-    let legal = UILabel(labelText: MLabels.editPhotoLegal.rawValue, textFont: .avenirRegular(size: 16), textColor: .myGrayColor(),linesCount: 0)
+    let addImageButton = UIButton(image: UIImage(systemName: "plus",
+                                                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 24,
+                                                                                                weight: .bold,
+                                                                                                scale: .default)) ?? #imageLiteral(resourceName: "plus"))
+    let tipsHeader = UILabel(labelText: "Советы",
+                             textFont: .avenirRegular(size: 16))
+    let tips = UILabel(labelText: MLabels.editPhotoTips.rawValue,
+                       textFont: .avenirRegular(size: 16),
+                       textColor: .myGrayColor(),
+                       linesCount: 0)
+    let privateHeader = UILabel(labelText: "Приватные фото",
+                                textFont: .avenirRegular(size: 16))
+    let privateLabel = UILabel(labelText: MLabels.privatePhotoTips.rawValue,
+                               textFont: .avenirRegular(size: 16),
+                               textColor: .myGrayColor(),
+                               linesCount: 0)
+    let legalHeader = UILabel(labelText: "Юридическая информация",
+                              textFont: .avenirRegular(size: 16))
+    let legal = UILabel(labelText: MLabels.editPhotoLegal.rawValue,
+                        textFont: .avenirRegular(size: 16),
+                        textColor: .myGrayColor(),
+                        linesCount: 0)
+    
     var images: [MGallery] = []
     var currentPeople: MPeople? {
         didSet {
@@ -52,6 +70,11 @@ class EditPhotoViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
@@ -62,7 +85,6 @@ class EditPhotoViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
     }
     
     
@@ -94,13 +116,17 @@ class EditPhotoViewController: UIViewController {
                                                              target: self,
                                                              action: #selector(saveButtonTapped)),
                                              animated: false)
+        } else {
+            NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdate))
         }
     }
     
     //MARK: updateProfileData
-    private func updateProfileData(isRenew: Bool, complition: @escaping ()->()) {
+     private func updateProfileData(isRenew: Bool, complition: (()->())?) {
         
-        if !isRenew {
+        if isRenew {
+            currentPeople = UserDefaultsService.shared.getMpeople()
+        } else {
             //if first setup Photo -> get from Firebase else get from UserDefaults
             if isFirstSetup {
                 FirestoreService.shared.getUserData(userID: userID, complition: {[weak self] result in
@@ -116,22 +142,23 @@ class EditPhotoViewController: UIViewController {
             } else {
                 currentPeople = UserDefaultsService.shared.getMpeople()
             }
-        } else {
-            currentPeople = UserDefaultsService.shared.getMpeople()
         }
-        
-        currentPeople = UserDefaultsService.shared.getMpeople()
-        updateDataSource(galleryImages: images)
         
         guard let people = currentPeople else { return }
         guard let imageURL = URL(string: people.userImage) else { return }
         profileImage.sd_setImage(with: imageURL, completed: nil)
+        
+        updateDataSource(galleryImages: images)
     
     }
 }
 
 //MARK: objc
 extension EditPhotoViewController {
+    @objc private func premiumIsUpdate() {
+        updateProfileData(isRenew: true, complition: nil)
+    }
+    
     @objc private func addImageButtonTap() {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -171,8 +198,10 @@ extension EditPhotoViewController {
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.37),
-                                               heightDimension: .fractionalWidth(0.37))
+//        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.37),
+//                                               heightDimension: .fractionalWidth(0.37))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(collectionView.frame.height),
+                                               heightDimension: .absolute(collectionView.frame.height))
         
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
@@ -242,11 +271,18 @@ extension EditPhotoViewController {
 
     
     private func editGalleryAlert(galleryImage: MGallery, index: Int, complition:@escaping()->Void) {
-        guard let people = UserDefaultsService.shared.getMpeople() else { return }
+        guard let people = currentPeople else { return }
+        let privateActionText = galleryImage.property.isPrivate ? "Сделать общедоступной " : "Сделать приватной"
+        
         let photoAlert = UIAlertController(title: nil,
                                            message: nil,
                                            preferredStyle: .actionSheet)
-        let cameraAction = UIAlertAction(title: "Сделать фото профиля",
+        
+        if galleryImage.property.isPrivate {
+            
+        }
+        //make profile image
+        let makeProfileAction = UIAlertAction(title: "Сделать основной",
                                          style: .default) { _ in
             FirestoreService.shared.updateAvatar(galleryImage: galleryImage,
                                                  currentAvatarURL: people.userImage,
@@ -262,7 +298,35 @@ extension EditPhotoViewController {
             }
                                          }
         
-        let libraryAction = UIAlertAction(title: "Удалить",
+        //make private image
+        let privateAction = UIAlertAction(title: privateActionText,
+                                         style: .default) { _ in
+            if people.isGoldMember {
+                FirestoreService.shared.makePhotoPrivate(currentUser: people,
+                                                         galleryPhoto: galleryImage) {[weak self] result in
+                    switch result {
+                    
+                    case .success(_):
+                        self?.updateProfileData(isRenew: true, complition: {
+                            complition()
+                        })
+                    case .failure(let error):
+                        PopUpService.shared.showInfo(text: "Ошибка: \(error.localizedDescription)")
+                    }
+                }
+            } else {
+                PopUpService.shared.bottomPopUp(header: "Сделай фото приватной и ее увидят только твои друзья",
+                                                text: "Данная функция доступна с подпиской Flava premium",
+                                                image: nil,
+                                                okButtonText: "Перейти на Flava premium") { [weak self] in
+                    let purchasVC = PurchasesViewController(currentPeople: people)
+                    purchasVC.modalPresentationStyle = .fullScreen
+                    self?.present(purchasVC, animated: true, completion: nil)
+                }
+            }
+        }
+        //delete image
+        let deleteAction = UIAlertAction(title: "Удалить",
                                           style: .default) { _ in
             FirestoreService.shared.deleteFromGallery(galleryImage: galleryImage,
                                                       id: people.senderId) {[weak self] result in
@@ -282,14 +346,18 @@ extension EditPhotoViewController {
                 }
             }
                                           }
+        
         let cancelAction = UIAlertAction(title: "Отмена",
-                                         style: .default) { _ in
-            
-        }
+                                         style: .default) { _ in }
         
         photoAlert.setMyStyle()
-        photoAlert.addAction(cameraAction)
-        photoAlert.addAction(libraryAction)
+        
+        //add private action only edit screen
+        if !isFirstSetup {
+            photoAlert.addAction(privateAction)
+        }
+        photoAlert.addAction(makeProfileAction)
+        photoAlert.addAction(deleteAction)
         photoAlert.addAction(cancelAction)
         
         present(photoAlert, animated: true, completion: nil)
@@ -322,8 +390,6 @@ extension EditPhotoViewController {
         
         present(photoAlert, animated: true, completion: nil)
     }
-    
-    
 }
 
 //MARK: collectionViewDelegate
@@ -426,14 +492,42 @@ extension EditPhotoViewController {
             tips.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
             tips.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
             tips.topAnchor.constraint(equalTo: tipsHeader.bottomAnchor, constant: 10),
-            
-            legalHeader.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
-            legalHeader.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
-            legalHeader.topAnchor.constraint(equalTo: tips.bottomAnchor, constant: 25),
-            
-            legal.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
-            legal.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
-            legal.topAnchor.constraint(equalTo: legalHeader.bottomAnchor, constant: 10),
+
         ])
+        
+        if isFirstSetup {
+            NSLayoutConstraint.activate([
+                legalHeader.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+                legalHeader.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+                legalHeader.topAnchor.constraint(equalTo: tips.bottomAnchor, constant: 25),
+                
+                legal.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+                legal.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+                legal.topAnchor.constraint(equalTo: legalHeader.bottomAnchor, constant: 10),
+            ])
+        } else {
+            privateHeader.translatesAutoresizingMaskIntoConstraints = false
+            privateLabel.translatesAutoresizingMaskIntoConstraints = false
+            scrollView.addSubview(privateHeader)
+            scrollView.addSubview(privateLabel)
+            
+            NSLayoutConstraint.activate([
+                privateHeader.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+                privateHeader.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+                privateHeader.topAnchor.constraint(equalTo: tips.bottomAnchor, constant: 25),
+                
+                privateLabel.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+                privateLabel.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+                privateLabel.topAnchor.constraint(equalTo: privateHeader.bottomAnchor, constant: 10),
+                
+                legalHeader.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+                legalHeader.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+                legalHeader.topAnchor.constraint(equalTo: privateLabel.bottomAnchor, constant: 25),
+                
+                legal.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
+                legal.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
+                legal.topAnchor.constraint(equalTo: legalHeader.bottomAnchor, constant: 10),
+            ])
+        }
     }
 }

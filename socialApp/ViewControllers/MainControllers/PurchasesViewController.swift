@@ -97,6 +97,7 @@ class PurchasesViewController: UIViewController {
         let strongCurrentPeople = currentPeople
         PurchasesService.shared.purcheWithApphud(product: identifier) {[weak self] result in
             self?.loadingView.hide()
+            self?.dismiss(animated: true, completion: nil)
             switch result {
             
             case .success(let resultOfpurches):

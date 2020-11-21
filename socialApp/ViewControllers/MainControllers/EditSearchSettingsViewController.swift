@@ -54,6 +54,7 @@ class EditSearchSettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+        setupNavigationController()
         setupData()
         setupConstraints()
     }
@@ -93,6 +94,13 @@ class EditSearchSettingsViewController: UIViewController {
         
         NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
     }
+    
+    //MARK:  setupNavigationController
+    private func setupNavigationController(){
+        navigationItem.title = "Параметры поиска"
+        navigationItem.backButtonTitle = ""
+    }
+    
     
     //MARK: setupData
     private func setupData() {

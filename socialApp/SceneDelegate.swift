@@ -30,6 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         switch result {
                         case .success(_):
                             Apphud.logout()
+                            UserDefaultsService.shared.deleteMpeople()
                             self?.window?.rootViewController = self?.makeRootVC(viewController: AuthViewController(), withNavContoller: true)
                             
                         case .failure(let error):

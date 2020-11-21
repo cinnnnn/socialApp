@@ -42,6 +42,7 @@ class AppSettingsViewController: UIViewController {
     private func setup() {
         view.backgroundColor = .myWhiteColor()
         
+        navigationItem.title = "Настройки"
         navigationItem.backButtonTitle = ""
         navigationItem.largeTitleDisplayMode = .never
     }
@@ -184,6 +185,7 @@ extension AppSettingsViewController {
                 switch result {
                 case .success(_):
                     Apphud.logout()
+                    UserDefaultsService.shared.deleteMpeople()
                     PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,
                                                                   acceptChats: acceptChatDelegate.acceptChats)
                 case .failure(let error):
@@ -345,6 +347,7 @@ extension AppSettingsViewController: ASAuthorizationControllerDelegate {
                         PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,
                                                                       acceptChats: acceptChatDelegate.acceptChats)
                         self?.deleteAllUserData()
+                        UserDefaultsService.shared.deleteMpeople()
                         Apphud.logout()
                     case .failure(let error):
                         self?.reAuthErrorAlert(text: error.localizedDescription)

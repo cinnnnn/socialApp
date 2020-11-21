@@ -13,6 +13,7 @@ class GalleryScrollView: UIScrollView {
     
     var gallery: [String : MGalleryPhotoProperty] = [:]
     var profileImage = ""
+    var pageControl = UIPageControl()
     
     convenience init(profileImage: String, gallery: [String : MGalleryPhotoProperty], showPrivate: Bool, showProtectButton: Bool) {
         self.init()
@@ -33,6 +34,11 @@ class GalleryScrollView: UIScrollView {
         layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         clipsToBounds = true
         bounces = false
+        
+        addSubview(pageControl)
+        pageControl.currentPage = 0
+        pageControl.numberOfPages = gallery.count
+        pageControl.hidesForSinglePage = false
     }
     
     func setupImages(profileImage: String,
@@ -50,8 +56,8 @@ class GalleryScrollView: UIScrollView {
                                              contentMode: .scaleAspectFill)
     
             imageView.sd_setImage(with: url, completed: nil)
-            
-            addSubview(imageView)
+            insertSubview(imageView, belowSubview: pageControl)
+          
         }
         //add gallery photo
         for image in gallery {
@@ -68,9 +74,12 @@ class GalleryScrollView: UIScrollView {
                     imageView.setup(isPrivate: image.value.isPrivate, showImage: showPrivate, showProtectButton: showProtectButton)
                 }
                 
-                addSubview(imageView)
+              //  addSubview(imageView)
+                insertSubview(imageView, belowSubview: pageControl)
             }
         }
+        pageControl.numberOfPages = gallery.count + 1
+
         if let complition = complition {
             complition()
         }
@@ -97,8 +106,8 @@ class GalleryScrollView: UIScrollView {
                 countOfView += 1
             }
         }
-        contentSize.height = frame.height * CGFloat(countOfView)
-        layer.cornerRadius = frame.width / MDefaultLayer.widthMultiplier.rawValue / 2
+        
     }
 }
+
 

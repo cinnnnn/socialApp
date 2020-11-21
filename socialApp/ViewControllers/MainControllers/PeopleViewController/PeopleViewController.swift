@@ -205,7 +205,6 @@ extension PeopleViewController {
     //MARK: premiumIsUpdated
     @objc private func premiumIsUpdated() {
         reloadData(reloadSection: true, animating: false)
-        print("Premium is updated on people screen")
     }
     
     @objc private func refresh() {
@@ -368,8 +367,6 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
     }
     
     func dislikePeople(people: MPeople) {
-        print("Dislike: \(people.displayName)")
-        print("have active sub: \(PurchasesService.shared.checkActiveSubscribtionWithApphud())")
        
         //save dislike to firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,

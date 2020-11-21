@@ -112,6 +112,32 @@ extension FirestoreService {
         )
     }
     
+    //MARK: makePhotoPrivate
+    func makePhotoPrivate(currentUser: MPeople, galleryPhoto: MGallery, complition: @escaping (Result<MPeople,Error>)-> Void) {
+        
+        var privateStatus = galleryPhoto.property.isPrivate
+        //switch status
+        privateStatus.toggle()
+        
+        usersReference.document(currentUser.senderId).setData(
+            [MPeople.CodingKeys.gallery.rawValue : [galleryPhoto.photo : [MGalleryPhotoProperty.CodingKeys.isPrivate.rawValue : privateStatus]]],
+            merge: true) { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                if var people = UserDefaultsService.shared.getMpeople() {
+                    people.gallery[galleryPhoto.photo] = MGalleryPhotoProperty(isPrivate: privateStatus,
+                                                                               index: galleryPhoto.property.index)
+                    UserDefaultsService.shared.saveMpeople(people: people)
+                    NotificationCenter.postCurrentUserNeedUpdate()
+                    complition(.success(people))
+                } else {
+                    complition(.failure(UserDefaultsError.cantGetData))
+                }
+            }
+        }
+    }
+    
     //MARK:  saveImageToGallery
     func saveImageToGallery(image: UIImage?,
                             uploadedImageLink: String? = nil,

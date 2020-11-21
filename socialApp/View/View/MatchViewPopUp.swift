@@ -14,7 +14,7 @@ class MatchViewPopUp: UIView {
     
     let friendPhoto = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
     let aboutFriend = UILabel(labelText: "", textFont: .avenirRegular(size: 16))
-    let info = UILabel(labelText: "Чувства взаимны. Будь смелей и веди себя хорошо", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
+    let info = UILabel(labelText: "Чувства взаимны. Будь смелей и веди себя хорошо", textFont: .avenirRegular(size: 16), textColor: .myGrayColor(), linesCount: 0)
     let dismisButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Позже", titleColor: .myGrayColor())
     let chatButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Начать общение", titleColor: .myLabelColor())
     weak var stackView: UIStackView?  {
