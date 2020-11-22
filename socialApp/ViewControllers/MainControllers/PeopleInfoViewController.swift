@@ -144,7 +144,8 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
         //save dislike from firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
-                                              requestChats: requestChatsDelegate.requestChats) {[weak self] result in
+                                              requestChats: requestChatsDelegate.requestChats,
+                                              viewControllerDelegate: self) {[weak self] result in
             switch result {
             
             case .success(_):

@@ -15,7 +15,7 @@ import MapKit
 class EditProfileViewController: UIViewController {
     
     let scrollView = UIScrollView()
-    let gelleryScrollView = GalleryScrollView(profileImage: "", gallery: [:], showPrivate: true, showProtectButton: true)
+    let gelleryScrollView = GalleryView(profileImage: "", gallery: [:], showPrivate: true, showProtectButton: true)
     let nameLabel = UILabel(labelText: "Вымышленное имя:",
                             textFont: .avenirRegular(size: 16),
                             textColor: .myGrayColor())

@@ -99,6 +99,7 @@ class EditPhotoViewController: UIViewController {
         addImageButton.imageView?.tintColor = .mySecondButtonLabelColor()
         addImageButton.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         addImageButton.clipsToBounds = true
+        profileImage.backgroundColor = .myGrayColor()
         profileImage.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         profileImage.clipsToBounds = true
         scrollView.showsVerticalScrollIndicator = false
@@ -171,12 +172,20 @@ extension EditPhotoViewController {
     }
     
     @objc private func saveButtonTapped() {
-        view.addCustomTransition(type: .fade)
-        dismiss(animated: true, completion: { [weak self] in
-            if let userID = self?.userID {
-                self?.navigationDelegate?.toMainTabBarController(userID: userID)
-            }
-        })
+        //if image is setup
+        if profileImage.image != nil {
+            view.addCustomTransition(type: .fade)
+            dismiss(animated: true, completion: { [weak self] in
+                if let userID = self?.userID {
+                    self?.navigationDelegate?.toMainTabBarController(userID: userID)
+                }
+            })
+        } else {
+            PopUpService.shared.bottomPopUp(header: "А как же фото?",
+                                            text: "Необходимо опубликовать минимум одно фото, если ты застенчив(а) либо обеспокоен(а) приватностью, опубликуй то, что тебя представляет",
+                                            image: nil,
+                                            okButtonText: "Добавить фото") {}
+        }
     }
 }
 

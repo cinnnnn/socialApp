@@ -77,6 +77,7 @@ extension ProfileViewController {
         
         collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: ProfileCell.reuseID)
         collectionView.register(SettingsCell.self, forCellWithReuseIdentifier: SettingsCell.reuseID)
+        collectionView.register(PremiumCell.self, forCellWithReuseIdentifier: PremiumCell.reuseID)
     }
     
     private func setupProfileSection() -> NSCollectionLayoutSection {
@@ -98,6 +99,24 @@ extension ProfileViewController {
         return section
     }
     
+     private func setupPremiumSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                              heightDimension: .estimated(170))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                               heightDimension: .estimated(170))
+        
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                        leading: 25,
+                                                        bottom: 25,
+                                                        trailing: 25)
+        
+        return section
+    }
     
     private func setupSettingsSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
@@ -127,6 +146,8 @@ extension ProfileViewController {
             switch section {
             case .profile:
                 return self?.setupProfileSection()
+            case .premium:
+                return self?.setupPremiumSection()
             case .settings:
                 return self?.setupSettingsSection()
             }
@@ -151,11 +172,20 @@ extension ProfileViewController {
                     cell.layoutIfNeeded()
                     return cell
                     
+                case .premium:
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PremiumCell.reuseID, for: indexpath) as? PremiumCell else { fatalError("Can't dequeue cell type PremiumCell")}
+                    guard let currentPeople = self?.currentPeople else { fatalError("current people is nil")}
+                    
+                    cell.configure(currentUser: currentPeople, tapSelector: #selector(self?.tapPremiumCell), delegate: self)
+                    return cell
+                    
                 case .settings:
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SettingsCell.reuseID, for: indexpath) as? SettingsCell else { fatalError("Can't dequeue cell type SettingsCell")}
                     
                     cell.configure(settings: item)
                     return cell
+                    
+                    
                 }
             }
         )
@@ -168,7 +198,7 @@ extension ProfileViewController {
         self.currentPeople = currentPeople
         
         guard var snapshot = dataSource?.snapshot() else { return }
-        snapshot.reloadSections([ .profile])
+        snapshot.reloadSections([ .profile, .premium])
         
         dataSource?.apply(snapshot,animatingDifferences: true)
     }
@@ -176,10 +206,12 @@ extension ProfileViewController {
     //MARK: updateDataSource
     private func updateDataSource() {
         var snapshot = NSDiffableDataSourceSnapshot<SectionsProfile, MProfileSettings>()
-        snapshot.appendSections([.profile,.settings])
+        snapshot.appendSections([.profile, .premium, .settings])
         snapshot.appendItems([MProfileSettings.profileInfo], toSection: .profile)
-        
-        snapshot.appendItems([MProfileSettings.setupProfile, MProfileSettings.setupSearch, MProfileSettings.appSettings],
+        snapshot.appendItems([MProfileSettings.premiumButton], toSection: .premium)
+        snapshot.appendItems([MProfileSettings.setupProfile,
+                              MProfileSettings.setupSearch,
+                              MProfileSettings.appSettings],
                              toSection: .settings)
         if currentPeople.isAdmin {
             snapshot.appendItems([MProfileSettings.adminPanel], toSection: .settings)
@@ -192,10 +224,19 @@ extension ProfileViewController {
 extension ProfileViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        print(indexPath)
         guard let section = SectionsProfile(rawValue: indexPath.section) else { return }
+        switch section {
         
-        if section == .settings {
-            guard let cell = MProfileSettings(rawValue: indexPath.row + 1) else { fatalError("unknown cell")}
+        case .profile:
+            return
+            
+        case .premium:
+           return
+            
+        case .settings:
+            let firstIndexOfSettingsInProfileSettings = 2
+            guard let cell = MProfileSettings(rawValue: indexPath.item + firstIndexOfSettingsInProfileSettings) else { fatalError("unknown cell")}
             
             switch cell {
             
@@ -230,6 +271,7 @@ extension ProfileViewController: UICollectionViewDelegate {
                 break
             }
         }
+        
     }
 }
 
@@ -258,6 +300,12 @@ extension ProfileViewController {
                 break
             }
         }
+    }
+    
+    @objc private func tapPremiumCell() {
+        let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+        purchasVC.modalPresentationStyle = .fullScreen
+        present(purchasVC, animated: true, completion: nil)
     }
 }
 //MARK: setupConstraints

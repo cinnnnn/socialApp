@@ -99,11 +99,23 @@ class FirestoreService {
     //MARK: setDefaultPremiumSettings
     func setDefaultPremiumSettings(currentPeople: MPeople, complition: @escaping (Result<MPeople, Error>) -> Void) {
         
+        var imageWithPrivate: [String : Any] = [:]
+        for image in currentPeople.gallery {
+            if image.value.isPrivate {
+                imageWithPrivate[image.key] = [ MGalleryPhotoProperty.CodingKeys.isPrivate.rawValue : false,
+                                                MGalleryPhotoProperty.CodingKeys.index.rawValue : image.value.index]
+            }
+        }
+        
         var dictinaryForSave: [String : Any] = [:]
         //set to default premium search settings
         dictinaryForSave[MPeople.CodingKeys.searchSettings.rawValue] =  [MSearchSettings.onlyActive.rawValue : MSearchSettings.onlyActive.defaultValue]
         //set to default incognito status
         dictinaryForSave = [MPeople.CodingKeys.isIncognito.rawValue : false]
+        //set private photo to public if have them
+        if !imageWithPrivate.isEmpty {
+            dictinaryForSave[MPeople.CodingKeys.gallery.rawValue] = imageWithPrivate
+        }
         usersReference.document(currentPeople.senderId).setData(dictinaryForSave,
                                                                 merge: true) { error in
             if let error = error {
@@ -112,6 +124,9 @@ class FirestoreService {
                 if var people = UserDefaultsService.shared.getMpeople() {
                     people.searchSettings[MSearchSettings.onlyActive.rawValue] = MSearchSettings.onlyActive.defaultValue
                     people.isIncognito = false
+                    imageWithPrivate.forEach { key, value in
+                        people.gallery[key]?.isPrivate = false
+                    }
                     UserDefaultsService.shared.saveMpeople(people: people)
                     NotificationCenter.postCurrentUserNeedUpdate()
                 }

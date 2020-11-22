@@ -40,7 +40,9 @@ class SettingsCell: UICollectionViewCell {
     
     func configure(settings: CollectionCellModel) {
         settingslabel.text = settings.description()
-        settingsImage.image = settings.image().withConfiguration(UIImage.SymbolConfiguration(font: .avenirRegular(size: 25), scale: .default))
+        if let image = settings.image() {
+            settingsImage.image = image.withConfiguration(UIImage.SymbolConfiguration(font: .avenirRegular(size: 25), scale: .default))
+        }
     }
     
     override func layoutSubviews() {

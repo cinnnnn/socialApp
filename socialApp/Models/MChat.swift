@@ -46,6 +46,7 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         self.date = date
     }
     
+    //MARK: QueryDocumentSnapshot
     //for init with ListenerService
     init?(documentSnap: QueryDocumentSnapshot){
           let documet = documentSnap.data()
@@ -95,6 +96,7 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         } else { return nil }
       }
     
+    //MARK: DocumentSnapshot
     //for get document from Firestore
     init?(documentSnap: DocumentSnapshot){
         guard let documet = documentSnap.data()  else { return nil }
@@ -144,6 +146,7 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         } else { return nil }
       }
     
+    //MARK: reprasentation
     var reprasentation: [String:Any] {
         let rep:[String: Any] = [
             "friendUserName": friendUserName,
@@ -161,6 +164,7 @@ struct MChat: Hashable, Codable, ReprasentationModel {
         return rep
     }
     
+    //MARK: CodingKeys
     enum CodingKeys: String, CodingKey {
         case friendUserName
         case friendUserImageString

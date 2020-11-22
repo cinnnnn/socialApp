@@ -47,7 +47,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        peopleView.layoutSubviews()
+     //   peopleView.layoutIfNeeded()
     }
 }
 

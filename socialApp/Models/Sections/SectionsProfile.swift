@@ -9,15 +9,18 @@
 import Foundation
 
 enum SectionsProfile: Int, CaseIterable {
-      case profile
-      case settings
-      
-      func description() -> String {
-          switch self {
-          case .profile:
-              return "Профиль"
-          case .settings:
-              return "Настройки"
-          }
-      }
-  }
+    case profile
+    case premium
+    case settings
+    
+    func description() -> String {
+        switch self {
+        case .profile:
+            return "Профиль"
+        case .premium:
+            return "Flava premium"
+        case .settings:
+            return "Настройки"
+        }
+    }
+}

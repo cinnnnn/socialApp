@@ -11,16 +11,19 @@ import UIKit
 
 enum MProfileSettings: Int, CollectionCellModel {
     case profileInfo
+    case premiumButton
     case setupProfile
     case setupSearch
     case appSettings
     case adminPanel
     
-    func image() -> UIImage  {
+    func image() -> UIImage?  {
         switch self {
         
         case .profileInfo:
             return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
+        case .premiumButton:
+            return nil
         case .setupProfile:
             return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
         case .setupSearch:
@@ -37,6 +40,8 @@ enum MProfileSettings: Int, CollectionCellModel {
         
         case .profileInfo:
             return "Профиль"
+        case .premiumButton:
+            return "Flava premium"
         case .setupProfile:
             return "Редактировать профиль"
         case .setupSearch:
@@ -51,6 +56,8 @@ enum MProfileSettings: Int, CollectionCellModel {
         switch self {
         case .profileInfo:
             return .infoCell
+        case .premiumButton:
+            return .buttonCell
         case .setupProfile:
             return .buttonCell
         case .setupSearch:

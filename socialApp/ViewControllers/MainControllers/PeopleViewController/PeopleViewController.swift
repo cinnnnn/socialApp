@@ -64,6 +64,10 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         updateCurrentPeople()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+    
     //MARK:  setup VC
     private func setup() {
         view.backgroundColor = .myWhiteColor()
@@ -137,7 +141,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         
         section.visibleItemsInvalidationHandler = { [weak self] visibleItems, point, environment in
 
-            self?.setUIForVisivleCells(items: visibleItems, point: point, enviroment: environment)
+            self?.setUIForVisibleCells(items: visibleItems, point: point, enviroment: environment)
             
         }
         return section
@@ -170,7 +174,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                     if let currentPeople = self?.currentPeople {
                         cell.configure(with: people, currentPeople: currentPeople)
                         {
-                            cell.layoutIfNeeded()
+                            cell.setNeedsLayout()
                         }
                     }
                     return cell
@@ -181,7 +185,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
 
 //MARK: setUIForVisivleCells
 extension PeopleViewController {
-    private func setUIForVisivleCells(items: [NSCollectionLayoutVisibleItem], point: CGPoint, enviroment: NSCollectionLayoutEnvironment) {
+    private func setUIForVisibleCells(items: [NSCollectionLayoutVisibleItem], point: CGPoint, enviroment: NSCollectionLayoutEnvironment) {
         
         items.forEach { visibleItem in
             let distanceFromCenter = abs((visibleItem.frame.midX - point.x) - enviroment.container.contentSize.width / 2.0)
@@ -371,7 +375,8 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
         //save dislike to firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
-                                              requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result in
+                                              requestChats: requestChatDelegate?.requestChats ?? [],
+                                              viewControllerDelegate: self) {[weak self] result in
             switch result {
             
             case .success(let dislikeChat):

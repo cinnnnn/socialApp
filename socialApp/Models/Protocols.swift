@@ -39,7 +39,7 @@ protocol PeopleButtonTappedDelegate: class {
 }
 
 protocol CollectionCellModel {
-    func image() -> UIImage
+    func image() -> UIImage?
     func description() -> String
 }
 

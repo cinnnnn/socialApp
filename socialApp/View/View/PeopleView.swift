@@ -12,7 +12,7 @@ import SDWebImage
 class PeopleView: UIView {
     
     let scrollView = UIScrollView()
-    let galleryScrollView = GalleryScrollView(profileImage: "", gallery: [:], showPrivate: false, showProtectButton: true)
+    let galleryScrollView = GalleryView(profileImage: "", gallery: [:], showPrivate: false, showProtectButton: true)
     let peopleName = UILabel(labelText: "Name", textFont: .avenirBold(size: 30), linesCount: 0)
     var infoLabel = UILabel(labelText: "0.00KM", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
     var distanceLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
@@ -96,6 +96,7 @@ class PeopleView: UIView {
             timeButton.infoLabel.text = "Последняя активность"
             timeButton.isEnabled = true
         }
+        galleryScrollView.setNeedsLayout()
     }
     
     override func layoutSubviews() {

@@ -86,12 +86,12 @@ class ProfileCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             animateProfileBack.topAnchor.constraint(equalTo: topAnchor),
-            animateProfileBack.centerXAnchor.constraint(equalTo: centerXAnchor),
-            animateProfileBack.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.75),
+            animateProfileBack.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor),
+            animateProfileBack.centerXAnchor.constraint(equalTo: profileImage.centerXAnchor),
+            animateProfileBack.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.3),
             animateProfileBack.heightAnchor.constraint(equalTo: animateProfileBack.widthAnchor),
             
-            profileImage.centerYAnchor.constraint(equalTo: animateProfileBack.centerYAnchor),
-            profileImage.centerXAnchor.constraint(equalTo: animateProfileBack.centerXAnchor),
+            profileImage.leadingAnchor.constraint(equalTo: leadingAnchor,constant: 10),
             profileImage.widthAnchor.constraint(equalTo: animateProfileBack.widthAnchor, multiplier: 0.7),
             profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor),
             

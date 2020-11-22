@@ -7,19 +7,21 @@
 //
 
 import UIKit
-import CoreImage.CIFilterBuiltins
+import CHIPageControl
 
-class GalleryScrollView: UIScrollView {
+class GalleryView: UIView {
     
+    var scrollView = UIScrollView()
     var gallery: [String : MGalleryPhotoProperty] = [:]
     var profileImage = ""
-    var pageControl = UIPageControl()
+    var pageControl = CHIPageControlAleppo()
     
     convenience init(profileImage: String, gallery: [String : MGalleryPhotoProperty], showPrivate: Bool, showProtectButton: Bool) {
         self.init()
         self.profileImage = profileImage
         self.gallery = gallery
         setup()
+        setupConstraints()
         setupImages(profileImage: profileImage,
                     gallery: gallery,
                     showPrivate: showPrivate,
@@ -28,17 +30,21 @@ class GalleryScrollView: UIScrollView {
     }
     
     private func setup() {
-        isPagingEnabled = true
+        scrollView.isPagingEnabled = true
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.bounces = false
+        scrollView.delegate = self
+        
         backgroundColor = .myWhiteColor()
-        showsVerticalScrollIndicator = false
         layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         clipsToBounds = true
-        bounces = false
-        
-        addSubview(pageControl)
-        pageControl.currentPage = 0
+       
         pageControl.numberOfPages = gallery.count
         pageControl.hidesForSinglePage = false
+        pageControl.tintColor = .myWhiteColor()
+        pageControl.radius = 4
+    
+        pageControl.transform = CGAffineTransform(rotationAngle: .pi / 2)
     }
     
     func setupImages(profileImage: String,
@@ -56,7 +62,7 @@ class GalleryScrollView: UIScrollView {
                                              contentMode: .scaleAspectFill)
     
             imageView.sd_setImage(with: url, completed: nil)
-            insertSubview(imageView, belowSubview: pageControl)
+            scrollView.addSubview(imageView)
           
         }
         //add gallery photo
@@ -75,18 +81,18 @@ class GalleryScrollView: UIScrollView {
                 }
                 
               //  addSubview(imageView)
-                insertSubview(imageView, belowSubview: pageControl)
+                scrollView.addSubview(imageView)
             }
         }
         pageControl.numberOfPages = gallery.count + 1
-
+    
         if let complition = complition {
             complition()
         }
     }
     
     func prepareReuseScrollView() {
-        subviews.forEach { view in
+        scrollView.subviews.forEach { view in
             if let view = view as? GalleryImageView {
                 view.removeFromSuperview()
             }
@@ -96,7 +102,8 @@ class GalleryScrollView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
         var countOfView = 0
-        for view in subviews {
+        
+        for view in scrollView.subviews {
             if let view = view as? GalleryImageView {
                 
                 view.frame = CGRect(x: 0,
@@ -104,9 +111,41 @@ class GalleryScrollView: UIScrollView {
                                     width: frame.width,
                                     height: frame.height)
                 countOfView += 1
+                
             }
         }
         
+        scrollView.contentSize.height = frame.height * CGFloat(countOfView)
+        layer.cornerRadius = frame.width / MDefaultLayer.widthMultiplier.rawValue / 2
+    }
+    
+
+}
+
+extension GalleryView: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let progress = scrollView.contentOffset.y / scrollView.frame.height
+        pageControl.progress = Double(progress)
+    }
+}
+
+extension GalleryView {
+    private func setupConstraints() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(scrollView)
+        addSubview(pageControl)
+        
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            
+            pageControl.centerYAnchor.constraint(equalTo: centerYAnchor),
+            pageControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10)
+        ])
     }
 }
 

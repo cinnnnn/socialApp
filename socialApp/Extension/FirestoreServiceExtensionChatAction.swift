@@ -159,7 +159,7 @@ extension FirestoreService {
     
     
     //MARK: dislikePeople
-    func dislikePeople(currentPeople: MPeople, dislikeForPeople: MPeople, requestChats: [MChat], complition: @escaping(Result<MChat,Error>)->Void) {
+    func dislikePeople(currentPeople: MPeople, dislikeForPeople: MPeople, requestChats: [MChat],viewControllerDelegate: UIViewController, complition: @escaping(Result<MChat,Error>)->Void) {
         let collectionCurrentUserDislikeRef = usersReference.document(currentPeople.senderId).collection(MFirestorCollection.dislikePeople.rawValue)
         let collectionCurrentRequestRef = db.collection([MFirestorCollection.users.rawValue, currentPeople.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
         let collectionDislikeUserLikeRef = db.collection([MFirestorCollection.users.rawValue, dislikeForPeople.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
@@ -185,10 +185,26 @@ extension FirestoreService {
         }
         //if have requst chat from dislike user
         if let _ = requestChatFromLikeUser.first {
-            //delete from request
-            collectionCurrentRequestRef.document(dislikeForPeople.senderId).delete()
-            //delete from like in dislike user collection
-            collectionDislikeUserLikeRef.document(currentPeople.senderId).delete()
+            
+                //delete from request
+                collectionCurrentRequestRef.document(dislikeForPeople.senderId).delete()
+                //delete from like in dislike user collection
+                collectionDislikeUserLikeRef.document(currentPeople.senderId).delete()
+          
+            if currentPeople.isGoldMember || currentPeople.isTestUser {
+                
+            } else {
+                //if don't have subscribtion, show notification
+                PopUpService.shared.showInfoWithButtonPopUp(header: "Ой, пропустили пару",
+                                                            text: "Подпишись на Flava premium, что бы не пропускать",
+                                                            cancelButtonText: "Позже",
+                                                            okButtonText: "Подписаться",
+                                                            font: .avenirBold(size: 16)) {
+                    let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+                    purchasVC.modalPresentationStyle = .fullScreen
+                    viewControllerDelegate.present(purchasVC, animated: true, completion: nil)
+                }
+            }
         }
         do {
             try collectionCurrentUserDislikeRef.document(dislikeForPeople.senderId).setData(from: dislikeChat)

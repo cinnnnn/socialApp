@@ -15,13 +15,13 @@ enum MAppSettings: Int, CaseIterable, CollectionCellModel {
     case logOut
     case terminateAccaunt
     
-    func image() -> UIImage  {
+    func image() -> UIImage?  {
         switch self {
         
         case .about:
-            return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
+            return nil
         case .logOut:
-            return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
+            return nil
         case .terminateAccaunt:
             return UIImage(systemName: "magnifyingglass") ?? #imageLiteral(resourceName: "disclouser")
         }

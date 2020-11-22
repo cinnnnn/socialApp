@@ -19,6 +19,7 @@ pod 'MessageKit'
 pod 'lottie-ios'
 pod 'SwiftEntryKit', '1.2.6'
 pod "ApphudSDK"
+pod 'CHIPageControl/Aleppo'
 
 end
 
