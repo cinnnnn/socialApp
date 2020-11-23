@@ -72,6 +72,8 @@ class RequestsViewController: UIViewController {
         NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
     }
     
+    
+    //MARK: objc
     @objc private func updateCurrentPeople() {
         if let people = UserDefaultsService.shared.getMpeople() {
             currentPeople = people
@@ -79,7 +81,7 @@ class RequestsViewController: UIViewController {
     }
     
     @objc private func premiumIsUpdated() {
-        print("Premium is updated on request screen")
+        reloadData()
     }
     
     private func setupNavigationBar() {
@@ -238,11 +240,30 @@ extension RequestsViewController: UICollectionViewDelegate {
         
         switch section {
         case .requestChats:
-            let peopleVC = PeopleInfoViewController(peopleID: item.friendId, withLikeButtons: true)
-            peopleVC.requestChatsDelegate = requestChatDelegate
-            peopleVC.peopleDelegate = peopleDelegate
-            peopleVC.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(peopleVC, animated: true)
+            if currentPeople.isGoldMember || currentPeople.isTestUser {
+                let peopleVC = PeopleInfoViewController(peopleID: item.friendId, withLikeButtons: true)
+                peopleVC.requestChatsDelegate = requestChatDelegate
+                peopleVC.peopleDelegate = peopleDelegate
+                peopleVC.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(peopleVC, animated: true)
+            } else {
+                var popUpHeader = "Видеть кто тебя лайкнул"
+                var popUpMessage = "Возможно с подпиской Flava Premium"
+                if let requestChatCount = requestChatDelegate?.requestChats.count {
+                    popUpHeader = "\(requestChatCount) человек(а) ждут ответа"
+                    popUpMessage = "Хочешь видеть их? И образовывать с ними пары сразу?"
+                }
+                PopUpService.shared.bottomPopUp(header: popUpHeader,
+                                                text: popUpMessage,
+                                                image: nil,
+                                                okButtonText: "Перейти на Flava premium") { [ weak self] in
+                    
+                    guard let currentPeople = self?.currentPeople else { return }
+                    let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+                    purchasVC.modalPresentationStyle = .fullScreen
+                    self?.present(purchasVC, animated: true, completion: nil)
+                }
+            }
         }
     }
 }

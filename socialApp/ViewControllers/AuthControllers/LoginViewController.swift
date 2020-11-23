@@ -147,10 +147,10 @@ extension LoginViewController {
                         switch result {
                         
                         case .success(let mPeople):
-                            if mPeople.gender == "" || mPeople.lookingFor == "" {
+                            if mPeople.userImage == "" {
                                 self?.navigationDelegate?.toCompliteRegistration(userID: mPeople.senderId)
                             } else {
-                                let mainVC = MainTabBarController(userID: mPeople.senderId,
+                                let mainVC = MainTabBarController(currentUser: mPeople,
                                                                   isNewLogin: true)
                                 mainVC.modalPresentationStyle = .fullScreen
                                 self?.present(mainVC, animated: true, completion: nil)

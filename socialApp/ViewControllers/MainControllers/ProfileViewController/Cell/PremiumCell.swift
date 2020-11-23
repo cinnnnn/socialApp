@@ -12,7 +12,6 @@ class PremiumCell: UICollectionViewCell {
     
     static let reuseID = "PremiumCell"
     
-    let premiumLabel = UILabel(labelText: "Flava premium", textFont: .avenirBold(size: 16))
     let scrollInfoCollectionView = CollectionViewInfoGallery(elements: MPremiumInfo.shared.elements,
                                                              header: "Flava premium")
     
@@ -49,11 +48,9 @@ class PremiumCell: UICollectionViewCell {
     
     func configure(currentUser: MPeople, tapSelector: Selector, delegate: Any?) {
         if currentUser.isGoldMember || currentUser.isTestUser {
-            scrollInfoCollectionView.isHidden = true
-            premiumLabel.isHidden = false
+            scrollInfoCollectionView.setupHeader(text: "Подписка Flava premium активна")
         } else {
-            scrollInfoCollectionView.isHidden = false
-            premiumLabel.isHidden = true
+            scrollInfoCollectionView.setupHeader(text: "Flava premium")
         }
         scrollInfoCollectionView.setNeedsLayout()
         scrollInfoCollectionView.addSingleTapRecognizer(target: delegate, selector: tapSelector)
@@ -61,18 +58,11 @@ class PremiumCell: UICollectionViewCell {
     
     private func setupConstraints(){
 
-        premiumLabel.translatesAutoresizingMaskIntoConstraints = false
         scrollInfoCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        
-        addSubview(premiumLabel)
+
         addSubview(scrollInfoCollectionView)
         
         NSLayoutConstraint.activate([
-            
-            premiumLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            premiumLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            premiumLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 10),
-            
             scrollInfoCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollInfoCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollInfoCollectionView.topAnchor.constraint(equalTo: topAnchor),

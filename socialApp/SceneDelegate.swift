@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
-        guard let windowScene = (scene as? UIWindowScene) else { return }
+        guard let windowScene = scene as? UIWindowScene else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         
@@ -39,9 +39,37 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     }
                 } else {
                     if let userID = user.email {
-                        //if user avalible, go to main controller
-                        self?.window?.rootViewController = MainTabBarController(userID: userID,
-                                                                                isNewLogin: false)
+                        //if user avalible, check correct setup user info
+                        self?.checkProfileInfo(userID: userID) { result in
+                            switch result {
+                            
+                            case .success((let isCompliteSetup, let currentPeople)):
+                                //if user have profile photo, than go main vc
+                                if isCompliteSetup {
+                                    self?.window?.rootViewController = MainTabBarController(currentUser: currentPeople,
+                                                                                            isNewLogin: false)
+                                } else {
+                                    // if don't have user photo (last step of first setup profile), go setup
+                                    let navController = UINavigationController(rootViewController: DateOfBirthViewController(userID: userID,
+                                                                                                                             navigationDelegate: nil))
+                                    navController.navigationBar.tintColor = .label
+                                    navController.navigationBar.shadowImage = UIImage()
+                                    navController.navigationBar.barTintColor = .myWhiteColor()
+                                    self?.window?.rootViewController = navController
+                                    PopUpService.shared.showInfo(text: "Необходимо закончить заполнение профиля")
+                                }
+                            case .failure(_):
+                                PopUpService.shared.bottomPopUp(header: "Проблема с учетной записью",
+                                                                text: "Не удалось получить информацию для входа",
+                                                                image: nil,
+                                                                okButtonText: "Попробовать еще") {
+                                    //make root Auth vc
+                                    self?.window?.rootViewController = self?.makeRootVC(viewController: AuthViewController(), withNavContoller: true)
+                                }
+                            }
+                        }
+                        
+                        
                     }
                 }
             }
@@ -97,16 +125,17 @@ extension SceneDelegate {
         return viewController
     }
     
-    private func checkProfileInfo(user: User, complition:@escaping(Result<Bool,Error>) -> Void){
+    private func checkProfileInfo(userID: String, complition:@escaping(Result<(Bool,MPeople),Error>) -> Void){
         
-        FirestoreService.shared.getUserData(userID: user.uid) { result in
+        FirestoreService.shared.getUserData(userID: userID) { result in
             switch result {
             
             case .success(let mPeople):
-                if mPeople.gender == "" || mPeople.lookingFor == "" {
-                    complition(.success(true))
+                //if don't have profile image, need setup profile
+                if mPeople.userImage == "" {
+                    complition(.success((false, mPeople)))
                 } else {
-                    complition(.success(false))
+                    complition(.success((true, mPeople)))
                 }
                 
             //error of getUserData

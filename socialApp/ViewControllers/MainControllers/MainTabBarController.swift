@@ -12,7 +12,7 @@ import ApphudSDK
 
 class MainTabBarController: UITabBarController{
     
-    var userID: String
+    var currentUser: MPeople
     var isNewLogin: Bool
     let loadingView = LoadingView(name: "logo_neverAlone", isHidden: false)
     var acceptChatsDelegate: AcceptChatListenerDelegate?
@@ -21,9 +21,9 @@ class MainTabBarController: UITabBarController{
     var likeDislikeDelegate: LikeDislikeListenerDelegate?
     var messageDelegate: MessageListenerDelegate?
     
-    init(userID: String, isNewLogin: Bool) {
+    init(currentUser: MPeople, isNewLogin: Bool) {
         self.isNewLogin = isNewLogin
-        self.userID = userID
+        self.currentUser = currentUser
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,11 +43,11 @@ class MainTabBarController: UITabBarController{
 
 extension MainTabBarController {
     private func setupDataDelegate() {
-        likeDislikeDelegate = LikeDislikeChatDataProvider(userID: userID)
-        requestChatsDelegate = RequestChatDataProvider(userID: userID)
-        acceptChatsDelegate = AcceptChatDataProvider(userID: userID)
-        peopleDelegate = PeopleDataProvider(userID: userID)
-        messageDelegate = MessagesDataProvider(userID: userID)
+        likeDislikeDelegate = LikeDislikeChatDataProvider(userID: currentUser.senderId)
+        requestChatsDelegate = RequestChatDataProvider(userID: currentUser.senderId)
+        acceptChatsDelegate = AcceptChatDataProvider(userID: currentUser.senderId)
+        peopleDelegate = PeopleDataProvider(userID: currentUser.senderId)
+        messageDelegate = MessagesDataProvider(userID: currentUser.senderId)
         
         PopUpService.shared.setupDelegate(acceptChatsDelegate: acceptChatsDelegate,
                                           requestChatsDelegate: requestChatsDelegate,
@@ -55,13 +55,13 @@ extension MainTabBarController {
                                           likeDislikeDelegate: likeDislikeDelegate,
                                           messageDelegate: messageDelegate)
         
-       
+        
     }
     
     private func subscribeToPushNotification() {
         if isNewLogin {
             guard let acceptChatsDelegate = acceptChatsDelegate else { return }
-            PushMessagingService.shared.logInSubscribe(currentUserID: userID,
+            PushMessagingService.shared.logInSubscribe(currentUserID: currentUser.senderId,
                                                        acceptChats: acceptChatsDelegate.acceptChats)
         }
     }
@@ -76,63 +76,51 @@ extension MainTabBarController {
     }
     
     private func setupApphud() {
-        Apphud.start(apiKey: "app_LDXecjNbEuvUBtpd3J9kw75A6cH14n", userID: userID, observerMode: false)
+        Apphud.start(apiKey: "app_LDXecjNbEuvUBtpd3J9kw75A6cH14n", userID: currentUser.senderId, observerMode: false)
     }
-    
-    
 }
 
 extension MainTabBarController {
     //MARK: getPeopleData, location
     private func getPeopleData() {
-        FirestoreService.shared.getUserData(userID: userID) {[weak self] result in
-            switch result {
-            case .success(let mPeople):
-                
-                UserDefaultsService.shared.saveMpeople(people: mPeople)
-                if let virtualLocation = MVirtualLocation(rawValue: mPeople.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
-                    LocationService.shared.getCoordinate(userID: mPeople.senderId,
-                                                         virtualLocation: virtualLocation) {[weak self] isAllowPermission in
-                        //if geo is denied, show alert and go to settings
-                        if !isAllowPermission {
-                            self?.openSettingsAlert()
-                        }
-                        //get like like users
-                        self?.likeDislikeDelegate?.getLike(complition: { result in
+        
+        UserDefaultsService.shared.saveMpeople(people: currentUser)
+        if let virtualLocation = MVirtualLocation(rawValue: currentUser.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
+            LocationService.shared.getCoordinate(userID: currentUser.senderId,
+                                                 virtualLocation: virtualLocation) {[weak self] isAllowPermission in
+                //if geo is denied, show alert and go to settings
+                if !isAllowPermission {
+                    self?.openSettingsAlert()
+                }
+                //get like users
+                self?.likeDislikeDelegate?.getLike(complition: { result in
+                    switch result {
+                    
+                    case .success(_):
+                        
+                        //get dislike users
+                        self?.likeDislikeDelegate?.getDislike(complition: { result in
                             switch result {
                             
                             case .success(_):
-                                
-                                //get dislike users
-                                self?.likeDislikeDelegate?.getDislike(complition: { result in
+                                //get request users
+                                self?.requestChatsDelegate?.getRequestChats(complition: { result in
                                     switch result {
-                                
+                                    
                                     case .success(_):
-                                        //get request users
-                                        self?.requestChatsDelegate?.getRequestChats(complition: { result in
+                                        //get accept chats
+                                        self?.acceptChatsDelegate?.getAcceptChats(complition: {[weak self] result in
                                             switch result {
                                             
                                             case .success(_):
-                                                //get accept chats
-                                                self?.acceptChatsDelegate?.getAcceptChats(complition: { result in
-                                                    switch result {
+                                                guard let currentUser = self?.currentUser else { return }
+                                                PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { _ in
                                                     
-                                                    case .success(_):
-                                                        
-                                                        PurchasesService.shared.checkSubscribtion(currentPeople: mPeople) { _ in
-                                                            
-                                                            self?.loadIsComplite(isComplite: true)
-                                                            self?.setupControllers(currentPeople: mPeople)
-                                                            self?.subscribeToPushNotification()
-        
-                                                        }
-                                                        
-                                                    case .failure(let error):
-                                                        self?.showAlert(title: "Ошибка, мы работаем над ней",
-                                                                        text: error.localizedDescription,
-                                                                        buttonText: "Попробую позже")
-                                                    }
-                                                })
+                                                    self?.loadIsComplite(isComplite: true)
+                                                    self?.setupControllers(currentPeople: currentUser)
+                                                    self?.subscribeToPushNotification()
+                                                    
+                                                }
                                                 
                                             case .failure(let error):
                                                 self?.showAlert(title: "Ошибка, мы работаем над ней",
@@ -147,32 +135,19 @@ extension MainTabBarController {
                                                         buttonText: "Попробую позже")
                                     }
                                 })
+                                
                             case .failure(let error):
                                 self?.showAlert(title: "Ошибка, мы работаем над ней",
                                                 text: error.localizedDescription,
                                                 buttonText: "Попробую позже")
                             }
                         })
-                    }
-                }
-                
-            case .failure(_):
-                //if get incorrect info from mPeople profile, logOut and go to authVC
-                AuthService.shared.signOut { result in
-                    switch result {
-                    case .success(_):
-                        Apphud.logout()
-                        self?.dismiss(animated: true) {
-                            let authVC = AuthViewController()
-                            authVC.modalPresentationStyle = .fullScreen
-                            authVC.modalTransitionStyle = .crossDissolve
-                            self?.present(authVC, animated: false, completion: nil)
-                        }
-                        
                     case .failure(let error):
-                        fatalError(error.localizedDescription)
+                        self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                        text: error.localizedDescription,
+                                        buttonText: "Попробую позже")
                     }
-                }
+                })
             }
         }
     }
@@ -249,7 +224,7 @@ extension MainTabBarController {
         navController.navigationBar.shadowImage = UIImage()
         navController.navigationBar.tintColor = .myLabelColor()
         navController.navigationBar.barTintColor = .myWhiteColor()
-       // navController.navigationBar.backgroundColor = .myWhiteColor()
+        // navController.navigationBar.backgroundColor = .myWhiteColor()
         navController.navigationBar.titleTextAttributes = [.font: UIFont.avenirBold(size: 16)]
         navController.navigationBar.largeTitleTextAttributes = [.font: UIFont.avenirBold(size: 38)]
         return navController

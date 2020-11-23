@@ -56,14 +56,9 @@ class EditPhotoViewController: UIViewController {
     var userID: String
     var isFirstSetup = false
     
-    weak var navigationDelegate: NavigationDelegate?
-    
-    init (userID: String, isFirstSetup: Bool, navigationDelegate: NavigationDelegate? = nil) {
+    init (userID: String, isFirstSetup: Bool) {
         self.userID = userID
         self.isFirstSetup = isFirstSetup
-        if navigationDelegate != nil {
-            self.navigationDelegate = navigationDelegate
-        }
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -72,6 +67,7 @@ class EditPhotoViewController: UIViewController {
     }
     
     deinit {
+        print("deinit photo")
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -111,8 +107,8 @@ class EditPhotoViewController: UIViewController {
         addImageButton.addTarget(self, action: #selector(addImageButtonTap), for: .touchUpInside)
         
         if isFirstSetup {
-            navigationController?.navigationBar.prefersLargeTitles = false
-            navigationItem.title = ""
+            navigationItem.setHidesBackButton(true, animated: false)
+            navigationItem.title = "Фото"
             navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .done,
                                                              target: self,
                                                              action: #selector(saveButtonTapped)),
@@ -174,17 +170,31 @@ extension EditPhotoViewController {
     @objc private func saveButtonTapped() {
         //if image is setup
         if profileImage.image != nil {
-            view.addCustomTransition(type: .fade)
-            dismiss(animated: true, completion: { [weak self] in
-                if let userID = self?.userID {
-                    self?.navigationDelegate?.toMainTabBarController(userID: userID)
+            navigationItem.rightBarButtonItem?.isEnabled = false
+            FirestoreService.shared.getUserData(userID: userID) {[weak self] result in
+                switch result {
+                
+                case .success(let mPeople):
+                    let mainTabBarVC = MainTabBarController(currentUser: mPeople, isNewLogin: true)
+                    mainTabBarVC.modalPresentationStyle = .fullScreen
+                    self?.navigationController?.dismiss(animated: false, completion: {[weak self] in
+                        self?.navigationController?.removeFromParent()
+                        let vc = UIApplication.getCurrentViewController()
+                        vc?.present(mainTabBarVC, animated: false, completion: nil)
+                    })
+                case .failure(_):
+                    self?.navigationItem.rightBarButtonItem?.isEnabled = true
+                    PopUpService.shared.showInfo(text: "Не удалось загрузить профиль")
                 }
-            })
+            }
         } else {
+            navigationItem.rightBarButtonItem?.isEnabled = true
             PopUpService.shared.bottomPopUp(header: "А как же фото?",
-                                            text: "Необходимо опубликовать минимум одно фото, если ты застенчив(а) либо обеспокоен(а) приватностью, опубликуй то, что тебя представляет",
+                                            text: "Необходимо опубликовать минимум одно фото",
                                             image: nil,
-                                            okButtonText: "Добавить фото") {}
+                                            okButtonText: "Добавить фото") { [weak self] in
+                self?.addImageButtonTap()
+            }
         }
     }
 }
@@ -310,7 +320,7 @@ extension EditPhotoViewController {
         //make private image
         let privateAction = UIAlertAction(title: privateActionText,
                                          style: .default) { _ in
-            if people.isGoldMember {
+            if people.isGoldMember || people.isTestUser {
                 FirestoreService.shared.makePhotoPrivate(currentUser: people,
                                                          galleryPhoto: galleryImage) {[weak self] result in
                     switch result {

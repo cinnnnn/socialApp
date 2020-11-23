@@ -6,6 +6,8 @@
 //  Copyright © 2020 Денис Щиголев. All rights reserved.
 //
 
+
+
 import Foundation
 
 class MPremiumInfo {
@@ -13,8 +15,8 @@ class MPremiumInfo {
     private init() { }
     
     let elements: [MCollectionViewGalleryElement] = [
-        MCollectionViewGalleryElement(header: "Знаешь, кто лайкнул тебя",
-                                      info: "Позволяет просматривать всех тех, кто лайкнул тебя. Решение за тобой.",
+        MCollectionViewGalleryElement(header: "Только активные пользователи",
+                                      info: "Включи фильтр и не трать время на неактивных пользователей.",
                                       backgroundColor: .mySecondSatColor(),
                                       headerColor: .myWhiteColor(),
                                       infoColor: .myWhiteColor()),
@@ -23,19 +25,19 @@ class MPremiumInfo {
                                       backgroundColor: .mySecondColor(),
                                       headerColor: .myWhiteColor(),
                                       infoColor: .myWhiteColor()),
-        MCollectionViewGalleryElement(header: "Только активные пользователи",
-                                      info: "Включи фильтр и не трать время на неактивных пользователей.",
-                                      backgroundColor: .mySecondColor(),
+        MCollectionViewGalleryElement(header: "Знаешь, кто лайкнул тебя",
+                                      info: "Позволяет просматривать всех тех, кто поставил тебе лайк. Решение за тобой.",
+                                      backgroundColor: .myFirstColor(),
                                       headerColor: .myWhiteColor(),
                                       infoColor: .myWhiteColor()),
         MCollectionViewGalleryElement(header: "Безлимитные лайки",
                                       info: "Повысь свои шансы на успех.",
-                                      backgroundColor: .mySecondColor(),
+                                      backgroundColor: .myFirstSatColor(),
                                       headerColor: .myWhiteColor(),
                                       infoColor: .myWhiteColor()),
         MCollectionViewGalleryElement(header: "Чат не будет удален",
                                       info: "Таймер чата будет остановлен, как только ты захочешь.",
-                                      backgroundColor: .mySecondColor(),
+                                      backgroundColor: .myFirstColor(),
                                       headerColor: .myWhiteColor(),
                                       infoColor: .myWhiteColor()),
         MCollectionViewGalleryElement(header: "Приватные фото",
@@ -45,7 +47,7 @@ class MPremiumInfo {
                                       infoColor: .myWhiteColor()),
         MCollectionViewGalleryElement(header: "Режим инкогнито",
                                       info: "Скрой себя от других, пока ты не поставишь ему лайк первым.",
-                                      backgroundColor: .mySecondColor(),
+                                      backgroundColor: .mySecondSatColor(),
                                       headerColor: .myWhiteColor(),
                                       infoColor: .myWhiteColor()),
         

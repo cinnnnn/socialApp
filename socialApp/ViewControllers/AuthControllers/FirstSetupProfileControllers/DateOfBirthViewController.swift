@@ -39,9 +39,9 @@ class DateOfBirthViewController: UIViewController {
     private func setup() {
         view.backgroundColor = .myWhiteColor()
         navigationController?.navigationBar.isHidden = false
-        navigationController?.navigationBar.tintColor = .label
-        navigationController?.navigationBar.shadowImage = nil
-        navigationController?.navigationBar.barTintColor = .myWhiteColor()
+//        navigationController?.navigationBar.tintColor = .label
+//        navigationController?.navigationBar.shadowImage = nil
+//        navigationController?.navigationBar.barTintColor = .myWhiteColor()
         
         navigationItem.backButtonTitle = "Назад"
         navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .save,

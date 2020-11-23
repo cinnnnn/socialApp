@@ -40,9 +40,6 @@ class GenderSelectionViewController: UIViewController {
     private func setup() {
         
         view.backgroundColor = .myWhiteColor()
-        navigationController?.navigationBar.tintColor = .label
-        navigationController?.navigationBar.shadowImage = nil
-        navigationController?.navigationBar.barTintColor = .myWhiteColor()
         
         navigationItem.backButtonTitle = "Назад"
         navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .save,
@@ -81,7 +78,7 @@ extension GenderSelectionViewController {
                 switch result {
                 
                 case .success():
-                    let nextViewController = InterestsSelectionViewController(userID: id, navigationDelegate: self?.navigationDelegate)
+                    let nextViewController = InterestsSelectionViewController(userID: id)
                     self?.navigationController?.pushViewController(nextViewController, animated: true)
                 case .failure(let error):
                     fatalError(error.localizedDescription)

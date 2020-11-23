@@ -125,6 +125,8 @@
 		FBB33FAC256A84EB00A597BF /* MCollectionViewGalleryElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FAB256A84EB00A597BF /* MCollectionViewGalleryElement.swift */; };
 		FBB33FB0256A86CA00A597BF /* CollectionViewInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FAF256A86CA00A597BF /* CollectionViewInfoCell.swift */; };
 		FBB33FB7256A9A2600A597BF /* MPremiumInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FB6256A9A2600A597BF /* MPremiumInfo.swift */; };
+		FBB33FC6256BD80900A597BF /* ScreenRecordingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FC5256BD80900A597BF /* ScreenRecordingManager.swift */; };
+		FBB33FCA256BDB9700A597BF /* ScreenRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FC9256BDB9700A597BF /* ScreenRecordingView.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
 		FBB3B265250ACA0700440632 /* MGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B264250ACA0700440632 /* MGender.swift */; };
@@ -318,6 +320,8 @@
 		FBB33FAB256A84EB00A597BF /* MCollectionViewGalleryElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCollectionViewGalleryElement.swift; sourceTree = "<group>"; };
 		FBB33FAF256A86CA00A597BF /* CollectionViewInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewInfoCell.swift; sourceTree = "<group>"; };
 		FBB33FB6256A9A2600A597BF /* MPremiumInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPremiumInfo.swift; sourceTree = "<group>"; };
+		FBB33FC5256BD80900A597BF /* ScreenRecordingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingManager.swift; sourceTree = "<group>"; };
+		FBB33FC9256BDB9700A597BF /* ScreenRecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingView.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		FBB3B260250905D800440632 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
@@ -496,6 +500,7 @@
 			isa = PBXGroup;
 			children = (
 				FBA2AA4A2554746E00A471F6 /* MatchViewPopUp.swift */,
+				FBB33FC9256BDB9700A597BF /* ScreenRecordingView.swift */,
 				FB37275F2540D7EC00906FBE /* AnimationCustomView.swift */,
 				FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageView.swift */,
 				FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */,
@@ -733,6 +738,7 @@
 				FBF293D824FFB33300F7B5F1 /* Validators.swift */,
 				FB61A7FA251E6311005DCC78 /* UserDefaultsService.swift */,
 				FB79DA6A252C834C00A7AA56 /* LocationService.swift */,
+				FBB33FC5256BD80900A597BF /* ScreenRecordingManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -1136,6 +1142,7 @@
 				FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */,
 				FB8C3D7D253606EE00184FB5 /* LocaleExtension.swift in Sources */,
 				FBA2AA3C255300C200A471F6 /* UniversallSwitchCell.swift in Sources */,
+				FBB33FC6256BD80900A597BF /* ScreenRecordingManager.swift in Sources */,
 				FB79DA56252501E100A7AA56 /* UIApplicationExtension.swift in Sources */,
 				FBB33FA4256A7BA600A597BF /* PremiumCell.swift in Sources */,
 				FB8C3D3F25339DE200184FB5 /* GenderSelectionViewController.swift in Sources */,
@@ -1153,6 +1160,7 @@
 				FBB3D4A7255DBB5600A3B832 /* UserDefaultsExtension.swift in Sources */,
 				FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */,
 				FB18217D24B2268E00FFFC87 /* PeopleViewController.swift in Sources */,
+				FBB33FCA256BDB9700A597BF /* ScreenRecordingView.swift in Sources */,
 				FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */,
 				FBEF608E24A9073E0005F947 /* UIFontExtension.swift in Sources */,
 				FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */,

@@ -35,6 +35,8 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     deinit {
         messageDelegate?.removeListener()
+        NotificationCenter.default.removeObserver(self)
+        ScreenRecordingManager.shared.removeListner()
     }
     
     override func viewDidLoad() {
@@ -105,6 +107,11 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                                                selector: #selector(screenshotTaken),
                                                name: UIApplication.userDidTakeScreenshotNotification,
                                                object: nil)
+        ScreenRecordingManager.shared.setupListner {[weak self] isCaptured in
+            if isCaptured {
+                self?.screenIsCaptured()
+            }
+        }
     }
     
     //MARK: configureInputBar
@@ -237,6 +244,16 @@ extension ChatViewController {
     @objc private func screenshotTaken(){
         
         let text = user.displayName + MLabels.screenshotTaken.rawValue
+        
+        FirestoreService.shared.sendAdminMessage(currentUser: user,
+                                                 chat: chat,
+                                                 text: text) {_ in}
+    }
+    
+    //MARK: screenIsCaptured
+    @objc private func screenIsCaptured(){
+        
+        let text = user.displayName + MLabels.isCapturedScreen.rawValue
         
         FirestoreService.shared.sendAdminMessage(currentUser: user,
                                                  chat: chat,

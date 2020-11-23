@@ -28,7 +28,7 @@ protocol ReprasentationModel {
 }
 
 protocol NavigationDelegate: class {
-    func toMainTabBarController(userID: String)
+    func toMainTabBarController(currentPeople: MPeople)
     func toCompliteRegistration(userID: String)
 }
 

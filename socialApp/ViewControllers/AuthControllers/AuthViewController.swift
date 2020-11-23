@@ -107,10 +107,10 @@ extension AuthViewController: ASAuthorizationControllerDelegate {
                                     
                                     case .success(let mPeople):
                                         //check gender and want data in mPeople
-                                        if mPeople.gender == "" || mPeople.lookingFor == "" {
+                                        if mPeople.userImage == "" {
                                             self?.toCompliteRegistration(userID: mPeople.senderId)
                                         } else {
-                                            self?.toMainTabBarController(userID: mPeople.senderId)
+                                            self?.toMainTabBarController(currentPeople: mPeople)
                                         }
                                     case .failure(_):
                                         break
@@ -163,8 +163,8 @@ extension AuthViewController {
 //MARK: navigationDelegate
 extension AuthViewController: NavigationDelegate {
     
-    func toMainTabBarController(userID: String){
-        let mainTabBarVC = MainTabBarController(userID: userID, isNewLogin: true)
+    func toMainTabBarController(currentPeople: MPeople){
+        let mainTabBarVC = MainTabBarController(currentUser: currentPeople, isNewLogin: true)
         mainTabBarVC.modalPresentationStyle = .fullScreen
         mainTabBarVC.modalTransitionStyle = .crossDissolve
         present(mainTabBarVC, animated: false, completion: nil)
@@ -172,10 +172,13 @@ extension AuthViewController: NavigationDelegate {
     
     func toCompliteRegistration(userID: String){
         let navController = UINavigationController.init(rootViewController: DateOfBirthViewController(userID: userID, navigationDelegate: self))
+        navController.navigationBar.tintColor = .label
+        navController.navigationBar.shadowImage = UIImage()
+        navController.navigationBar.barTintColor = .myWhiteColor()
         navController.modalPresentationStyle = .fullScreen
         navController.modalTransitionStyle = .crossDissolve
         navController.navigationBar.backgroundColor = .systemBackground
-        navController.navigationBar.prefersLargeTitles = true
+        navController.navigationBar.prefersLargeTitles = false
         present(navController, animated: false, completion: nil)
     }
 }

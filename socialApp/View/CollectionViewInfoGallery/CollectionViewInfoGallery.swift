@@ -35,6 +35,10 @@ class CollectionViewInfoGallery: UIView {
         }
     }
     
+    func setupHeader(text: String) {
+        collectionHeader.text = text
+    }
+    
     func setupHeaderColor(color: UIColor) {
         collectionHeader.textColor = color
     }

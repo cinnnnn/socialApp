@@ -75,6 +75,31 @@ extension PopUpService {
         SwiftEntryKit.display(entry: view, using: attributes)
     }
     
+    func showViewPopUp(view: UIView, withAnimation: Bool, name: String){
+        var attributes = EKAttributes()
+        attributes.name = name
+        attributes.displayMode = .inferred
+        attributes.statusBar = .inferred
+        attributes.displayDuration = .infinity
+        attributes.entryInteraction = .absorbTouches
+        attributes.scroll = .disabled
+        attributes.screenInteraction = .absorbTouches
+        attributes.screenBackground = .color(color: EKColor.init(UIColor.myLabelColor().withAlphaComponent(0.5)))
+        attributes.position = .bottom
+        if !withAnimation {
+            attributes.entranceAnimation = .none
+        }
+        let constraints = EKAttributes.PositionConstraints.fullScreen
+        attributes.positionConstraints = constraints
+        attributes.hapticFeedbackType = .error
+        attributes.positionConstraints.safeArea = .overridden
+        SwiftEntryKit.display(entry: view, using: attributes)
+    }
+    
+    func dismisPopUp(name: String) {
+        SwiftEntryKit.dismiss(.specific(entryName: name))
+    }
+    
     //MARK: bottomPopUp
     func bottomPopUp(header: String,
                      text: String,

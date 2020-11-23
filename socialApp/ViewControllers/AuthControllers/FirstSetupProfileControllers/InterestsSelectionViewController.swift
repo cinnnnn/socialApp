@@ -18,10 +18,8 @@ class InterestsSelectionViewController: UIViewController {
                                  textColor: .myGrayColor(),
                                  linesCount: 0)
     var aboutTextView = UITextView(text: "", isEditable: true)
-    weak var navigationDelegate: NavigationDelegate?
     
-    init(userID: String, navigationDelegate: NavigationDelegate?){
-        self.navigationDelegate = navigationDelegate
+    init(userID: String){
         self.userID = userID
         super.init(nibName: nil, bundle: nil)
     }
@@ -39,9 +37,6 @@ class InterestsSelectionViewController: UIViewController {
     
     private func setup() {
         view.backgroundColor = .myWhiteColor()
-        navigationController?.navigationBar.tintColor = .label
-        navigationController?.navigationBar.shadowImage = nil
-        navigationController?.navigationBar.barTintColor = .myWhiteColor()
         
         navigationItem.backButtonTitle = "Назад"
         navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .save,
@@ -65,7 +60,7 @@ extension InterestsSelectionViewController {
             switch result {
             
             case .success():
-                let nextViewController = EditPhotoViewController(userID: id, isFirstSetup: true, navigationDelegate: self?.navigationDelegate)
+                let nextViewController = EditPhotoViewController(userID: id, isFirstSetup: true)
                 self?.navigationController?.pushViewController(nextViewController, animated: true)
             case .failure(let error):
                 fatalError(error.localizedDescription)
