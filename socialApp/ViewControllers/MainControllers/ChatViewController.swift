@@ -96,7 +96,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         
         navigationItem.titleView = ChatTitleStackView(chat: chat, target: self, profileTappedAction: #selector(profileTapped))
         navigationItem.backButtonTitle = ""
-        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"),
+        let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"),
                                             style: .done,
                                             target: self,
                                             action: #selector(chatSettingsTapped))

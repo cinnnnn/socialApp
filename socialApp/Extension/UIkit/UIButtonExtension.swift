@@ -52,7 +52,7 @@ extension UIButton {
         setImage(image, for: .normal)
     }
     
-    convenience init(image: UIImage, isBackGroundImage: Bool = false, tintColor: UIColor, backgroundColor: UIColor, cornerRadius: CGFloat = 0) {
+    convenience init(image: UIImage?, isBackGroundImage: Bool = false, tintColor: UIColor, backgroundColor: UIColor, cornerRadius: CGFloat = 0) {
         self.init()
         if isBackGroundImage {
             setBackgroundImage(image, for: .normal)

@@ -40,7 +40,7 @@ extension GalleryImageView {
     func setup(isPrivate: Bool, showImage: Bool, showProtectButton: Bool) {
         if isPrivate {
             if !showImage {
-                image = image?.sd_blurredImage(withRadius: 30)
+                image = image?.sd_blurredImage(withRadius: 100)
             }
             privateButton.isHidden = !showProtectButton
         } else {

@@ -16,6 +16,11 @@ class PeopleView: UIView {
     let peopleName = UILabel(labelText: "Name", textFont: .avenirBold(size: 30), linesCount: 0)
     var infoLabel = UILabel(labelText: "0.00KM", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
     var distanceLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
+    let infoPremium = UILabel(labelText: "",
+                              textFont: .avenirBold(size: 14),
+                              textColor: .mySecondSatColor(),
+                              aligment: .left,
+                              linesCount: 0)
     var advertLabel = UILabel(labelText: "",
                               textFont: .avenirRegular(size: 18),
                               textColor: .myGrayColor(),
@@ -24,7 +29,7 @@ class PeopleView: UIView {
     let geoImage = UIImageView(systemName: "location.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
     let infoImage = UIImageView(systemName: "info.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
     let timeImage = UIImageView(systemName: "timer", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
-    let timeButton = OneLikeButton(info: "Последняя активность")
+    let timeButton = OneLineButton(info: "Последняя активность")
     let dislikeButton = LikeDisklikeButton(image: UIImage(systemName: "xmark",
                                                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .large)) ?? #imageLiteral(resourceName: "reject"),
                                  tintColor: .myLabelColor(),
@@ -51,7 +56,11 @@ class PeopleView: UIView {
     
     func configure(with value: MPeople, currentPeople: MPeople, showPrivatePhoto: Bool, complition: @escaping()-> Void) {
         peopleName.text = value.displayName
-        
+        if value.isGoldMember ||  value.isTestUser{
+            infoPremium.text = "Flava premium"
+        } else {
+            infoPremium.text = ""
+        }
         galleryScrollView.setupImages(profileImage: value.userImage,
                                       gallery: value.gallery,
                                       showPrivate: showPrivatePhoto,
@@ -113,6 +122,7 @@ extension PeopleView {
         addSubview(scrollView)
         scrollView.addSubview(galleryScrollView)
         scrollView.addSubview(peopleName)
+        scrollView.addSubview(infoPremium)
         scrollView.addSubview(infoLabel)
         scrollView.addSubview(distanceLabel)
         scrollView.addSubview(advertLabel)
@@ -126,6 +136,7 @@ extension PeopleView {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         galleryScrollView.translatesAutoresizingMaskIntoConstraints = false
         peopleName.translatesAutoresizingMaskIntoConstraints = false
+        infoPremium.translatesAutoresizingMaskIntoConstraints = false
         infoLabel.translatesAutoresizingMaskIntoConstraints = false
         distanceLabel.translatesAutoresizingMaskIntoConstraints = false
         advertLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -151,8 +162,12 @@ extension PeopleView {
             peopleName.trailingAnchor.constraint(equalTo: trailingAnchor),
             peopleName.topAnchor.constraint(equalTo: galleryScrollView.bottomAnchor, constant: 10),
             
+            infoPremium.topAnchor.constraint(equalTo: peopleName.bottomAnchor),
+            infoPremium.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
+            infoPremium.trailingAnchor.constraint(equalTo: peopleName.trailingAnchor),
+            
             infoImage.leadingAnchor.constraint(equalTo: leadingAnchor),
-            infoImage.topAnchor.constraint(equalTo: peopleName.bottomAnchor, constant: 10),
+            infoImage.topAnchor.constraint(equalTo: infoPremium.bottomAnchor, constant: 10),
             
             infoLabel.leadingAnchor.constraint(equalTo: infoImage.trailingAnchor, constant: 7),
             infoLabel.topAnchor.constraint(equalTo: infoImage.topAnchor),

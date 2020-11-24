@@ -102,7 +102,7 @@ protocol LikeDislikeListenerDelegate: class {
 
 protocol RequestChatListenerDelegate: class {
     var requestChats: [MChat] { get set }
-    var sortedRequestChats: [MChat] { get }
+    var sortedRequestChats: [MChat] { get set}
     var requestChatCollectionViewDelegate: RequestChatCollectionViewDelegate? { get set }
     //first time get data
     func getRequestChats(complition: @escaping (Result<[MChat], Error>) -> Void)

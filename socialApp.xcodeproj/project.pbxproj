@@ -127,6 +127,16 @@
 		FBB33FB7256A9A2600A597BF /* MPremiumInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FB6256A9A2600A597BF /* MPremiumInfo.swift */; };
 		FBB33FC6256BD80900A597BF /* ScreenRecordingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FC5256BD80900A597BF /* ScreenRecordingManager.swift */; };
 		FBB33FCA256BDB9700A597BF /* ScreenRecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FC9256BDB9700A597BF /* ScreenRecordingView.swift */; };
+		FBB33FCE256C03DE00A597BF /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FCD256C03DE00A597BF /* AboutView.swift */; };
+		FBB33FD2256C0A1A00A597BF /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FD1256C0A1A00A597BF /* AboutViewController.swift */; };
+		FBB33FD6256C0D4A00A597BF /* MLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FD5256C0D4A00A597BF /* MLinks.swift */; };
+		FBB33FED256D10D700A597BF /* TagsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FEC256D10D700A597BF /* TagsCollectionView.swift */; };
+		FBB33FF1256D202000A597BF /* SectionTagsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FF0256D202000A597BF /* SectionTagsCollectionView.swift */; };
+		FBB33FF8256D24BB00A597BF /* TagsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FF7256D24BB00A597BF /* TagsCollectionViewCell.swift */; };
+		FBB33FFC256D311000A597BF /* TagsCollectionViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FFB256D311000A597BF /* TagsCollectionViewHeader.swift */; };
+		FBB34003256D423700A597BF /* TagsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */; };
+		FBB34009256D645900A597BF /* MTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB34008256D645900A597BF /* MTag.swift */; };
+		FBB34030256D81E100A597BF /* TagsSelectCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3402F256D81E100A597BF /* TagsSelectCollectionViewCell.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
 		FBB3B265250ACA0700440632 /* MGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B264250ACA0700440632 /* MGender.swift */; };
@@ -169,7 +179,7 @@
 		FBFFB866255F15AC007343ED /* PurchasesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB865255F15AC007343ED /* PurchasesService.swift */; };
 		FBFFB86E25629E85007343ED /* MRecieptAppStrore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */; };
 		FBFFB8952562C3F6007343ED /* UserDefaultsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3D4A6255DBB5600A3B832 /* UserDefaultsExtension.swift */; };
-		FBFFB89B256535F8007343ED /* OneLikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB89A256535F8007343ED /* OneLikeButton.swift */; };
+		FBFFB89B256535F8007343ED /* OneLineButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBFFB89A256535F8007343ED /* OneLineButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -322,6 +332,16 @@
 		FBB33FB6256A9A2600A597BF /* MPremiumInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPremiumInfo.swift; sourceTree = "<group>"; };
 		FBB33FC5256BD80900A597BF /* ScreenRecordingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingManager.swift; sourceTree = "<group>"; };
 		FBB33FC9256BDB9700A597BF /* ScreenRecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingView.swift; sourceTree = "<group>"; };
+		FBB33FCD256C03DE00A597BF /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		FBB33FD1256C0A1A00A597BF /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		FBB33FD5256C0D4A00A597BF /* MLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLinks.swift; sourceTree = "<group>"; };
+		FBB33FEC256D10D700A597BF /* TagsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsCollectionView.swift; sourceTree = "<group>"; };
+		FBB33FF0256D202000A597BF /* SectionTagsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTagsCollectionView.swift; sourceTree = "<group>"; };
+		FBB33FF7256D24BB00A597BF /* TagsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsCollectionViewCell.swift; sourceTree = "<group>"; };
+		FBB33FFB256D311000A597BF /* TagsCollectionViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsCollectionViewHeader.swift; sourceTree = "<group>"; };
+		FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsCollectionViewDelegate.swift; sourceTree = "<group>"; };
+		FBB34008256D645900A597BF /* MTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTag.swift; sourceTree = "<group>"; };
+		FBB3402F256D81E100A597BF /* TagsSelectCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsSelectCollectionViewCell.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		FBB3B260250905D800440632 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
@@ -369,7 +389,7 @@
 		FBFFB861255F14F6007343ED /* MPurchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPurchases.swift; sourceTree = "<group>"; };
 		FBFFB865255F15AC007343ED /* PurchasesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesService.swift; sourceTree = "<group>"; };
 		FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MRecieptAppStrore.swift; sourceTree = "<group>"; };
-		FBFFB89A256535F8007343ED /* OneLikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneLikeButton.swift; sourceTree = "<group>"; };
+		FBFFB89A256535F8007343ED /* OneLineButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneLineButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -430,7 +450,8 @@
 				FB1062DB24B09F6C0012C4D4 /* EditProfileViewController.swift */,
 				FB3727982541CAD500906FBE /* EditSearchSettingsViewController.swift */,
 				FBB26EC2254843C50081CF2C /* AppSettingsViewController.swift */,
-				FBFFB853255ECFE8007343ED /* PurchasesViewController.swift */,
+				FBB33FDB256C14E400A597BF /* AboutViewController */,
+				FBB33FE6256C156F00A597BF /* PurchasesViewController */,
 				FB79DA9B2530E9A800A7AA56 /* EditPhotoViewController */,
 				FB79DA81252DECEB00A7AA56 /* ProfileViewController */,
 				FB39F2D524F56E69001B9C4F /* PeopleViewController */,
@@ -463,14 +484,15 @@
 				FB3C5BD6253C896100CD44E6 /* Sections */,
 				FBB3D49B255D599B00A3B832 /* PushMessage */,
 				FBB33FBC256AC1AA00A597BF /* Data */,
+				FBB34001256D421C00A597BF /* Protocols */,
 				FBA2AA2D2552D7D000A471F6 /* MCellType.swift */,
+				FBB34008256D645900A597BF /* MTag.swift */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
 				FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */,
 				FB15FCF22513A71F00B765D3 /* MMessage.swift */,
 				FBB33FAB256A84EB00A597BF /* MCollectionViewGalleryElement.swift */,
 				FB79DA4B2523577100A7AA56 /* MMediaItem.swift */,
 				FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */,
-				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -486,9 +508,8 @@
 		FB3351B425669612007AFDDF /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
-				FBFFB857255ED105007343ED /* PurchaseButton.swift */,
 				FB8C3D5E25348F4900184FB5 /* OneLineButtonWithHeader.swift */,
-				FBFFB89A256535F8007343ED /* OneLikeButton.swift */,
+				FBFFB89A256535F8007343ED /* OneLineButton.swift */,
 				FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */,
 				FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
@@ -502,7 +523,6 @@
 				FBA2AA4A2554746E00A471F6 /* MatchViewPopUp.swift */,
 				FBB33FC9256BDB9700A597BF /* ScreenRecordingView.swift */,
 				FB37275F2540D7EC00906FBE /* AnimationCustomView.swift */,
-				FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageView.swift */,
 				FB1062DD24B0C8DF0012C4D4 /* EditableProfileImageView.swift */,
 				FBF2927E2512828C0090BA9E /* LoadingView.swift */,
 				FBB26EB62546EC220081CF2C /* PeopleView.swift */,
@@ -552,6 +572,7 @@
 				FBB26EC9254845D90081CF2C /* SectionAppSettings.swift */,
 				FBA2AA312552D9BB00A471F6 /* SectionsChatSettings.swift */,
 				FB79DA982530E86D00A7AA56 /* SectionEditPhotos.swift */,
+				FBB33FF0256D202000A597BF /* SectionTagsCollectionView.swift */,
 			);
 			path = Sections;
 			sourceTree = "<group>";
@@ -747,6 +768,7 @@
 			isa = PBXGroup;
 			children = (
 				FB18217624B21F5100FFFC87 /* ChatsViewController.swift */,
+				FBB33FE1256C153800A597BF /* View */,
 				FB21A1B424E55F53000A2E91 /* Cell */,
 			);
 			path = ChatsViewController;
@@ -770,6 +792,7 @@
 				FB3351B52566962B007AFDDF /* View */,
 				FB3351B425669612007AFDDF /* Buttons */,
 				FBB33FB3256A870F00A597BF /* CollectionViewInfoGallery */,
+				FBB33FF4256D249A00A597BF /* TagsCollectionView */,
 				FBB26EAD254585DB0081CF2C /* ChatTitleStackView.swift */,
 				FB1062D724AE494A0012C4D4 /* OneLineTextField.swift */,
 				FB3351CE25683A38007AFDDF /* GalleryImageView.swift */,
@@ -794,8 +817,71 @@
 				FB3C5BDA253F4A5700CD44E6 /* MDefaultLayer.swift */,
 				FB8C3D8A25371AE900184FB5 /* MLabels.swift */,
 				FBB33FB6256A9A2600A597BF /* MPremiumInfo.swift */,
+				FBB33FD5256C0D4A00A597BF /* MLinks.swift */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		FBB33FDB256C14E400A597BF /* AboutViewController */ = {
+			isa = PBXGroup;
+			children = (
+				FBB33FD1256C0A1A00A597BF /* AboutViewController.swift */,
+				FBB33FDC256C150A00A597BF /* View */,
+			);
+			path = AboutViewController;
+			sourceTree = "<group>";
+		};
+		FBB33FDC256C150A00A597BF /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FBB33FCD256C03DE00A597BF /* AboutView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FBB33FE1256C153800A597BF /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FBB33FE6256C156F00A597BF /* PurchasesViewController */ = {
+			isa = PBXGroup;
+			children = (
+				FBFFB853255ECFE8007343ED /* PurchasesViewController.swift */,
+				FBB33FE9256C158300A597BF /* View */,
+			);
+			path = PurchasesViewController;
+			sourceTree = "<group>";
+		};
+		FBB33FE9256C158300A597BF /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FBFFB857255ED105007343ED /* PurchaseButton.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FBB33FF4256D249A00A597BF /* TagsCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				FBB33FEC256D10D700A597BF /* TagsCollectionView.swift */,
+				FBB33FF7256D24BB00A597BF /* TagsCollectionViewCell.swift */,
+				FBB3402F256D81E100A597BF /* TagsSelectCollectionViewCell.swift */,
+				FBB33FFB256D311000A597BF /* TagsCollectionViewHeader.swift */,
+			);
+			path = TagsCollectionView;
+			sourceTree = "<group>";
+		};
+		FBB34001256D421C00A597BF /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
+				FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		FBB3D49B255D599B00A3B832 /* PushMessage */ = {
@@ -1076,7 +1162,8 @@
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
 				FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */,
 				FBA2AA482553086D00A471F6 /* SetupChatMenu.swift in Sources */,
-				FBFFB89B256535F8007343ED /* OneLikeButton.swift in Sources */,
+				FBFFB89B256535F8007343ED /* OneLineButton.swift in Sources */,
+				FBB33FF8256D24BB00A597BF /* TagsCollectionViewCell.swift in Sources */,
 				FB1062DE24B0C8DF0012C4D4 /* EditableProfileImageView.swift in Sources */,
 				FBB26ED3254AFD130081CF2C /* AcceptChatDataProvider.swift in Sources */,
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
@@ -1094,7 +1181,9 @@
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
 				FB8C3D3C2533961800184FB5 /* MSexuality.swift in Sources */,
 				FB79DA84252DED1700A7AA56 /* ProfileCell.swift in Sources */,
+				FBB33FF1256D202000A597BF /* SectionTagsCollectionView.swift in Sources */,
 				FB3351CF25683A38007AFDDF /* GalleryImageView.swift in Sources */,
+				FBB33FD2256C0A1A00A597BF /* AboutViewController.swift in Sources */,
 				FBED946A2565909A00DED60A /* NotificationCenterExtension.swift in Sources */,
 				FBB26EAE254585DB0081CF2C /* ChatTitleStackView.swift in Sources */,
 				FB3C5BDB253F4A5A00CD44E6 /* MDefaultLayer.swift in Sources */,
@@ -1105,9 +1194,11 @@
 				FB61A7F8251E3FE4005DCC78 /* MSender.swift in Sources */,
 				FBB3B269250F82B800440632 /* ListenerService.swift in Sources */,
 				FB79DA4F2524D1FB00A7AA56 /* UIScrollViewExtension.swift in Sources */,
+				FBB34003256D423700A597BF /* TagsCollectionViewDelegate.swift in Sources */,
 				FB3351CB25682E2F007AFDDF /* MGalleryPhotoProperty.swift in Sources */,
 				FBB26EB42546E49B0081CF2C /* MAdmin.swift in Sources */,
 				FB79DA88252DEDB900A7AA56 /* SettingsCell.swift in Sources */,
+				FBB33FFC256D311000A597BF /* TagsCollectionViewHeader.swift in Sources */,
 				FB8C3D552533E09900184FB5 /* SelectionViewController.swift in Sources */,
 				FBE5A0F725558C3400060D97 /* PopUpService.swift in Sources */,
 				FBF293DB24FFBA9F00F7B5F1 /* AuthError.swift in Sources */,
@@ -1145,6 +1236,7 @@
 				FBB33FC6256BD80900A597BF /* ScreenRecordingManager.swift in Sources */,
 				FB79DA56252501E100A7AA56 /* UIApplicationExtension.swift in Sources */,
 				FBB33FA4256A7BA600A597BF /* PremiumCell.swift in Sources */,
+				FBB33FCE256C03DE00A597BF /* AboutView.swift in Sources */,
 				FB8C3D3F25339DE200184FB5 /* GenderSelectionViewController.swift in Sources */,
 				FB1062D824AE494A0012C4D4 /* OneLineTextField.swift in Sources */,
 				FBB26EB72546EC230081CF2C /* PeopleView.swift in Sources */,
@@ -1160,20 +1252,24 @@
 				FBB3D4A7255DBB5600A3B832 /* UserDefaultsExtension.swift in Sources */,
 				FB61B54924FE9581002761ED /* UIAlertExtension.swift in Sources */,
 				FB18217D24B2268E00FFFC87 /* PeopleViewController.swift in Sources */,
+				FBB34030256D81E100A597BF /* TagsSelectCollectionViewCell.swift in Sources */,
 				FBB33FCA256BDB9700A597BF /* ScreenRecordingView.swift in Sources */,
 				FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */,
 				FBEF608E24A9073E0005F947 /* UIFontExtension.swift in Sources */,
 				FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */,
 				FBEF608C24A8F4000005F947 /* UIButtonExtension.swift in Sources */,
+				FBB33FED256D10D700A597BF /* TagsCollectionView.swift in Sources */,
 				FB61A76F251CB97D005DCC78 /* DataSourceError.swift in Sources */,
 				FBF6289524F678C300DCD4AC /* SectionsChats.swift in Sources */,
 				FBA2AA392552FCE300A471F6 /* MChatSettings.swift in Sources */,
 				FB8C3D8B25371AE900184FB5 /* MLabels.swift in Sources */,
 				FB79DA6E252C942B00A7AA56 /* MLocation.swift in Sources */,
+				FBB34009256D645900A597BF /* MTag.swift in Sources */,
 				FBEF607824A602070005F947 /* AppDelegate.swift in Sources */,
 				FBB33FAC256A84EB00A597BF /* MCollectionViewGalleryElement.swift in Sources */,
 				FB1062DC24B09F6C0012C4D4 /* EditProfileViewController.swift in Sources */,
 				FB21A1B824E595CF000A2E91 /* Protocols.swift in Sources */,
+				FBB33FD6256C0D4A00A597BF /* MLinks.swift in Sources */,
 				FBE5A1092559D87000060D97 /* UNNotificationAttachment.swift in Sources */,
 				FB79DA992530E86D00A7AA56 /* SectionEditPhotos.swift in Sources */,
 				FBB3D496255D597E00A3B832 /* MAps.swift in Sources */,

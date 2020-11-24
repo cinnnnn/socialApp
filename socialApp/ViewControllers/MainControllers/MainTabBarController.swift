@@ -31,18 +31,20 @@ class MainTabBarController: UITabBarController{
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("Deinit main tabbar")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
         loadIsComplite(isComplite: false)
-        setupDataDelegate()
         getPeopleData()
         setupApphud()
     }
 }
 
 extension MainTabBarController {
-    private func setupDataDelegate() {
+    private func setupDataDelegate(complition: @escaping ()-> Void) {
         likeDislikeDelegate = LikeDislikeChatDataProvider(userID: currentUser.senderId)
         requestChatsDelegate = RequestChatDataProvider(userID: currentUser.senderId)
         acceptChatsDelegate = AcceptChatDataProvider(userID: currentUser.senderId)
@@ -55,7 +57,7 @@ extension MainTabBarController {
                                           likeDislikeDelegate: likeDislikeDelegate,
                                           messageDelegate: messageDelegate)
         
-        
+        complition()
     }
     
     private func subscribeToPushNotification() {
@@ -83,71 +85,73 @@ extension MainTabBarController {
 extension MainTabBarController {
     //MARK: getPeopleData, location
     private func getPeopleData() {
-        
-        UserDefaultsService.shared.saveMpeople(people: currentUser)
-        if let virtualLocation = MVirtualLocation(rawValue: currentUser.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
-            LocationService.shared.getCoordinate(userID: currentUser.senderId,
-                                                 virtualLocation: virtualLocation) {[weak self] isAllowPermission in
-                //if geo is denied, show alert and go to settings
-                if !isAllowPermission {
-                    self?.openSettingsAlert()
-                }
-                //get like users
-                self?.likeDislikeDelegate?.getLike(complition: { result in
-                    switch result {
-                    
-                    case .success(_):
-                        
-                        //get dislike users
-                        self?.likeDislikeDelegate?.getDislike(complition: { result in
-                            switch result {
-                            
-                            case .success(_):
-                                //get request users
-                                self?.requestChatsDelegate?.getRequestChats(complition: { result in
-                                    switch result {
-                                    
-                                    case .success(_):
-                                        //get accept chats
-                                        self?.acceptChatsDelegate?.getAcceptChats(complition: {[weak self] result in
-                                            switch result {
-                                            
-                                            case .success(_):
-                                                guard let currentUser = self?.currentUser else { return }
-                                                PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { _ in
-                                                    
-                                                    self?.loadIsComplite(isComplite: true)
-                                                    self?.setupControllers(currentPeople: currentUser)
-                                                    self?.subscribeToPushNotification()
-                                                    
-                                                }
-                                                
-                                            case .failure(let error):
-                                                self?.showAlert(title: "Ошибка, мы работаем над ней",
-                                                                text: error.localizedDescription,
-                                                                buttonText: "Попробую позже")
-                                            }
-                                        })
-                                        
-                                    case .failure(let error):
-                                        self?.showAlert(title: "Ошибка, мы работаем над ней",
-                                                        text: error.localizedDescription,
-                                                        buttonText: "Попробую позже")
-                                    }
-                                })
-                                
-                            case .failure(let error):
-                                self?.showAlert(title: "Ошибка, мы работаем над ней",
-                                                text: error.localizedDescription,
-                                                buttonText: "Попробую позже")
-                            }
-                        })
-                    case .failure(let error):
-                        self?.showAlert(title: "Ошибка, мы работаем над ней",
-                                        text: error.localizedDescription,
-                                        buttonText: "Попробую позже")
+        setupDataDelegate { [weak self] in
+            guard let currentUser = self?.currentUser else { fatalError("can't get current user") }
+            UserDefaultsService.shared.saveMpeople(people: currentUser)
+            if let virtualLocation = MVirtualLocation(rawValue: currentUser.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
+                LocationService.shared.getCoordinate(userID: currentUser.senderId,
+                                                     virtualLocation: virtualLocation) {[weak self] isAllowPermission in
+                    //if geo is denied, show alert and go to settings
+                    if !isAllowPermission {
+                        self?.openSettingsAlert()
                     }
-                })
+                    //get like users
+                    self?.likeDislikeDelegate?.getLike(complition: { result in
+                        switch result {
+                        
+                        case .success(_):
+                            
+                            //get dislike users
+                            self?.likeDislikeDelegate?.getDislike(complition: { result in
+                                switch result {
+                                
+                                case .success(_):
+                                    //get request users
+                                    self?.requestChatsDelegate?.getRequestChats(complition: { result in
+                                        switch result {
+                                        
+                                        case .success(_):
+                                            //get accept chats
+                                            self?.acceptChatsDelegate?.getAcceptChats(complition: {[weak self] result in
+                                                switch result {
+                                                
+                                                case .success(_):
+                                                    
+                                                    PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { _ in
+                                                        
+                                                        self?.loadIsComplite(isComplite: true)
+                                                        self?.setupControllers(currentPeople: currentUser)
+                                                        self?.subscribeToPushNotification()
+                                                        
+                                                    }
+                                                    
+                                                case .failure(let error):
+                                                    self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                                    text: error.localizedDescription,
+                                                                    buttonText: "Попробую позже")
+                                                }
+                                            })
+                                            
+                                        case .failure(let error):
+                                            self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                            text: error.localizedDescription,
+                                                            buttonText: "Попробую позже")
+                                        }
+                                    })
+                                    
+                                case .failure(let error):
+                                    self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                    text: error.localizedDescription,
+                                                    buttonText: "Попробую позже")
+                                }
+                            })
+                        case .failure(let error):
+                            self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                            text: error.localizedDescription,
+                                            buttonText: "Попробую позже")
+                        }
+                    })
+                }
             }
         }
     }
@@ -164,10 +168,16 @@ extension MainTabBarController {
         tabBar.unselectedItemTintColor = .myLightGrayColor()
         tabBar.tintColor = .myLabelColor()
         
+        guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislike is nil")}
+        guard let requestChatsDelegate = requestChatsDelegate else { fatalError("likeDislike is nil")}
+        guard let peopleDelegate = peopleDelegate else { fatalError("likeDislike is nil")}
+        guard let acceptChatsDelegate = acceptChatsDelegate else { fatalError("likeDislike is nil")}
+        
         let profileVC = ProfileViewController(currentPeople: currentPeople,
                                               peopleListnerDelegate: peopleDelegate,
                                               likeDislikeDelegate: likeDislikeDelegate,
-                                              acceptChatsDelegate: acceptChatsDelegate)
+                                              acceptChatsDelegate: acceptChatsDelegate,
+                                              requestChatsDelegate: requestChatsDelegate)
         
         let peopleVC = PeopleViewController(currentPeople: currentPeople,
                                             peopleDelegate: peopleDelegate,
@@ -175,7 +185,7 @@ extension MainTabBarController {
                                             likeDislikeDelegate: likeDislikeDelegate,
                                             acceptChatDelegate: acceptChatsDelegate)
         
-        peopleDelegate?.peopleCollectionViewDelegate = peopleVC
+        peopleDelegate.peopleCollectionViewDelegate = peopleVC
         
         let requsetsVC = RequestsViewController(currentPeople: currentPeople,
                                                 likeDislikeDelegate: likeDislikeDelegate,
@@ -183,19 +193,19 @@ extension MainTabBarController {
                                                 peopleNearbyDelegate: peopleDelegate,
                                                 acceptChatDelegate: acceptChatsDelegate)
         
-        requestChatsDelegate?.requestChatCollectionViewDelegate = requsetsVC
+        requestChatsDelegate.requestChatCollectionViewDelegate = requsetsVC
         
         let chatsVC = ChatsViewController(currentPeople: currentPeople,
                                           acceptChatDelegate: acceptChatsDelegate,
                                           likeDislikeDelegate: likeDislikeDelegate,
                                           messageDelegate: messageDelegate)
         
-        acceptChatsDelegate?.acceptChatCollectionViewDelegate = chatsVC
+        acceptChatsDelegate.acceptChatCollectionViewDelegate = chatsVC
         
         
         viewControllers = [
             generateNavigationController(rootViewController: peopleVC, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
-            generateNavigationController(rootViewController: requsetsVC, image: #imageLiteral(resourceName: "Heart"), title: nil),
+            generateNavigationController(rootViewController: requsetsVC, image: #imageLiteral(resourceName: "request"), title: nil),
             generateNavigationController(rootViewController: chatsVC, image: #imageLiteral(resourceName: "chats"), title: nil),
             generateNavigationController(rootViewController: profileVC, image: #imageLiteral(resourceName: "profile"), title: nil)
         ]

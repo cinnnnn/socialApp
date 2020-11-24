@@ -14,6 +14,7 @@ class ProfileViewController: UIViewController {
     weak var peopleListnerDelegate: PeopleListenerDelegate?
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var acceptChatsDelegate: AcceptChatListenerDelegate?
+    weak var requestChatsDelegate: RequestChatListenerDelegate?
     
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MProfileSettings>?
@@ -23,12 +24,14 @@ class ProfileViewController: UIViewController {
     init(currentPeople: MPeople,
          peopleListnerDelegate: PeopleListenerDelegate?,
          likeDislikeDelegate: LikeDislikeListenerDelegate?,
-         acceptChatsDelegate: AcceptChatListenerDelegate?) {
+         acceptChatsDelegate: AcceptChatListenerDelegate?,
+         requestChatsDelegate: RequestChatListenerDelegate?) {
         
         self.currentPeople = currentPeople
         self.peopleListnerDelegate = peopleListnerDelegate
         self.likeDislikeDelegate = likeDislikeDelegate
         self.acceptChatsDelegate = acceptChatsDelegate
+        self.requestChatsDelegate = requestChatsDelegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -259,7 +262,8 @@ extension ProfileViewController: UICollectionViewDelegate {
                 
             case .appSettings:
                 let vc = AppSettingsViewController(currentPeople: currentPeople,
-                                                   acceptChatDelegate: acceptChatsDelegate)
+                                                   acceptChatDelegate: acceptChatsDelegate,
+                                                   requestChatDelegate: requestChatsDelegate)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 

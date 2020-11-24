@@ -77,6 +77,7 @@ class RequestChatCell: UICollectionViewCell, SelfConfiguringCell {
             frendName.topAnchor.constraint(equalTo: animateProfileBack.bottomAnchor),
             frendName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             frendName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            frendName.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 }

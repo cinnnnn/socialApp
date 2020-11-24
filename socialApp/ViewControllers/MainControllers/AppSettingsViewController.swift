@@ -19,9 +19,14 @@ class AppSettingsViewController: UIViewController {
     private var dataSource: UICollectionViewDiffableDataSource<SectionAppSettings, MAppSettings>?
     private var currentPeople: MPeople
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
+    weak var requestChatDelegate: RequestChatListenerDelegate?
     
-    init(currentPeople: MPeople, acceptChatDelegate: AcceptChatListenerDelegate?) {
+    init(currentPeople: MPeople,
+         acceptChatDelegate: AcceptChatListenerDelegate?,
+         requestChatDelegate: RequestChatListenerDelegate?) {
+        
         self.acceptChatDelegate = acceptChatDelegate
+        self.requestChatDelegate = requestChatDelegate
         self.currentPeople = currentPeople
         super.init(nibName: nil, bundle: nil)
     }
@@ -153,9 +158,9 @@ extension AppSettingsViewController: UICollectionViewDelegate {
             switch cell {
             
             case .about:
-            let vc = PurchasesViewController(currentPeople: currentPeople)
-                vc.modalPresentationStyle = .fullScreen
-                present(vc, animated: true, completion: nil)
+                let vc = AboutViewController()
+                navigationController?.pushViewController(vc, animated: true)
+                collectionView.deselectItem(at: indexPath, animated: true)
                 
             case .logOut:
                 signOutAlert(pressedIndexPath: indexPath)
@@ -184,6 +189,7 @@ extension AppSettingsViewController {
             AuthService.shared.signOut { result in
                 switch result {
                 case .success(_):
+                    
                     Apphud.logout()
                     UserDefaultsService.shared.deleteMpeople()
                     PushMessagingService.shared.logOutUnsabscribe(currentUserID: strongCurrentPeople.senderId,

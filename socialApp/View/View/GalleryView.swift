@@ -16,6 +16,7 @@ class GalleryView: UIView {
     var profileImage = ""
     var pageControl = CHIPageControlAleppo()
     
+    
     convenience init(profileImage: String, gallery: [String : MGalleryPhotoProperty], showPrivate: Bool, showProtectButton: Bool) {
         self.init()
         self.profileImage = profileImage
@@ -118,8 +119,6 @@ class GalleryView: UIView {
         scrollView.contentSize.height = frame.height * CGFloat(countOfView)
         layer.cornerRadius = frame.width / MDefaultLayer.widthMultiplier.rawValue / 2
     }
-    
-
 }
 
 extension GalleryView: UIScrollViewDelegate {

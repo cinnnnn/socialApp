@@ -11,13 +11,15 @@ import Foundation
 class RequestChatDataProvider: RequestChatListenerDelegate {
     
     var userID: String
-    var requestChats: [MChat] = []
-    var sortedRequestChats: [MChat] {
-        let request = requestChats.sorted {
-            $0.date > $1.date
+    var requestChats: [MChat] = [] {
+        didSet {
+            sortedRequestChats = requestChats.sorted {
+                $0.date > $1.date
+            }
+            
         }
-        return request
     }
+    var sortedRequestChats: [MChat] = []
     var requestChatCollectionViewDelegate: RequestChatCollectionViewDelegate?
    
     init(userID: String) {

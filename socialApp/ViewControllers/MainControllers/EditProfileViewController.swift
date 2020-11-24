@@ -26,7 +26,12 @@ class EditProfileViewController: UIViewController {
     let sexualityButton = OneLineButtonWithHeader(header: "Сексуальная ориентация", info: "")
     let nameTextField = OneLineTextField(isSecureText: false,
                                          tag: 1,
-                                         placeHoledText: "Ты можешь быть кем угодно...")
+                                         placeHoledText: "")
+    let interestsTags = TagsCollectionView(unselectTags: [],
+                                           selectTags: [],
+                                           headerText: "Интересы",
+                                           headerFont: .avenirRegular(size: 16),
+                                           headerColor: .myGrayColor())
     let advertTextView = UITextView(text: "Для просмотра обьявлений других пользователей, расскажи о себе...",
                                     isEditable: true)
     
@@ -124,7 +129,8 @@ extension EditProfileViewController {
         
         guard let people = UserDefaultsService.shared.getMpeople() else { return }
         currentPeople = people
-        
+        interestsTags.configure(unselectTags: ["фото", "айти", "неайти", "музыка", "хуюзыка"],
+                                selectedTags: ["девчули","кукинги"])
         gelleryScrollView.setupImages(profileImage: people.userImage,
                                       gallery: people.gallery,
                                       showPrivate: true,
@@ -296,6 +302,7 @@ extension EditProfileViewController {
         editPhotosButton.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
+        interestsTags.translatesAutoresizingMaskIntoConstraints = false
         aboutLabel.translatesAutoresizingMaskIntoConstraints = false
         advertTextView.translatesAutoresizingMaskIntoConstraints = false
         genderButton.translatesAutoresizingMaskIntoConstraints = false
@@ -309,6 +316,7 @@ extension EditProfileViewController {
         scrollView.addSubview(editPhotosButton)
         scrollView.addSubview(nameLabel)
         scrollView.addSubview(nameTextField)
+        scrollView.addSubview(interestsTags)
         scrollView.addSubview(aboutLabel)
         scrollView.addSubview(advertTextView)
         scrollView.addSubview(genderButton)
@@ -342,7 +350,11 @@ extension EditProfileViewController {
             nameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             nameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            aboutLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 35),
+            interestsTags.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 35),
+            interestsTags.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            interestsTags.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            aboutLabel.topAnchor.constraint(equalTo: interestsTags.bottomAnchor, constant: 35),
             aboutLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             aboutLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             

@@ -79,7 +79,8 @@ class PurchasesViewController: UIViewController {
         oneMonthButton.addTarget(self, action: #selector(oneMonthTapped), for: .touchUpInside)
         threeMonthButton.addTarget(self, action: #selector(threeMonthTapped), for: .touchUpInside)
         oneYearButton.addTarget(self, action: #selector(oneYearTapped), for: .touchUpInside)
-        
+        termsOfServiceButton.addTarget(self, action: #selector(termsOfServiceTapped), for: .touchUpInside)
+        privacyPolicyButton.addTarget(self, action: #selector(privacyTapped), for: .touchUpInside)
         updateProduct()
 
     }
@@ -129,6 +130,7 @@ class PurchasesViewController: UIViewController {
 //MARK: objc
 extension PurchasesViewController {
     
+    //MARK: updateProduct
     @objc private func updateProduct(){
       
         guard
@@ -142,29 +144,29 @@ extension PurchasesViewController {
                                      product: product,
                                      monthCount: 0,
                                      basePricePerMonth: monthProduct.price,
-                                     backgroundColor: .mySecondColor(),
-                                     selectBackground: .mySecondSatColor())
+                                     backgroundColor: .mySecondSatColor(),
+                                     selectBackground: .mySecondColor())
             case MPurchases.oneMonth.rawValue:
                 oneMonthButton.setup(header: "Месяц",
                                      product: product,
                                      monthCount: 1,
                                      basePricePerMonth: monthProduct.price,
-                                     backgroundColor: .mySecondColor(),
-                                     selectBackground: .mySecondSatColor())
+                                     backgroundColor: .mySecondSatColor(),
+                                     selectBackground: .mySecondColor())
             case MPurchases.threeMonth.rawValue:
                 threeMonthButton.setup(header: "Три месяца",
                                        product: product,
                                        monthCount: 3,
                                        basePricePerMonth: monthProduct.price,
-                                       backgroundColor: .mySecondColor(),
-                                       selectBackground: .mySecondSatColor())
+                                       backgroundColor: .mySecondSatColor(),
+                                       selectBackground: .mySecondColor())
             case MPurchases.oneYear.rawValue:
                 oneYearButton.setup(header: "Год",
                                     product: product,
                                     monthCount: 12,
                                     basePricePerMonth: monthProduct.price,
-                                    backgroundColor: .mySecondColor(),
-                                    selectBackground: .mySecondSatColor())
+                                    backgroundColor: .mySecondSatColor(),
+                                    selectBackground: .mySecondColor())
             default:
                 break
             }
@@ -199,6 +201,18 @@ extension PurchasesViewController {
     
     @objc private func closeTapped() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    @objc private func termsOfServiceTapped() {
+        if let url = URL(string: MLinks.termsOfServiceLink.rawValue) {
+            UIApplication.shared.open(url)
+        }
+    }
+    
+    @objc private func privacyTapped() {
+        if let url = URL(string: MLinks.privacyLink.rawValue) {
+            UIApplication.shared.open(url)
+        }
     }
 }
 

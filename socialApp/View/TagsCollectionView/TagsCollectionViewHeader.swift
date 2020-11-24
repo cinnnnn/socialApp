@@ -1,31 +1,29 @@
 //
-//  SectionHeader.swift
+//  TagsCollectionViewHeader.swift
 //  socialApp
 //
-//  Created by Денис Щиголев on 25.08.2020.
+//  Created by Денис Щиголев on 24.11.2020.
 //  Copyright © 2020 Денис Щиголев. All rights reserved.
 //
 
-
 import UIKit
 
-class SectionHeader: UICollectionReusableView {
-    
-    static let reuseId = "SectionHeader"
+class TagsCollectionViewHeader: UICollectionReusableView {
+    static let reuseId = "TagsCollectionViewHeader"
     
     let title = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        setupTitle()
+    
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupTitle() {
+    private func setupConstraints() {
         
         title.translatesAutoresizingMaskIntoConstraints = false
         addSubview(title)

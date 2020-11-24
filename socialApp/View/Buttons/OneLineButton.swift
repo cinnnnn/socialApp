@@ -8,15 +8,17 @@
 
 import UIKit
 
-class OneLikeButton: UIButton {
+class OneLineButton: UIButton {
     
     let infoLabel  = UILabel(labelText: "", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
     let bottomLine = UIView(frame: .zero)
     
-    convenience init(info: String) {
+    convenience init(info: String, font: UIFont = .avenirRegular(size: 14), textColor: UIColor = .myLabelColor(), lineColor: UIColor = .myLightGrayColor() ) {
         self.init()
         infoLabel.text = info
-        bottomLine.backgroundColor = .myLightGrayColor()
+        infoLabel.textColor = textColor
+        infoLabel.font = font
+        bottomLine.backgroundColor = lineColor
         setupConstraints()
     }
     

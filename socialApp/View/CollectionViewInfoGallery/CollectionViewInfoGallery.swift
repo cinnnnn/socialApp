@@ -14,6 +14,7 @@ class CollectionViewInfoGallery: UIView {
     private let collectionHeader = UILabel(labelText: "", textFont: .avenirBold(size: 34), textColor: .myWhiteColor())
     private let pageControl = CHIPageControlAleppo()
     private var elements: [MCollectionViewGalleryElement]
+    private var timer: Timer?
     
     init(elements: [MCollectionViewGalleryElement], header: String?){
         self.elements = elements
@@ -68,6 +69,11 @@ extension CollectionViewInfoGallery {
         pageControl.hidesForSinglePage = false
         pageControl.tintColor = .myWhiteColor()
         pageControl.radius = 4
+        
+        if timer == nil {
+            
+            
+        }
     }
 }
 

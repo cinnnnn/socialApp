@@ -15,19 +15,19 @@ class RequestsViewController: UIViewController {
     
     var collectionView: UICollectionView?
    
-    weak var peopleDelegate: PeopleListenerDelegate?
-    weak var requestChatDelegate: RequestChatListenerDelegate?
-    weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
-    weak var acceptChatDelegate: AcceptChatListenerDelegate?
+    var peopleDelegate: PeopleListenerDelegate
+    var requestChatDelegate: RequestChatListenerDelegate
+    var likeDislikeDelegate: LikeDislikeListenerDelegate
+    var acceptChatDelegate: AcceptChatListenerDelegate
     
     var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
     var currentPeople: MPeople
     
     init(currentPeople: MPeople,
-         likeDislikeDelegate: LikeDislikeListenerDelegate?,
-         requestChatDelegate: RequestChatListenerDelegate?,
-         peopleNearbyDelegate: PeopleListenerDelegate?,
-         acceptChatDelegate: AcceptChatListenerDelegate?) {
+         likeDislikeDelegate: LikeDislikeListenerDelegate,
+         requestChatDelegate: RequestChatListenerDelegate,
+         peopleNearbyDelegate: PeopleListenerDelegate,
+         acceptChatDelegate: AcceptChatListenerDelegate) {
         
         self.currentPeople = currentPeople
         self.peopleDelegate = peopleNearbyDelegate
@@ -43,7 +43,7 @@ class RequestsViewController: UIViewController {
     }
     
     deinit {
-        requestChatDelegate?.removeListener()
+        requestChatDelegate.removeListener()
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -64,8 +64,6 @@ class RequestsViewController: UIViewController {
     }
     
     private func setupListeners() {
-        guard let requestChatDelegate = requestChatDelegate else { fatalError("requestChatDelegate is nil") }
-        guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislikeDelegate is nil") }
         
         requestChatDelegate.setupListener(likeDislikeDelegate: likeDislikeDelegate)
         NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
@@ -135,13 +133,13 @@ extension RequestsViewController {
     }
     //MARK:  createRequestChatsLayout
     private func createRequestChatsLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .fractionalHeight(1))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5),
+                                              heightDimension: .estimated(100))
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let grupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.4),
-                                              heightDimension: .fractionalHeight(0.4))
+        let grupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                              heightDimension: .estimated(100))
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: grupSize,
                                                        subitems: [item])
@@ -150,8 +148,7 @@ extension RequestsViewController {
         
         let sectionHeader = createSectionHeader()
         section.boundarySupplementaryItems = [sectionHeader]
-        
-        section.orthogonalScrollingBehavior = .continuous
+    
         section.interGroupSpacing = 15
         section.contentInsets = NSDirectionalEdgeInsets(top: 40,
                                                         leading: 20,
@@ -211,8 +208,10 @@ extension RequestsViewController {
 extension RequestsViewController: RequestChatCollectionViewDelegate {
     //MARK: reloadRequestData
     func reloadData() {
+    
         
-        guard let sortedRequestChats = requestChatDelegate?.sortedRequestChats else { fatalError("can't get sorted chats")}
+        let sortedRequestChats = requestChatDelegate.sortedRequestChats
+        
         if let dataSource = dataSource {
             var snapshot = dataSource.snapshot()
             snapshot.deleteAllItems()
@@ -249,10 +248,12 @@ extension RequestsViewController: UICollectionViewDelegate {
             } else {
                 var popUpHeader = "Видеть кто тебя лайкнул"
                 var popUpMessage = "Возможно с подпиской Flava Premium"
-                if let requestChatCount = requestChatDelegate?.requestChats.count {
-                    popUpHeader = "\(requestChatCount) человек(а) ждут ответа"
-                    popUpMessage = "Хочешь видеть их? И образовывать с ними пары сразу?"
-                }
+                let requestChatCount = requestChatDelegate.requestChats.count
+                let waitText = requestChatCount == 1 ? "ждет" : "ждут"
+                let peopleText = requestChatCount == 1 ? "человек" : "человек(а)"
+                popUpHeader = "\(requestChatCount) \(peopleText) \(waitText) ответа"
+                popUpMessage = "Хочешь видеть? И образовывать пары сразу?"
+                
                 PopUpService.shared.bottomPopUp(header: popUpHeader,
                                                 text: popUpMessage,
                                                 image: nil,
