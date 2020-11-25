@@ -16,6 +16,7 @@ class ChatsViewController: UIViewController {
     var collectionView: UICollectionView?
     var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
     var currentPeople: MPeople
+    var segmentedControl = UISegmentedControl(items: ["один","два"])
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var messageDelegate: MessageListenerDelegate?
@@ -80,7 +81,6 @@ class ChatsViewController: UIViewController {
         searchController.searchBar.searchTextField.borderStyle = .roundedRect
         
         navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
     }
     
     //MARK: objc
@@ -107,12 +107,11 @@ extension ChatsViewController {
                                                                                          isEmptyNewSection: false))
         
         guard let collectionView = collectionView else { fatalError("CollectionView is nil")}
-    
+        
+        view.addSubview(collectionView)
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .myWhiteColor()
         collectionView.delegate = self
-        
-        view.addSubview(collectionView)
         
         collectionView.register(ActiveChatsCell.self, forCellWithReuseIdentifier: ActiveChatsCell.reuseID)
         collectionView.register(NewChatsCell.self, forCellWithReuseIdentifier: NewChatsCell.reuseID)

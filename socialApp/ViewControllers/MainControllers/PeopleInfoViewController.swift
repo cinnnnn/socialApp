@@ -38,6 +38,15 @@ class PeopleInfoViewController: UIViewController {
         setup()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationBar()
+    }
+    
+    private func setupNavigationBar() {
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
     func setup() {
         view.backgroundColor = .myWhiteColor()
         peopleView.likeButton.isHidden = !withLikeButtons

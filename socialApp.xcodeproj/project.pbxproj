@@ -868,9 +868,7 @@
 			isa = PBXGroup;
 			children = (
 				FBB33FEC256D10D700A597BF /* TagsCollectionView.swift */,
-				FBB33FF7256D24BB00A597BF /* TagsCollectionViewCell.swift */,
-				FBB3402F256D81E100A597BF /* TagsSelectCollectionViewCell.swift */,
-				FBB33FFB256D311000A597BF /* TagsCollectionViewHeader.swift */,
+				FBB34033256D90BD00A597BF /* Cell */,
 			);
 			path = TagsCollectionView;
 			sourceTree = "<group>";
@@ -882,6 +880,16 @@
 				FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */,
 			);
 			path = Protocols;
+			sourceTree = "<group>";
+		};
+		FBB34033256D90BD00A597BF /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				FBB33FFB256D311000A597BF /* TagsCollectionViewHeader.swift */,
+				FBB33FF7256D24BB00A597BF /* TagsCollectionViewCell.swift */,
+				FBB3402F256D81E100A597BF /* TagsSelectCollectionViewCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		FBB3D49B255D599B00A3B832 /* PushMessage */ = {

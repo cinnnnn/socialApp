@@ -62,7 +62,6 @@ class EditProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationController()
         setupConstraints()
         setupButtonAction()
         setupVC()
@@ -70,7 +69,7 @@ class EditProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        setupNavigationController()
         registerNotification()
         setPeopleData()
     }
@@ -111,6 +110,7 @@ class EditProfileViewController: UIViewController {
     private func setupNavigationController(){
         navigationItem.title = "Профиль"
         navigationItem.backButtonTitle = ""
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     //MARK:  setupButtonAction
@@ -131,6 +131,8 @@ extension EditProfileViewController {
         currentPeople = people
         interestsTags.configure(unselectTags: ["фото", "айти", "неайти", "музыка", "хуюзыка"],
                                 selectedTags: ["девчули","кукинги"])
+        
+        
         gelleryScrollView.setupImages(profileImage: people.userImage,
                                       gallery: people.gallery,
                                       showPrivate: true,
@@ -144,7 +146,8 @@ extension EditProfileViewController {
         genderButton.infoLabel.text = people.gender
         sexualityButton.infoLabel.text = people.sexuality
         incognitoSwitch.isOn = people.isIncognito
-
+        
+        
     }
     
     //MARK:  savePeopleData

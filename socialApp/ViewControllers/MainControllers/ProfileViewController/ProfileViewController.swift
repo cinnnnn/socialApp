@@ -48,6 +48,11 @@ class ProfileViewController: UIViewController {
         updateDataSource()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationBar()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateSections()
@@ -66,6 +71,10 @@ class ProfileViewController: UIViewController {
         if let people = UserDefaultsService.shared.getMpeople() {
             currentPeople = people
         }
+    }
+    
+    private func setupNavigationBar() {
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
 }
 

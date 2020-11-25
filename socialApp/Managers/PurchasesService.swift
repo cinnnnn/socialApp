@@ -16,12 +16,14 @@ class PurchasesService: NSObject {
     static let productNotificationIdentifier = "PurchasesServiceProductIdentifier"
     private override init() { }
     
+    
     var products: [SKProduct] = []
     
     private func refreshReceipt(){
         let request = SKReceiptRefreshRequest(receiptProperties: nil)
         request.delegate = self
         request.start()
+        
     }
     
     public func setupPurchases(complition: @escaping(Bool) -> Void) {
@@ -147,7 +149,6 @@ extension PurchasesService {
     
 }
 
-
 //MARK: paymentQueue func
 extension PurchasesService {
     private func failedPurchases(transaction: SKPaymentTransaction) {
@@ -168,6 +169,7 @@ extension PurchasesService {
         SKPaymentQueue.default().finishTransaction(transaction)
     }
     
+
     private func restoredPurchases(transaction: SKPaymentTransaction) {
         NotificationCenter.default.post(name: NSNotification.Name(transaction.payment.productIdentifier), object: nil)
         SKPaymentQueue.default().finishTransaction(transaction)
@@ -206,7 +208,6 @@ extension PurchasesService: SKPaymentTransactionObserver {
 //MARK: SKProductsRequestDelegate
 extension PurchasesService: SKProductsRequestDelegate {
     func requestDidFinish(_ request: SKRequest) {
-        
         //if finish update receipt, check subscribtion
         if request is SKReceiptRefreshRequest {
             if let currentPeople = UserDefaultsService.shared.getMpeople() {
@@ -214,6 +215,7 @@ extension PurchasesService: SKProductsRequestDelegate {
             }
         }
     }
+    
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         
         products = response.products

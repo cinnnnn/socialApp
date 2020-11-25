@@ -10,6 +10,7 @@ import UIKit
 
 class TagsCollectionView: UIView {
     private var collectionView: UICollectionView?
+    private var hightCollectionViewConstraint: NSLayoutConstraint?
     private var unselectTags: [MTag] = []
     private var selectedTags: [MTag] = []
     private var headerText = ""
@@ -83,6 +84,7 @@ extension TagsCollectionView {
         if let collectionView = collectionView {
             collectionView.backgroundColor = .clear
             collectionView.delegate = self
+            collectionView.isScrollEnabled = true
             collectionView.register(TagsCollectionViewCell.self,
                                     forCellWithReuseIdentifier: TagsCollectionViewCell.reuseID)
             collectionView.register(TagsSelectCollectionViewCell.self,
@@ -131,7 +133,7 @@ extension TagsCollectionView {
         if withHeader {
             section.boundarySupplementaryItems = [header]
         }
-        
+       
         section.interGroupSpacing = 10
         section.contentInsets = NSDirectionalEdgeInsets(top: 10,
                                                         leading: 0,
@@ -191,7 +193,43 @@ extension TagsCollectionView {
         snapshot.appendItems(unselectTags, toSection: .unselectTags)
         snapshot.appendItems(selectedTags, toSection: .selectedTags)
         
-        dataSource?.apply(snapshot, animatingDifferences: true)
+        dataSource?.apply(snapshot, animatingDifferences: true, completion: { [weak self] in
+            self?.updateHightCollectionView()
+        })
+        
+        
+      
+    }
+    
+
+    override func updateConstraints() {
+      
+        if collectionView?.contentSize.height != 0 {
+            guard let size = collectionView?.contentSize.height else { return }
+            hightCollectionViewConstraint?.constant = size
+            self.setNeedsLayout()
+            print("\n size: \(size)")
+            
+        }
+        
+        super.updateConstraints()
+    }
+    private func updateHightCollectionView() {
+      
+        if !selectedTags.isEmpty {
+            guard let lastElement = selectedTags.last,
+                  let indexPath = dataSource?.indexPath(for: lastElement)
+            else { return }
+            let attr = collectionView?.collectionViewLayout.layoutAttributesForItem(at: indexPath)
+            let size = (attr?.frame.origin.y ?? 0) + (attr?.frame.height ?? 0)
+            print("\n content: \(size)")
+        }
+        
+        setNeedsUpdateConstraints()
+        
+        
+        print("\n Collection: \(collectionView?.frame.height)")
+        print("\n content: \(collectionView?.contentSize.height)")
     }
 }
 
@@ -213,6 +251,7 @@ extension TagsCollectionView: UICollectionViewDelegate {
             selectedTags.remove(at: indexPath.item)
             updateDataSource()
         }
+        
     }
 }
 
@@ -261,11 +300,13 @@ extension TagsCollectionView {
         addSubview(collectionView)
         addSubview(tagTextField)
         
+        hightCollectionViewConstraint = collectionView.heightAnchor.constraint(equalToConstant: 100)
+        hightCollectionViewConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collectionView.heightAnchor.constraint(equalToConstant: 200),
             
             tagTextField.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 10),
             tagTextField.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
@@ -275,4 +316,6 @@ extension TagsCollectionView {
         
         
     }
+    
+  
 }

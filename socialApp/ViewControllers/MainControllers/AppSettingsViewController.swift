@@ -44,12 +44,20 @@ class AppSettingsViewController: UIViewController {
         updateDataSource()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationController()
+    }
+    
     private func setup() {
         view.backgroundColor = .myWhiteColor()
-        
+    }
+    
+    //MARK:  setupNavigationController
+    private func setupNavigationController(){
         navigationItem.title = "Настройки"
         navigationItem.backButtonTitle = ""
-        navigationItem.largeTitleDisplayMode = .never
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 }
 

@@ -54,9 +54,13 @@ class EditSearchSettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
-        setupNavigationController()
         setupData()
         setupConstraints()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationController()
     }
     
     override func viewDidLayoutSubviews() {
@@ -99,6 +103,7 @@ class EditSearchSettingsViewController: UIViewController {
     private func setupNavigationController(){
         navigationItem.title = "Параметры поиска"
         navigationItem.backButtonTitle = ""
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     

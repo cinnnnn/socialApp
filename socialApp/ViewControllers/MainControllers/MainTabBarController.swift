@@ -162,9 +162,13 @@ extension MainTabBarController {
 //MARK: setupControllers
 extension MainTabBarController {
     private func setupControllers(currentPeople: MPeople){
-        tabBar.shadowImage = UIImage()
-        tabBar.backgroundImage = UIImage()
-        tabBar.barTintColor = .myWhiteColor()
+        let appearance = tabBar.standardAppearance.copy()
+        appearance.backgroundImage = UIImage()
+        appearance.shadowImage = UIImage()
+        appearance.shadowColor = .clear
+        appearance.backgroundColor = .myWhiteColor()
+        tabBar.standardAppearance = appearance
+       
         tabBar.unselectedItemTintColor = .myLightGrayColor()
         tabBar.tintColor = .myLabelColor()
         
@@ -205,9 +209,9 @@ extension MainTabBarController {
         
         viewControllers = [
             generateNavigationController(rootViewController: peopleVC, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
-            generateNavigationController(rootViewController: requsetsVC, image: #imageLiteral(resourceName: "request"), title: nil),
+            generateNavigationController(rootViewController: requsetsVC, image: #imageLiteral(resourceName: "request"), title: nil, isHidden: true),
             generateNavigationController(rootViewController: chatsVC, image: #imageLiteral(resourceName: "chats"), title: nil),
-            generateNavigationController(rootViewController: profileVC, image: #imageLiteral(resourceName: "profile"), title: nil)
+            generateNavigationController(rootViewController: profileVC, image: #imageLiteral(resourceName: "profile"), title: nil, isHidden: true)
         ]
     }
     
@@ -225,16 +229,16 @@ extension MainTabBarController {
         navController.navigationItem.title = title
         navController.navigationBar.isHidden = isHidden
         
-        if withoutBackImage {
-            navController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        }
-        
-        navController.navigationBar.prefersLargeTitles = true
-        navController.navigationBar.isTranslucent = true
-        navController.navigationBar.shadowImage = UIImage()
+        let appereance = navController.navigationBar.standardAppearance.copy()
+        appereance.shadowImage = UIImage()
+        appereance.shadowColor = .clear
+        appereance.backgroundImage = UIImage()
+        appereance.backgroundColor = .myWhiteColor()
+
+        navController.navigationBar.standardAppearance = appereance
+        navController.navigationBar.prefersLargeTitles = false
         navController.navigationBar.tintColor = .myLabelColor()
-        navController.navigationBar.barTintColor = .myWhiteColor()
-        // navController.navigationBar.backgroundColor = .myWhiteColor()
+       
         navController.navigationBar.titleTextAttributes = [.font: UIFont.avenirBold(size: 16)]
         navController.navigationBar.largeTitleTextAttributes = [.font: UIFont.avenirBold(size: 38)]
         return navController

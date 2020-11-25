@@ -50,7 +50,6 @@ class RequestsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationBar()
         setupCollectionView()
         setupDataSource()
         loadSectionHedear()
@@ -60,11 +59,16 @@ class RequestsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateCurrentPeople()
+        setupNavigationBar()
         reloadData()
     }
     
-    private func setupListeners() {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
+    }
+    
+    private func setupListeners() {
         requestChatDelegate.setupListener(likeDislikeDelegate: likeDislikeDelegate)
         NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
         NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
@@ -84,7 +88,7 @@ class RequestsViewController: UIViewController {
     
     private func setupNavigationBar() {
         navigationItem.backButtonTitle = ""
-        navigationItem.largeTitleDisplayMode = .never
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     //MARK:  setupCollectionView
