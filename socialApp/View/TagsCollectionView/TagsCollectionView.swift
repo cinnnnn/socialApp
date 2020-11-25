@@ -209,7 +209,8 @@ extension TagsCollectionView {
         dataSource?.apply(snapshot, animatingDifferences: true, completion: { [weak self] in
             self?.setNeedsUpdateConstraints()
         })
-
+        
+        tagsDelegate?.tagsDidChange?()
     }
     
     override func updateConstraints() {
@@ -247,7 +248,6 @@ extension TagsCollectionView: UICollectionViewDelegate {
             selectedTags.remove(at: indexPath.item)
             updateDataSource()
         }
-        
     }
 }
 
@@ -275,10 +275,10 @@ extension TagsCollectionView: UITextFieldDelegate {
         }) {
             let newMTag = MTag(tagText: newTag, isSelect: true)
             selectedTags.append(newMTag)
+            tagsDelegate?.tagTextFiledShouldReturn?(text: newTag)
+            updateDataSource()
         }
         textField.text = ""
-        tagsDelegate?.tagTextFiledShouldReturn?(text: newTag)
-        updateDataSource()
         
         return true
     }

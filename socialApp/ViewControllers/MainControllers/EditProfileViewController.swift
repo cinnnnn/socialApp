@@ -47,8 +47,9 @@ class EditProfileViewController: UIViewController {
                                 linesCount: 0)
     let incognitoSwitch = UISwitch()
     
+    private var selectedVisibleYValue: CGFloat?
+    private var keybordMinYValue:CGFloat?
     
-    private var visibleRect: CGPoint?
     private var currentPeople: MPeople
     
     init(currentPeople: MPeople) {
@@ -91,13 +92,14 @@ class EditProfileViewController: UIViewController {
     }
 
     private func setupVC() {
-        view.backgroundColor = .systemBackground
-        scrollView.showsVerticalScrollIndicator = false
+        view.backgroundColor = .myWhiteColor()
+        
         scrollView.delegate = self
         scrollView.addSingleTapRecognizer(target: self, selector: #selector(endEditing))
         scrollView.layoutSubviews()
         advertTextView.delegate = self
         nameTextField.delegate = self
+        interestsTags.tagsDelegate = self
         gelleryScrollView.clipsToBounds = true
         advertTextView.addDoneButton()
         editPhotosButton.layoutIfNeeded()
@@ -179,9 +181,16 @@ extension EditProfileViewController {
 //MARK: NotificationCenter
 extension EditProfileViewController {
     private func registerNotification() {
-        NotificationCenter.default.addObserver(self, selector: #selector(updateView(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(updateView(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
-        NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateView(notification:)),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateView(notification:)),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+        NotificationCenter.addObsorverToPremiumUpdate(observer: self,
+                                                      selector: #selector(premiumIsUpdated))
     }
     
 }
@@ -229,22 +238,35 @@ extension EditProfileViewController {
     }
     
     //MARK: updateView
-    @objc func updateView(notification: Notification) {
-        let info = notification.userInfo
+    @objc func updateView(notification: Notification?) {
+        
+        let info = notification?.userInfo
         guard let keyboardSize = info?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
         let size = keyboardSize.cgRectValue
+        let toolBarHight:CGFloat = 100
+        keybordMinYValue = size.minY
         
-        if notification.name == UIResponder.keyboardWillShowNotification {
+        if notification?.name == UIResponder.keyboardWillShowNotification  {
          
-        guard let rect = visibleRect else { return }
-            let scrollValue  = rect.y - size.minY / 2
+        guard let value = selectedVisibleYValue else { return }
+            let scrollValue  = value - size.minY + toolBarHight
             let scrollPoint = CGPoint(x: 0, y: scrollValue)
             scrollView.setContentOffset(scrollPoint, animated: true)
         }
         
-        if notification.name == UIResponder.keyboardWillHideNotification {
+        if notification?.name == UIResponder.keyboardWillHideNotification {
            // view.frame.origin.y = 0
         }
+    }
+    
+    //MARK: forceUpdateContentOffset
+    private func forceUpdateContentOffset(inset: CGFloat) {
+        guard let keyboardYValue = keybordMinYValue else { return }
+        let toolBarHight:CGFloat = 100
+        guard let value = selectedVisibleYValue else { return }
+        let scrollValue  = value - keyboardYValue + toolBarHight + inset
+        let scrollPoint = CGPoint(x: 0, y: scrollValue)
+        scrollView.setContentOffset(scrollPoint, animated: true)
     }
     
     
@@ -282,7 +304,7 @@ extension EditProfileViewController: UITextFieldDelegate {
     }
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        visibleRect = textField.frame.origin
+        selectedVisibleYValue = textField.frame.maxY
         return true
     }
 }
@@ -291,8 +313,27 @@ extension EditProfileViewController: UITextFieldDelegate {
 extension EditProfileViewController:UITextViewDelegate {
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        visibleRect = textView.frame.origin
+        selectedVisibleYValue = textView.frame.maxY
         return true
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        print(textView.frame.maxY)
+        selectedVisibleYValue = textView.frame.maxY
+        let textViewToolBarHight:CGFloat = 20
+        forceUpdateContentOffset(inset: textViewToolBarHight)
+    }
+  
+}
+
+//MARK:  TagsCollectionViewDelegate
+extension EditProfileViewController: TagsCollectionViewDelegate {
+    func tagsDidChange() {
+        scrollView.updateContentView()
+    }
+    
+    func tagTextFiledDidBeginEditing() {
+        selectedVisibleYValue = interestsTags.frame.maxY
     }
 }
 

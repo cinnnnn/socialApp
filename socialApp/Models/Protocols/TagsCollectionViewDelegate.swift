@@ -11,4 +11,5 @@ import Foundation
 @objc protocol TagsCollectionViewDelegate {
     @objc optional func tagTextFiledDidBeginEditing()
     @objc optional func tagTextFiledShouldReturn(text: String)
+    @objc optional func tagsDidChange()
 }
