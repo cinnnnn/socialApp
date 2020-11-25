@@ -9,7 +9,7 @@
 import Foundation
 
 @objc protocol TagsCollectionViewDelegate {
-    @objc optional func tagTextFiledDidBeginEditing()
-    @objc optional func tagTextFiledShouldReturn(text: String)
-    @objc optional func tagsDidChange()
+    @objc optional func tagTextFiledDidBeginEditing(tagsCollectionView:TagsCollectionView)
+    @objc optional func tagTextFiledShouldReturn(tagsCollectionView:TagsCollectionView, text: String)
+    @objc optional func tagsDidChange(tagsCollectionView:TagsCollectionView)
 }

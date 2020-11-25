@@ -32,6 +32,11 @@ class EditProfileViewController: UIViewController {
                                            headerText: "Интересы",
                                            headerFont: .avenirRegular(size: 16),
                                            headerColor: .myGrayColor())
+    let desireTags = TagsCollectionView(unselectTags: [],
+                                           selectTags: [],
+                                           headerText: "Твои желания",
+                                           headerFont: .avenirRegular(size: 16),
+                                           headerColor: .myGrayColor())
     let advertTextView = UITextView(text: "Для просмотра обьявлений других пользователей, расскажи о себе...",
                                     isEditable: true)
     
@@ -66,6 +71,7 @@ class EditProfileViewController: UIViewController {
         setupConstraints()
         setupButtonAction()
         setupVC()
+    
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -75,6 +81,7 @@ class EditProfileViewController: UIViewController {
         setPeopleData()
     }
     
+   
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self)
@@ -84,7 +91,11 @@ class EditProfileViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         scrollView.updateContentView()
+   //     desireTags.setNeedsLayout()
+   //     interestsTags.setNeedsLayout()
+        
     }
+
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -96,10 +107,14 @@ class EditProfileViewController: UIViewController {
         
         scrollView.delegate = self
         scrollView.addSingleTapRecognizer(target: self, selector: #selector(endEditing))
-        scrollView.layoutSubviews()
+       
         advertTextView.delegate = self
         nameTextField.delegate = self
         interestsTags.tagsDelegate = self
+        desireTags.tagsDelegate = self
+            desireTags.setNeedsLayout()
+            interestsTags.setNeedsLayout()
+        
         gelleryScrollView.clipsToBounds = true
         advertTextView.addDoneButton()
         editPhotosButton.layoutIfNeeded()
@@ -131,9 +146,10 @@ extension EditProfileViewController {
         
         guard let people = UserDefaultsService.shared.getMpeople() else { return }
         currentPeople = people
-        interestsTags.configure(unselectTags: ["фото", "айти", "неайти", "музыка", "хуюзыка"],
-                                selectedTags: ["девчули","кукинги"])
-        
+        interestsTags.configure(unselectTags: ["один"],
+                                selectedTags: ["девчули","кукинги","кодинг"])
+        desireTags.configure(unselectTags: ["два"],
+                             selectedTags: ["FWB","Friends"])
         
         gelleryScrollView.setupImages(profileImage: people.userImage,
                                       gallery: people.gallery,
@@ -149,7 +165,9 @@ extension EditProfileViewController {
         sexualityButton.infoLabel.text = people.sexuality
         incognitoSwitch.isOn = people.isIncognito
         
-        
+       // interestsTags.setNeedsLayout()
+       // desireTags.setNeedsLayout()
+       // scrollView.updateContentView()
     }
     
     //MARK:  savePeopleData
@@ -323,17 +341,16 @@ extension EditProfileViewController:UITextViewDelegate {
         let textViewToolBarHight:CGFloat = 20
         forceUpdateContentOffset(inset: textViewToolBarHight)
     }
-  
 }
 
 //MARK:  TagsCollectionViewDelegate
 extension EditProfileViewController: TagsCollectionViewDelegate {
-    func tagsDidChange() {
-        scrollView.updateContentView()
+    func tagsDidChange(tagsCollectionView: TagsCollectionView) {
+    //    scrollView.updateContentView()
     }
     
-    func tagTextFiledDidBeginEditing() {
-        selectedVisibleYValue = interestsTags.frame.maxY
+    func tagTextFiledDidBeginEditing(tagsCollectionView: TagsCollectionView) {
+        selectedVisibleYValue = tagsCollectionView.frame.maxY
     }
 }
 
@@ -347,6 +364,7 @@ extension EditProfileViewController {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
         interestsTags.translatesAutoresizingMaskIntoConstraints = false
+        desireTags.translatesAutoresizingMaskIntoConstraints = false
         aboutLabel.translatesAutoresizingMaskIntoConstraints = false
         advertTextView.translatesAutoresizingMaskIntoConstraints = false
         genderButton.translatesAutoresizingMaskIntoConstraints = false
@@ -361,6 +379,7 @@ extension EditProfileViewController {
         scrollView.addSubview(nameLabel)
         scrollView.addSubview(nameTextField)
         scrollView.addSubview(interestsTags)
+        scrollView.addSubview(desireTags)
         scrollView.addSubview(aboutLabel)
         scrollView.addSubview(advertTextView)
         scrollView.addSubview(genderButton)
@@ -394,11 +413,15 @@ extension EditProfileViewController {
             nameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             nameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            interestsTags.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 35),
+            interestsTags.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 15),
             interestsTags.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             interestsTags.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            aboutLabel.topAnchor.constraint(equalTo: interestsTags.bottomAnchor, constant: 35),
+            desireTags.topAnchor.constraint(equalTo: interestsTags.bottomAnchor, constant: 15),
+            desireTags.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            desireTags.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            aboutLabel.topAnchor.constraint(equalTo: desireTags.bottomAnchor, constant: 35),
             aboutLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             aboutLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
