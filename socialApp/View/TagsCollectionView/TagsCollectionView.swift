@@ -47,18 +47,32 @@ class TagsCollectionView: UIView {
         tagTextField.delegate = self
     }
     
+    //MARK: configure
     func configure(unselectTags: [String], selectedTags: [String]){
         
-        self.unselectTags = unselectTags.map({ stringTag -> MTag in
-            MTag(tagText: stringTag, isSelect: false)
-        })
-        self.selectedTags = selectedTags.map({ stringTag -> MTag in
-            MTag(tagText: stringTag, isSelect: true)
-        })
+        unselectTags.forEach {[weak self] stringTag in
+            guard let unselectTags = self?.unselectTags else { return }
+            if !unselectTags.contains(where: { mTag -> Bool in
+                mTag.tagText.lowercased() == stringTag.lowercased()
+            }) {
+                let tag = MTag(tagText: stringTag, isSelect: false)
+                self?.unselectTags.append(tag)
+            }
+        }
         
+        selectedTags.forEach {[weak self] stringTag in
+            guard let selectedTags = self?.selectedTags else { return }
+            if !selectedTags.contains(where: { mTag -> Bool in
+                mTag.tagText.lowercased() == stringTag.lowercased()
+            }) {
+                let tag = MTag(tagText: stringTag, isSelect: true)
+                self?.selectedTags.append(tag)
+            }
+        }
         updateDataSource()
     }
     
+    //MARK: getSelectedTags
     func getSelectedTags() -> [String] {
         let seletedTagsString = selectedTags.map { mTag -> String in
             mTag.tagText
@@ -66,14 +80,13 @@ class TagsCollectionView: UIView {
         return seletedTagsString
     }
     
+    //MARK: getUnselectedTags
     func getUnselectedTags() -> [String] {
         let unselectedTagsString = unselectTags.map { mTag -> String in
             mTag.tagText
         }
         return unselectedTagsString
     }
-    
-    
 }
 
 //MARK: setupCollectioView
@@ -194,42 +207,19 @@ extension TagsCollectionView {
         snapshot.appendItems(selectedTags, toSection: .selectedTags)
         
         dataSource?.apply(snapshot, animatingDifferences: true, completion: { [weak self] in
-            self?.updateHightCollectionView()
+            self?.setNeedsUpdateConstraints()
         })
-        
-        
-      
+
     }
     
-
     override func updateConstraints() {
-      
+        
         if collectionView?.contentSize.height != 0 {
             guard let size = collectionView?.contentSize.height else { return }
             hightCollectionViewConstraint?.constant = size
             self.setNeedsLayout()
-            print("\n size: \(size)")
-            
         }
-        
         super.updateConstraints()
-    }
-    private func updateHightCollectionView() {
-      
-        if !selectedTags.isEmpty {
-            guard let lastElement = selectedTags.last,
-                  let indexPath = dataSource?.indexPath(for: lastElement)
-            else { return }
-            let attr = collectionView?.collectionViewLayout.layoutAttributesForItem(at: indexPath)
-            let size = (attr?.frame.origin.y ?? 0) + (attr?.frame.height ?? 0)
-            print("\n content: \(size)")
-        }
-        
-        setNeedsUpdateConstraints()
-        
-        
-        print("\n Collection: \(collectionView?.frame.height)")
-        print("\n content: \(collectionView?.contentSize.height)")
     }
 }
 
@@ -243,9 +233,15 @@ extension TagsCollectionView: UICollectionViewDelegate {
         switch sectionName {
         
         case .unselectTags:
+            
+            if !selectedTags.contains(where: { mTag -> Bool in
+                mTag.tagText.lowercased() == element.tagText.lowercased()
+            }) {
+                element.isSelect = true
+                selectedTags.append(element)
+            }
+            
             unselectTags.remove(at: indexPath.item)
-            element.isSelect = true
-            selectedTags.append(element)
             updateDataSource()
         case .selectedTags:
             selectedTags.remove(at: indexPath.item)
@@ -273,12 +269,15 @@ extension TagsCollectionView: UITextFieldDelegate {
         guard var newTag = textField.text else { return true }
         newTag = newTag.replacingOccurrences(of: " ", with: "")
         guard newTag != "" else { return true }
-        let newMTag = MTag(tagText: newTag, isSelect: true)
-        selectedTags.append(newMTag)
+        
+        if !selectedTags.contains(where: { mTag -> Bool in
+            mTag.tagText.lowercased() == newTag.lowercased()
+        }) {
+            let newMTag = MTag(tagText: newTag, isSelect: true)
+            selectedTags.append(newMTag)
+        }
         textField.text = ""
-        
         tagsDelegate?.tagTextFiledShouldReturn?(text: newTag)
-        
         updateDataSource()
         
         return true
@@ -313,9 +312,5 @@ extension TagsCollectionView {
             tagTextField.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
             tagTextField.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
-        
     }
-    
-  
 }
