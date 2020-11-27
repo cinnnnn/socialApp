@@ -10,8 +10,8 @@ import UIKit
 
 class OneLineTextField: UITextField {
     
-    var datePicker:UIDatePicker?
-    
+    private var datePicker:UIDatePicker?
+    var backspacePressed: (()-> Void)?
     convenience init(isSecureText: Bool,
                      tag: Int,
                      opacity:Float = 1,
@@ -73,7 +73,7 @@ class OneLineTextField: UITextField {
             toolBar.tintColor = .label
             toolBar.items = [
                 UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
-                UIBarButtonItem(title: "Готово", style: .done, target: self, action: #selector(tapDoneButton))
+                UIBarButtonItem(title: "Готово", style: .done, target: self, action: #selector(tapDoneDatePickerButton))
             ]
             toolBar.sizeToFit()
             
@@ -85,9 +85,36 @@ class OneLineTextField: UITextField {
 }
 
 extension OneLineTextField {
+    override func deleteBackward() {
+        super.deleteBackward()
+        backspacePressed?()
+    }
+    
+    func addToolBar(target: Any?, doneSelector: Selector?){
+        
+        let toolBar = UIToolbar()
+        toolBar.barStyle = .default
+        toolBar.barTintColor = .myWhiteColor()
+        toolBar.backgroundColor = .myWhiteColor()
+        toolBar.tintColor = .label
+        toolBar.items = [
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
+            UIBarButtonItem(title: "Готово", style: .done, target: target ?? self, action: doneSelector ?? #selector(tapDoneButton))
+        ]
+        toolBar.sizeToFit()
+        
+        inputAccessoryView = toolBar
+    }
+}
+
+extension OneLineTextField {
+    
+    @objc private func tapDoneDatePickerButton() {
+            text = datePicker?.date.getShortFormattedDate()
+            resignFirstResponder()
+    }
     
     @objc private func tapDoneButton() {
-            text = datePicker?.date.getShortFormattedDate()
             resignFirstResponder()
     }
 }

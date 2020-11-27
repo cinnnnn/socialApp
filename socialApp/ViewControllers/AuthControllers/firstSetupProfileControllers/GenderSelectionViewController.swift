@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import FirebaseAuth
 
 class GenderSelectionViewController: UIViewController {
 
@@ -19,10 +18,8 @@ class GenderSelectionViewController: UIViewController {
     let lookingForSelectionButton = OneLineButtonWithHeader(header: "Кого ты ищешь", info: "Девушку")
     let nameLabel = UILabel(labelText: "Вымышленное имя", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let nameTextField = OneLineTextField(isSecureText: false, tag: 1)
-    weak var navigationDelegate: NavigationDelegate?
 
-    init(userID: String, navigationDelegate: NavigationDelegate?){
-        self.navigationDelegate = navigationDelegate
+    init(userID: String){
         self.userID = userID
         super.init(nibName: nil, bundle: nil)
     }
@@ -30,6 +27,7 @@ class GenderSelectionViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +61,7 @@ class GenderSelectionViewController: UIViewController {
 extension GenderSelectionViewController {
     
     @objc private func saveButtonTapped() {
+        
         let id = userID
         let userName = Validators.shared.isFilledUserName(userName: nameTextField.text)
         if userName.isFilled {
@@ -78,7 +77,8 @@ extension GenderSelectionViewController {
                 switch result {
                 
                 case .success():
-                    let nextViewController = InterestsSelectionViewController(userID: id)
+                    self?.view.endEditing(true)
+                    let nextViewController = InterestsTagsViewController(userID: id)
                     self?.navigationController?.pushViewController(nextViewController, animated: true)
                 case .failure(let error):
                     fatalError(error.localizedDescription)
@@ -86,7 +86,12 @@ extension GenderSelectionViewController {
             }
             
         } else {
-            showAlert(title: "Укажи имя", text: "Ты можешь указать любое вымышленное имя", buttonText: "Ок")
+            PopUpService.shared.bottomPopUp(header: "Укажи имя",
+                                            text: "Ты можешь указать любое вымышленное имя",
+                                            image: nil,
+                                            okButtonText: "Ок") { [weak self] in
+                self?.nameTextField.becomeFirstResponder()
+            }
         }
     }
     
@@ -136,22 +141,6 @@ extension GenderSelectionViewController: UITextFieldDelegate {
     }
 }
 
-//MARK:  showAlert
-extension GenderSelectionViewController {
-    
-    private func showAlert(title: String, text: String, buttonText: String) {
-        
-        let alert = UIAlertController(title: title,
-                                      text: text,
-                                      buttonText: buttonText,
-                                      style: .alert) { [weak self] in
-            self?.nameTextField.becomeFirstResponder()
-        }
-        
-        alert.setMyLightStyle()
-        present(alert, animated: true, completion: nil)
-    }
-}
 
 //MARK: setupConstraints
 extension GenderSelectionViewController {

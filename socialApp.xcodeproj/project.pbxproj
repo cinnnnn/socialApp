@@ -137,6 +137,11 @@
 		FBB34003256D423700A597BF /* TagsCollectionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */; };
 		FBB34009256D645900A597BF /* MTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB34008256D645900A597BF /* MTag.swift */; };
 		FBB34030256D81E100A597BF /* TagsSelectCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3402F256D81E100A597BF /* TagsSelectCollectionViewCell.swift */; };
+		FBB340372571089B00A597BF /* InterestsTagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB340362571089800A597BF /* InterestsTagsViewController.swift */; };
+		FBB3403B25710D2300A597BF /* MDefaultInterests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3403A25710D2300A597BF /* MDefaultInterests.swift */; };
+		FBB340452571311000A597BF /* MDefaultsDesires.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB340442571311000A597BF /* MDefaultsDesires.swift */; };
+		FBB340492571497E00A597BF /* DesiresTagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB340482571497E00A597BF /* DesiresTagsViewController.swift */; };
+		FBB3404F25714A7100A597BF /* TagsSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3404E25714A7000A597BF /* TagsSetupView.swift */; };
 		FBB3B25F2509011200440632 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B25E2509011200440632 /* StorageService.swift */; };
 		FBB3B261250905D800440632 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B260250905D800440632 /* UIImageExtension.swift */; };
 		FBB3B265250ACA0700440632 /* MGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB3B264250ACA0700440632 /* MGender.swift */; };
@@ -342,6 +347,11 @@
 		FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsCollectionViewDelegate.swift; sourceTree = "<group>"; };
 		FBB34008256D645900A597BF /* MTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTag.swift; sourceTree = "<group>"; };
 		FBB3402F256D81E100A597BF /* TagsSelectCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsSelectCollectionViewCell.swift; sourceTree = "<group>"; };
+		FBB340362571089800A597BF /* InterestsTagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestsTagsViewController.swift; sourceTree = "<group>"; };
+		FBB3403A25710D2300A597BF /* MDefaultInterests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDefaultInterests.swift; sourceTree = "<group>"; };
+		FBB340442571311000A597BF /* MDefaultsDesires.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDefaultsDesires.swift; sourceTree = "<group>"; };
+		FBB340482571497E00A597BF /* DesiresTagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesiresTagsViewController.swift; sourceTree = "<group>"; };
+		FBB3404E25714A7000A597BF /* TagsSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsSetupView.swift; sourceTree = "<group>"; };
 		FBB3B25D2507C3BB00440632 /* socialApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = socialApp.entitlements; sourceTree = "<group>"; };
 		FBB3B25E2509011200440632 /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		FBB3B260250905D800440632 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
@@ -658,6 +668,9 @@
 			children = (
 				FB8C3D6D2535D94D00184FB5 /* DateOfBirthViewController.swift */,
 				FB8C3D3E25339DE200184FB5 /* GenderSelectionViewController.swift */,
+				FBB340362571089800A597BF /* InterestsTagsViewController.swift */,
+				FBB340482571497E00A597BF /* DesiresTagsViewController.swift */,
+				FBB3405225714A8A00A597BF /* TagsView */,
 				FB8C3D692535D71B00184FB5 /* InterestsSelectionViewController.swift */,
 			);
 			path = FirstSetupProfileControllers;
@@ -818,6 +831,8 @@
 				FB8C3D8A25371AE900184FB5 /* MLabels.swift */,
 				FBB33FB6256A9A2600A597BF /* MPremiumInfo.swift */,
 				FBB33FD5256C0D4A00A597BF /* MLinks.swift */,
+				FBB3403A25710D2300A597BF /* MDefaultInterests.swift */,
+				FBB340442571311000A597BF /* MDefaultsDesires.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -890,6 +905,14 @@
 				FBB3402F256D81E100A597BF /* TagsSelectCollectionViewCell.swift */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		FBB3405225714A8A00A597BF /* TagsView */ = {
+			isa = PBXGroup;
+			children = (
+				FBB3404E25714A7000A597BF /* TagsSetupView.swift */,
+			);
+			path = TagsView;
 			sourceTree = "<group>";
 		};
 		FBB3D49B255D599B00A3B832 /* PushMessage */ = {
@@ -1169,6 +1192,7 @@
 				FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */,
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
 				FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */,
+				FBB3403B25710D2300A597BF /* MDefaultInterests.swift in Sources */,
 				FBA2AA482553086D00A471F6 /* SetupChatMenu.swift in Sources */,
 				FBFFB89B256535F8007343ED /* OneLineButton.swift in Sources */,
 				FBB33FF8256D24BB00A597BF /* TagsCollectionViewCell.swift in Sources */,
@@ -1205,6 +1229,7 @@
 				FBB34003256D423700A597BF /* TagsCollectionViewDelegate.swift in Sources */,
 				FB3351CB25682E2F007AFDDF /* MGalleryPhotoProperty.swift in Sources */,
 				FBB26EB42546E49B0081CF2C /* MAdmin.swift in Sources */,
+				FBB3404F25714A7100A597BF /* TagsSetupView.swift in Sources */,
 				FB79DA88252DEDB900A7AA56 /* SettingsCell.swift in Sources */,
 				FBB33FFC256D311000A597BF /* TagsCollectionViewHeader.swift in Sources */,
 				FB8C3D552533E09900184FB5 /* SelectionViewController.swift in Sources */,
@@ -1222,6 +1247,7 @@
 				FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */,
 				FB79DA9225307FF200A7AA56 /* GalleryView.swift in Sources */,
 				FB8C3D5F25348F4900184FB5 /* OneLineButtonWithHeader.swift in Sources */,
+				FBB340492571497E00A597BF /* DesiresTagsViewController.swift in Sources */,
 				FBB26ED8254B014A0081CF2C /* LikeDislikeChatDataProvider.swift in Sources */,
 				FBF293D924FFB33300F7B5F1 /* Validators.swift in Sources */,
 				FB3351AD256694AE007AFDDF /* FirestoreServiceExtensionImage.swift in Sources */,
@@ -1237,11 +1263,13 @@
 				FB3351B92566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift in Sources */,
 				FB3727942541A18600906FBE /* MVirtualLocation.swift in Sources */,
 				FB8C3D832536089A00184FB5 /* UIDatePickerExtension.swift in Sources */,
+				FBB340452571311000A597BF /* MDefaultsDesires.swift in Sources */,
 				FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */,
 				FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */,
 				FB8C3D7D253606EE00184FB5 /* LocaleExtension.swift in Sources */,
 				FBA2AA3C255300C200A471F6 /* UniversallSwitchCell.swift in Sources */,
 				FBB33FC6256BD80900A597BF /* ScreenRecordingManager.swift in Sources */,
+				FBB340372571089B00A597BF /* InterestsTagsViewController.swift in Sources */,
 				FB79DA56252501E100A7AA56 /* UIApplicationExtension.swift in Sources */,
 				FBB33FA4256A7BA600A597BF /* PremiumCell.swift in Sources */,
 				FBB33FCE256C03DE00A597BF /* AboutView.swift in Sources */,

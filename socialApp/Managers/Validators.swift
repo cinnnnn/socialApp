@@ -133,6 +133,10 @@ class Validators {
         return true
     }
     
+    func checkTagsIsFilled(tags:[String]) -> Bool {
+        tags.count >= 3
+    }
+    
     //MARK: checkRegEx
     private func checkRegEx(text: String, regEx: String) -> Bool {
         let textCheck  = NSPredicate(format:"SELF MATCHES %@", regEx)

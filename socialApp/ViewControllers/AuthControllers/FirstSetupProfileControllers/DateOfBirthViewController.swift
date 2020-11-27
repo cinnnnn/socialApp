@@ -6,9 +6,7 @@
 //  Copyright © 2020 Денис Щиголев. All rights reserved.
 //
 
-
 import UIKit
-import FirebaseAuth
 
 class DateOfBirthViewController: UIViewController {
     
@@ -18,10 +16,8 @@ class DateOfBirthViewController: UIViewController {
     let subHeaderLabel = UILabel(labelText: MLabels.dateOfBirthSubHeader.rawValue, textFont: .avenirRegular(size: 16), textColor: .myGrayColor(), linesCount: 0)
     let dateLabel = UILabel(labelText: "День рождения", textFont: .avenirRegular(size: 16), textColor: .myGrayColor())
     let datePicker = UIDatePicker(datePickerMode: .date)
-    weak var navigationDelegate: NavigationDelegate?
     
-    init(userID: String, navigationDelegate: NavigationDelegate? ){
-        self.navigationDelegate = navigationDelegate
+    init(userID: String){
         self.userID = userID
         super.init(nibName: nil, bundle: nil)
     }
@@ -39,9 +35,6 @@ class DateOfBirthViewController: UIViewController {
     private func setup() {
         view.backgroundColor = .myWhiteColor()
         navigationController?.navigationBar.isHidden = false
-//        navigationController?.navigationBar.tintColor = .label
-//        navigationController?.navigationBar.shadowImage = nil
-//        navigationController?.navigationBar.barTintColor = .myWhiteColor()
         
         navigationItem.backButtonTitle = "Назад"
         navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .save,
@@ -60,7 +53,7 @@ extension  DateOfBirthViewController {
             switch result {
             
             case .success():
-                let nextViewController = GenderSelectionViewController(userID: id, navigationDelegate: self?.navigationDelegate)
+                let nextViewController = GenderSelectionViewController(userID: id)
                 self?.navigationController?.pushViewController(nextViewController, animated: true)
             case .failure(let error):
                 fatalError(error.localizedDescription)

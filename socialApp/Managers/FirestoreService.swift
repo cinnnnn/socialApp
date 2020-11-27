@@ -57,6 +57,33 @@ class FirestoreService {
                                                 }
                                             })
     }
+    //MARK: saveInterests
+    func saveInterests(id: String,
+                       interests: [String],
+                       complition: @escaping (Result<[String], Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.interests.rawValue : interests],
+                                            merge: true) { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                complition(.success(interests))
+            }
+        }
+    }
+    
+    //MARK: saveDesires
+    func saveDesires(id: String,
+                     desires: [String],
+                     complition: @escaping (Result<[String], Error>) -> Void) {
+        usersReference.document(id).setData([MPeople.CodingKeys.desires.rawValue : desires],
+                                            merge: true) { error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                complition(.success(desires))
+            }
+        }
+    }
     
     //MARK: saveIsGoldMember
     func saveIsGoldMember(id: String,
@@ -227,6 +254,8 @@ class FirestoreService {
                               advert: String,
                               gender: String,
                               sexuality: String,
+                              interests: [String],
+                              desires: [String],
                               isIncognito: Bool,
                               complition: @escaping (Result<Void,Error>) -> Void) {
         usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : name,
@@ -234,6 +263,8 @@ class FirestoreService {
                                              MPeople.CodingKeys.gender.rawValue : gender,
                                              MPeople.CodingKeys.sexuality.rawValue : sexuality,
                                              MPeople.CodingKeys.isIncognito.rawValue : isIncognito,
+                                             MPeople.CodingKeys.interests.rawValue : interests,
+                                             MPeople.CodingKeys.desires.rawValue : desires,
                                              MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
                                             merge: true) { error in
             if let error = error {
@@ -246,6 +277,8 @@ class FirestoreService {
                     people.gender = gender
                     people.sexuality = sexuality
                     people.isIncognito = isIncognito
+                    people.interests = interests
+                    people.desires = desires
                     people.lastActiveDate = Date()
                     UserDefaultsService.shared.saveMpeople(people: people)
                     NotificationCenter.postCurrentUserNeedUpdate()

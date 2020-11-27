@@ -56,8 +56,17 @@ class AuthViewController: UIViewController {
     //MARK:  objc func
     @objc func loginButtonPressed() {
         let navController = UINavigationController.init(rootViewController: LoginViewController(navigationDelegate: self))
+        let appearance = navController.navigationBar.standardAppearance
+        appearance.shadowImage = UIImage()
+        appearance.shadowColor = .clear
+        appearance.backgroundImage = UIImage()
+        appearance.backgroundColor = .myWhiteColor()
+        navController.navigationBar.standardAppearance = appearance
+        
+        
         navController.modalPresentationStyle = .fullScreen
         navController.navigationBar.isHidden = true
+        navController.navigationBar.tintColor = .myLabelColor()
         navController.modalTransitionStyle = .crossDissolve
        present(navController, animated: true, completion: nil)
     }
@@ -171,13 +180,17 @@ extension AuthViewController: NavigationDelegate {
     }
     
     func toCompliteRegistration(userID: String){
-        let navController = UINavigationController.init(rootViewController: DateOfBirthViewController(userID: userID, navigationDelegate: self))
-        navController.navigationBar.tintColor = .label
-        navController.navigationBar.shadowImage = UIImage()
-        navController.navigationBar.barTintColor = .myWhiteColor()
+        let navController = UINavigationController.init(rootViewController: DateOfBirthViewController(userID: userID))
+        let appearance = navController.navigationBar.standardAppearance
+        appearance.shadowImage = UIImage()
+        appearance.shadowColor = .clear
+        appearance.backgroundImage = UIImage()
+        appearance.backgroundColor = .myWhiteColor()
+        navController.navigationBar.standardAppearance = appearance
+        
+        navController.navigationBar.tintColor = .myLabelColor()
         navController.modalPresentationStyle = .fullScreen
         navController.modalTransitionStyle = .crossDissolve
-        navController.navigationBar.backgroundColor = .systemBackground
         navController.navigationBar.prefersLargeTitles = false
         present(navController, animated: false, completion: nil)
     }

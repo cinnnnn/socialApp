@@ -25,13 +25,14 @@ class TagsCollectionView: UIView {
          selectTags: [String],
          headerText: String,
          headerFont: UIFont,
-         headerColor: UIColor) {
+         headerColor: UIColor,
+         textFieldPlaceholder: String = "") {
         
         super.init(frame: .zero)
         self.headerText = headerText
         self.headerFont = headerFont
         self.headerColor = headerColor
-        
+        self.tagTextField.placeholder = textFieldPlaceholder
         
         setup()
         setupCollectioView()
@@ -47,6 +48,31 @@ class TagsCollectionView: UIView {
     
     private func setup() {
         tagTextField.delegate = self
+        tagTextField.addToolBar(target: self, doneSelector: #selector(textFieldDonePressed))
+        tagTextField.backspacePressed = backspacePressed
+    }
+    
+    
+    //MARK: addTag
+    private func addTag(text: String) {
+        let newTag = text.replacingOccurrences(of: " ", with: "")
+        guard newTag != "" else { return }
+        
+        if !selectedTags.contains(where: { mTag -> Bool in
+            mTag.tagText.lowercased() == newTag.lowercased()
+        }) {
+            let newMTag = MTag(tagText: newTag, isSelect: true)
+            selectedTags.append(newMTag)
+            updateDataSource()
+        }
+    }
+    
+    //MARK: textFieldDonePressed
+    @objc private func textFieldDonePressed(){
+        guard let newTag = tagTextField.text else { return }
+        addTag(text: newTag)
+        tagTextField.text = ""
+        tagTextField.resignFirstResponder()
     }
     
     //MARK: configure
@@ -72,7 +98,9 @@ class TagsCollectionView: UIView {
             }
         }
         updateDataSource(animating: false)
+        setNeedsLayout()
     }
+
     
     //MARK: getSelectedTags
     func getSelectedTags() -> [String] {
@@ -208,36 +236,38 @@ extension TagsCollectionView {
         snapshot.appendItems(unselectTags, toSection: .unselectTags)
         snapshot.appendItems(selectedTags, toSection: .selectedTags)
         
-        dataSource?.apply(snapshot, animatingDifferences: animating, completion: { [weak self] in
+        dataSource?.apply(snapshot, animatingDifferences: false, completion: { [weak self] in
             self?.setNeedsUpdateConstraints()
-            
         })
         
-       tagsDelegate?.tagsDidChange?(tagsCollectionView: self)
+        tagsDelegate?.tagTextDidChange?(tagsCollectionView: self)
     }
     
+    //MARK: updateConstraints
     override func updateConstraints() {
+        //don't set 0 size, than contentSize will always be equal 0
         if collectionView?.contentSize.height != 0 {
             guard let size = collectionView?.contentSize.height else { return }
             hightCollectionViewConstraint?.constant = size
-            print("size: \(size)")
             
             //set first setup hight is complite for stop update layoutSubvies
             hightIsSetup = true
+            tagsDelegate?.tagTextConstraintsDidChange?(tagsCollectionView: self)
         }
         super.updateConstraints()
     }
     
+    
+    //MARK: layoutSubviews
     override func layoutSubviews() {
         super.layoutSubviews()
         
         if !hightIsSetup {
+            //needs to be updated until the height is first set
             setNeedsLayout()
             setNeedsUpdateConstraints()
         }
     }
-    
-    
 }
 
 
@@ -268,36 +298,24 @@ extension TagsCollectionView: UICollectionViewDelegate {
     
 }
 
-
 //MARK: UITextFieldDelegate
 extension TagsCollectionView: UITextFieldDelegate {
-     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        if textField.text == "" {
+    
+    private func backspacePressed() {
+        if tagTextField.text == "" {
             if !selectedTags.isEmpty {
                 selectedTags.removeLast()
                 updateDataSource()
             }
         }
-        return true
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
-       
-        guard var newTag = textField.text else { return true }
-        newTag = newTag.replacingOccurrences(of: " ", with: "")
-        guard newTag != "" else { return true }
-        
-        if !selectedTags.contains(where: { mTag -> Bool in
-            mTag.tagText.lowercased() == newTag.lowercased()
-        }) {
-            let newMTag = MTag(tagText: newTag, isSelect: true)
-            selectedTags.append(newMTag)
-            tagsDelegate?.tagTextFiledShouldReturn?(tagsCollectionView: self, text: newTag)
-            updateDataSource()
-        }
+        guard let newTag = textField.text else { return true }
+        addTag(text: newTag)
         textField.text = ""
-        textField.resignFirstResponder()
+        tagsDelegate?.tagTextFiledShouldReturn?(tagsCollectionView: self, text: newTag)
         return true
     }
     

@@ -50,8 +50,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                                                                             isNewLogin: false)
                                 } else {
                                     // if don't have user photo (last step of first setup profile), go setup
-                                    let navController = UINavigationController(rootViewController: DateOfBirthViewController(userID: userID,
-                                                                                                                             navigationDelegate: nil))
+                                    let navController = UINavigationController(rootViewController: DateOfBirthViewController(userID: userID))
                                     navController.navigationBar.tintColor = .label
                                     navController.navigationBar.shadowImage = UIImage()
                                     navController.navigationBar.barTintColor = .myWhiteColor()

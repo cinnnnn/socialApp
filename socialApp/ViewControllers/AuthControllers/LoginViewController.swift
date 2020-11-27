@@ -65,9 +65,6 @@ extension LoginViewController {
     private func setupVC() {
         view.backgroundColor = .systemBackground
         navigationItem.backButtonTitle = "Указать другой email"
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.backgroundColor = .myWhiteColor()
-        navigationController?.navigationBar.tintColor = .label
         
         loginButton.setTitleColor(.myGrayColor(), for: .disabled)
         loginButton.isEnabled = false

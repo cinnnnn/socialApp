@@ -7,12 +7,11 @@
 //
 
 import UIKit
-import FirebaseAuth
 
 class InterestsSelectionViewController: UIViewController {
     
     var userID: String
-    let headerLabel = UILabel(labelText: MLabels.interestSelectionHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
+    let headerLabel = UILabel(labelText: MLabels.aboutSelectionHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
     let subHeaderLabel = UILabel(labelText: MLabels.interestSelectionSubHeader.rawValue,
                                  textFont: .avenirRegular(size: 16),
                                  textColor: .myGrayColor(),

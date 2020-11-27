@@ -23,6 +23,8 @@ struct MPeople: Hashable, Codable, SenderType {
     var dateOfBirth: Date
     var sexuality: String
     var lookingFor: String
+    var interests: [String]
+    var desires: [String]
     var isGoldMember: Bool
     var goldMemberDate: Date?
     var goldMemberPurches: MPurchases?
@@ -52,6 +54,8 @@ struct MPeople: Hashable, Codable, SenderType {
          dateOfBirth: Date,
          sexuality: String,
          lookingFor: String,
+         interests: [String],
+         desires: [String],
          isGoldMember: Bool,
          goldMemberDate: Date,
          goldMemeberPurches: MPurchases,
@@ -80,6 +84,8 @@ struct MPeople: Hashable, Codable, SenderType {
         self.dateOfBirth = dateOfBirth
         self.sexuality = sexuality
         self.lookingFor = lookingFor
+        self.interests = interests
+        self.desires = desires
         self.isGoldMember = isGoldMember
         self.goldMemberDate = goldMemberDate
         self.goldMemberPurches = goldMemeberPurches
@@ -119,6 +125,8 @@ struct MPeople: Hashable, Codable, SenderType {
         if let dateOfBirth = documet["dateOfBirth"] as? Timestamp { self.dateOfBirth = dateOfBirth.dateValue() } else { self.dateOfBirth = Date()}
         if let sexuality = documet["sexuality"] as? String { self.sexuality = sexuality } else { self.sexuality = ""}
         if let lookingFor = documet["lookingFor"] as? String { self.lookingFor = lookingFor } else { self.lookingFor = ""}
+        if let interests = documet["interests"] as? [String] { self.interests = interests } else { self.interests = [] }
+        if let desires = documet["desires"] as? [String] { self.desires = desires } else { self.desires = [] }
         if let isGoldMember = documet["isGoldMember"] as? Bool { self.isGoldMember = isGoldMember } else { self.isGoldMember = false}
         if let goldMemberDate = documet["goldMemberDate"] as? Timestamp { self.goldMemberDate = goldMemberDate.dateValue() } else {
             self.goldMemberDate = nil
@@ -227,6 +235,8 @@ struct MPeople: Hashable, Codable, SenderType {
         if let dateOfBirth = documet["dateOfBirth"] as? Timestamp { self.dateOfBirth = dateOfBirth.dateValue() } else { self.dateOfBirth = Date()}
         if let sexuality = documet["sexuality"] as? String { self.sexuality = sexuality } else { self.sexuality = ""}
         if let lookingFor = documet["lookingFor"] as? String { self.lookingFor = lookingFor } else { self.lookingFor = ""}
+        if let interests = documet["interests"] as? [String] { self.interests = interests } else { self.interests = [] }
+        if let desires = documet["desires"] as? [String] { self.desires = desires } else { self.desires = [] }
         if let isGoldMember = documet["isGoldMember"] as? Bool { self.isGoldMember = isGoldMember } else { self.isGoldMember = false}
         if let goldMemberDate = documet["goldMemberDate"] as? Timestamp { self.goldMemberDate = goldMemberDate.dateValue() } else {
             self.goldMemberDate = nil
@@ -314,6 +324,8 @@ struct MPeople: Hashable, Codable, SenderType {
         guard let dateOfBirth = data["dateOfBirth"] as? Date else { return nil }
         guard let sexuality = data["sexuality"] as? String else { return nil }
         guard let lookingFor = data["lookingFor"] as? String else { return nil }
+        guard let interests = data["interests"] as? [String] else { return nil }
+        guard let desires = data["desires"] as? [String] else { return nil }
         guard let isGoldMember = data["isGoldMember"] as? Bool else { return nil }
         guard let goldMemberDate = data["goldMemberDate"] as? Date else { return nil }
         guard let goldMemberPurches = data["goldMemberPurches"] as? MPurchases else { return nil }
@@ -342,6 +354,8 @@ struct MPeople: Hashable, Codable, SenderType {
         self.dateOfBirth = dateOfBirth
         self.sexuality = sexuality
         self.lookingFor = lookingFor
+        self.interests = interests
+        self.desires = desires
         self.isGoldMember = isGoldMember
         self.goldMemberDate = goldMemberDate
         self.goldMemberPurches = goldMemberPurches
@@ -372,6 +386,8 @@ struct MPeople: Hashable, Codable, SenderType {
         case dateOfBirth
         case sexuality
         case lookingFor
+        case interests
+        case desires
         case isGoldMember
         case goldMemberDate
         case goldMemberPurches

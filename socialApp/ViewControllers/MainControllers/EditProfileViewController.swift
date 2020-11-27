@@ -71,7 +71,6 @@ class EditProfileViewController: UIViewController {
         setupConstraints()
         setupButtonAction()
         setupVC()
-    
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -81,6 +80,10 @@ class EditProfileViewController: UIViewController {
         setPeopleData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        scrollView.updateContentView()
+    }
    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -88,14 +91,10 @@ class EditProfileViewController: UIViewController {
         savePeopleData()
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         scrollView.updateContentView()
-   //     desireTags.setNeedsLayout()
-   //     interestsTags.setNeedsLayout()
-        
     }
-
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -112,8 +111,6 @@ class EditProfileViewController: UIViewController {
         nameTextField.delegate = self
         interestsTags.tagsDelegate = self
         desireTags.tagsDelegate = self
-            desireTags.setNeedsLayout()
-            interestsTags.setNeedsLayout()
         
         gelleryScrollView.clipsToBounds = true
         advertTextView.addDoneButton()
@@ -146,10 +143,10 @@ extension EditProfileViewController {
         
         guard let people = UserDefaultsService.shared.getMpeople() else { return }
         currentPeople = people
-        interestsTags.configure(unselectTags: ["один"],
-                                selectedTags: ["девчули","кукинги","кодинг"])
-        desireTags.configure(unselectTags: ["два"],
-                             selectedTags: ["FWB","Friends"])
+        interestsTags.configure(unselectTags: [],
+                                selectedTags: people.interests)
+        desireTags.configure(unselectTags: [],
+                             selectedTags: people.desires)
         
         gelleryScrollView.setupImages(profileImage: people.userImage,
                                       gallery: people.gallery,
@@ -165,9 +162,6 @@ extension EditProfileViewController {
         sexualityButton.infoLabel.text = people.sexuality
         incognitoSwitch.isOn = people.isIncognito
         
-       // interestsTags.setNeedsLayout()
-       // desireTags.setNeedsLayout()
-       // scrollView.updateContentView()
     }
     
     //MARK:  savePeopleData
@@ -176,6 +170,8 @@ extension EditProfileViewController {
         let advert = advertTextView.text ?? ""
         let id = currentPeople.senderId
         let isIncognito = incognitoSwitch.isOn
+        let interestsSelectedTags = interestsTags.getSelectedTags()
+        let desiresSelectedTags = desireTags.getSelectedTags()
         
         guard let gender = genderButton.infoLabel.text else { fatalError("Can't get gender from button")}
         guard let sexuality = sexualityButton.infoLabel.text else { fatalError("Can't get sexuality from button")}
@@ -184,7 +180,9 @@ extension EditProfileViewController {
                                                      advert: advert,
                                                      gender: gender,
                                                      sexuality: sexuality,
-                                                     isIncognito: isIncognito ) { result in
+                                                     interests: interestsSelectedTags,
+                                                     desires: desiresSelectedTags,
+                                                     isIncognito: isIncognito) { result in
             switch result {
             
             case .success():
@@ -345,12 +343,19 @@ extension EditProfileViewController:UITextViewDelegate {
 
 //MARK:  TagsCollectionViewDelegate
 extension EditProfileViewController: TagsCollectionViewDelegate {
-    func tagsDidChange(tagsCollectionView: TagsCollectionView) {
-    //    scrollView.updateContentView()
+    
+    func tagTextFiledShouldReturn(tagsCollectionView: TagsCollectionView, text: String) {
+        scrollView.updateContentView()
+        selectedVisibleYValue = tagsCollectionView.frame.maxY
+        forceUpdateContentOffset(inset: 0)
     }
     
     func tagTextFiledDidBeginEditing(tagsCollectionView: TagsCollectionView) {
         selectedVisibleYValue = tagsCollectionView.frame.maxY
+    }
+    
+    func tagTextConstraintsDidChange(tagsCollectionView: TagsCollectionView) {
+        scrollView.updateContentView()
     }
 }
 
