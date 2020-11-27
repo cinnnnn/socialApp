@@ -51,8 +51,6 @@ extension FirestoreService {
             MPeople.CodingKeys.isIncognito.rawValue, isEqualTo: false
         ).whereField(
             MPeople.CodingKeys.gender.rawValue, isEqualTo: MLookingFor.compareGender(gender: currentPeople.lookingFor)
-        ).whereField(
-            MPeople.CodingKeys.senderId.rawValue, notIn: usersID
         ).getDocuments { snapshot, error in
             if let error = error {
                 complition(.failure(error))
@@ -72,7 +70,9 @@ extension FirestoreService {
                         if needCheckActiveUser {
                             guard  people.lastActiveDate.checkIsActiveUser() else { return }
                         }
-                        
+                        //check current people not in users array
+                        guard !usersID.contains(people.senderId) else { return }
+                        //check distance and age
                         if distance <= range && age >= minRange && age <= maxRange {
                             people.distance = distance
                             peopleNearby.append(people)
