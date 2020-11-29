@@ -28,9 +28,7 @@ class ProfileCell: UICollectionViewCell {
                               textColor: .mySecondSatColor(),
                               aligment: .left,
                               linesCount: 0)
-    let animateProfileBack = AnimationCustomView(name: "loading_grayCircle",
-                                                 loopMode: .loop,
-                                                 contentMode: .scaleAspectFit)
+   
    
     
     override init(frame: CGRect) {
@@ -47,8 +45,8 @@ class ProfileCell: UICollectionViewCell {
     private func setup() {
         profileImage.clipsToBounds = true
         profileImage.contentMode = .scaleAspectFill
-        
-        animateProfileBack.animationView.play()
+        profileImage.layer.cornerRadius = MDefaultLayer.smallCornerRadius.rawValue
+        //animateProfileBack.animationView.play()
     }
     
     func configure(people: MPeople?) {
@@ -67,12 +65,10 @@ class ProfileCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        profileImage.layer.cornerRadius = profileImage.frame.width / 2
+    
     }
     
     private func setupConstraints(){
-        
-        addSubview(animateProfileBack)
         addSubview(profileImage)
         addSubview(profileName)
         addSubview(info)
@@ -81,21 +77,17 @@ class ProfileCell: UICollectionViewCell {
         profileName.translatesAutoresizingMaskIntoConstraints = false
         profileImage.translatesAutoresizingMaskIntoConstraints = false
         info.translatesAutoresizingMaskIntoConstraints = false
-        animateProfileBack.translatesAutoresizingMaskIntoConstraints = false
         infoPremium.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            animateProfileBack.topAnchor.constraint(equalTo: topAnchor),
-            animateProfileBack.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor),
-            animateProfileBack.centerXAnchor.constraint(equalTo: profileImage.centerXAnchor),
-            animateProfileBack.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.3),
-            animateProfileBack.heightAnchor.constraint(equalTo: animateProfileBack.widthAnchor),
+           
             
-            profileImage.leadingAnchor.constraint(equalTo: leadingAnchor,constant: 10),
-            profileImage.widthAnchor.constraint(equalTo: animateProfileBack.widthAnchor, multiplier: 0.7),
+            profileImage.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            profileImage.leadingAnchor.constraint(equalTo: leadingAnchor),
+            profileImage.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.4),
             profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor),
             
-            profileName.topAnchor.constraint(equalTo: animateProfileBack.bottomAnchor, constant: 5),
+            profileName.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 5),
             profileName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             profileName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             

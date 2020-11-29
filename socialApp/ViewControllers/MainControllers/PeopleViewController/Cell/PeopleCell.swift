@@ -13,7 +13,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     static var reuseID = "PeopleCell"
     
-    weak var likeDislikeDelegate: PeopleButtonTappedDelegate?
+    weak var buttonDelegate: PeopleButtonTappedDelegate?
     var person: MPeople?
     let peopleView = PeopleView()
     
@@ -35,19 +35,20 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     func configure(with value: MPeople, currentPeople: MPeople, complition: @escaping()-> Void) {
         
-        peopleView.configure(with: value, currentPeople: currentPeople, showPrivatePhoto: false) {
+        peopleView.configure(with: value, currentPeople: currentPeople, showPrivatePhoto: false) {[weak self] in
+            self?.setNeedsLayout()
             complition()
         }
         
     }
     
     override func prepareForReuse() {
-        peopleView.galleryScrollView.prepareReuseScrollView()
+        peopleView.prepareForRenew()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-     //   peopleView.layoutIfNeeded()
+        peopleView.setNeedsLayout()
     }
 }
 
@@ -55,17 +56,17 @@ extension PeopleCell {
     @objc private func likeTapped(sender: Any) {
         guard let sender = sender as? LikeDisklikeButton else { return }
         guard let people = sender.actionPeople else { return }
-        likeDislikeDelegate?.likePeople(people: people)
+        buttonDelegate?.likePeople(people: people)
     }
     
     @objc private func dislikeTapped(sender: Any) {
         guard let sender = sender as? LikeDisklikeButton else { return }
         guard let people = sender.actionPeople else { return }
-        likeDislikeDelegate?.dislikePeople(people: people)
+        buttonDelegate?.dislikePeople(people: people)
     }
     
     @objc private func timeTapped() {
-        likeDislikeDelegate?.timeTapped()
+        buttonDelegate?.timeTapped()
     }
 }
 

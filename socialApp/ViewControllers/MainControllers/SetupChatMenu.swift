@@ -110,24 +110,9 @@ extension SetupChatMenu {
             unMatchAlert(pressedIndexPath: indexPath)
             
         case .reportUser:
-//            PopUpService.shared.showInfoPopUp(header:  "Чат будет удален через 2 часа",
-//                                              text: "Eсли хочешь продолжить общение отключи таймер",
-//                                              cancelButtonText: "Позже",
-//                                              okButtonText: "Отключить таймер",
-//                                              font: .avenirBold(size: 14)) {
-//                print("Azazaza")
-//            }
-            let strongCurrentUser = currentUser
-            let strongChat = chat
-            PopUpService.shared.showMatchPopUP(currentPeople: currentUser, chat: chat) {[weak self] messageDelegate, acceptChatDelegate in
-                let vc = ChatViewController(people: strongCurrentUser,
-                                            chat: strongChat,
-                                            messageDelegate: messageDelegate,
-                                            acceptChatDelegate: acceptChatDelegate)
-                self?.navigationController?.pushViewController(vc, animated: true)
-            }
-            
+            PopUpService.shared.showInfo(text: "Жалобы будут доступны в следующем обновлении")
             tableView.deselectRow(at: indexPath, animated: true)
+            
         }
     }
 }

@@ -14,7 +14,7 @@ class MainTabBarController: UITabBarController{
     
     var currentUser: MPeople
     var isNewLogin: Bool
-    let loadingView = LoadingView(name: "logo_neverAlone", isHidden: false)
+    let loadingView = LoadingView(name: "explore", isHidden: false)
     var acceptChatsDelegate: AcceptChatListenerDelegate?
     var requestChatsDelegate: RequestChatListenerDelegate?
     var peopleDelegate: PeopleListenerDelegate?
@@ -156,7 +156,6 @@ extension MainTabBarController {
         }
     }
 }
-
 
 
 //MARK: setupControllers

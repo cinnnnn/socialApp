@@ -22,14 +22,29 @@ class PeopleView: UIView {
                               aligment: .left,
                               linesCount: 0)
     var advertLabel = UILabel(labelText: "",
-                              textFont: .avenirRegular(size: 18),
+                              textFont: .avenirRegular(size: 16),
                               textColor: .myGrayColor(),
                               aligment: .left,
-                              linesCount: 5)
+                              linesCount: 0)
     let geoImage = UIImageView(systemName: "location.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
     let infoImage = UIImageView(systemName: "info.circle", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
     let timeImage = UIImageView(systemName: "timer", config: .init(font: .avenirRegular(size: 14)), tint: .myGrayColor())
-    let timeButton = OneLineButton(info: "Последняя активность")
+    let timeButton = OneLineButton(info: "Последняя активность",
+                                   textColor: .myGrayColor())
+    let interestsHeader = UILabel(labelText: "Интересы",
+                                  textFont: .avenirRegular(size: 14),
+                                  textColor: .myGrayColor())
+    let desiresHeader = UILabel(labelText: "Желания",
+                                textFont: .avenirRegular(size: 14),
+                                textColor: .myGrayColor())
+    let interestLabel = UILabel(labelText: "",
+                                textFont: .avenirRegular(size: 16),
+                                textColor: .myGrayColor(),
+                                linesCount: 0)
+    let desiresLabel = UILabel(labelText: "",
+                               textFont: .avenirRegular(size: 16),
+                               textColor: .myGrayColor(),
+                               linesCount: 0)
     let dislikeButton = LikeDisklikeButton(image: UIImage(systemName: "xmark",
                                                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .large)) ?? #imageLiteral(resourceName: "reject"),
                                  tintColor: .myLabelColor(),
@@ -54,6 +69,7 @@ class PeopleView: UIView {
         scrollView.showsVerticalScrollIndicator = false
     }
     
+    //MARK: configure
     func configure(with value: MPeople, currentPeople: MPeople, showPrivatePhoto: Bool, complition: @escaping()-> Void) {
         peopleName.text = value.displayName
         if value.isGoldMember ||  value.isTestUser{
@@ -61,13 +77,17 @@ class PeopleView: UIView {
         } else {
             infoPremium.text = ""
         }
+        
+        //setup image
         galleryScrollView.setupImages(profileImage: value.userImage,
                                       gallery: value.gallery,
                                       showPrivate: showPrivatePhoto,
                                       showProtectButton: !showPrivatePhoto) {
             complition()
         }
+        galleryScrollView.setNeedsLayout()
         
+        //setup advert
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineHeightMultiple = 0.8
         paragraph.alignment = .left
@@ -78,11 +98,13 @@ class PeopleView: UIView {
         
         advertLabel.attributedText = NSMutableAttributedString(string: value.advert, attributes: attributes)
         
+        //setup info
         infoLabel.text = [value.dateOfBirth.getStringAge(), value.gender, value.sexuality].joined(separator: ", ").lowercased()
         
         likeButton.actionPeople = value
         dislikeButton.actionPeople = value
         
+        //setup location
         let locationIndex = value.searchSettings[MSearchSettings.currentLocation.rawValue] ?? MSearchSettings.currentLocation.defaultValue
         let virtualLocation = MVirtualLocation(rawValue: locationIndex)
         switch virtualLocation {
@@ -94,6 +116,7 @@ class PeopleView: UIView {
             distanceLabel.text = "\(value.distance) км от тебя"
         }
         
+        //setup last active date
         if currentPeople.isGoldMember || currentPeople.isTestUser {
             if value.lastActiveDate.checkIsToday() {
                 timeButton.infoLabel.text = "Недавняя активность в \(value.lastActiveDate.getFormattedDate(format: "HH:mm", withTime: true))"
@@ -105,7 +128,29 @@ class PeopleView: UIView {
             timeButton.infoLabel.text = "Последняя активность"
             timeButton.isEnabled = true
         }
-        galleryScrollView.setNeedsLayout()
+        
+        //setup interests
+        if value.interests.isEmpty{
+            interestsHeader.text = ""
+        } else {
+            interestLabel.text = value.interests.joined(separator: ", ")
+        }
+        
+        
+        //setup desires
+        if value.desires.isEmpty {
+            desiresHeader.text = ""
+        } else {
+            desiresLabel.text = value.desires.joined(separator: ", ")
+        }
+      
+    }
+    
+    func prepareForRenew() {
+        interestLabel.text = ""
+        desiresLabel.text = ""
+        galleryScrollView.prepareReuseScrollView()
+        advertLabel.text = ""
     }
     
     override func layoutSubviews() {
@@ -116,6 +161,7 @@ class PeopleView: UIView {
     }
 }
 
+//MARK: setupConstraints
 extension PeopleView {
     private func setupConstraints() {
         
@@ -130,8 +176,12 @@ extension PeopleView {
         scrollView.addSubview(infoImage)
         scrollView.addSubview(timeImage)
         scrollView.addSubview(timeButton)
-        scrollView.addSubview(likeButton)
-        scrollView.addSubview(dislikeButton)
+        scrollView.addSubview(interestsHeader)
+        scrollView.addSubview(interestLabel)
+        scrollView.addSubview(desiresHeader)
+        scrollView.addSubview(desiresLabel)
+        addSubview(likeButton)
+        addSubview(dislikeButton)
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         galleryScrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -144,6 +194,10 @@ extension PeopleView {
         infoImage.translatesAutoresizingMaskIntoConstraints = false
         timeImage.translatesAutoresizingMaskIntoConstraints = false
         timeButton.translatesAutoresizingMaskIntoConstraints = false
+        interestsHeader.translatesAutoresizingMaskIntoConstraints = false
+        interestLabel.translatesAutoresizingMaskIntoConstraints = false
+        desiresHeader.translatesAutoresizingMaskIntoConstraints = false
+        desiresLabel.translatesAutoresizingMaskIntoConstraints = false
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         dislikeButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -187,6 +241,22 @@ extension PeopleView {
             advertLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             advertLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             advertLabel.topAnchor.constraint(equalTo: timeButton.bottomAnchor, constant: 10),
+            
+            interestsHeader.leadingAnchor.constraint(equalTo: leadingAnchor),
+            interestsHeader.trailingAnchor.constraint(equalTo: trailingAnchor),
+            interestsHeader.topAnchor.constraint(equalTo: advertLabel.bottomAnchor, constant: 20),
+            
+            interestLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            interestLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            interestLabel.topAnchor.constraint(equalTo: interestsHeader.bottomAnchor, constant: 10),
+            
+            desiresHeader.leadingAnchor.constraint(equalTo: leadingAnchor),
+            desiresHeader.trailingAnchor.constraint(equalTo: trailingAnchor),
+            desiresHeader.topAnchor.constraint(equalTo: interestLabel.bottomAnchor, constant: 20),
+            
+            desiresLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            desiresLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            desiresLabel.topAnchor.constraint(equalTo: desiresHeader.bottomAnchor, constant: 10),
             
             likeButton.trailingAnchor.constraint(equalTo: galleryScrollView.trailingAnchor),
             likeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),

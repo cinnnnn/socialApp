@@ -12,7 +12,7 @@ class LoadingView: UIView {
     
     var logoImage: AnimationCustomView?
     
-    convenience init(name: String, isHidden: Bool, contentMode: UIView.ContentMode = .scaleAspectFill) {
+    convenience init(name: String, isHidden: Bool, contentMode: UIView.ContentMode = .scaleAspectFit) {
         self.init()
         self.logoImage = AnimationCustomView(name: name, loopMode: .loop, contentMode: contentMode)
         self.isHidden = isHidden

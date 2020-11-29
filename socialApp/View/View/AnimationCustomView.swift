@@ -23,6 +23,18 @@ class AnimationCustomView: UIView {
         setupConstraints()
     }
     
+    func setupImage(name: String) {
+        animationView.animation = Animation.named(name)
+    }
+    
+    func play() {
+        animationView.play()
+    }
+    
+    func stop() {
+        animationView.stop()
+    }
+    
     private func setup() {
         animationView.animationSpeed = 1
         animationView.backgroundBehavior = .pauseAndRestore

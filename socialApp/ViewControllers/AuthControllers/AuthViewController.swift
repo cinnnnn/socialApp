@@ -21,7 +21,7 @@ class AuthViewController: UIViewController {
     
     let appleButton = ASAuthorizationAppleIDButton()
     let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
-    var animatedLogoImage = AnimationCustomView(name: "logo_neverAlone", loopMode: .loop, contentMode: .scaleAspectFill)
+    var animatedLogoImage = AnimationCustomView(name: "communication", loopMode: .loop, contentMode: .scaleAspectFit)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -209,7 +209,7 @@ extension AuthViewController {
                          trailing: view.trailingAnchor,
                          top: view.safeAreaLayoutGuide.topAnchor,
                          bottom: loginButton.topAnchor,
-                         padding: .init(top: 25, left: 25, bottom: 10, right: 25))
+                         padding: .init(top: 25, left: 0, bottom: 10, right: 0))
         
         appleButton.anchor(leading: view.leadingAnchor,
                            trailing: view.trailingAnchor,

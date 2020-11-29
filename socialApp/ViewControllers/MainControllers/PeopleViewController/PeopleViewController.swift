@@ -19,12 +19,17 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
     
-    var visibleIndexPath: IndexPath?
-    var infoLabel = UILabel(labelText: "", textFont: .avenirBold(size: 38))
-    
-    var collectionView: UICollectionView!
-    var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
-    var refreshControl = UIRefreshControl()
+    private var visibleIndexPath: IndexPath?
+   
+    private var emptyView = EmptyView(imageName: "empty",
+                                      header: MLabels.emptyNearbyPeopleHeader.rawValue,
+                                      text: MLabels.emptyNearbyPeopleText.rawValue,
+                                      buttonText: MLabels.emptyNearbyPeopleButton.rawValue,
+                                      delegate: self,
+                                      selector: #selector(changeSearchTapped))
+    private var collectionView: UICollectionView!
+    private var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
+
     
     init(currentPeople: MPeople,
          peopleDelegate: PeopleListenerDelegate?,
@@ -51,28 +56,25 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupCollectionView()
         setupDiffebleDataSource()
-        setup()
         setupConstraints()
+        setup()
         setupListner()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBar.isHidden = true
+        navigationController?.setNavigationBarHidden(true, animated: true)
         updateCurrentPeople()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    }
     
     //MARK:  setup VC
     private func setup() {
         view.backgroundColor = .myWhiteColor()
         navigationItem.backButtonTitle = ""
-        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
     
  
@@ -108,7 +110,6 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         collectionView.isScrollEnabled = false
         collectionView.isPagingEnabled = false
         collectionView.alwaysBounceVertical = false
-        collectionView.refreshControl = refreshControl
         
         collectionView.register(PeopleCell.self,
                                 forCellWithReuseIdentifier: PeopleCell.reuseID)
@@ -170,7 +171,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                 switch section {
                 case .main:
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleCell.reuseID, for: indexPath) as? PeopleCell else { fatalError("Can't dequeue cell type PeopleCell")}
-                    cell.likeDislikeDelegate = self
+                    cell.buttonDelegate = self
                     if let currentPeople = self?.currentPeople {
                         cell.configure(with: people, currentPeople: currentPeople)
                         {
@@ -198,6 +199,7 @@ extension PeopleViewController {
     }
 }
 
+//MARK: objc
 extension PeopleViewController {
     //MARK: updateCurrentPeople
     @objc private func updateCurrentPeople() {
@@ -211,34 +213,27 @@ extension PeopleViewController {
         reloadData(reloadSection: true, animating: false)
     }
     
-    @objc private func refresh() {
-        guard let likeDislikeDelegate = likeDislikeDelegate else { return }
-        guard let acceptChatDelegate = acceptChatDelegate else { return }
-        
-        peopleDelegate?.reloadPeople(currentPeople: currentPeople,
-                                     likeDislikeDelegate: likeDislikeDelegate,
-                                     acceptChatsDelegate: acceptChatDelegate,
-                                     complition: { [weak self] result in
-                                        switch result {
-                                        
-                                        case .success(_):
-                                            self?.refreshControl.endRefreshing()
-                                        case .failure(_):
-                                            PopUpService.shared.showInfo(text: "Не удалось обновить")
-                                        }
-                                     })
-    }
-    
     //MARK: checkPeopleNearbyIsEmpty
     private func checkPeopleNearbyIsEmpty()  {
         //if nearby people empty set
         guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
         if sortedPeopleNearby.isEmpty {
-            infoLabel.isHidden = false
-            infoLabel.text = MLabels.emptyNearbyPeople.rawValue
+            emptyView.hide(hidden: false)
         } else {
-            infoLabel.isHidden = true
+            emptyView.hide(hidden: true)
         }
+    }
+    
+    //MARK: changeSearchTapped
+    @objc private func changeSearchTapped() {
+        
+        let searchVC = EditSearchSettingsViewController(currentPeople: currentPeople,
+                                                        peopleListnerDelegate: peopleDelegate,
+                                                        likeDislikeDelegate: likeDislikeDelegate,
+                                                        acceptChatsDelegate: acceptChatDelegate)
+        searchVC.hidesBottomBarWhenPushed = true
+        searchVC.navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.pushViewController(searchVC, animated: true)
     }
 }
 
@@ -401,15 +396,18 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
 extension PeopleViewController {
     private func setupConstraints() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        infoLabel.translatesAutoresizingMaskIntoConstraints = false
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
        
         view.addSubview(collectionView)
-        view.addSubview(infoLabel)
+        view.addSubview(emptyView)
+        
+        
         
         NSLayoutConstraint.activate([
-            infoLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            infoLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            infoLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
+            emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            emptyView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),

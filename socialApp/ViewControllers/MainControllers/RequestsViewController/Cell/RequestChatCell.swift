@@ -13,8 +13,7 @@ class RequestChatCell: UICollectionViewCell, SelfConfiguringCell {
 
     static var reuseID: String = "RequestChatCell"
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
-    let frendName = UILabel(labelText: "", textFont: .avenirBold(size: 16),aligment: .center, linesCount: 0)
-    let animateProfileBack = AnimationCustomView(name: "loading_grayCircle", loopMode: .loop, contentMode: .scaleAspectFit)
+   // let frendName = UILabel(labelText: "", textFont: .avenirBold(size: 24),aligment: .left, linesCount: 0)
    
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,7 +36,7 @@ class RequestChatCell: UICollectionViewCell, SelfConfiguringCell {
                 self?.frendImage.image = image?.sd_blurredImage(withRadius: 100)
             }
         }
-        frendName.text = value.friendUserName
+       // frendName.text = value.friendUserName
     }
     
     private func setup() {
@@ -46,38 +45,32 @@ class RequestChatCell: UICollectionViewCell, SelfConfiguringCell {
         clipsToBounds = true
        
         frendImage.clipsToBounds = true
-        animateProfileBack.animationView.play()
+        frendImage.layer.cornerRadius = MDefaultLayer.smallCornerRadius.rawValue
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        frendImage.layer.cornerRadius = frendImage.frame.height / 2
+       // frendImage.layer.cornerRadius = frendImage.frame.height / 2
     }
     private func setupConstraints(){
         
         frendImage.translatesAutoresizingMaskIntoConstraints = false
-        frendName.translatesAutoresizingMaskIntoConstraints = false
-        animateProfileBack.translatesAutoresizingMaskIntoConstraints = false
-        
-        addSubview(animateProfileBack)
+   //     frendName.translatesAutoresizingMaskIntoConstraints = false
+   
         addSubview(frendImage)
-        addSubview(frendName)
+    //    addSubview(frendName)
         
         NSLayoutConstraint.activate([
-            animateProfileBack.topAnchor.constraint(equalTo: topAnchor),
-            animateProfileBack.centerXAnchor.constraint(equalTo: centerXAnchor),
-            animateProfileBack.widthAnchor.constraint(equalTo: widthAnchor),
-            animateProfileBack.heightAnchor.constraint(equalTo: animateProfileBack.widthAnchor),
-            
-            frendImage.centerYAnchor.constraint(equalTo: animateProfileBack.centerYAnchor),
-            frendImage.centerXAnchor.constraint(equalTo: animateProfileBack.centerXAnchor),
-            frendImage.widthAnchor.constraint(equalTo: animateProfileBack.widthAnchor, multiplier: 0.7),
+            frendImage.topAnchor.constraint(equalTo: topAnchor),
+            frendImage.centerXAnchor.constraint(equalTo: centerXAnchor),
+            frendImage.widthAnchor.constraint(equalTo: widthAnchor),
             frendImage.heightAnchor.constraint(equalTo: frendImage.widthAnchor),
+            frendImage.bottomAnchor.constraint(equalTo: bottomAnchor)
             
-            frendName.topAnchor.constraint(equalTo: animateProfileBack.bottomAnchor),
-            frendName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            frendName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            frendName.bottomAnchor.constraint(equalTo: bottomAnchor)
+//            frendName.topAnchor.constraint(equalTo: frendImage.bottomAnchor),
+//            frendName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+//            frendName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+//            frendName.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 }

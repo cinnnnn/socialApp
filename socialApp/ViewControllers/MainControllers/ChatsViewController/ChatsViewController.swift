@@ -13,10 +13,16 @@ import FirebaseAuth
 
 class ChatsViewController: UIViewController {
     
-    var collectionView: UICollectionView?
-    var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
-    var currentPeople: MPeople
-    var segmentedControl = UISegmentedControl(items: ["один","два"])
+    private var collectionView: UICollectionView?
+    private var dataSource: UICollectionViewDiffableDataSource<SectionsChats, MChat>?
+    private var currentPeople: MPeople
+    private var emptyView = EmptyView(imageName: "newsletter",
+                                      header: MLabels.emptyAcceptChatHeader.rawValue,
+                                      text: MLabels.emptyAcceptChatText.rawValue,
+                                      buttonText: MLabels.emptyAcceptChatButton.rawValue,
+                                      delegate: self,
+                                      selector: #selector(emptyButtonTapped))
+        
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var messageDelegate: MessageListenerDelegate?
@@ -51,6 +57,7 @@ class ChatsViewController: UIViewController {
         setupDataSource()
         loadSectionHedear()
         renewDataSource(searchText: nil)
+        setupConstraint()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,6 +90,19 @@ class ChatsViewController: UIViewController {
         navigationItem.searchController = searchController
     }
     
+    //MARK: checkPeopleNearbyIsEmpty
+    private func checkPeopleNearbyIsEmpty()  {
+        //if nearby people empty set
+        guard let acceptChatDelegate = acceptChatDelegate?.acceptChats else { fatalError() }
+        if acceptChatDelegate.isEmpty {
+            emptyView.hide(hidden: false)
+            navigationItem.searchController = nil
+        } else {
+            emptyView.hide(hidden: true)
+            setupNavigationController()
+        }
+    }
+    
     //MARK: objc
     
     @objc private func updateCurrentPeople() {
@@ -95,6 +115,12 @@ class ChatsViewController: UIViewController {
         // reloadDataSource(changeType: .update)
         print("Premium was updated on chats screen")
     }
+    
+    @objc private func emptyButtonTapped() {
+        tabBarController?.selectedIndex = 0
+    }
+    
+   
 }
 
 
@@ -271,6 +297,8 @@ extension ChatsViewController {
     //MARK: renewDataSource
     private func renewDataSource(searchText: String?) {
         guard let sortedAcceptChats = acceptChatDelegate?.sortedAcceptChats else { fatalError("Can't get sorted accept chats")}
+        checkPeopleNearbyIsEmpty()
+        
         let filtredAcceptChats = sortedAcceptChats.filter { acceptChat -> Bool in
             acceptChat.contains(element: searchText)
         }
@@ -380,5 +408,20 @@ extension ChatsViewController: UICollectionViewDelegate {
             navigationController?.pushViewController(chatVC, animated: true)
             FirestoreService.shared.updateLastActiveDate(id: currentPeople.senderId)
         }
+    }
+}
+
+extension ChatsViewController {
+    private func setupConstraint() {
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(emptyView)
+        
+        NSLayoutConstraint.activate([
+            emptyView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            emptyView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            emptyView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+        ])
     }
 }

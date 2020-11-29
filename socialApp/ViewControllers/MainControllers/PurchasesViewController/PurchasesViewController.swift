@@ -14,7 +14,7 @@ class PurchasesViewController: UIViewController {
     
     let currentPeople: MPeople
     let scrollView = UIScrollView()
-    let loadingView = LoadingView(name: "loading_simpleBlackCube", isHidden: true, contentMode: .scaleAspectFit)
+    let loadingView = LoadingView(name: "wallet", isHidden: true, contentMode: .scaleAspectFit)
     let header = UILabel(labelText: "Перейти на Flava premium",
                          textFont: .avenirBold(size: 18))
     

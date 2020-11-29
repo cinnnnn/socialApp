@@ -19,6 +19,13 @@ class RequestsViewController: UIViewController {
     var requestChatDelegate: RequestChatListenerDelegate
     var likeDislikeDelegate: LikeDislikeListenerDelegate
     var acceptChatDelegate: AcceptChatListenerDelegate
+    private var emptyView = EmptyView(imageName: "delivery",
+                                      header: MLabels.emptyRequestChatHeader.rawValue,
+                                      text: MLabels.emptyRequestChatText.rawValue,
+                                      buttonText: MLabels.emptyRequestChatButton.rawValue,
+                                      delegate: self,
+                                      selector: #selector(emptyButtonTapped))
+    
     
     var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
     var currentPeople: MPeople
@@ -50,10 +57,12 @@ class RequestsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setup()
         setupCollectionView()
         setupDataSource()
         loadSectionHedear()
         reloadData()
+        setupConstraint()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -63,15 +72,25 @@ class RequestsViewController: UIViewController {
         reloadData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
+    private func setup() {
+        view.backgroundColor = .myWhiteColor()
     }
     
     private func setupListeners() {
         requestChatDelegate.setupListener(likeDislikeDelegate: likeDislikeDelegate)
         NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
         NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
+    }
+    
+    //MARK: checkPeopleNearbyIsEmpty
+    private func checkRequestIsEmpty()  {
+        if requestChatDelegate.requestChats.isEmpty {
+            emptyView.hide(hidden: false)
+            collectionView?.isHidden = true
+        } else {
+            emptyView.hide(hidden: true)
+            collectionView?.isHidden = false
+        }
     }
     
     
@@ -84,6 +103,16 @@ class RequestsViewController: UIViewController {
     
     @objc private func premiumIsUpdated() {
         reloadData()
+    }
+    
+    @objc private func emptyButtonTapped() {
+        let searchVC = EditSearchSettingsViewController(currentPeople: currentPeople,
+                                                        peopleListnerDelegate: peopleDelegate,
+                                                        likeDislikeDelegate: likeDislikeDelegate,
+                                                        acceptChatsDelegate: acceptChatDelegate)
+        searchVC.hidesBottomBarWhenPushed = true
+        searchVC.navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.pushViewController(searchVC, animated: true)
     }
     
     private func setupNavigationBar() {
@@ -135,25 +164,30 @@ extension RequestsViewController {
         
         return item
     }
+    
+    
     //MARK:  createRequestChatsLayout
     private func createRequestChatsLayout() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5),
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                               heightDimension: .estimated(100))
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
+    
         let grupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                               heightDimension: .estimated(100))
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: grupSize,
-                                                       subitems: [item])
+                                                       subitem: item,
+                                                       count: 2)
+        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(20)
         
         let section = NSCollectionLayoutSection(group: group)
         
         let sectionHeader = createSectionHeader()
         section.boundarySupplementaryItems = [sectionHeader]
     
-        section.interGroupSpacing = 15
+        section.interGroupSpacing = 20
         section.contentInsets = NSDirectionalEdgeInsets(top: 40,
                                                         leading: 20,
                                                         bottom: 0,
@@ -212,8 +246,7 @@ extension RequestsViewController {
 extension RequestsViewController: RequestChatCollectionViewDelegate {
     //MARK: reloadRequestData
     func reloadData() {
-    
-        
+        checkRequestIsEmpty()
         let sortedRequestChats = requestChatDelegate.sortedRequestChats
         
         if let dataSource = dataSource {
@@ -270,5 +303,20 @@ extension RequestsViewController: UICollectionViewDelegate {
                 }
             }
         }
+    }
+}
+
+extension RequestsViewController {
+    private func setupConstraint() {
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(emptyView)
+        
+        NSLayoutConstraint.activate([
+            emptyView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            emptyView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            emptyView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+        ])
     }
 }
