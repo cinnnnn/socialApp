@@ -64,6 +64,11 @@
 		FB78FE6B2572739F004DA53E /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FE6A2572739F004DA53E /* EmptyView.swift */; };
 		FB78FE7425729A14004DA53E /* delivery.json in Resources */ = {isa = PBXBuildFile; fileRef = FB78FE7325729A13004DA53E /* delivery.json */; };
 		FB78FE7C2572A8DF004DA53E /* communication.json in Resources */ = {isa = PBXBuildFile; fileRef = FB78FE7B2572A8DF004DA53E /* communication.json */; };
+		FB78FE882573CE57004DA53E /* LikeDislikePeopleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FE872573CE57004DA53E /* LikeDislikePeopleButton.swift */; };
+		FB78FE8C2573DC06004DA53E /* AnimateLikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FE8B2573DC06004DA53E /* AnimateLikeButton.swift */; };
+		FB78FE942573DE40004DA53E /* likeHeart.json in Resources */ = {isa = PBXBuildFile; fileRef = FB78FE922573DE40004DA53E /* likeHeart.json */; };
+		FB78FE9F2573EF91004DA53E /* AnimateDislikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FE9E2573EF90004DA53E /* AnimateDislikeButton.swift */; };
+		FB78FEAB2573F90A004DA53E /* crossReady.json in Resources */ = {isa = PBXBuildFile; fileRef = FB78FEAA2573F90A004DA53E /* crossReady.json */; };
 		FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */; };
 		FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4825234EDA00A7AA56 /* DateExtension.swift */; };
 		FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4B2523577100A7AA56 /* MMediaItem.swift */; };
@@ -276,6 +281,11 @@
 		FB78FE6A2572739F004DA53E /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
 		FB78FE7325729A13004DA53E /* delivery.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = delivery.json; sourceTree = "<group>"; };
 		FB78FE7B2572A8DF004DA53E /* communication.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = communication.json; sourceTree = "<group>"; };
+		FB78FE872573CE57004DA53E /* LikeDislikePeopleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeDislikePeopleButton.swift; sourceTree = "<group>"; };
+		FB78FE8B2573DC06004DA53E /* AnimateLikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimateLikeButton.swift; sourceTree = "<group>"; };
+		FB78FE922573DE40004DA53E /* likeHeart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = likeHeart.json; sourceTree = "<group>"; };
+		FB78FE9E2573EF90004DA53E /* AnimateDislikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimateDislikeButton.swift; sourceTree = "<group>"; };
+		FB78FEAA2573F90A004DA53E /* crossReady.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = crossReady.json; sourceTree = "<group>"; };
 		FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTypeOfListenerChanges.swift; sourceTree = "<group>"; };
 		FB79DA4825234EDA00A7AA56 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		FB79DA4B2523577100A7AA56 /* MMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMediaItem.swift; sourceTree = "<group>"; };
@@ -530,6 +540,8 @@
 				FBFFB89A256535F8007343ED /* OneLineButton.swift */,
 				FB3C5BDD253F5F3900CD44E6 /* RoundButton.swift */,
 				FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */,
+				FB78FE9E2573EF90004DA53E /* AnimateDislikeButton.swift */,
+				FB78FE8B2573DC06004DA53E /* AnimateLikeButton.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
 			);
 			path = Buttons;
@@ -625,6 +637,15 @@
 				FB61B53D24FAB785002761ED /* UIViewExtension.swift */,
 			);
 			path = UIkit;
+			sourceTree = "<group>";
+		};
+		FB78FE972573DE4C004DA53E /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				FB78FEAA2573F90A004DA53E /* crossReady.json */,
+				FB78FE922573DE40004DA53E /* likeHeart.json */,
+			);
+			path = Buttons;
 			sourceTree = "<group>";
 		};
 		FB79DA81252DECEB00A7AA56 /* ProfileViewController */ = {
@@ -756,6 +777,7 @@
 		FBA2B7B32540676900D0F463 /* Animation */ = {
 			isa = PBXGroup;
 			children = (
+				FB78FE972573DE4C004DA53E /* Buttons */,
 				FB78FE7B2572A8DF004DA53E /* communication.json */,
 				FB78FE462572676D004DA53E /* searchLocation.json */,
 				FB78FE7325729A13004DA53E /* delivery.json */,
@@ -905,6 +927,7 @@
 			children = (
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */,
+				FB78FE872573CE57004DA53E /* LikeDislikePeopleButton.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -1112,11 +1135,13 @@
 			files = (
 				FB78FE5F25726EAA004DA53E /* empty.json in Resources */,
 				FBEF608424A6020A0005F947 /* LaunchScreen.storyboard in Resources */,
+				FB78FE942573DE40004DA53E /* likeHeart.json in Resources */,
 				FB78FE3B25725DE0004DA53E /* hugging.json in Resources */,
 				FB3727672540DFBD00906FBE /* logo_eye.json in Resources */,
 				FB78FE472572676D004DA53E /* searchLocation.json in Resources */,
 				FB78FE6325726EF8004DA53E /* wallet.json in Resources */,
 				FB78FE5125726CF8004DA53E /* explore.json in Resources */,
+				FB78FEAB2573F90A004DA53E /* crossReady.json in Resources */,
 				FB78FE7425729A14004DA53E /* delivery.json in Resources */,
 				FB78FE672572706E004DA53E /* newsletter.json in Resources */,
 				FB78FE7C2572A8DF004DA53E /* communication.json in Resources */,
@@ -1198,6 +1223,7 @@
 				FBB3D492255D595D00A3B832 /* MPushMessageToTopic.swift in Sources */,
 				FB79DA7C252DE64900A7AA56 /* ProfileViewController.swift in Sources */,
 				FB79DA962530E69400A7AA56 /* EditPhotoViewController.swift in Sources */,
+				FB78FE8C2573DC06004DA53E /* AnimateLikeButton.swift in Sources */,
 				FB8C3D392533958900184FB5 /* MLookingFor.swift in Sources */,
 				FB8C3D652534A74900184FB5 /* SelectionTableViewHeader.swift in Sources */,
 				FBE5A1062559C15300060D97 /* PushNotificationService.swift in Sources */,
@@ -1211,6 +1237,7 @@
 				FBA2AA482553086D00A471F6 /* SetupChatMenu.swift in Sources */,
 				FBFFB89B256535F8007343ED /* OneLineButton.swift in Sources */,
 				FBB33FF8256D24BB00A597BF /* TagsCollectionViewCell.swift in Sources */,
+				FB78FE9F2573EF91004DA53E /* AnimateDislikeButton.swift in Sources */,
 				FB1062DE24B0C8DF0012C4D4 /* EditableProfileImageView.swift in Sources */,
 				FBB26ED3254AFD130081CF2C /* AcceptChatDataProvider.swift in Sources */,
 				FB21A1BD24E59A31000A2E91 /* GradientView.swift in Sources */,
@@ -1226,6 +1253,7 @@
 				FB3351D52568521D007AFDDF /* MGallery.swift in Sources */,
 				FB207CB42520C544007AA232 /* MessageError.swift in Sources */,
 				FBA94D1E24F55CBE000DA5D5 /* SectionHeader.swift in Sources */,
+				FB78FE882573CE57004DA53E /* LikeDislikePeopleButton.swift in Sources */,
 				FB8C3D3C2533961800184FB5 /* MSexuality.swift in Sources */,
 				FB79DA84252DED1700A7AA56 /* ProfileCell.swift in Sources */,
 				FBB33FF1256D202000A597BF /* SectionTagsCollectionView.swift in Sources */,

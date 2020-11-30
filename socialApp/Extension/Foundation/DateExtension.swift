@@ -134,10 +134,21 @@ extension Date {
         Calendar.current.date(byAdding: .year, value: years, to: self)
     }
     
+    func getTimerToDate(timerMinuteCount: Int) -> String {
+        let calendar = Calendar.current
+        guard let timerDate = calendar.date(byAdding: .minute, value: timerMinuteCount, to: self) else { return ""}
+        let dateComponentToTimerDate = calendar.dateComponents([.hour,.minute], from: Date(), to: timerDate)
+        let hour = dateComponentToTimerDate.hour ?? 0
+        let minute = dateComponentToTimerDate.minute ?? 0
+        
+        return "\(hour):\(minute)"
+    }
+    
     func getPeriodToDate(periodMinuteCount: Int) -> String {
         let calendar = Calendar.current
         guard let deleteDate = calendar.date(byAdding: .minute, value: periodMinuteCount, to: self) else { return ""}
         let timeToDeleteDate = calendar.dateComponents([.day,.hour,.minute], from: Date(), to: deleteDate)
+       
         if let day = timeToDeleteDate.day, day > 0 {
             switch day {
             case let currentDay where (day % 10 == 1) && (day != 11):

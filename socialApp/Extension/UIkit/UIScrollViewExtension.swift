@@ -14,7 +14,6 @@ extension UIScrollView {
         let bottomOffset:CGFloat = bottomOffset
         if let maxY = subviews.sorted(by: { $0.frame.maxY < $1.frame.maxY }).last?.frame.maxY {
             contentSize.height = maxY + bottomOffset
-            print(contentSize.height)
         }
     }
 }

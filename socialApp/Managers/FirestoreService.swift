@@ -222,6 +222,8 @@ class FirestoreService {
                                              MPeople.CodingKeys.isAdmin.rawValue: false,
                                              MPeople.CodingKeys.isBlocked.rawValue: false,
                                              MPeople.CodingKeys.isGoldMember.rawValue: false,
+                                             MPeople.CodingKeys.isTestUser.rawValue: false,
+                                             MPeople.CodingKeys.isIncognito.rawValue: false,
                                              MPeople.CodingKeys.searchSettings.rawValue: searchSettings],
                                             merge: true,
                                             completion: { (error) in

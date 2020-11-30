@@ -32,11 +32,16 @@ class LoginViewController: UIViewController {
                                              opacity: 0,
                                              isEnable: false)
     
-    let emailLabel = UILabel(labelText: "Напиши свою почту")
+    let emailLabel = UILabel(labelText: "Напиши свою почту",
+                             textFont: .avenirRegular(size: 16),
+                             textColor: .myGrayColor())
     let correctEmailLabel = UILabel(labelText: "Неправильно введена почта",
-                                    textColor: .myPinkColor(),
+                                    textFont: .avenirRegular(size: 16),
+                                    textColor: .mySecondSatColor(),
                                     opacity: 0)
     let passwordLabel = UILabel(labelText: "Пароль",
+                                textFont: .avenirRegular(size: 16),
+                                textColor: .myGrayColor(),
                                 opacity: 0)
     
     weak var navigationDelegate: NavigationDelegate?
@@ -72,6 +77,7 @@ extension LoginViewController {
         emailTextField.delegate = self
         passwordTextField.delegate = self
         
+        emailTextField.keyboardType = .emailAddress
         signInLogo.animationView.play()
     }
     
@@ -92,10 +98,11 @@ extension LoginViewController {
             UIView.animate(withDuration: 0.3) { [weak self] in
                 self?.loginButton.isEnabled = false
                 self?.correctEmailLabel.layer.opacity = 1
-                self?.emailTextField.becomeFirstResponder()
                 self?.passwordTextField.text = ""
                 self?.passwordTextField.layer.opacity = 0
+                self?.passwordTextField.isHidden = true
                 self?.passwordLabel.layer.opacity = 0
+                
             }
             return
         }
@@ -109,6 +116,7 @@ extension LoginViewController {
                     UIView.animate(withDuration: 0.3) {
                         self?.correctEmailLabel.layer.opacity = 0
                         self?.passwordTextField.layer.opacity = 1
+                        self?.passwordTextField.isHidden = false
                         self?.passwordLabel.layer.opacity = 1
                         self?.resignFirstResponder()
                         self?.loginButton.isEnabled = true
@@ -119,6 +127,7 @@ extension LoginViewController {
                         self?.correctEmailLabel.layer.opacity = 0
                         self?.passwordTextField.text = ""
                         self?.passwordTextField.layer.opacity = 0
+                        self?.passwordTextField.isHidden = true
                         self?.passwordLabel.layer.opacity = 0
                     }
                     self?.loginButton.isEnabled = true
@@ -266,9 +275,9 @@ extension LoginViewController {
         
         emailLabel.anchor(leading: view.leadingAnchor,
                           trailing: view.trailingAnchor,
-                          top: emailTextField.topAnchor,
-                          bottom: nil,
-                          padding: .init(top: -15, left: 25, bottom: 0, right: 25))
+                          top: nil,
+                          bottom: emailTextField.topAnchor,
+                          padding: .init(top: 15, left: 25, bottom: 0, right: 25))
         
         correctEmailLabel.anchor(leading: view.leadingAnchor,
                                  trailing: view.trailingAnchor,
@@ -284,9 +293,9 @@ extension LoginViewController {
         
         passwordLabel.anchor(leading: view.leadingAnchor,
                              trailing: view.trailingAnchor,
-                             top: passwordTextField.topAnchor,
-                             bottom: nil,
-                             padding: .init(top: -15, left: 25, bottom: 0, right: 25))
+                             top: nil,
+                             bottom: passwordTextField.topAnchor,
+                             padding: .init(top: 15, left: 25, bottom: 0, right: 25))
         
         backButton.anchor(leading: loginButton.leadingAnchor,
                           trailing: loginButton.trailingAnchor,

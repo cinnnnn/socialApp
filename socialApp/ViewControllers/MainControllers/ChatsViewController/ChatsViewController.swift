@@ -205,12 +205,12 @@ extension ChatsViewController {
     //MARK:  createWaitingChatsLayout
     private func createWaitingChatsLayout(isEmpty: Bool) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .fractionalHeight(1))
+                                              heightDimension: .estimated(80))
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let grupSize = NSCollectionLayoutSize(widthDimension: .estimated(70),
-                                              heightDimension: isEmpty ? .absolute(0.1) : .estimated(70))
+                                              heightDimension: isEmpty ? .absolute(0.1) : .estimated(80))
         
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: grupSize,
                                                        subitems: [item])
@@ -230,7 +230,7 @@ extension ChatsViewController {
             section.interGroupSpacing = 15
             section.contentInsets = NSDirectionalEdgeInsets(top: 40,
                                                             leading: 20,
-                                                            bottom: 15,
+                                                            bottom: 0,
                                                             trailing: 20)
         }
         return section

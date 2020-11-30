@@ -75,7 +75,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        frendImage.layer.cornerRadius = frendImage.frame.height / 2
+        frendImage.layer.cornerRadius = MDefaultLayer.smallCornerRadius.rawValue
         unreadMessage.updateBackgroundView()
     }
     

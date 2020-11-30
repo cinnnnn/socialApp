@@ -491,8 +491,9 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
                                                               toUserID: strongChat,
                                                               header: strongUser.displayName,
                                                               text: text)
-            case .failure(let error):
-                fatalError(error.localizedDescription)
+            case .failure(_):
+                //no document to update
+                break
             }
         }
         inputBar.inputTextView.text = ""

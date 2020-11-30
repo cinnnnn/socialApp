@@ -357,8 +357,8 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
         }
     }
     
-     func likePeople(people: MPeople) {
-        
+    func likePeople(people: MPeople) {
+        print("Like")
         //check like  is avalible
         checkLikeIsAvalible { [weak self] in
             self?.saveLikeToFireStore(people: people)
@@ -366,14 +366,14 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
     }
     
     func dislikePeople(people: MPeople) {
-       
+       print("dislike")
         //save dislike to firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeople: people,
                                               requestChats: requestChatDelegate?.requestChats ?? [],
                                               viewControllerDelegate: self) {[weak self] result in
             switch result {
-            
+
             case .success(let dislikeChat):
                 //delete dislike people from array
                 self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
@@ -383,12 +383,11 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
                 self?.likeDislikeDelegate?.dislikePeople.append(dislikeChat)
                 //for correct reload last element, need reload section
                 self?.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false)
-                
+
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
         }
-         
     }
 }
 

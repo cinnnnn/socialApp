@@ -12,11 +12,7 @@ import FirebaseAuth
 
 class RegisterEmailViewController: UIViewController {
     
-    
-    let signUpLogo = UIImageView(image: #imageLiteral(resourceName: "SignUpLogo"),
-                                 contentMode: .scaleAspectFit)
-    
-    let loginLabel = UILabel(labelText: "Проверь test3@gmail.com почту",
+    let loginLabel = UILabel(labelText: "Проверь mail почту",
                              textFont: .avenirBold(size: 16),
                              opacity: 0,
                              linesCount: 0)
@@ -25,10 +21,16 @@ class RegisterEmailViewController: UIViewController {
                                         textColor: .myGrayColor(),
                                         opacity:  0,
                                         linesCount: 0)
-    let emailLabel = UILabel(labelText: "Твоя почта ",
+    let emailLabelHeader = UILabel(labelText: "Твоя почта:",
+                             textFont: .avenirBold(size: 24),
+                             textColor: .myLabelColor(),
+                             opacity: 1)
+    
+    let emailLabel = UILabel(labelText: "mail@jedi-tones.art",
                              textFont: .avenirRegular(size: 16),
                              textColor: .myGrayColor(),
                              opacity: 1)
+    
     let passwordLabel = UILabel(labelText: "Придумай к ней пароль",
                                 textFont: .avenirRegular(size: 16),
                                 textColor: .myGrayColor(),
@@ -90,7 +92,7 @@ extension RegisterEmailViewController {
        
         if let email = email {
             loginLabel.text = "Проверь \(email) почту, пройди по ссылке в письме для активации"
-            emailLabel.text = "Твоя почта \(email)"
+            emailLabel.text = email
         }
         
         passwordTextField.delegate = self
@@ -189,19 +191,19 @@ extension RegisterEmailViewController {
 extension RegisterEmailViewController {
     private func setupConstraints() {
         
-        signUpLogo.translatesAutoresizingMaskIntoConstraints = false
         emailInstructionLabel.translatesAutoresizingMaskIntoConstraints = false
         checkMailButton.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         confirmPasswordTextField.translatesAutoresizingMaskIntoConstraints = false
+        emailLabelHeader.translatesAutoresizingMaskIntoConstraints = false
         emailLabel.translatesAutoresizingMaskIntoConstraints = false
         loginLabel.translatesAutoresizingMaskIntoConstraints = false
         passwordLabel.translatesAutoresizingMaskIntoConstraints = false
         confirmPasswordLabel.translatesAutoresizingMaskIntoConstraints = false
         signUpButton.translatesAutoresizingMaskIntoConstraints = false
         
-        
-        view.addSubview(signUpLogo)
+
+        view.addSubview(emailLabelHeader)
         view.addSubview(emailLabel)
         view.addSubview(emailInstructionLabel)
         view.addSubview(checkMailButton)
@@ -213,14 +215,16 @@ extension RegisterEmailViewController {
         view.addSubview(signUpButton)
         
         NSLayoutConstraint.activate([
-            signUpLogo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 80),
-            signUpLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            emailLabel.topAnchor.constraint(equalTo: signUpLogo.bottomAnchor, constant: 15),
+            emailLabelHeader.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            emailLabelHeader.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            emailLabelHeader.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            
+            emailLabel.topAnchor.constraint(equalTo: emailLabelHeader.bottomAnchor, constant: 10),
             emailLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             emailLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
-            passwordTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 38),
+            passwordTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 68),
             passwordTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             passwordTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             

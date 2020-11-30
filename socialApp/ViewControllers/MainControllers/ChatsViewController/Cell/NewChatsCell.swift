@@ -13,11 +13,27 @@ class NewChatsCell: UICollectionViewCell,SelfConfiguringCell {
     static var reuseID: String = "NewChatsCell"
     
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
+    let timerLabel = UILabel(labelText: "",
+                             textFont: .avenirRegular(size: 14),
+                             textColor: .myGrayColor(),
+                             aligment: .center)
+    var timer: Timer?
     
     func configure(with value: MChat, currentUser: MPeople) {
        
         let imageURL = URL(string: value.friendUserImageString )
         frendImage.sd_setImage(with: imageURL, completed: nil)
+        getTimeToDelete(value: value)
+        
+        if timer == nil {
+            timer = Timer(timeInterval: 60, repeats: true, block: {[weak self] _ in
+                self?.getTimeToDelete(value: value)
+            })
+            timer?.tolerance = 10
+            if let timer = timer {
+                RunLoop.main.add(timer, forMode: .common)
+            }
+        }
     }
     
     
@@ -32,27 +48,44 @@ class NewChatsCell: UICollectionViewCell,SelfConfiguringCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func getTimeToDelete(value: MChat) {
+        let defaultTimeToDelete = MChat.getDefaultPeriodMinutesOfLifeChat()
+        let timerToDelete = value.createChatDate.getTimerToDate(timerMinuteCount: defaultTimeToDelete)
+        timerLabel.text = timerToDelete
+    }
+    
     private func setup() {
         
         backgroundColor = .myWhiteColor()
-        clipsToBounds = true
+        frendImage.layer.cornerRadius = MDefaultLayer.smallCornerRadius.rawValue
+        frendImage.clipsToBounds = true
+
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        layer.cornerRadius = self.frame.width / 2
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        timer?.invalidate()
+        timer = nil
     }
+
     private func setupConstraints(){
         
         frendImage.translatesAutoresizingMaskIntoConstraints = false
+        timerLabel.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(frendImage)
+        addSubview(timerLabel)
         
         NSLayoutConstraint.activate([
             frendImage.leadingAnchor.constraint(equalTo: leadingAnchor),
             frendImage.trailingAnchor.constraint(equalTo: trailingAnchor),
             frendImage.topAnchor.constraint(equalTo: topAnchor),
-            frendImage.bottomAnchor.constraint(equalTo: bottomAnchor)
+            frendImage.heightAnchor.constraint(equalTo: frendImage.widthAnchor),
+            
+            timerLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            timerLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            timerLabel.topAnchor.constraint(equalTo: frendImage.bottomAnchor, constant: 10),
+            timerLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 }

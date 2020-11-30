@@ -18,6 +18,7 @@ enum MDefaultsDesires: String, CaseIterable {
     case dates = "Встречи"
     case travels = "Совместные путешествия"
     case party = "Тусовки"
+    case wolking = "Прогулка"
     
 }
 

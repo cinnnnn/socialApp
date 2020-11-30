@@ -34,6 +34,7 @@ extension FirestoreService {
         var usersID = likeChatID + dislikeChatID + acceptChatID + peopleID
         usersID.append(currentPeople.senderId)
         
+        
         let minRange = currentPeople.searchSettings[MSearchSettings.minRange.rawValue] ?? MSearchSettings.minRange.defaultValue
         let maxRange = currentPeople.searchSettings[MSearchSettings.maxRange.rawValue] ?? MSearchSettings.maxRange.defaultValue
         
@@ -61,6 +62,7 @@ extension FirestoreService {
                 }
                 snapshot.documents.forEach { queryDocumentSnapshot in
                     if var people = MPeople(documentSnap: queryDocumentSnapshot) {
+                        
                         //check distance to people and append to him
                         let distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: people)
                         let range = currentPeople.searchSettings[MSearchSettings.distance.rawValue] ?? MSearchSettings.distance.defaultValue

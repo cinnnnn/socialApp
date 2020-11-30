@@ -49,10 +49,10 @@ class PeopleInfoViewController: UIViewController {
     
     func setup() {
         view.backgroundColor = .myWhiteColor()
-        peopleView.likeButton.isHidden = !withLikeButtons
-        peopleView.dislikeButton.isHidden = !withLikeButtons
-        peopleView.likeButton.addTarget(self, action: #selector(likeTapped), for: .touchUpInside)
-        peopleView.dislikeButton.addTarget(self, action: #selector(dislikeTapped), for: .touchUpInside)
+        peopleView.animateLikeButton.isHidden = !withLikeButtons
+        peopleView.animateDislikeButton.isHidden = !withLikeButtons
+        peopleView.animateLikeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
+        peopleView.animateDislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
         peopleView.timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
         peopleView.layoutIfNeeded()
         
@@ -78,14 +78,25 @@ class PeopleInfoViewController: UIViewController {
 
 //MARK: obcj
 extension PeopleInfoViewController {
-    @objc private func likeTapped() {
-        guard let people = people else { return }
-        likePeople(people: people)
+    @objc private func likeTapped(sender: Any) {
+        guard let people = people,
+              let button = sender as? LikeDislikePeopleButton else {
+            return
+        }
+        button.play { [weak self] in
+            self?.likePeople(people: people)
+        }
+
     }
     
-    @objc private func dislikeTapped() {
-        guard let people = people else { return }
-        dislikePeople(people: people)
+    @objc private func dislikeTapped(sender: Any) {
+        guard let people = people,
+              let button = sender as? LikeDislikePeopleButton else {
+            return
+        }
+        button.play { [weak self] in
+            self?.dislikePeople(people: people)
+        }
     }
     
 }
@@ -122,8 +133,8 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
                     peopleDelegate.senderId == people.senderId
                 }
               
-                self?.peopleView.likeButton.isHidden = true
-                self?.peopleView.dislikeButton.isHidden = true
+                self?.peopleView.animateLikeButton.isHidden = true
+                self?.peopleView.animateDislikeButton.isHidden = true
                 
                 requestChatsDelegate.reloadData(changeType: .delete)
                 //for correct renew last people, need reload section
@@ -162,10 +173,10 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
                     peopleDelegate.senderId == people.senderId
                 }
                 
-                self?.peopleView.likeButton.isHidden = true
-                self?.peopleView.dislikeButton.isHidden = true
+                self?.peopleView.animateLikeButton.isHidden = true
+                self?.peopleView.animateDislikeButton.isHidden = true
                 
-                requestChatsDelegate.reloadData(changeType: .add)
+                requestChatsDelegate.reloadData(changeType: .delete)
                 //for correct renew last people, need reload section
                 peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
                 

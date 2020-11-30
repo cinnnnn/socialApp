@@ -51,6 +51,7 @@ extension PeopleDataProvider {
             
             case .success(let peoples):
                 self?.peopleNearby = peoples
+                
                 self?.reloadData(reloadSection: peoples.count == 1 ? true : false, animating: false)
                 complition(.success(peoples))
             case .failure(let error):

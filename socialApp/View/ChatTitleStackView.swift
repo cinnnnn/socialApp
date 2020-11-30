@@ -38,7 +38,7 @@ class ChatTitleStackView: UIStackView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        peopleImageButton.layer.cornerRadius = peopleImageButton.frame.height / 2
+        peopleImageButton.layer.cornerRadius = peopleImageButton.frame.height / 4
         peopleImageButton.layer.frame.size.width = peopleImageButton.frame.height
     }
 }

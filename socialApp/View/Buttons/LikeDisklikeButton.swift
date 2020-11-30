@@ -10,8 +10,6 @@ import UIKit
 
 class LikeDisklikeButton: UIButton {
     
-    var actionPeople: MPeople?
-    
     convenience init(buttonImage: UIImage,
                      tintColor: UIColor,
                      backgroundColor: UIColor) {

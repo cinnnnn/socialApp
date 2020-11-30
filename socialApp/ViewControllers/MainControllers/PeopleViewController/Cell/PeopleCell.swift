@@ -28,8 +28,8 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     }
     
     func setup() {
-        peopleView.likeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
-        peopleView.dislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
+        peopleView.animateLikeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
+        peopleView.animateDislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
         peopleView.timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
     }
     
@@ -54,15 +54,23 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
 
 extension PeopleCell {
     @objc private func likeTapped(sender: Any) {
-        guard let sender = sender as? LikeDisklikeButton else { return }
+        guard let sender = sender as? LikeDislikePeopleButton else { return }
         guard let people = sender.actionPeople else { return }
-        buttonDelegate?.likePeople(people: people)
+        
+        sender.play { [weak self] in
+            self?.buttonDelegate?.likePeople(people: people)
+        }
+       
     }
     
     @objc private func dislikeTapped(sender: Any) {
-        guard let sender = sender as? LikeDisklikeButton else { return }
+        guard let sender = sender as? LikeDislikePeopleButton else { return }
         guard let people = sender.actionPeople else { return }
-        buttonDelegate?.dislikePeople(people: people)
+        
+        sender.play { [weak self] in
+            self?.buttonDelegate?.dislikePeople(people: people)
+        }
+       
     }
     
     @objc private func timeTapped() {
