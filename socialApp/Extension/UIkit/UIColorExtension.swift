@@ -14,7 +14,7 @@ extension UIColor {
     
     static func dynamicColor(light: UIColor, dark: UIColor) -> UIColor {
         guard #available(iOS 13.0, *) else { return light }
-        return UIColor  { $0.userInterfaceStyle == .dark ? dark : light }
+        return UIColor  { $0.userInterfaceStyle == .dark ? dark : light  }
     }
     
     
@@ -24,7 +24,7 @@ extension UIColor {
     
     static func myGrayColor() -> UIColor {
         
-        dynamicColor(light: #colorLiteral(red: 0.310331881, green: 0.3371494412, blue: 0.3730729818, alpha: 1), dark: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
+        dynamicColor(light: #colorLiteral(red: 0.3098039216, green: 0.337254902, blue: 0.3725490196, alpha: 1), dark: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
     }
     
     static func myLightGrayColor() -> UIColor {
@@ -39,7 +39,7 @@ extension UIColor {
     
     static func myWhiteColor() -> UIColor {
         
-        dynamicColor(light: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), dark: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
+        dynamicColor(light: #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), dark: #colorLiteral(red: 0.1518749893, green: 0.1509793401, blue: 0.1525681615, alpha: 1))
     }
     
     static func myLabelColor() -> UIColor {
@@ -57,7 +57,7 @@ extension UIColor {
     }
     
     static func adminMessageColor() -> UIColor {
-        dynamicColor(light: #colorLiteral(red: 0.8, green: 0.6705882353, blue: 0.8470588235, alpha: 1), dark: #colorLiteral(red: 0.8, green: 0.6705882353, blue: 0.8470588235, alpha: 1))
+        dynamicColor(light: #colorLiteral(red: 0.431372549, green: 0.7764705882, blue: 0.7921568627, alpha: 1), dark: #colorLiteral(red: 0.431372549, green: 0.7764705882, blue: 0.7921568627, alpha: 1))
     }
     
     static func myFirstButtonColor() -> UIColor {

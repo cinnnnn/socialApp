@@ -19,6 +19,7 @@ class RequestsViewController: UIViewController {
     var requestChatDelegate: RequestChatListenerDelegate
     var likeDislikeDelegate: LikeDislikeListenerDelegate
     var acceptChatDelegate: AcceptChatListenerDelegate
+    var reportDelegate: ReportsListnerDelegate
     private var emptyView = EmptyView(imageName: "delivery",
                                       header: MLabels.emptyRequestChatHeader.rawValue,
                                       text: MLabels.emptyRequestChatText.rawValue,
@@ -34,13 +35,15 @@ class RequestsViewController: UIViewController {
          likeDislikeDelegate: LikeDislikeListenerDelegate,
          requestChatDelegate: RequestChatListenerDelegate,
          peopleNearbyDelegate: PeopleListenerDelegate,
-         acceptChatDelegate: AcceptChatListenerDelegate) {
+         acceptChatDelegate: AcceptChatListenerDelegate,
+         reportDelegate: ReportsListnerDelegate) {
         
         self.currentPeople = currentPeople
         self.peopleDelegate = peopleNearbyDelegate
         self.requestChatDelegate = requestChatDelegate
         self.likeDislikeDelegate = likeDislikeDelegate
         self.acceptChatDelegate = acceptChatDelegate
+        self.reportDelegate = reportDelegate
         super.init(nibName: nil, bundle: nil)
         setupListeners()
     }
@@ -63,6 +66,7 @@ class RequestsViewController: UIViewController {
         loadSectionHedear()
         reloadData()
         setupConstraint()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -77,7 +81,7 @@ class RequestsViewController: UIViewController {
     }
     
     private func setupListeners() {
-        requestChatDelegate.setupListener(likeDislikeDelegate: likeDislikeDelegate)
+        requestChatDelegate.setupListener(reportsDelegate: reportDelegate)
         NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
         NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
     }

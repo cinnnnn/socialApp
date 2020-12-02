@@ -18,6 +18,7 @@ class PopUpService {
     private weak var peopleDelegate: PeopleListenerDelegate?
     private weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     private weak var messageDelegate: MessageListenerDelegate?
+    private weak var reportsDelegate: ReportsListnerDelegate?
     
     private init() {}
 }
@@ -28,11 +29,13 @@ extension PopUpService {
                        requestChatsDelegate: RequestChatListenerDelegate?,
                        peopleDelegate: PeopleListenerDelegate?,
                        likeDislikeDelegate: LikeDislikeListenerDelegate?,
-                       messageDelegate: MessageListenerDelegate?) {
+                       messageDelegate: MessageListenerDelegate?,
+                       reportsDelegate: ReportsListnerDelegate?) {
         self.acceptChatsDelegate = acceptChatsDelegate
         self.requestChatsDelegate  = requestChatsDelegate
         self.peopleDelegate = peopleDelegate
         self.messageDelegate = messageDelegate
+        self.reportsDelegate = reportsDelegate
     }
     
     //MARK: showMatchPopUP
@@ -146,7 +149,7 @@ extension PopUpService {
                 text: okButtonText,
                 style: .init(
                     font: .avenirBold(size: 14),
-                    color: EKColor.init(.myWhiteColor()),
+                    color: EKColor.init(.white),
                     displayMode: EKAttributes.DisplayMode.inferred
                 )
             ),

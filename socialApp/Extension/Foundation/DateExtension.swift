@@ -141,7 +141,7 @@ extension Date {
         let hour = dateComponentToTimerDate.hour ?? 0
         let minute = dateComponentToTimerDate.minute ?? 0
         
-        return "\(hour):\(minute)"
+        return String(format: "%02d:%02d", hour, minute)
     }
     
     func getPeriodToDate(periodMinuteCount: Int) -> String {

@@ -192,8 +192,8 @@ extension ChatsViewController {
         if !isEmpty {
             let sectionHeader = createSectionHeader()
             section.boundarySupplementaryItems = [sectionHeader]
-            section.interGroupSpacing = 15
-            section.contentInsets = NSDirectionalEdgeInsets(top: 40,
+            section.interGroupSpacing = 40
+            section.contentInsets = NSDirectionalEdgeInsets(top: 60,
                                                             leading: 20,
                                                             bottom: 0,
                                                             trailing: 20)
@@ -227,7 +227,7 @@ extension ChatsViewController {
             let sectionHeader = createSectionHeader()
             section.boundarySupplementaryItems = [sectionHeader]
             section.orthogonalScrollingBehavior = .continuous
-            section.interGroupSpacing = 15
+            section.interGroupSpacing = 20
             section.contentInsets = NSDirectionalEdgeInsets(top: 40,
                                                             leading: 20,
                                                             bottom: 0,

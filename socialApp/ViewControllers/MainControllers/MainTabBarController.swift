@@ -20,6 +20,7 @@ class MainTabBarController: UITabBarController{
     var peopleDelegate: PeopleListenerDelegate?
     var likeDislikeDelegate: LikeDislikeListenerDelegate?
     var messageDelegate: MessageListenerDelegate?
+    var reportsDelegate: ReportsListnerDelegate?
     
     init(currentUser: MPeople, isNewLogin: Bool) {
         self.isNewLogin = isNewLogin
@@ -50,17 +51,20 @@ extension MainTabBarController {
         acceptChatsDelegate = AcceptChatDataProvider(userID: currentUser.senderId)
         peopleDelegate = PeopleDataProvider(userID: currentUser.senderId)
         messageDelegate = MessagesDataProvider(userID: currentUser.senderId)
+        reportsDelegate = ReportsDataProvider(userID: currentUser.senderId)
         
         PopUpService.shared.setupDelegate(acceptChatsDelegate: acceptChatsDelegate,
                                           requestChatsDelegate: requestChatsDelegate,
                                           peopleDelegate: peopleDelegate,
                                           likeDislikeDelegate: likeDislikeDelegate,
-                                          messageDelegate: messageDelegate)
+                                          messageDelegate: messageDelegate,
+                                          reportsDelegate: reportsDelegate)
         
         complition()
     }
     
     private func subscribeToPushNotification() {
+        //subscribe to all pushNotification from chats after relogin
         if isNewLogin {
             guard let acceptChatsDelegate = acceptChatsDelegate else { return }
             PushMessagingService.shared.logInSubscribe(currentUserID: currentUser.senderId,
@@ -87,6 +91,8 @@ extension MainTabBarController {
     private func getPeopleData() {
         setupDataDelegate { [weak self] in
             guard let currentUser = self?.currentUser else { fatalError("can't get current user") }
+            guard let reportDelegate = self?.reportsDelegate else { fatalError("reportDelegate is nil") }
+            
             UserDefaultsService.shared.saveMpeople(people: currentUser)
             if let virtualLocation = MVirtualLocation(rawValue: currentUser.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
                 LocationService.shared.getCoordinate(userID: currentUser.senderId,
@@ -106,24 +112,39 @@ extension MainTabBarController {
                                 switch result {
                                 
                                 case .success(_):
-                                    //get request users
-                                    self?.requestChatsDelegate?.getRequestChats(complition: { result in
+                                    
+                                    //get reports
+                                    self?.reportsDelegate?.getReports(complition: { result in
                                         switch result {
                                         
                                         case .success(_):
-                                            //get accept chats
-                                            self?.acceptChatsDelegate?.getAcceptChats(complition: {[weak self] result in
+                                            
+                                            //get request users
+                                            self?.requestChatsDelegate?.getRequestChats(reportsDelegate: reportDelegate,
+                                                                                        complition: { result in
                                                 switch result {
                                                 
                                                 case .success(_):
-                                                    
-                                                    PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { _ in
+                                                    //get accept chats
+                                                    self?.acceptChatsDelegate?.getAcceptChats(complition: {[weak self] result in
+                                                        switch result {
                                                         
-                                                        self?.loadIsComplite(isComplite: true)
-                                                        self?.setupControllers(currentPeople: currentUser)
-                                                        self?.subscribeToPushNotification()
-                                                        
-                                                    }
+                                                        case .success(_):
+                                                            
+                                                            PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { _ in
+                                                                
+                                                                self?.loadIsComplite(isComplite: true)
+                                                                self?.setupControllers(currentPeople: currentUser)
+                                                                self?.subscribeToPushNotification()
+                                                                
+                                                            }
+                                                            
+                                                        case .failure(let error):
+                                                            self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                                            text: error.localizedDescription,
+                                                                            buttonText: "Попробую позже")
+                                                        }
+                                                    })
                                                     
                                                 case .failure(let error):
                                                     self?.showAlert(title: "Ошибка, мы работаем над ней",
@@ -138,7 +159,6 @@ extension MainTabBarController {
                                                             buttonText: "Попробую позже")
                                         }
                                     })
-                                    
                                 case .failure(let error):
                                     self?.showAlert(title: "Ошибка, мы работаем над ней",
                                                     text: error.localizedDescription,
@@ -167,14 +187,15 @@ extension MainTabBarController {
         appearance.shadowColor = .clear
         appearance.backgroundColor = .myWhiteColor()
         tabBar.standardAppearance = appearance
-       
+        
         tabBar.unselectedItemTintColor = .myLightGrayColor()
         tabBar.tintColor = .myLabelColor()
         
         guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislike is nil")}
-        guard let requestChatsDelegate = requestChatsDelegate else { fatalError("likeDislike is nil")}
-        guard let peopleDelegate = peopleDelegate else { fatalError("likeDislike is nil")}
-        guard let acceptChatsDelegate = acceptChatsDelegate else { fatalError("likeDislike is nil")}
+        guard let requestChatsDelegate = requestChatsDelegate else { fatalError("requestChatsDelegate is nil")}
+        guard let peopleDelegate = peopleDelegate else { fatalError("peopleDelegate is nil")}
+        guard let acceptChatsDelegate = acceptChatsDelegate else { fatalError("acceptChatsDelegate is nil")}
+        guard let reportsDelegate = reportsDelegate else { fatalError("reportsDelegate is nil")}
         
         let profileVC = ProfileViewController(currentPeople: currentPeople,
                                               peopleListnerDelegate: peopleDelegate,
@@ -186,7 +207,8 @@ extension MainTabBarController {
                                             peopleDelegate: peopleDelegate,
                                             requestChatDelegate: requestChatsDelegate,
                                             likeDislikeDelegate: likeDislikeDelegate,
-                                            acceptChatDelegate: acceptChatsDelegate)
+                                            acceptChatDelegate: acceptChatsDelegate,
+                                            reportDelegate: reportsDelegate)
         
         peopleDelegate.peopleCollectionViewDelegate = peopleVC
         
@@ -194,7 +216,8 @@ extension MainTabBarController {
                                                 likeDislikeDelegate: likeDislikeDelegate,
                                                 requestChatDelegate: requestChatsDelegate,
                                                 peopleNearbyDelegate: peopleDelegate,
-                                                acceptChatDelegate: acceptChatsDelegate)
+                                                acceptChatDelegate: acceptChatsDelegate,
+                                                reportDelegate: reportsDelegate)
         
         requestChatsDelegate.requestChatCollectionViewDelegate = requsetsVC
         
@@ -233,11 +256,11 @@ extension MainTabBarController {
         appereance.shadowColor = .clear
         appereance.backgroundImage = UIImage()
         appereance.backgroundColor = .myWhiteColor()
-
+        
         navController.navigationBar.standardAppearance = appereance
         navController.navigationBar.prefersLargeTitles = false
         navController.navigationBar.tintColor = .myLabelColor()
-       
+        
         navController.navigationBar.titleTextAttributes = [.font: UIFont.avenirBold(size: 16)]
         navController.navigationBar.largeTitleTextAttributes = [.font: UIFont.avenirBold(size: 38)]
         return navController

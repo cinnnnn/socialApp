@@ -38,7 +38,7 @@ struct MPeople: Hashable, Codable, SenderType {
     var isActive: Bool
     var isFakeUser: Bool?
     var authType: MAuthType
-    var reportList: [MReports:String]
+    var reportList: [MReports]
     
     var searchSettings: [String: Int]
     var location: CLLocationCoordinate2D
@@ -68,7 +68,7 @@ struct MPeople: Hashable, Codable, SenderType {
          isAdmin: Bool,
          isActive: Bool,
          isFakeUser: Bool,
-         reportList: [MReports:String],
+         reportList: [MReports],
          authType: MAuthType,
          searchSettings: [String: Int],
          location: CLLocationCoordinate2D,
@@ -153,9 +153,13 @@ struct MPeople: Hashable, Codable, SenderType {
         if let isAdmin = documet["isAdmin"] as? Bool { self.isAdmin = isAdmin } else { self.isAdmin = false}
         if let isActive = documet["isActive"] as? Bool { self.isActive = isActive} else { self.isActive = false}
         if let isFakeUser = documet["isFakeUser"] as? Bool { self.isFakeUser = isFakeUser} else { self.isFakeUser = nil}
-        if let reportList = documet["reportList"] as? [MReports:String] { self.reportList = reportList} else {
-            self.reportList = [:]
-            
+        if let reportList = documet["reportList"] as? [[String : Any]] {
+            self.reportList = []
+            for report in reportList {
+                self.reportList.append(MReports(json: report))
+            }
+        } else {
+            self.reportList = []
         }
         if let location = documet["location"] as? [String:Double] {
             let latitude = location[MLocation.latitude.rawValue] ?? MLocation.latitude.defaultValue
@@ -263,7 +267,14 @@ struct MPeople: Hashable, Codable, SenderType {
         if let isAdmin = documet["isAdmin"] as? Bool { self.isAdmin = isAdmin } else { self.isAdmin = false}
         if let isActive = documet["isActive"] as? Bool { self.isActive = isActive} else { self.isActive = false}
         if let isFakeUser = documet["isFakeUser"] as? Bool { self.isFakeUser = isFakeUser} else { self.isFakeUser = nil}
-        if let reportList = documet["reportList"] as? [MReports:String] { self.reportList = reportList} else { self.reportList = [:]}
+        if let reportList = documet["reportList"] as? [[String : Any]] {
+            self.reportList = []
+            for report in reportList {
+                self.reportList.append(MReports(json: report))
+            }
+        } else {
+            self.reportList = []
+        }
         if let location = documet["location"] as? [String:Double] {
             let latitude = location[MLocation.latitude.rawValue] ?? MLocation.latitude.defaultValue
             let longitude = location[MLocation.longitude.rawValue] ?? MLocation.longitude.defaultValue
@@ -338,7 +349,7 @@ struct MPeople: Hashable, Codable, SenderType {
         guard let isAdmin = data["isAdmin"] as? Bool else { return nil }
         guard let isActive = data["isActive"] as? Bool else { return nil }
         guard let isFakeUser = data["isFakeUser"] as? Bool else { return nil }
-        guard let reportList = data["reportList"] as? [MReports:String] else { return nil }
+        guard let reportList = data["reportList"] as? [MReports] else { return nil }
         guard let location = data["location"] as? CLLocationCoordinate2D else { return nil }
         guard let mail = data["mail"] as? String else { return nil }
         guard let authType = data["authType"] as? MAuthType else { return nil }

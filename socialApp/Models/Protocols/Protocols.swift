@@ -94,10 +94,16 @@ protocol MessageControllerDelegate: class {
 //MARK: - listner Firestore protocols
 protocol LikeDislikeListenerDelegate: class {
     var likePeople: [MChat] { get set }
-    var dislikePeople: [MChat] { get set }
+    var dislikePeople: [MDislike] { get set }
     
     func getLike(complition: @escaping (Result<[MChat], Error>) -> Void)
-    func getDislike(complition: @escaping (Result<[MChat], Error>) -> Void)
+    func getDislike(complition: @escaping (Result<[MDislike], Error>) -> Void)
+}
+
+protocol ReportsListnerDelegate: class {
+    var reports: [MReports] { get set }
+    
+    func getReports(complition: @escaping (Result<[MReports], Error>) -> Void)
 }
 
 protocol RequestChatListenerDelegate: class {
@@ -105,13 +111,14 @@ protocol RequestChatListenerDelegate: class {
     var sortedRequestChats: [MChat] { get set}
     var requestChatCollectionViewDelegate: RequestChatCollectionViewDelegate? { get set }
     //first time get data
-    func getRequestChats(complition: @escaping (Result<[MChat], Error>) -> Void)
+    func getRequestChats(reportsDelegate: ReportsListnerDelegate, complition: @escaping (Result<[MChat], Error>) -> Void)
     //work with collectionView
     func reloadData(changeType: MTypeOfListenerChanges)
     //work with listner
-    func setupListener(likeDislikeDelegate: LikeDislikeListenerDelegate)
+    func setupListener(reportsDelegate: ReportsListnerDelegate)
     func removeListener()
-    func reloadListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate)
+    func reloadListener(currentPeople: MPeople,
+                        reportsDelegate: ReportsListnerDelegate)
 }
 
 protocol AcceptChatListenerDelegate: class {
@@ -140,10 +147,6 @@ protocol PeopleListenerDelegate: class {
                     likeDislikeDelegate: LikeDislikeListenerDelegate,
                     acceptChatsDelegate: AcceptChatListenerDelegate,
                     complition: @escaping (Result<[MPeople], Error>) -> Void)
-    //work with listner
-    func setupListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate) 
-    func removeListener()
-    func reloadListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate)
     //work with collectionView
     func updateData()
     func reloadData(reloadSection: Bool, animating: Bool)

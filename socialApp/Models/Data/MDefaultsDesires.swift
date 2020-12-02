@@ -9,6 +9,7 @@
 import Foundation
 
 enum MDefaultsDesires: String, CaseIterable {
+    case sport = "Занятие спортом"
     case fwb = "FWB"
     case friendships = "Дружба"
     case freeRelationship = "Свобдные отношения"

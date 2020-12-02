@@ -11,7 +11,7 @@ import CHIPageControl
 
 class CollectionViewInfoGallery: UIView {
     private var collectionView: UICollectionView?
-    private let collectionHeader = UILabel(labelText: "", textFont: .avenirBold(size: 34), textColor: .myWhiteColor())
+    private let collectionHeader = UILabel(labelText: "", textFont: .avenirBold(size: 34), textColor: .white)
     private let pageControl = CHIPageControlAleppo()
     private var elements: [MCollectionViewGalleryElement]
     private var timer: Timer?
@@ -67,7 +67,7 @@ extension CollectionViewInfoGallery {
         
         pageControl.numberOfPages = elements.count
         pageControl.hidesForSinglePage = false
-        pageControl.tintColor = .myWhiteColor()
+        pageControl.tintColor = .white
         pageControl.radius = 4
         
         if timer == nil {

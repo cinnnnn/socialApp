@@ -6,6 +6,8 @@
 //  Copyright © 2020 Денис Щиголев. All rights reserved.
 //
 
+
+
 import Firebase
 import FirebaseFirestore
 import FirebaseAuth
@@ -48,7 +50,6 @@ class ListenerService {
         return collection
     }
     
-    private var peopleListner: ListenerRegistration?
     private var requestChatsListner: ListenerRegistration?
     private var likeListener: ListenerRegistration?
     private var dislikeListener: ListenerRegistration?
@@ -56,77 +57,7 @@ class ListenerService {
     private var messageListner: ListenerRegistration?
     
     private init() {}
-    
-    //MARK: peopleListener
-    func addPeopleListener(currentPeople: MPeople,
-                           peopleDelegate: PeopleListenerDelegate,
-                           likeDislikeDelegate: LikeDislikeListenerDelegate,
-                           acceptChatsDelegate: AcceptChatListenerDelegate) {
-        peopleListner = userRef.addSnapshotListener { snapshot, error in
-            guard let snapshot = snapshot else { return }
-            
-            snapshot.documentChanges.forEach { changes in
-                guard var user = MPeople(documentSnap: changes.document) else { fatalError(UserError.getUserData.localizedDescription) }
-                let people = peopleDelegate.peopleNearby
-                
-                if let currentPeople = UserDefaultsService.shared.getMpeople() {
-                    user.distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: user)
-                } else {
-                    user.distance = Int.random(in: 0...30)
-                }
-                
-                switch changes.type {
-                
-                case .added:
-                    
-                    if Validators.shared.listnerAddPeopleValidator(currentPeople: currentPeople,
-                                                                   newPeople: user,
-                                                                   peopleDelegate: peopleDelegate,
-                                                                   likeDislikeDelegate: likeDislikeDelegate,
-                                                                   acceptChatsDelegate: acceptChatsDelegate,
-                                                                   isUpdate: false) {
-                       
-                        peopleDelegate.peopleNearby.append(user)
-                        peopleDelegate.reloadData(reloadSection: false, animating: true)
-                    }
-                case .modified:
-                    //index in peopleNearby array
-                    if let index = people.firstIndex(of: user) {
-                        if Validators.shared.listnerAddPeopleValidator(currentPeople: currentPeople,
-                                                                       newPeople: user,
-                                                                       peopleDelegate: peopleDelegate,
-                                                                       likeDislikeDelegate: likeDislikeDelegate,
-                                                                       acceptChatsDelegate: acceptChatsDelegate,
-                                                                       isUpdate: true) {
-                            peopleDelegate.peopleNearby[index] = user
-                            peopleDelegate.updateData()
-                        } else { //if user change to deactive or block profile, delete him from collection
-                            peopleDelegate.peopleNearby.remove(at: index)
-                            peopleDelegate.reloadData(reloadSection: false, animating: true)
-                        }
-                        //if user change to active profile, or unblock, add him to collection
-                    } else if Validators.shared.listnerAddPeopleValidator(currentPeople: currentPeople,
-                                                                          newPeople: user,
-                                                                          peopleDelegate: peopleDelegate,
-                                                                          likeDislikeDelegate: likeDislikeDelegate,
-                                                                          acceptChatsDelegate: acceptChatsDelegate,
-                                                                          isUpdate: false) {
-                        peopleDelegate.peopleNearby.append(user)
-                        peopleDelegate.reloadData(reloadSection: false, animating: true)
-                    }
-                    
-                case .removed:
-                    guard let index = people.firstIndex(of: user) else { return }
-                    peopleDelegate.peopleNearby.remove(at: index)
-                    peopleDelegate.reloadData(reloadSection: false, animating: true)
-                }
-            }
-        }
-    }
-    
-    func removePeopleListener() {
-        peopleListner?.remove()
-    }
+
     
     //MARK: addLikeDislikeListener
     func addLikeDislikeListener(likeDislikeDelegate: LikeDislikeListenerDelegate) {
@@ -161,22 +92,22 @@ class ListenerService {
             guard let snapshot = snapshot else { fatalError(FirestoreError.snapshotNotExist.localizedDescription) }
             
             snapshot.documentChanges.forEach {  changes in
-                guard let chat = MChat(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
+                guard let dislike = MDislike(documentSnap: changes.document) else { fatalError(ChatError.getUserData.localizedDescription)}
                 
                 let dislikePeopleChats = likeDislikeDelegate.dislikePeople
                 
                 switch changes.type {
                 
                 case .added:
-                    likeDislikeDelegate.dislikePeople.append(chat)
+                    likeDislikeDelegate.dislikePeople.append(dislike)
                 case .modified:
-                    if let index = dislikePeopleChats.firstIndex(of: chat) {
-                        likeDislikeDelegate.dislikePeople[index] = chat
+                    if let index = dislikePeopleChats.firstIndex(of: dislike) {
+                        likeDislikeDelegate.dislikePeople[index] = dislike
                     } else {
-                        likeDislikeDelegate.dislikePeople.append(chat)
+                        likeDislikeDelegate.dislikePeople.append(dislike)
                     }
                 case .removed:
-                    if let index = dislikePeopleChats.firstIndex(of: chat) {
+                    if let index = dislikePeopleChats.firstIndex(of: dislike) {
                         likeDislikeDelegate.dislikePeople.remove(at: index)
                     }
                 }
@@ -193,7 +124,7 @@ class ListenerService {
     //MARK: requestChatsListener
     func addRequestChatsListener(userID: String,
                                  requestChatDelegate: RequestChatListenerDelegate,
-                                 likeDislikeDelegate: LikeDislikeListenerDelegate) {
+                                 reportsDelegate: ReportsListnerDelegate) {
         
         self.requestChatsListner = requestChatsRef.addSnapshotListener({ snapshot, error in
             guard let snapshot = snapshot else { return }
@@ -217,7 +148,7 @@ class ListenerService {
                             if Validators.shared.listnerAddRequestValidator(userID: userID,
                                                                             newRequestChat: chat,
                                                                             requestDelegate: requestChatDelegate,
-                                                                            likeDislikeDelegate: likeDislikeDelegate) {
+                                                                            reportsDelegate: reportsDelegate) {
                                 requestChatDelegate.requestChats.append(chat)
                                 requestChatDelegate.reloadData(changeType: .add)
                             }
@@ -229,7 +160,7 @@ class ListenerService {
                                 if Validators.shared.listnerAddRequestValidator(userID: userID,
                                                                                 newRequestChat: chat,
                                                                                 requestDelegate: requestChatDelegate,
-                                                                                likeDislikeDelegate: likeDislikeDelegate) {
+                                                                                reportsDelegate: reportsDelegate) {
                                     requestChatDelegate.requestChats.append(chat)
                                 }
                             }
@@ -345,4 +276,3 @@ class ListenerService {
         messageListner?.remove()
     }
 }
-

@@ -73,62 +73,19 @@ class Validators {
         return password1 == password2
     }
     
-    //ListnerAddValidator
-    func listnerAddPeopleValidator(currentPeople: MPeople,
-                                   newPeople: MPeople,
-                                   peopleDelegate: PeopleListenerDelegate,
-                                   likeDislikeDelegate: LikeDislikeListenerDelegate,
-                                   acceptChatsDelegate: AcceptChatListenerDelegate,
-                                   isUpdate: Bool) -> Bool {
-        if !isUpdate {
-            //if not present in people array
-            guard !peopleDelegate.peopleNearby.contains(newPeople) else { return false }
-        }
-        //if not current user
-        guard newPeople.senderId != currentPeople.senderId else { return false }
-        //if not inActive user
-        guard newPeople.isActive == true else { return false}
-        //if not blocked user
-        guard newPeople.isBlocked == false else { return false}
-        //if not already like
-        guard !likeDislikeDelegate.likePeople.contains(where: { chat -> Bool in
-            chat.friendId == newPeople.senderId
-        }) else { return false }
-        //if not already dislike
-        guard !likeDislikeDelegate.dislikePeople.contains(where: { chat -> Bool in
-            chat.friendId == newPeople.senderId
-        }) else { return false }
-        //if not in new chat
-        guard !acceptChatsDelegate.acceptChats.contains(where: { chat -> Bool in
-            chat.friendId == newPeople.senderId
-        }) else { return false }
-        //check distance to people
-        let distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: newPeople)
-        let range = currentPeople.searchSettings[MSearchSettings.distance.rawValue] ?? MSearchSettings.distance.defaultValue
-        guard distance <= range else { return false }
-        //if newPeople is looking for
-        guard newPeople.gender == MLookingFor.compareGender(gender: currentPeople.lookingFor) else { return false }
-        //if age range correct
-        let age = newPeople.dateOfBirth.getAge()
-        let minRange = currentPeople.searchSettings[MSearchSettings.minRange.rawValue] ?? MSearchSettings.minRange.defaultValue
-        let maxRange = currentPeople.searchSettings[MSearchSettings.maxRange.rawValue] ?? MSearchSettings.maxRange.defaultValue
-        guard age >= minRange && age <= maxRange else { return false }
-        return true
-    }
-    
     //MARK: listnerAddRequestValidator
     func listnerAddRequestValidator(userID: String,
                                     newRequestChat: MChat,
                                     requestDelegate: RequestChatListenerDelegate,
-                                    likeDislikeDelegate: LikeDislikeListenerDelegate) -> Bool {
+                                    reportsDelegate: ReportsListnerDelegate) -> Bool {
         
        //if already have in request, don't add him to collection
         guard !requestDelegate.requestChats.contains(where: { requestChat -> Bool in
             requestChat.friendId == newRequestChat.friendId
         }) else { return false }
-        //if this user have dislike, don't add him to collection
-        guard !likeDislikeDelegate.dislikePeople.contains(where: { dislikeChat -> Bool in
-            dislikeChat.friendId == newRequestChat.friendId
+        //if this user have report, don't add him to collection
+        guard !reportsDelegate.reports.contains(where: { report -> Bool in
+            report.reportUserID == newRequestChat.friendId
         }) else { return false }
         return true
     }

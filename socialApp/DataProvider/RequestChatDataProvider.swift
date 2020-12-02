@@ -29,11 +29,11 @@ class RequestChatDataProvider: RequestChatListenerDelegate {
 
 extension RequestChatDataProvider {
     //MARK: setup listner
-    func setupListener(likeDislikeDelegate: LikeDislikeListenerDelegate) {
+    func setupListener(reportsDelegate: ReportsListnerDelegate) {
         
         ListenerService.shared.addRequestChatsListener(userID: userID,
                                                        requestChatDelegate: self,
-                                                       likeDislikeDelegate: likeDislikeDelegate)
+                                                       reportsDelegate: reportsDelegate)
     }
     
     //MARK: remove listner
@@ -42,12 +42,13 @@ extension RequestChatDataProvider {
     }
     
     //MARK: reload listner
-    func reloadListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate) {
+    func reloadListener(currentPeople: MPeople,
+                        reportsDelegate: ReportsListnerDelegate) {
         requestChats = []
         requestChatCollectionViewDelegate?.reloadData()
         //reload request listner
         removeListener()
-        setupListener(likeDislikeDelegate: likeDislikeDelegate)
+        setupListener(reportsDelegate: reportsDelegate)
     }
     
     //MARK: reloadData
@@ -61,15 +62,21 @@ extension RequestChatDataProvider {
 
 extension RequestChatDataProvider {
     //MARK:  get requestChats
-    func getRequestChats(complition: @escaping (Result<[MChat], Error>) -> Void) {
-    
+    func getRequestChats(reportsDelegate: ReportsListnerDelegate, complition: @escaping (Result<[MChat], Error>) -> Void) {
+        
         FirestoreService.shared.getUserCollection(userID: userID,
                                                   collection: MFirestorCollection.requestsChats) {[weak self] result in
             switch result {
             
-            case .success(let requestChats):
-                self?.requestChats = requestChats
-                complition(.success(requestChats))
+            case .success(let requests):
+                let filtredRequests = requests.filter { requestChat -> Bool in
+                    //if request chat don't contains in report list
+                    !reportsDelegate.reports.contains { report -> Bool in
+                        report.reportUserID == requestChat.friendId
+                    }
+                }
+                self?.requestChats = filtredRequests
+                complition(.success(filtredRequests))
                 
             case .failure(let error):
                 complition(.failure(error))

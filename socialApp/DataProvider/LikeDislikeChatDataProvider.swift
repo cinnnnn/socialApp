@@ -11,7 +11,7 @@ import Foundation
 class LikeDislikeChatDataProvider: LikeDislikeListenerDelegate {
     
     var likePeople: [MChat] = []
-    var dislikePeople: [MChat] = []
+    var dislikePeople: [MDislike] = []
     var userID: String
     
     init(userID: String){
@@ -36,9 +36,8 @@ extension LikeDislikeChatDataProvider {
     }
     
     //MARK:  get  dislike
-     func getDislike(complition: @escaping (Result<[MChat], Error>) -> Void) {
-        FirestoreService.shared.getUserCollection(userID: userID,
-                                                  collection: MFirestorCollection.dislikePeople) {[weak self] result in
+     func getDislike(complition: @escaping (Result<[MDislike], Error>) -> Void) {
+        FirestoreService.shared.getDislikes(userID: userID) {[weak self] result in
             switch result {
             
             case .success(let dislikeChats):

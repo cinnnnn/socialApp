@@ -13,7 +13,6 @@ enum MDefaultInterests: String, CaseIterable {
     case wine = "Вино"
     case whiskey = "Виски"
     case soul = "Соул"
-    case sex = "Секс"
     case it = "IT"
     case graphicDesign = "Графический дизайн"
     case architecture = "Архитектура"

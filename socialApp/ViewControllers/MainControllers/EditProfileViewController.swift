@@ -37,7 +37,7 @@ class EditProfileViewController: UIViewController {
                                            headerText: "Твои желания",
                                            headerFont: .avenirRegular(size: 16),
                                            headerColor: .myGrayColor())
-    let advertTextView = UITextView(text: "Для просмотра обьявлений других пользователей, расскажи о себе...",
+    let advertTextView = UITextView(text: "",
                                     isEditable: true)
     
     let editPhotosButton = RoundButton(newBackgroundColor: .myFirstButtonColor(),

@@ -11,11 +11,11 @@ import StoreKit
 
 class PurchaseButton: UIButton {
     
-    let headerLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .myWhiteColor())
-    let priceLabel = UILabel(labelText: "", textFont: .avenirBold(size: 18), textColor: .myWhiteColor())
-    let monthCountLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 11), textColor: .myWhiteColor())
-    let pricePerMonthLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 11), textColor: .myWhiteColor())
-    let savingInfoLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 11), textColor: .myWhiteColor())
+    let headerLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .white)
+    let priceLabel = UILabel(labelText: "", textFont: .avenirBold(size: 18), textColor: .white)
+    let monthCountLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 11), textColor: .white)
+    let pricePerMonthLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 11), textColor: .white)
+    let savingInfoLabel = UILabel(labelText: "", textFont: .avenirRegular(size: 11), textColor: .white)
     var monthCount: Int?
     var product: SKProduct?
     var basePricePerMonth: NSDecimalNumber?

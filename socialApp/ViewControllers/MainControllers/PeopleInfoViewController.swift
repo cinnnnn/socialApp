@@ -163,7 +163,7 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
         guard let peopleDelegate = peopleDelegate else {  fatalError("Can't get peopleDelegate")  }
         //save dislike from firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
-                                              dislikeForPeople: people,
+                                              dislikeForPeopleID: people.senderId,
                                               requestChats: requestChatsDelegate.requestChats,
                                               viewControllerDelegate: self) {[weak self] result in
             switch result {

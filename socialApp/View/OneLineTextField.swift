@@ -59,7 +59,9 @@ class OneLineTextField: UITextField {
             self.datePicker = UIDatePicker()
             guard let picker = self.datePicker else { return }
             picker.datePickerMode = .date
-            picker.preferredDatePickerStyle = .wheels
+            if #available(iOS 13.4, *) {
+                picker.preferredDatePickerStyle = .wheels
+            }
             if let date = text?.getFormattedDate(format: "MM/dd/yyyy", withTime: false) {
                 picker.date = date
             } else {

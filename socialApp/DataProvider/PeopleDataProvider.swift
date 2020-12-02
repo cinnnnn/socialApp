@@ -83,27 +83,3 @@ extension PeopleDataProvider {
     }
 }
 
-//MARK: - work with listner
-extension PeopleDataProvider {
-    
-    func setupListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate) {
-        
-        ListenerService.shared.addPeopleListener(currentPeople: currentPeople,
-                                                 peopleDelegate: self,
-                                                 likeDislikeDelegate: likeDislikeDelegate,
-                                                 acceptChatsDelegate: acceptChatsDelegate)
-    }
-    
-    func removeListener() {
-        ListenerService.shared.removePeopleListener()
-    }
-    
-    func reloadListener(currentPeople: MPeople, likeDislikeDelegate: LikeDislikeListenerDelegate, acceptChatsDelegate: AcceptChatListenerDelegate) {
-        peopleNearby = []
-      //  guard let updatePeople = UserDefaultsService.shared.getMpeople() else { return }
-        removeListener()
-        reloadData(reloadSection: false, animating: false)
-        setupListener(currentPeople: currentPeople, likeDislikeDelegate: likeDislikeDelegate, acceptChatsDelegate: acceptChatsDelegate)
-    }
-    
-}

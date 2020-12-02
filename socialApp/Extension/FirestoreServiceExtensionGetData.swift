@@ -13,7 +13,7 @@ extension FirestoreService {
     func getPeople(currentPeople: MPeople,
                    peoples: [MPeople],
                    likeChat: [MChat],
-                   dislikeChat: [MChat],
+                   dislikeChat: [MDislike],
                    acceptChat: [MChat],
                    complition: @escaping(Result<[MPeople], Error>)-> Void) {
         
@@ -21,8 +21,8 @@ extension FirestoreService {
         let likeChatID = likeChat.map { chat -> String in
             chat.friendId
         }
-        let dislikeChatID = dislikeChat.map { chat -> String in
-            chat.friendId
+        let dislikeChatID = dislikeChat.map { dislikeChat -> String in
+            dislikeChat.dislikePeopleID
         }
         let acceptChatID = acceptChat.map { chat -> String in
             chat.friendId
@@ -125,6 +125,48 @@ extension FirestoreService {
                 }
             })
             complition(.success(chats))
+        }
+    }
+    
+    //MARK: getDislikes
+    func getDislikes(userID: String, complition: @escaping(Result<[MDislike],Error>)->Void) {
+        let reference = usersReference.document(userID).collection(MFirestorCollection.dislikePeople.rawValue)
+        var dislikes: [MDislike] = []
+        reference.getDocuments { snapshot, error in
+            if let error = error {
+                complition(.failure(error))
+            }
+            guard let snapshot = snapshot else {
+                complition(.failure(FirestoreError.snapshotNotExist))
+                return
+            }
+            snapshot.documents.forEach({ queryDocumentSnapshot in
+                if let dislike = MDislike(documentSnap: queryDocumentSnapshot) {
+                    dislikes.append(dislike)
+                }
+            })
+            complition(.success(dislikes))
+        }
+    }
+    
+    //MARK: getReports
+    func getReports(userID: String, complition: @escaping(Result<[MReports],Error>)->Void) {
+        let reference = usersReference.document(userID).collection(MFirestorCollection.reportUser.rawValue)
+        var reports: [MReports] = []
+        reference.getDocuments { snapshot, error in
+            if let error = error {
+                complition(.failure(error))
+            }
+            guard let snapshot = snapshot else {
+                complition(.failure(FirestoreError.snapshotNotExist))
+                return
+            }
+            snapshot.documents.forEach({ queryDocumentSnapshot in
+                if let report = MReports(documentSnap: queryDocumentSnapshot) {
+                    reports.append(report)
+                }
+            })
+            complition(.success(reports))
         }
     }
 }

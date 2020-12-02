@@ -14,7 +14,7 @@ class NewChatsCell: UICollectionViewCell,SelfConfiguringCell {
     
     let frendImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
     let timerLabel = UILabel(labelText: "",
-                             textFont: .avenirRegular(size: 14),
+                             textFont: .avenirRegular(size: 12),
                              textColor: .myGrayColor(),
                              aligment: .center)
     var timer: Timer?

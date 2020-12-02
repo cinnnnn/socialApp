@@ -31,6 +31,7 @@ class SetupChatMenu: UniversalTableView {
     
     private func setup() {
         navigationItem.title = chat.friendUserName
+        navigationItem.backButtonTitle = ""
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -110,7 +111,10 @@ extension SetupChatMenu {
             unMatchAlert(pressedIndexPath: indexPath)
             
         case .reportUser:
-            PopUpService.shared.showInfo(text: "Жалобы будут доступны в следующем обновлении")
+            let reportVC = ReportViewController(currentUserID: currentUser.senderId,
+                                                reportUserID: chat.friendId,
+                                                isFriend: true)
+            navigationController?.pushViewController(reportVC, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
             
         }
@@ -122,7 +126,7 @@ extension SetupChatMenu {
     
     //MARK: changeDethTimerSwitch
     @objc func changeDethTimerSwitch(sender: Any?) {
-        print("change")
+       
         guard let sender = sender as? UISwitch else { fatalError("Unknown sender") }
         FirestoreService.shared.deactivateChatTimer(currentUser: currentUser,
                                                     chat: chat) {[weak self] result in
@@ -149,7 +153,8 @@ extension SetupChatMenu {
         alert.setMyLightStyle()
         present(alert, animated: true, completion: nil)
     }
-    //MARK:  terminateAccauntAlert
+    
+    //MARK:  unMatchAlert
     private func unMatchAlert(pressedIndexPath: IndexPath) {
         let strongCurrentUser = currentUser
         let strongChat = chat
@@ -159,7 +164,7 @@ extension SetupChatMenu {
         
         let okAction = UIAlertAction(title: "Удалить",
                                      style: .destructive) {[weak self] _ in
-            FirestoreService.shared.unMatch(currentUser: strongCurrentUser, chat: strongChat) {[weak self] result in
+            FirestoreService.shared.unMatch(currentUserID: strongCurrentUser.senderId, chat: strongChat) {[weak self] result in
                 switch result {
                 
                 case .success(_):

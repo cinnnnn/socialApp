@@ -69,6 +69,12 @@
 		FB78FE942573DE40004DA53E /* likeHeart.json in Resources */ = {isa = PBXBuildFile; fileRef = FB78FE922573DE40004DA53E /* likeHeart.json */; };
 		FB78FE9F2573EF91004DA53E /* AnimateDislikeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FE9E2573EF90004DA53E /* AnimateDislikeButton.swift */; };
 		FB78FEAB2573F90A004DA53E /* crossReady.json in Resources */ = {isa = PBXBuildFile; fileRef = FB78FEAA2573F90A004DA53E /* crossReady.json */; };
+		FB78FED82577AD73004DA53E /* MReports.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FED72577AD73004DA53E /* MReports.swift */; };
+		FB78FEDC2577B3ED004DA53E /* MDislike.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEDB2577B3ED004DA53E /* MDislike.swift */; };
+		FB78FEE02577CA9D004DA53E /* ReportsDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEDF2577CA9D004DA53E /* ReportsDataProvider.swift */; };
+		FB78FEE425782344004DA53E /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEE325782343004DA53E /* ReportViewController.swift */; };
+		FB78FEE825782440004DA53E /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEE725782440004DA53E /* ReportView.swift */; };
+		FB78FEEC257840A3004DA53E /* ReportViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEEB257840A3004DA53E /* ReportViewDelegate.swift */; };
 		FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */; };
 		FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4825234EDA00A7AA56 /* DateExtension.swift */; };
 		FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4B2523577100A7AA56 /* MMediaItem.swift */; };
@@ -99,7 +105,7 @@
 		FB8C3D7D253606EE00184FB5 /* LocaleExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D7C253606ED00184FB5 /* LocaleExtension.swift */; };
 		FB8C3D832536089A00184FB5 /* UIDatePickerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D822536089A00184FB5 /* UIDatePickerExtension.swift */; };
 		FB8C3D8B25371AE900184FB5 /* MLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D8A25371AE900184FB5 /* MLabels.swift */; };
-		FB8C3D8E25372BEB00184FB5 /* MReports.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D8D25372BEB00184FB5 /* MReports.swift */; };
+		FB8C3D8E25372BEB00184FB5 /* MTypeReports.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D8D25372BEB00184FB5 /* MTypeReports.swift */; };
 		FB8C3D94253A51BF00184FB5 /* RequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D93253A51BE00184FB5 /* RequestsViewController.swift */; };
 		FB8C3D98253A525500184FB5 /* SectionsRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D97253A525500184FB5 /* SectionsRequests.swift */; };
 		FB8C3D9C253A589B00184FB5 /* RequestChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB8C3D9B253A589B00184FB5 /* RequestChatCell.swift */; };
@@ -127,7 +133,7 @@
 		FBB26EDB254B03760081CF2C /* RequestChatDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EDA254B03760081CF2C /* RequestChatDataProvider.swift */; };
 		FBB26EDE254B0E960081CF2C /* PeopleDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EDD254B0E960081CF2C /* PeopleDataProvider.swift */; };
 		FBB26EE1254B38B60081CF2C /* UserDefaultsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EE0254B38B60081CF2C /* UserDefaultsError.swift */; };
-		FBB26EE8254C12AC0081CF2C /* CountOfUnreadMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageView.swift */; };
+		FBB26EE8254C12AC0081CF2C /* CountOfUnreadMessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageLabel.swift */; };
 		FBB26EEB254C2D440081CF2C /* MessagesDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB26EEA254C2D430081CF2C /* MessagesDataProvider.swift */; };
 		FBB33FA4256A7BA600A597BF /* PremiumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FA3256A7BA600A597BF /* PremiumCell.swift */; };
 		FBB33FA8256A844600A597BF /* CollectionViewInfoGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB33FA7256A844600A597BF /* CollectionViewInfoGallery.swift */; };
@@ -286,6 +292,12 @@
 		FB78FE922573DE40004DA53E /* likeHeart.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = likeHeart.json; sourceTree = "<group>"; };
 		FB78FE9E2573EF90004DA53E /* AnimateDislikeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimateDislikeButton.swift; sourceTree = "<group>"; };
 		FB78FEAA2573F90A004DA53E /* crossReady.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = crossReady.json; sourceTree = "<group>"; };
+		FB78FED72577AD73004DA53E /* MReports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MReports.swift; sourceTree = "<group>"; };
+		FB78FEDB2577B3ED004DA53E /* MDislike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MDislike.swift; sourceTree = "<group>"; };
+		FB78FEDF2577CA9D004DA53E /* ReportsDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsDataProvider.swift; sourceTree = "<group>"; };
+		FB78FEE325782343004DA53E /* ReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
+		FB78FEE725782440004DA53E /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
+		FB78FEEB257840A3004DA53E /* ReportViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewDelegate.swift; sourceTree = "<group>"; };
 		FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTypeOfListenerChanges.swift; sourceTree = "<group>"; };
 		FB79DA4825234EDA00A7AA56 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		FB79DA4B2523577100A7AA56 /* MMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMediaItem.swift; sourceTree = "<group>"; };
@@ -317,7 +329,7 @@
 		FB8C3D822536089A00184FB5 /* UIDatePickerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDatePickerExtension.swift; sourceTree = "<group>"; };
 		FB8C3D8525360ED700184FB5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		FB8C3D8A25371AE900184FB5 /* MLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLabels.swift; sourceTree = "<group>"; };
-		FB8C3D8D25372BEB00184FB5 /* MReports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MReports.swift; sourceTree = "<group>"; };
+		FB8C3D8D25372BEB00184FB5 /* MTypeReports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTypeReports.swift; sourceTree = "<group>"; };
 		FB8C3D93253A51BE00184FB5 /* RequestsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestsViewController.swift; sourceTree = "<group>"; };
 		FB8C3D97253A525500184FB5 /* SectionsRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionsRequests.swift; sourceTree = "<group>"; };
 		FB8C3D9B253A589B00184FB5 /* RequestChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestChatCell.swift; sourceTree = "<group>"; };
@@ -346,7 +358,7 @@
 		FBB26EDA254B03760081CF2C /* RequestChatDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestChatDataProvider.swift; sourceTree = "<group>"; };
 		FBB26EDD254B0E960081CF2C /* PeopleDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleDataProvider.swift; sourceTree = "<group>"; };
 		FBB26EE0254B38B60081CF2C /* UserDefaultsError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsError.swift; sourceTree = "<group>"; };
-		FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountOfUnreadMessageView.swift; sourceTree = "<group>"; };
+		FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountOfUnreadMessageLabel.swift; sourceTree = "<group>"; };
 		FBB26EEA254C2D430081CF2C /* MessagesDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesDataProvider.swift; sourceTree = "<group>"; };
 		FBB33FA3256A7BA600A597BF /* PremiumCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumCell.swift; sourceTree = "<group>"; };
 		FBB33FA7256A844600A597BF /* CollectionViewInfoGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewInfoGallery.swift; sourceTree = "<group>"; };
@@ -488,6 +500,7 @@
 				FB61A78B251E1342005DCC78 /* ChatViewController.swift */,
 				FBA2AA472553086D00A471F6 /* SetupChatMenu.swift */,
 				FBB26EBB2546F3250081CF2C /* PeopleInfoViewController.swift */,
+				FB78FEEF25784178004DA53E /* ReportViewController */,
 			);
 			path = MainControllers;
 			sourceTree = "<group>";
@@ -516,6 +529,7 @@
 				FBA2AA2D2552D7D000A471F6 /* MCellType.swift */,
 				FBB34008256D645900A597BF /* MTag.swift */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
+				FB78FEDB2577B3ED004DA53E /* MDislike.swift */,
 				FBFFB86D25629E85007343ED /* MRecieptAppStrore.swift */,
 				FB15FCF22513A71F00B765D3 /* MMessage.swift */,
 				FBB33FAB256A84EB00A597BF /* MCollectionViewGalleryElement.swift */,
@@ -577,7 +591,8 @@
 				FBB3B264250ACA0700440632 /* MGender.swift */,
 				FB8C3D3B2533961800184FB5 /* MSexuality.swift */,
 				FB8C3D382533958900184FB5 /* MLookingFor.swift */,
-				FB8C3D8D25372BEB00184FB5 /* MReports.swift */,
+				FB8C3D8D25372BEB00184FB5 /* MTypeReports.swift */,
+				FB78FED72577AD73004DA53E /* MReports.swift */,
 				FB3351CA25682E2F007AFDDF /* MGalleryPhotoProperty.swift */,
 				FB3351D42568521D007AFDDF /* MGallery.swift */,
 			);
@@ -646,6 +661,23 @@
 				FB78FE922573DE40004DA53E /* likeHeart.json */,
 			);
 			path = Buttons;
+			sourceTree = "<group>";
+		};
+		FB78FEEF25784178004DA53E /* ReportViewController */ = {
+			isa = PBXGroup;
+			children = (
+				FB78FEE325782343004DA53E /* ReportViewController.swift */,
+				FB78FEF025784186004DA53E /* View */,
+			);
+			path = ReportViewController;
+			sourceTree = "<group>";
+		};
+		FB78FEF025784186004DA53E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FB78FEE725782440004DA53E /* ReportView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		FB79DA81252DECEB00A7AA56 /* ProfileViewController */ = {
@@ -827,6 +859,7 @@
 				FBB26ED2254AFD110081CF2C /* AcceptChatDataProvider.swift */,
 				FBB26EDD254B0E960081CF2C /* PeopleDataProvider.swift */,
 				FBB26ED7254B014A0081CF2C /* LikeDislikeChatDataProvider.swift */,
+				FB78FEDF2577CA9D004DA53E /* ReportsDataProvider.swift */,
 				FBB26EDA254B03760081CF2C /* RequestChatDataProvider.swift */,
 				FBB26EEA254C2D430081CF2C /* MessagesDataProvider.swift */,
 			);
@@ -891,7 +924,7 @@
 		FBB33FE1256C153800A597BF /* View */ = {
 			isa = PBXGroup;
 			children = (
-				FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageView.swift */,
+				FBB26EE7254C12AC0081CF2C /* CountOfUnreadMessageLabel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -928,6 +961,7 @@
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */,
 				FB78FE872573CE57004DA53E /* LikeDislikePeopleButton.swift */,
+				FB78FEEB257840A3004DA53E /* ReportViewDelegate.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -1229,7 +1263,8 @@
 				FBE5A1062559C15300060D97 /* PushNotificationService.swift in Sources */,
 				FB79DA9D2530E9C500A7AA56 /* EditPhotoCell.swift in Sources */,
 				FBB26ECA254845D90081CF2C /* SectionAppSettings.swift in Sources */,
-				FB8C3D8E25372BEB00184FB5 /* MReports.swift in Sources */,
+				FB8C3D8E25372BEB00184FB5 /* MTypeReports.swift in Sources */,
+				FB78FED82577AD73004DA53E /* MReports.swift in Sources */,
 				FB39F2D824F66EFE001B9C4F /* MPeople.swift in Sources */,
 				FB79DA6B252C834D00A7AA56 /* LocationService.swift in Sources */,
 				FBF293DF250668CB00F7B5F1 /* UserError.swift in Sources */,
@@ -1258,6 +1293,7 @@
 				FB79DA84252DED1700A7AA56 /* ProfileCell.swift in Sources */,
 				FBB33FF1256D202000A597BF /* SectionTagsCollectionView.swift in Sources */,
 				FB3351CF25683A38007AFDDF /* GalleryImageView.swift in Sources */,
+				FB78FEEC257840A3004DA53E /* ReportViewDelegate.swift in Sources */,
 				FBB33FD2256C0A1A00A597BF /* AboutViewController.swift in Sources */,
 				FBED946A2565909A00DED60A /* NotificationCenterExtension.swift in Sources */,
 				FBB26EAE254585DB0081CF2C /* ChatTitleStackView.swift in Sources */,
@@ -1282,8 +1318,10 @@
 				FB454E4B255BEEED007D1E71 /* PushMessagingService.swift in Sources */,
 				FB18217B24B2261F00FFFC87 /* MainTabBarController.swift in Sources */,
 				FB454E96255C1EAA007D1E71 /* MPushMessage.swift in Sources */,
+				FB78FEE02577CA9D004DA53E /* ReportsDataProvider.swift in Sources */,
 				FB61A78C251E1342005DCC78 /* ChatViewController.swift in Sources */,
 				FBA2AA322552D9BB00A471F6 /* SectionsChatSettings.swift in Sources */,
+				FB78FEDC2577B3ED004DA53E /* MDislike.swift in Sources */,
 				FB3C5BD3253B399100CD44E6 /* MFirestorCollection.swift in Sources */,
 				FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */,
 				FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */,
@@ -1300,7 +1338,7 @@
 				FB09108024FA93E2006B72D5 /* UITextViewExtension.swift in Sources */,
 				FB79DA7F252DE71900A7AA56 /* SectionsProfile.swift in Sources */,
 				FBA2AA2E2552D7D000A471F6 /* MCellType.swift in Sources */,
-				FBB26EE8254C12AC0081CF2C /* CountOfUnreadMessageView.swift in Sources */,
+				FBB26EE8254C12AC0081CF2C /* CountOfUnreadMessageLabel.swift in Sources */,
 				FB21A1BB24E59705000A2E91 /* MChat.swift in Sources */,
 				FBFFB866255F15AC007343ED /* PurchasesService.swift in Sources */,
 				FB3351B92566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift in Sources */,
@@ -1365,6 +1403,7 @@
 				FB61B54724FE7F23002761ED /* AuthService.swift in Sources */,
 				FBB26EDE254B0E960081CF2C /* PeopleDataProvider.swift in Sources */,
 				FB79DA78252CF9CA00A7AA56 /* CLLocationCoordinate2DExtension.swift in Sources */,
+				FB78FEE425782344004DA53E /* ReportViewController.swift in Sources */,
 				FB21A1BF24E5ADE5000A2E91 /* NewChatsCell.swift in Sources */,
 				FBF6289724F678EA00DCD4AC /* SectionsPeople.swift in Sources */,
 				FB21A1B624E55F6C000A2E91 /* ActiveChatsCell.swift in Sources */,
@@ -1375,6 +1414,7 @@
 				FB61A7FB251E6312005DCC78 /* UserDefaultsService.swift in Sources */,
 				FB8C3D9C253A589B00184FB5 /* RequestChatCell.swift in Sources */,
 				FBEF607A24A602070005F947 /* SceneDelegate.swift in Sources */,
+				FB78FEE825782440004DA53E /* ReportView.swift in Sources */,
 				FBB26EE1254B38B60081CF2C /* UserDefaultsError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1575,6 +1615,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W69L42NMK2;
 				INFOPLIST_FILE = socialApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1597,6 +1638,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = W69L42NMK2;
 				INFOPLIST_FILE = socialApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

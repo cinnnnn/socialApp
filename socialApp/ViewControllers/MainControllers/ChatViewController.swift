@@ -92,6 +92,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         showMessageTimestampOnSwipeLeft = true
         acceptChatDelegate?.selectedChat = chat
         
+        messagesCollectionView.backgroundColor = .myWhiteColor()
         //delete avatar from message
         if let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout {
             layout.textMessageSizeCalculator.outgoingAvatarSize = .zero
@@ -433,7 +434,13 @@ extension ChatViewController: MessagesDisplayDelegate {
     }
     
     func textColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
-        isFromCurrentSender(message: message) ? .myWhiteColor() : .myLabelColor()
+        if isFromCurrentSender(message: message) {
+            return .myWhiteColor()
+        } else if message.sender.senderId == MAdmin.id.rawValue {
+            return .white
+        } else {
+            return .myLabelColor()
+        }
     }
     
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {

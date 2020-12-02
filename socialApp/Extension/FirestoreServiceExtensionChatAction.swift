@@ -159,37 +159,27 @@ extension FirestoreService {
     
     
     //MARK: dislikePeople
-    func dislikePeople(currentPeople: MPeople, dislikeForPeople: MPeople, requestChats: [MChat],viewControllerDelegate: UIViewController, complition: @escaping(Result<MChat,Error>)->Void) {
+    func dislikePeople(currentPeople: MPeople, dislikeForPeopleID: String, requestChats: [MChat],viewControllerDelegate: UIViewController, complition: @escaping(Result<MDislike,Error>)->Void) {
         let collectionCurrentUserDislikeRef = usersReference.document(currentPeople.senderId).collection(MFirestorCollection.dislikePeople.rawValue)
         let collectionCurrentRequestRef = db.collection([MFirestorCollection.users.rawValue, currentPeople.senderId, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
-        let collectionDislikeUserLikeRef = db.collection([MFirestorCollection.users.rawValue, dislikeForPeople.senderId, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        let collectionDislikeUserLikeRef = db.collection([MFirestorCollection.users.rawValue, dislikeForPeopleID, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
         
-        let dislikeChat = MChat(friendUserName: dislikeForPeople.displayName,
-                                friendUserImageString: dislikeForPeople.userImage,
-                                lastMessage: "",
-                                isNewChat: true,
-                                friendId: dislikeForPeople.senderId,
-                                unreadChatMessageCount: 0,
-                                friendIsWantStopTimer: false,
-                                currentUserIsWantStopTimer: false,
-                                timerOfLifeIsStoped: false,
-                                createChatDate: Date(),
-                                date: Date())
+        let dislikeChat = MDislike(dislikePeopleID: dislikeForPeopleID, date: Date())
         //unsubscribe from push notificasion
         PushMessagingService.shared.unSubscribeToChatNotification(currentUserID: currentPeople.senderId,
-                                                                  chatUserID: dislikeChat.friendId)
+                                                                  chatUserID: dislikeChat.dislikePeopleID)
         
-        //if dislike people contains in current user request chat, than delete his request
+        //if dislike people contains in current user request chat
         let requestChatFromLikeUser = requestChats.filter { requestChat -> Bool in
-            requestChat.containsID(ID: dislikeForPeople.senderId)
+            requestChat.containsID(ID: dislikeForPeopleID)
         }
         //if have requst chat from dislike user
         if let _ = requestChatFromLikeUser.first {
             
                 //delete from request
-                collectionCurrentRequestRef.document(dislikeForPeople.senderId).delete()
+                collectionCurrentRequestRef.document(dislikeForPeopleID).delete()
                 //delete from like in dislike user collection
-                collectionDislikeUserLikeRef.document(currentPeople.senderId).delete()
+            collectionDislikeUserLikeRef.document(currentPeople.senderId).delete()
           
             if currentPeople.isGoldMember || currentPeople.isTestUser {
                 
@@ -207,8 +197,53 @@ extension FirestoreService {
             }
         }
         do {
-            try collectionCurrentUserDislikeRef.document(dislikeForPeople.senderId).setData(from: dislikeChat)
+            try collectionCurrentUserDislikeRef.document(dislikeForPeopleID).setData(from: dislikeChat)
             complition(.success(dislikeChat))
+        } catch { complition(.failure(error))}
+    }
+    
+    //MARK: addReport
+    func addReport(currentUserID: String,
+                   reportUserID: String,
+                   typeOfReport: String,
+                   text: String,
+                   inChat: Bool,
+                   complition:@escaping(Result<MReports,Error>)->Void) {
+        
+        let collectionCurrentUserReportRef = usersReference.document(currentUserID).collection(MFirestorCollection.reportUser.rawValue)
+        let collectionCurrentRequestRef = db.collection([MFirestorCollection.users.rawValue, currentUserID, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
+        
+        let collectionReportUserLikeRef = db.collection([MFirestorCollection.users.rawValue, reportUserID, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        let reportUserRef = usersReference.document(reportUserID)
+        
+        //for save to current user collection
+        let report = MReports(reportUserID: reportUserID,
+                              typeOfReports: MTypeReports.init(rawValue: typeOfReport) ?? MTypeReports.other,
+                              text: text)
+        //for add report to user profile
+        let reportDiscription: [String : Any] = [MReports.CodingKeys.reportUserID.rawValue : currentUserID,
+                                                 MReports.CodingKeys.typeOfReports.rawValue : typeOfReport,
+                                                 MReports.CodingKeys.text.rawValue : text]
+        
+        reportUserRef.setData([MPeople.CodingKeys.reportList.rawValue : FieldValue.arrayUnion([reportDiscription])])
+        
+        //delete chat
+        if inChat {
+            deleteChat(currentUserID: currentUserID, friendID: reportUserID)
+        }
+        //unsubscribe from push notificasion
+        PushMessagingService.shared.unSubscribeToChatNotification(currentUserID: currentUserID,
+                                                                  chatUserID: reportUserID)
+        
+        //delete from chatRequest
+        collectionCurrentRequestRef.document(reportUserID).delete()
+        //delete from like in report user collection
+        collectionReportUserLikeRef.document(currentUserID).delete()
+    
+        //add to report collection
+        do {
+            try collectionCurrentUserReportRef.document(reportUserID).setData(from: report)
+            
         } catch { complition(.failure(error))}
     }
     

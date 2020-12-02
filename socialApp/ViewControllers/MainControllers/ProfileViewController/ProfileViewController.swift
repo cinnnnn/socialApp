@@ -236,7 +236,6 @@ extension ProfileViewController {
 extension ProfileViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        print(indexPath)
         guard let section = SectionsProfile(rawValue: indexPath.section) else { return }
         switch section {
         

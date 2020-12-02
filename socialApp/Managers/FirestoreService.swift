@@ -213,6 +213,7 @@ class FirestoreService {
                               MSearchSettings.minRange.rawValue : MSearchSettings.minRange.defaultValue,
                               MSearchSettings.maxRange.rawValue : MSearchSettings.maxRange.defaultValue,
                               MSearchSettings.currentLocation.rawValue : MSearchSettings.currentLocation.defaultValue]
+        let reportList: [String:Any] = [:]
         
         usersReference.document(id).setData([MPeople.CodingKeys.displayName.rawValue : userName,
                                              MPeople.CodingKeys.gender.rawValue : gender,
@@ -224,7 +225,8 @@ class FirestoreService {
                                              MPeople.CodingKeys.isGoldMember.rawValue: false,
                                              MPeople.CodingKeys.isTestUser.rawValue: false,
                                              MPeople.CodingKeys.isIncognito.rawValue: false,
-                                             MPeople.CodingKeys.searchSettings.rawValue: searchSettings],
+                                             MPeople.CodingKeys.searchSettings.rawValue: searchSettings,
+                                             MPeople.CodingKeys.reportList.rawValue : FieldValue.arrayUnion([reportList])],
                                             merge: true,
                                             completion: { (error) in
                                                 if let error = error {
@@ -249,6 +251,8 @@ class FirestoreService {
                                                 }
                                             })
     }
+    
+    
     
     //MARK:  saveProfileAfterEdit
     func saveProfileAfterEdit(id: String,

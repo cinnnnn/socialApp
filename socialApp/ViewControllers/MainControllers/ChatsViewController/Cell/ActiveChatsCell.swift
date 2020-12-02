@@ -13,15 +13,16 @@ import SDWebImage
 class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
     static var reuseID: String = "ActiveChatCell"
     
-    let frendImage = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
-    let frendName = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
-    let lastMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .myGrayColor(), linesCount: 2)
-    let dateOfMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
-    let unreadMessage = CountOfUnreadMessageView()
-    var dateOfLastMessage: Date?
-    var displayLink: CADisplayLink?
-    var timer: Timer?
-    var value: MChat?
+    private let frendImage = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
+    private let frendName = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
+    private let lastMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 14), textColor: .myGrayColor(), linesCount: 2)
+    private let dateOfMessage = UILabel(labelText: "", textFont: .avenirRegular(size: 12), textColor: .myGrayColor())
+    private let unreadMessage = CountOfUnreadMessageLabel(count: 0)
+    private var unreadMessageWidthAnchor: NSLayoutConstraint?
+    private var dateOfLastMessage: Date?
+    private var displayLink: CADisplayLink?
+    private var timer: Timer?
+    private var value: MChat?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -76,7 +77,7 @@ class ActiveChatsCell: UICollectionViewCell, SelfConfiguringCell {
         super.layoutSubviews()
         
         frendImage.layer.cornerRadius = MDefaultLayer.smallCornerRadius.rawValue
-        unreadMessage.updateBackgroundView()
+      //  unreadMessage.updateBackgroundView()
     }
     
     override func prepareForReuse() {
@@ -120,7 +121,7 @@ extension ActiveChatsCell {
             frendName.topAnchor.constraint(equalTo: topAnchor, constant: 10),
             
             lastMessage.leadingAnchor.constraint(equalTo: frendName.leadingAnchor),
-            lastMessage.trailingAnchor.constraint(equalTo: unreadMessage.leadingAnchor, constant: -5),
+            lastMessage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -60),
             lastMessage.topAnchor.constraint(equalTo: frendName.bottomAnchor, constant: 5),
             
             dateOfMessage.trailingAnchor.constraint(equalTo: trailingAnchor,constant: -10),
@@ -129,6 +130,8 @@ extension ActiveChatsCell {
             unreadMessage.trailingAnchor.constraint(equalTo: trailingAnchor,constant: -10),
             unreadMessage.topAnchor.constraint(equalTo: frendName.bottomAnchor, constant: 5)
         ])
+        
+       
     }
 }
 

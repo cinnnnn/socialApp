@@ -18,6 +18,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     weak var requestChatDelegate: RequestChatListenerDelegate?
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
+    weak var reportDelegate: ReportsListnerDelegate?
     
     private var visibleIndexPath: IndexPath?
    
@@ -35,13 +36,15 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
          peopleDelegate: PeopleListenerDelegate?,
          requestChatDelegate: RequestChatListenerDelegate?,
          likeDislikeDelegate: LikeDislikeListenerDelegate?,
-         acceptChatDelegate: AcceptChatListenerDelegate?) {
+         acceptChatDelegate: AcceptChatListenerDelegate?,
+         reportDelegate: ReportsListnerDelegate?) {
         
         self.peopleDelegate = peopleDelegate
         self.requestChatDelegate = requestChatDelegate
         self.likeDislikeDelegate = likeDislikeDelegate
         self.acceptChatDelegate = acceptChatDelegate
         self.currentPeople = currentPeople
+        self.reportDelegate = reportDelegate
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -369,7 +372,7 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
        print("dislike")
         //save dislike to firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
-                                              dislikeForPeople: people,
+                                              dislikeForPeopleID: people.senderId,
                                               requestChats: requestChatDelegate?.requestChats ?? [],
                                               viewControllerDelegate: self) {[weak self] result in
             switch result {
@@ -377,7 +380,7 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
             case .success(let dislikeChat):
                 //delete dislike people from array
                 self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
-                    people.senderId == dislikeChat.friendId
+                    people.senderId == dislikeChat.dislikePeopleID
                 }
                 //append to dislike array, for local changes
                 self?.likeDislikeDelegate?.dislikePeople.append(dislikeChat)
