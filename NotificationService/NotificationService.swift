@@ -26,7 +26,6 @@ class NotificationService: UNNotificationServiceExtension {
                 bestAttemptContent.badge = 0
               default:
                 let current = UserDefaults.extensions.badge
-                print(current)
                 let new = current + badgeCount
 
                 UserDefaults.extensions.badge = new

@@ -13,6 +13,7 @@ class ReportViewController: UIViewController {
     private let currentUserID:String
     private let reportUserID:String
     private let reportView = ReportView()
+    weak var messageControllerDelegate: MessageControllerDelegate?
     let isFriend: Bool
     
     init(currentUserID: String, reportUserID: String, isFriend: Bool) {
@@ -60,8 +61,24 @@ extension ReportViewController: ReportViewDelegate {
     }
     
     func sendReportTapped() {
+        //setup isInitiateDeleteChat for hide pop up about delete chat
+        messageControllerDelegate?.isInitiateDeleteChat = true
+        
         let reportData = reportView.getData()
-        print("Sended \(reportData.reportType) with text \(reportData.text)")
+        FirestoreService.shared.addReport(currentUserID: currentUserID,
+                                          reportUserID: reportUserID,
+                                          typeOfReport: reportData.reportType,
+                                          text: reportData.text,
+                                          inChat: isFriend) {[weak self] result in
+            switch result {
+            
+            case .success(_):
+               
+                self?.navigationController?.popToRootViewController(animated: true)
+                PopUpService.shared.showInfo(text: "Жалоба: \(reportData.reportType) отправлена")
+            case .failure(let error):
+                PopUpService.shared.showInfo(text: "Ошибка: \(error.localizedDescription)")
+            }
+        }
     }
-
 }

@@ -37,6 +37,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         messageDelegate?.removeListener()
         NotificationCenter.default.removeObserver(self)
         ScreenRecordingManager.shared.removeListner()
+        acceptChatDelegate?.selectedChat = nil
     }
     
     override func viewDidLoad() {
@@ -62,7 +63,6 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        acceptChatDelegate?.selectedChat = nil
         readAllMessageInChat()
     }
     

@@ -16,6 +16,7 @@ enum MTypeReports: String, Codable, CaseIterable{
     case other = "Другое"
     
     static let description = "Жалоба"
+    static let getReport = "Получил жалобу"
     
     static var modelStringAllCases: [String] {
         allCases.map { report -> String in

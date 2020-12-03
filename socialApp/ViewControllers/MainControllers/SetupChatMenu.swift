@@ -114,6 +114,7 @@ extension SetupChatMenu {
             let reportVC = ReportViewController(currentUserID: currentUser.senderId,
                                                 reportUserID: chat.friendId,
                                                 isFriend: true)
+            reportVC.messageControllerDelegate = messageControllerDelegate
             navigationController?.pushViewController(reportVC, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)
             

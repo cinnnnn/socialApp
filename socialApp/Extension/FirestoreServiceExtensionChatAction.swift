@@ -214,37 +214,48 @@ extension FirestoreService {
         let collectionCurrentRequestRef = db.collection([MFirestorCollection.users.rawValue, currentUserID, MFirestorCollection.requestsChats.rawValue].joined(separator: "/"))
         
         let collectionReportUserLikeRef = db.collection([MFirestorCollection.users.rawValue, reportUserID, MFirestorCollection.likePeople.rawValue].joined(separator: "/"))
+        let collectionReportUserReportRef = db.collection([MFirestorCollection.users.rawValue, reportUserID, MFirestorCollection.reportUser.rawValue].joined(separator: "/"))
         let reportUserRef = usersReference.document(reportUserID)
         
         //for save to current user collection
         let report = MReports(reportUserID: reportUserID,
                               typeOfReports: MTypeReports.init(rawValue: typeOfReport) ?? MTypeReports.other,
                               text: text)
+        //report for add to report user collection
+        let reportForReportUser = MReports(reportUserID: currentUserID,
+                                           typeOfReports: MTypeReports.other,
+                                           text: MTypeReports.getReport)
         //for add report to user profile
         let reportDiscription: [String : Any] = [MReports.CodingKeys.reportUserID.rawValue : currentUserID,
                                                  MReports.CodingKeys.typeOfReports.rawValue : typeOfReport,
                                                  MReports.CodingKeys.text.rawValue : text]
         
-        reportUserRef.setData([MPeople.CodingKeys.reportList.rawValue : FieldValue.arrayUnion([reportDiscription])])
-        
-        //delete chat
-        if inChat {
-            deleteChat(currentUserID: currentUserID, friendID: reportUserID)
+        reportUserRef.setData([MPeople.CodingKeys.reportList.rawValue : FieldValue.arrayUnion([reportDiscription])],
+                              merge: true) {[weak self] error in
+            if let error = error {
+                complition(.failure(error))
+            } else {
+                //delete chat
+                if inChat {
+                    self?.deleteChat(currentUserID: currentUserID, friendID: reportUserID)
+                }
+                //unsubscribe from push notificasion
+                PushMessagingService.shared.unSubscribeToChatNotification(currentUserID: currentUserID,
+                                                                          chatUserID: reportUserID)
+                
+                //delete from chatRequest
+                collectionCurrentRequestRef.document(reportUserID).delete()
+                //delete from like in report user collection
+                collectionReportUserLikeRef.document(currentUserID).delete()
+                
+                //add to report collection
+                do {
+                    try collectionCurrentUserReportRef.document(reportUserID).setData(from: report)
+                    try collectionReportUserReportRef.document(currentUserID).setData(from: reportForReportUser)
+                    complition(.success(report))
+                } catch { complition(.failure(error))}
+            }
         }
-        //unsubscribe from push notificasion
-        PushMessagingService.shared.unSubscribeToChatNotification(currentUserID: currentUserID,
-                                                                  chatUserID: reportUserID)
-        
-        //delete from chatRequest
-        collectionCurrentRequestRef.document(reportUserID).delete()
-        //delete from like in report user collection
-        collectionReportUserLikeRef.document(currentUserID).delete()
-    
-        //add to report collection
-        do {
-            try collectionCurrentUserReportRef.document(reportUserID).setData(from: report)
-            
-        } catch { complition(.failure(error))}
     }
     
     //MARK: readAllMessageInChat
