@@ -74,7 +74,7 @@ extension PeopleDataProvider {
                 self?.peopleNearby = peoples
                 
                 //if peoples count 1, need reload section to correct update collectionView
-                self?.reloadData(reloadSection: true, animating: true)
+                self?.reloadData(reloadSection: peoples.count == 1 ? true : false, animating: false)
                 complition(.success(peoples))
             case .failure(let error):
                 complition(.failure(error))

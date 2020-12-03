@@ -75,6 +75,7 @@
 		FB78FEE425782344004DA53E /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEE325782343004DA53E /* ReportViewController.swift */; };
 		FB78FEE825782440004DA53E /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEE725782440004DA53E /* ReportView.swift */; };
 		FB78FEEC257840A3004DA53E /* ReportViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEEB257840A3004DA53E /* ReportViewDelegate.swift */; };
+		FB78FEF425798ECD004DA53E /* PurchasesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEF325798ECC004DA53E /* PurchasesError.swift */; };
 		FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */; };
 		FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4825234EDA00A7AA56 /* DateExtension.swift */; };
 		FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4B2523577100A7AA56 /* MMediaItem.swift */; };
@@ -298,6 +299,7 @@
 		FB78FEE325782343004DA53E /* ReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewController.swift; sourceTree = "<group>"; };
 		FB78FEE725782440004DA53E /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
 		FB78FEEB257840A3004DA53E /* ReportViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewDelegate.swift; sourceTree = "<group>"; };
+		FB78FEF325798ECC004DA53E /* PurchasesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesError.swift; sourceTree = "<group>"; };
 		FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTypeOfListenerChanges.swift; sourceTree = "<group>"; };
 		FB79DA4825234EDA00A7AA56 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		FB79DA4B2523577100A7AA56 /* MMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMediaItem.swift; sourceTree = "<group>"; };
@@ -1007,6 +1009,7 @@
 				FBB4F35E2512737400ACFE90 /* FirestoreError.swift */,
 				FBB26EE0254B38B60081CF2C /* UserDefaultsError.swift */,
 				FB61A76E251CB97D005DCC78 /* DataSourceError.swift */,
+				FB78FEF325798ECC004DA53E /* PurchasesError.swift */,
 			);
 			path = Error;
 			sourceTree = "<group>";
@@ -1383,6 +1386,7 @@
 				FB79DA6E252C942B00A7AA56 /* MLocation.swift in Sources */,
 				FBB34009256D645900A597BF /* MTag.swift in Sources */,
 				FBEF607824A602070005F947 /* AppDelegate.swift in Sources */,
+				FB78FEF425798ECD004DA53E /* PurchasesError.swift in Sources */,
 				FBB33FAC256A84EB00A597BF /* MCollectionViewGalleryElement.swift in Sources */,
 				FB1062DC24B09F6C0012C4D4 /* EditProfileViewController.swift in Sources */,
 				FB21A1B824E595CF000A2E91 /* Protocols.swift in Sources */,

@@ -61,7 +61,7 @@ class PurchasesService: NSObject {
     
     
     //MARK: check subscribtion
-    public func checkSubscribtion(currentPeople: MPeople, isRestore:Bool = false, complition: @escaping (Result<(),Error>) -> Void) {
+    public func checkSubscribtion(currentPeople: MPeople, isRestore:Bool = false, complition: @escaping (Result<MPeople,Error>) -> Void) {
       
         restorePurchasesWithApphud { result in
             switch result {
@@ -85,12 +85,12 @@ class PurchasesService: NSObject {
                 guard currentPeople.isGoldMember != isGoldMember ||
                       currentPeople.goldMemberDate != goldMemberDate ||
                       currentPeople.goldMemberPurches != goldMemberPurches else {
-                    complition(.success(()))
+                    complition(.success((currentPeople)))
                     return
                 }
                 
                 //if is not premium user, change premium settings to defaults
-                if !isGoldMember {
+                if !isGoldMember && !currentPeople.isTestUser {
                     print("\n CHANGE TO DEFAULT")
                     FirestoreService.shared.setDefaultPremiumSettings(currentPeople: currentPeople) { _ in }
                 }
@@ -102,9 +102,9 @@ class PurchasesService: NSObject {
                                                          goldMemberPurches: goldMemberPurches) { result in
                     switch result {
                     
-                    case .success(_):
+                    case .success(let updatedPeople):
                         //if is restore, show popUp
-                        complition(.success(()))
+                        complition(.success(updatedPeople))
                         
                         if isRestore, isGoldMember {
                             PopUpService.shared.showInfo(text: "Flava premium восстановлен")
@@ -127,7 +127,9 @@ class PurchasesService: NSObject {
 extension PurchasesService {
     
     public func purcheWithApphud(product identifier: MPurchases, complition: @escaping (Result<ApphudPurchaseResult, Error>) -> Void) {
-        guard let product = products.filter({$0.productIdentifier == identifier.rawValue}).first else { return }
+        guard let product = products.filter({$0.productIdentifier == identifier.rawValue}).first else {
+            complition(.failure(PurchasesError.unknownProduct))
+            return }
         Apphud.purchase(product) { result in
             complition(.success(result))
         }

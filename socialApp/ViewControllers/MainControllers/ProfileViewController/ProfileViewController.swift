@@ -33,10 +33,15 @@ class ProfileViewController: UIViewController {
         self.acceptChatsDelegate = acceptChatsDelegate
         self.requestChatsDelegate = requestChatsDelegate
         super.init(nibName: nil, bundle: nil)
+        setupNotification()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -55,8 +60,8 @@ class ProfileViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateSections()
-        updateCurrentPeople()
+      //  updateSections()
+      //  updateCurrentPeople()
     }
     
     private func setup() {
@@ -67,10 +72,9 @@ class ProfileViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
     }
     
-    private func updateCurrentPeople() {
-        if let people = UserDefaultsService.shared.getMpeople() {
-            currentPeople = people
-        }
+    private func setupNotification() {
+        NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateSections))
+        NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(updateSections))
     }
     
     private func setupNavigationBar() {
@@ -204,7 +208,8 @@ extension ProfileViewController {
     }
     
     //MARK: updateProfileSection
-    private func updateSections() {
+    @objc private func updateSections() {
+       
         guard let currentPeople = UserDefaultsService.shared.getMpeople() else { return }
         
         self.currentPeople = currentPeople
@@ -213,6 +218,8 @@ extension ProfileViewController {
         snapshot.reloadSections([ .profile, .premium])
         
         dataSource?.apply(snapshot,animatingDifferences: true)
+        
+        print("update profile\(currentPeople.isGoldMember) \(currentPeople.isTestUser)")
     }
     
     //MARK: updateDataSource
@@ -300,7 +307,7 @@ extension ProfileViewController {
                 PurchasesService.shared.checkSubscribtion(currentPeople: mPeople) { result in
                     switch result {
                     
-                    case .success():
+                    case .success(_):
                     self?.updateSections()
                         
                     case .failure(let error):

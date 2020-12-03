@@ -79,11 +79,6 @@ class EditProfileViewController: UIViewController {
         registerNotification()
         setPeopleData()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        scrollView.updateContentView()
-    }
    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)

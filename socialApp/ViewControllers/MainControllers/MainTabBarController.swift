@@ -131,12 +131,19 @@ extension MainTabBarController {
                                                         
                                                         case .success(_):
                                                             
-                                                            PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { _ in
-                                                                
+                                                            PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { result in
                                                                 self?.loadIsComplite(isComplite: true)
-                                                                self?.setupControllers(currentPeople: currentUser)
                                                                 self?.subscribeToPushNotification()
                                                                 
+                                                                switch result {
+                                                                
+                                                                case .success(let updatedPeople):
+                                                                    
+                                                                    self?.setupControllers(currentPeople: updatedPeople)
+                                                                   
+                                                                case .failure(_):
+                                                                    self?.setupControllers(currentPeople: currentUser)
+                                                                }
                                                             }
                                                             
                                                         case .failure(let error):
