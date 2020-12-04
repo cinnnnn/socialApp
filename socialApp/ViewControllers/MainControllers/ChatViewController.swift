@@ -119,7 +119,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                                             target: self,
                                             action: #selector(chatSettingsTapped))
         navigationItem.rightBarButtonItem = barButtonItem
-        navigationController?.navigationBar.isHidden = false
+        navigationController?.setNavigationBarHidden(false, animated: true)
         //add screenshot observer
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(screenshotTaken),
@@ -129,6 +129,14 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
             if isCaptured {
                 self?.screenIsCaptured()
             }
+        }
+    }
+    
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        
+        if parent == nil {
+            navigationController?.popToRootViewController(animated: true)
         }
     }
     

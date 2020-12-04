@@ -121,7 +121,7 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
                 peopleDelegate.peopleNearby.removeAll { peopleDelegate -> Bool in
                     peopleDelegate.senderId == people.senderId
                 }
-              
+                
                 self?.peopleView.animateLikeButton.isHidden = true
                 self?.peopleView.animateDislikeButton.isHidden = true
                 
@@ -133,6 +133,7 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
                     guard let currentPeople = self?.currentPeople else { return }
                     PopUpService.shared.showMatchPopUP(currentPeople: currentPeople,
                                                        chat: likeChat) { messageDelegate, acceptChatDelegate in
+                        
                         let chatVC = ChatViewController(people: currentPeople,
                                                         chat: likeChat,
                                                         messageDelegate: messageDelegate,
@@ -143,13 +144,16 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
                         
                         chatVC.hidesBottomBarWhenPushed = true
                         self?.navigationController?.pushViewController(chatVC, animated: true)
+                    } cancelAction: {
+                        self?.navigationController?.popToRootViewController(animated: true)
                     }
                 }
+                
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
         }
-    }
+     }
     
      func dislikePeople(people: MPeople) {
         
@@ -163,16 +167,14 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
             switch result {
             
             case .success(_):
-                peopleDelegate.peopleNearby.removeAll { peopleDelegate -> Bool in
-                    peopleDelegate.senderId == people.senderId
-                }
+                peopleDelegate.deletePeople(peopleID: people.senderId)
                 
                 self?.peopleView.animateLikeButton.isHidden = true
                 self?.peopleView.animateDislikeButton.isHidden = true
                 
                 requestChatsDelegate.reloadData(changeType: .delete)
-                //for correct renew last people, need reload section
-                peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
+                
+                self?.navigationController?.popToRootViewController(animated: true)
                 
             case .failure(let error):
                 fatalError(error.localizedDescription)

@@ -12,12 +12,12 @@ import SwiftEntryKit
 
 class MatchViewPopUp: UIView {
     
-    let friendPhoto = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
-    let aboutFriend = UILabel(labelText: "", textFont: .avenirRegular(size: 16))
-    let info = UILabel(labelText: "Чувства взаимны. Будь смелей и веди себя хорошо", textFont: .avenirRegular(size: 16), textColor: .myGrayColor(), linesCount: 0)
-    let dismisButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Позже", titleColor: .myGrayColor())
-    let chatButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Начать общение", titleColor: .myLabelColor())
-    weak var stackView: UIStackView?  {
+    private let friendPhoto = UIImageView(image: #imageLiteral(resourceName: "advertLogo"), contentMode: .scaleAspectFill)
+    private let aboutFriend = UILabel(labelText: "", textFont: .avenirRegular(size: 16))
+    private let info = UILabel(labelText: "Чувства взаимны. Будь смелей и веди себя хорошо", textFont: .avenirRegular(size: 16), textColor: .myGrayColor(), linesCount: 0)
+    private let dismisButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Позже", titleColor: .myGrayColor())
+    private let chatButton = UIButton(newBackgroundColor: .myWhiteColor(), title: "Начать общение", titleColor: .myLabelColor())
+    private weak var stackView: UIStackView?  {
         let stackView = UIStackView(arrangedSubviews: [dismisButton,chatButton])
         stackView.axis = .horizontal
         stackView.spacing = 30
@@ -25,9 +25,10 @@ class MatchViewPopUp: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
-    let chat: MChat
-    let currentPeople: MPeople
+    private let chat: MChat
+    private let currentPeople: MPeople
     var okAction: () -> ()
+    var cancelAction: (()->())?
     
     init(currentPeople: MPeople, chat: MChat, okAction: @escaping ()->()) {
         self.currentPeople = currentPeople
@@ -67,6 +68,8 @@ class MatchViewPopUp: UIView {
 extension MatchViewPopUp {
     @objc func dismisTapped() {
         SwiftEntryKit.dismiss()
+        guard let cancelAction = cancelAction else { return }
+        cancelAction()
     }
     
     @objc func chatTapped() {

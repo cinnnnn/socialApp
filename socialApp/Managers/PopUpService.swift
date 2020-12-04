@@ -39,12 +39,18 @@ extension PopUpService {
     }
     
     //MARK: showMatchPopUP
-    func showMatchPopUP(currentPeople: MPeople, chat: MChat, action: @escaping(MessageListenerDelegate, AcceptChatListenerDelegate)->()) {
+    func showMatchPopUP(currentPeople: MPeople,
+                        chat: MChat,
+                        action: @escaping(MessageListenerDelegate, AcceptChatListenerDelegate)->(),
+                        cancelAction: (()->Void)? = nil) {
         let matchPopUpView = MatchViewPopUp(currentPeople: currentPeople,
                                             chat: chat) { [weak self] in
             if let messageDelegate = self?.messageDelegate, let acceptChatsDelegate = self?.acceptChatsDelegate {
                 action(messageDelegate, acceptChatsDelegate)
             }
+        }
+        if let cancelAction = cancelAction {
+            matchPopUpView.cancelAction = cancelAction
         }
         
         var attributes = EKAttributes()
