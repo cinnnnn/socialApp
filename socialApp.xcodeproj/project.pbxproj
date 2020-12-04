@@ -76,6 +76,8 @@
 		FB78FEE825782440004DA53E /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEE725782440004DA53E /* ReportView.swift */; };
 		FB78FEEC257840A3004DA53E /* ReportViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEEB257840A3004DA53E /* ReportViewDelegate.swift */; };
 		FB78FEF425798ECD004DA53E /* PurchasesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FEF325798ECC004DA53E /* PurchasesError.swift */; };
+		FB78FF1D257A6D89004DA53E /* ReportPeopleOneLineButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FF1C257A6D89004DA53E /* ReportPeopleOneLineButton.swift */; };
+		FB78FF21257A6DBE004DA53E /* ReportPeopleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB78FF20257A6DBE004DA53E /* ReportPeopleButton.swift */; };
 		FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */; };
 		FB79DA4925234EDA00A7AA56 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4825234EDA00A7AA56 /* DateExtension.swift */; };
 		FB79DA4C2523577100A7AA56 /* MMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79DA4B2523577100A7AA56 /* MMediaItem.swift */; };
@@ -300,6 +302,8 @@
 		FB78FEE725782440004DA53E /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
 		FB78FEEB257840A3004DA53E /* ReportViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewDelegate.swift; sourceTree = "<group>"; };
 		FB78FEF325798ECC004DA53E /* PurchasesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesError.swift; sourceTree = "<group>"; };
+		FB78FF1C257A6D89004DA53E /* ReportPeopleOneLineButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportPeopleOneLineButton.swift; sourceTree = "<group>"; };
+		FB78FF20257A6DBE004DA53E /* ReportPeopleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportPeopleButton.swift; sourceTree = "<group>"; };
 		FB79DA41252209E000A7AA56 /* MTypeOfListenerChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTypeOfListenerChanges.swift; sourceTree = "<group>"; };
 		FB79DA4825234EDA00A7AA56 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		FB79DA4B2523577100A7AA56 /* MMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMediaItem.swift; sourceTree = "<group>"; };
@@ -527,7 +531,6 @@
 				FB3C5BD6253C896100CD44E6 /* Sections */,
 				FBB3D49B255D599B00A3B832 /* PushMessage */,
 				FBB33FBC256AC1AA00A597BF /* Data */,
-				FBB34001256D421C00A597BF /* Protocols */,
 				FBA2AA2D2552D7D000A471F6 /* MCellType.swift */,
 				FBB34008256D645900A597BF /* MTag.swift */,
 				FB21A1BA24E59705000A2E91 /* MChat.swift */,
@@ -558,6 +561,7 @@
 				FBA2AA272550601A00A471F6 /* LikeDisklikeButton.swift */,
 				FB78FE9E2573EF90004DA53E /* AnimateDislikeButton.swift */,
 				FB78FE8B2573DC06004DA53E /* AnimateLikeButton.swift */,
+				FB78FF1C257A6D89004DA53E /* ReportPeopleOneLineButton.swift */,
 				FBB4F353251110AE00ACFE90 /* RadioButton.swift */,
 			);
 			path = Buttons;
@@ -963,6 +967,7 @@
 				FB21A1B724E595CF000A2E91 /* Protocols.swift */,
 				FBB34002256D423700A597BF /* TagsCollectionViewDelegate.swift */,
 				FB78FE872573CE57004DA53E /* LikeDislikePeopleButton.swift */,
+				FB78FF20257A6DBE004DA53E /* ReportPeopleButton.swift */,
 				FB78FEEB257840A3004DA53E /* ReportViewDelegate.swift */,
 			);
 			path = Protocols;
@@ -1041,6 +1046,7 @@
 				FBEF607724A602070005F947 /* AppDelegate.swift */,
 				FBEF607924A602070005F947 /* SceneDelegate.swift */,
 				FBA94D1C24F55AC2000DA5D5 /* Managers */,
+				FBB34001256D421C00A597BF /* Protocols */,
 				FB21A1B924E596E3000A2E91 /* Models */,
 				FBB26ED5254AFD420081CF2C /* DataProvider */,
 				FBEF609424A90DD60005F947 /* ViewControllers */,
@@ -1245,6 +1251,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB78FF1D257A6D89004DA53E /* ReportPeopleOneLineButton.swift in Sources */,
 				FB3C5BDE253F5F3900CD44E6 /* RoundButton.swift in Sources */,
 				FBA2AA442553072800A471F6 /* UniversalInfoCell.swift in Sources */,
 				FB18217F24B2442800FFFC87 /* UIColorExtension.swift in Sources */,
@@ -1346,6 +1353,7 @@
 				FBFFB866255F15AC007343ED /* PurchasesService.swift in Sources */,
 				FB3351B92566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift in Sources */,
 				FB3727942541A18600906FBE /* MVirtualLocation.swift in Sources */,
+				FB78FF21257A6DBE004DA53E /* ReportPeopleButton.swift in Sources */,
 				FB8C3D832536089A00184FB5 /* UIDatePickerExtension.swift in Sources */,
 				FBB340452571311000A597BF /* MDefaultsDesires.swift in Sources */,
 				FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */,

@@ -31,7 +31,6 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
 
-    
     init(currentPeople: MPeople,
          peopleDelegate: PeopleListenerDelegate?,
          requestChatDelegate: RequestChatListenerDelegate?,
@@ -64,7 +63,8 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         setupDiffebleDataSource()
         setupConstraints()
         setup()
-        setupListner()
+        setupNotification()
+        getPeople()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,17 +80,21 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         navigationItem.backButtonTitle = ""
     }
     
- 
-    private func setupListner() {
-        guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
-        guard let acceptChatDelegate = acceptChatDelegate else { fatalError("Can't get acceptChatDelegate")}
-        
+    private func setupNotification() {
         NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
         NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
+    }
+    
+    //MARK: getPeople
+    private func getPeople() {
+        guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
+        guard let acceptChatDelegate = acceptChatDelegate else { fatalError("Can't get acceptChatDelegate")}
+        guard let reportDelegate = reportDelegate else { fatalError("Can't get reportDelegate")}
         
         peopleDelegate?.getPeople(currentPeople: currentPeople,
                                   likeDislikeDelegate: likeDislikeDelegate,
                                   acceptChatsDelegate: acceptChatDelegate,
+                                  reportsDelegate: reportDelegate,
                                   complition: { result in
                                     switch result {
                                     case .success(_):
@@ -99,7 +103,6 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                                         fatalError(error.localizedDescription)
                                     }
                                   })
-   
     }
     
     
@@ -174,9 +177,8 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                 switch section {
                 case .main:
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PeopleCell.reuseID, for: indexPath) as? PeopleCell else { fatalError("Can't dequeue cell type PeopleCell")}
-                    cell.buttonDelegate = self
                     if let currentPeople = self?.currentPeople {
-                        cell.configure(with: people, currentPeople: currentPeople)
+                        cell.configure(with: people, currentPeople: currentPeople, buttonDelegate: self)
                         {
                             cell.setNeedsLayout()
                         }
@@ -233,7 +235,8 @@ extension PeopleViewController {
         let searchVC = EditSearchSettingsViewController(currentPeople: currentPeople,
                                                         peopleListnerDelegate: peopleDelegate,
                                                         likeDislikeDelegate: likeDislikeDelegate,
-                                                        acceptChatsDelegate: acceptChatDelegate)
+                                                        acceptChatsDelegate: acceptChatDelegate,
+                                                        reportsDelegate: reportDelegate)
         searchVC.hidesBottomBarWhenPushed = true
         searchVC.navigationController?.setNavigationBarHidden(false, animated: true)
         navigationController?.pushViewController(searchVC, animated: true)
@@ -307,9 +310,13 @@ extension PeopleViewController {
     //MARK: saveLikeToFireStore
     private func saveLikeToFireStore(people: MPeople) {
         
+        guard let reportDelegate = reportDelegate else { fatalError("reportDelegate is nil") }
+        guard let peopleDelegate = peopleDelegate else { fatalError("peopleDelegate is nil") }
+        guard let requestChatDelegate = requestChatDelegate else { fatalError("requestChatDelegate is nil") }
+        
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
-                                           requestChats: requestChatDelegate?.requestChats ?? []) {[weak self] result, isMatch  in
+                                           requestChats: requestChatDelegate.requestChats) {[weak self] result, isMatch  in
             switch result {
             
             case .success(let likeChat):
@@ -320,11 +327,9 @@ extension PeopleViewController {
                     self?.likeDislikeDelegate?.likePeople.append(likeChat)
                 }
                 
-                self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
-                    people.senderId == likeChat.friendId
-                }
-                //for correct reload last element, need reload section
-                self?.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false)
+                self?.peopleDelegate?.deletePeople(peopleID: likeChat.friendId)
+                
+                
                 
                 if isMatch {
                     guard let currentPeople = self?.currentPeople else { return }
@@ -332,7 +337,10 @@ extension PeopleViewController {
                         let chatVC = ChatViewController(people: currentPeople,
                                                         chat: likeChat,
                                                         messageDelegate: messageDelegate,
-                                                        acceptChatDelegate: acceptChatDelegate)
+                                                        acceptChatDelegate: acceptChatDelegate,
+                                                        reportDelegate: reportDelegate,
+                                                        peopleDelegate: peopleDelegate,
+                                                        requestDelegate: requestChatDelegate)
                         chatVC.hidesBottomBarWhenPushed = true
                         
                         self?.navigationController?.pushViewController(chatVC, animated: true)
@@ -379,18 +387,27 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
 
             case .success(let dislikeChat):
                 //delete dislike people from array
-                self?.peopleDelegate?.peopleNearby.removeAll { people -> Bool in
-                    people.senderId == dislikeChat.dislikePeopleID
-                }
+                self?.peopleDelegate?.deletePeople(peopleID: people.senderId)
                 //append to dislike array, for local changes
                 self?.likeDislikeDelegate?.dislikePeople.append(dislikeChat)
-                //for correct reload last element, need reload section
-                self?.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false)
+               
 
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
         }
+    }
+    
+    func reportTapped(people: MPeople) {
+        print("report \(people.displayName)")
+        let reportVC = ReportViewController(currentUserID: currentPeople.senderId,
+                                            reportUserID: people.senderId,
+                                            isFriend: false,
+                                            reportDelegate: reportDelegate,
+                                            peopleDelegate: peopleDelegate,
+                                            requestDelegate: requestChatDelegate)
+        
+        navigationController?.pushViewController(reportVC, animated: true)
     }
 }
 

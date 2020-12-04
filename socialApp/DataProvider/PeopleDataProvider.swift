@@ -40,13 +40,15 @@ extension PeopleDataProvider {
     func getPeople(currentPeople: MPeople,
                    likeDislikeDelegate: LikeDislikeListenerDelegate,
                    acceptChatsDelegate: AcceptChatListenerDelegate,
+                   reportsDelegate: ReportsListnerDelegate,
                    complition: @escaping (Result<[MPeople], Error>) -> Void) {
     
         FirestoreService.shared.getPeople(currentPeople: currentPeople,
                                           peoples: peopleNearby,
                                           likeChat: likeDislikeDelegate.likePeople,
                                           dislikeChat: likeDislikeDelegate.dislikePeople,
-                                          acceptChat: acceptChatsDelegate.acceptChats) {[weak self] result in
+                                          acceptChat: acceptChatsDelegate.acceptChats,
+                                          reports: reportsDelegate.reports) {[weak self] result in
             switch result {
             
             case .success(let peoples):
@@ -63,11 +65,13 @@ extension PeopleDataProvider {
     func reloadPeople(currentPeople: MPeople,
                     likeDislikeDelegate: LikeDislikeListenerDelegate,
                     acceptChatsDelegate: AcceptChatListenerDelegate,
+                    reportsDelegate: ReportsListnerDelegate,
                     complition: @escaping (Result<[MPeople], Error>) -> Void) {
         peopleNearby = []
         getPeople(currentPeople: currentPeople,
                   likeDislikeDelegate: likeDislikeDelegate,
-                  acceptChatsDelegate: acceptChatsDelegate) {[weak self] result in
+                  acceptChatsDelegate: acceptChatsDelegate,
+                  reportsDelegate: reportsDelegate) {[weak self] result in
             switch result {
             
             case .success(let peoples):
@@ -80,6 +84,16 @@ extension PeopleDataProvider {
                 complition(.failure(error))
             }
         }
+    }
+    
+    //delete people
+    func deletePeople(peopleID: String) {
+        let peopleIndex = peopleNearby.firstIndex { currentPeople -> Bool in
+            currentPeople.senderId == peopleID
+        }
+        guard let index = peopleIndex else { return }
+        peopleNearby.remove(at: index)
+        reloadData(reloadSection: peopleNearby.count == 1 ? true : false, animating: true)
     }
 }
 

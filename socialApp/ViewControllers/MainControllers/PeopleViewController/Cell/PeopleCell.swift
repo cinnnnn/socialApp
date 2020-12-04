@@ -13,13 +13,10 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     static var reuseID = "PeopleCell"
     
-    weak var buttonDelegate: PeopleButtonTappedDelegate?
-    var person: MPeople?
-    let peopleView = PeopleView()
+    private let peopleView = PeopleView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
         setupConstraints()
     }
     
@@ -27,19 +24,20 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setup() {
-        peopleView.animateLikeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
-        peopleView.animateDislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
-        peopleView.timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
-    }
-    
-    func configure(with value: MPeople, currentPeople: MPeople, complition: @escaping()-> Void) {
+    func configure(with value: MPeople,
+                   currentPeople: MPeople,
+                   buttonDelegate: PeopleButtonTappedDelegate?,
+                   complition: @escaping()-> Void) {
         
-        peopleView.configure(with: value, currentPeople: currentPeople, showPrivatePhoto: false) {[weak self] in
+        peopleView.configure(with: value,
+                             currentPeople: currentPeople,
+                             showPrivatePhoto: false,
+                             buttonDelegate: buttonDelegate) {[weak self] in
             self?.setNeedsLayout()
             complition()
         }
         
+        peopleView.buttonDelegate = buttonDelegate
     }
     
     override func prepareForReuse() {
@@ -49,32 +47,6 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         peopleView.setNeedsLayout()
-    }
-}
-
-extension PeopleCell {
-    @objc private func likeTapped(sender: Any) {
-        guard let sender = sender as? LikeDislikePeopleButton else { return }
-        guard let people = sender.actionPeople else { return }
-        
-        sender.play { [weak self] in
-            self?.buttonDelegate?.likePeople(people: people)
-        }
-       
-    }
-    
-    @objc private func dislikeTapped(sender: Any) {
-        guard let sender = sender as? LikeDislikePeopleButton else { return }
-        guard let people = sender.actionPeople else { return }
-        
-        sender.play { [weak self] in
-            self?.buttonDelegate?.dislikePeople(people: people)
-        }
-       
-    }
-    
-    @objc private func timeTapped() {
-        buttonDelegate?.timeTapped()
     }
 }
 

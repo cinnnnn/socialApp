@@ -13,13 +13,25 @@ class ReportViewController: UIViewController {
     private let currentUserID:String
     private let reportUserID:String
     private let reportView = ReportView()
+    private let isFriend: Bool
     weak var messageControllerDelegate: MessageControllerDelegate?
-    let isFriend: Bool
+    weak var reportDelegate: ReportsListnerDelegate?
+    weak var peopleDelegate: PeopleListenerDelegate?
+    weak var requestDelegate: RequestChatListenerDelegate?
     
-    init(currentUserID: String, reportUserID: String, isFriend: Bool) {
+    init(currentUserID: String,
+         reportUserID: String,
+         isFriend: Bool,
+         reportDelegate: ReportsListnerDelegate?,
+         peopleDelegate: PeopleListenerDelegate?,
+         requestDelegate: RequestChatListenerDelegate?) {
+        
         self.isFriend = isFriend
         self.currentUserID = currentUserID
         self.reportUserID = reportUserID
+        self.reportDelegate = reportDelegate
+        self.peopleDelegate = peopleDelegate
+        self.requestDelegate = requestDelegate
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -37,6 +49,7 @@ class ReportViewController: UIViewController {
 extension ReportViewController {
     private func setup() {
         navigationItem.title = "Жалоба"
+        navigationController?.setNavigationBarHidden(false, animated: true)
         view.backgroundColor = .myWhiteColor()
         reportView.delegate = self
     }
@@ -72,8 +85,14 @@ extension ReportViewController: ReportViewDelegate {
                                           inChat: isFriend) {[weak self] result in
             switch result {
             
-            case .success(_):
-               
+            case .success(let report):
+                //add report to reportData
+                self?.reportDelegate?.reports.append(report)
+                //delete from request
+                self?.requestDelegate?.deleteRequest(requestID: report.reportUserID)
+                //delete from peopleNearby
+                self?.peopleDelegate?.deletePeople(peopleID: report.reportUserID)
+                //go to rootVC
                 self?.navigationController?.popToRootViewController(animated: true)
                 PopUpService.shared.showInfo(text: "Жалоба: \(reportData.reportType) отправлена")
             case .failure(let error):

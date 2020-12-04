@@ -18,7 +18,10 @@ protocol SelfConfiguringCell: class {
 
 protocol PeopleConfigurationCell: class {
     static var reuseID: String { get }
-    func configure(with value: MPeople, currentPeople: MPeople, complition:@escaping()->Void)
+    func configure(with value: MPeople,
+                   currentPeople: MPeople,
+                   buttonDelegate: PeopleButtonTappedDelegate?,
+                   complition:@escaping()->Void)
 }
 
 protocol ReprasentationModel {
@@ -36,6 +39,7 @@ protocol PeopleButtonTappedDelegate: class {
     func likePeople(people: MPeople)
     func dislikePeople(people: MPeople)
     func timeTapped()
+    func reportTapped(people: MPeople)
 }
 
 protocol CollectionCellModel {
@@ -119,6 +123,7 @@ protocol RequestChatListenerDelegate: class {
     func removeListener()
     func reloadListener(currentPeople: MPeople,
                         reportsDelegate: ReportsListnerDelegate)
+    func deleteRequest(requestID: String)
 }
 
 protocol AcceptChatListenerDelegate: class {
@@ -142,14 +147,17 @@ protocol PeopleListenerDelegate: class {
     func getPeople(currentPeople: MPeople,
                    likeDislikeDelegate: LikeDislikeListenerDelegate,
                    acceptChatsDelegate: AcceptChatListenerDelegate,
+                   reportsDelegate: ReportsListnerDelegate,
                    complition: @escaping (Result<[MPeople], Error>) -> Void)
     func reloadPeople(currentPeople: MPeople,
                     likeDislikeDelegate: LikeDislikeListenerDelegate,
                     acceptChatsDelegate: AcceptChatListenerDelegate,
+                    reportsDelegate: ReportsListnerDelegate,
                     complition: @escaping (Result<[MPeople], Error>) -> Void)
     //work with collectionView
     func updateData()
     func reloadData(reloadSection: Bool, animating: Bool)
+    func deletePeople(peopleID: String)
 }
 
 protocol MessageListenerDelegate: class {

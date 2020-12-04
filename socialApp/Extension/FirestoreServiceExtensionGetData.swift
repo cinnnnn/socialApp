@@ -15,9 +15,11 @@ extension FirestoreService {
                    likeChat: [MChat],
                    dislikeChat: [MDislike],
                    acceptChat: [MChat],
+                   reports: [MReports],
                    complition: @escaping(Result<[MPeople], Error>)-> Void) {
         
         var peopleNearby: [MPeople] = []
+        
         let likeChatID = likeChat.map { chat -> String in
             chat.friendId
         }
@@ -30,8 +32,11 @@ extension FirestoreService {
         let peopleID = peoples.map { people -> String in
             people.senderId
         }
+        let reportsID = reports.map { report -> String in
+            report.reportUserID
+        }
         
-        var usersID = likeChatID + dislikeChatID + acceptChatID + peopleID
+        var usersID = likeChatID + dislikeChatID + acceptChatID + peopleID + reportsID
         usersID.append(currentPeople.senderId)
         
         

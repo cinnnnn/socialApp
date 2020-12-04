@@ -203,12 +203,14 @@ extension MainTabBarController {
         guard let peopleDelegate = peopleDelegate else { fatalError("peopleDelegate is nil")}
         guard let acceptChatsDelegate = acceptChatsDelegate else { fatalError("acceptChatsDelegate is nil")}
         guard let reportsDelegate = reportsDelegate else { fatalError("reportsDelegate is nil")}
+        guard let messageDelegate = messageDelegate else { fatalError("messageDelegate is nil")}
         
         let profileVC = ProfileViewController(currentPeople: currentPeople,
                                               peopleListnerDelegate: peopleDelegate,
                                               likeDislikeDelegate: likeDislikeDelegate,
                                               acceptChatsDelegate: acceptChatsDelegate,
-                                              requestChatsDelegate: requestChatsDelegate)
+                                              requestChatsDelegate: requestChatsDelegate,
+                                              reportsDelegate: reportsDelegate)
         
         let peopleVC = PeopleViewController(currentPeople: currentPeople,
                                             peopleDelegate: peopleDelegate,
@@ -231,7 +233,10 @@ extension MainTabBarController {
         let chatsVC = ChatsViewController(currentPeople: currentPeople,
                                           acceptChatDelegate: acceptChatsDelegate,
                                           likeDislikeDelegate: likeDislikeDelegate,
-                                          messageDelegate: messageDelegate)
+                                          messageDelegate: messageDelegate,
+                                          requestChatsDelegate: requestChatsDelegate,
+                                          peopleDelegate: peopleDelegate,
+                                          reportDelegate: reportsDelegate)
         
         acceptChatsDelegate.acceptChatCollectionViewDelegate = chatsVC
         

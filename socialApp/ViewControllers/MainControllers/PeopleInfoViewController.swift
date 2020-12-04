@@ -10,19 +10,31 @@ import UIKit
 
 class PeopleInfoViewController: UIViewController {
     
-    var peopleID: String
-    var withLikeButtons: Bool
+    private var peopleID: String
+    private var isFriend: Bool
+    private var currentPeople: MPeople
+    private var people: MPeople?
+    private let peopleView = PeopleView()
+    private let loadingView = LoadingView(name: "explore", isHidden: false)
+    
     weak var requestChatsDelegate: RequestChatListenerDelegate?
     weak var peopleDelegate: PeopleListenerDelegate?
+    weak var reportDelegate: ReportsListnerDelegate?
     
-    var currentPeople: MPeople?
-    var people: MPeople?
-    let peopleView = PeopleView()
-    let loadingView = LoadingView(name: "explore", isHidden: false)
-    
-    init(peopleID: String, withLikeButtons: Bool) {
+    init(currentPeople: MPeople,
+         peopleID: String,
+         isFriend: Bool,
+         requestChatsDelegate: RequestChatListenerDelegate?,
+         peopleDelegate: PeopleListenerDelegate?,
+         reportDelegate: ReportsListnerDelegate?) {
+        
+        self.currentPeople = currentPeople
         self.peopleID = peopleID
-        self.withLikeButtons = withLikeButtons
+        self.isFriend = isFriend
+        self.requestChatsDelegate = requestChatsDelegate
+        self.peopleDelegate = peopleDelegate
+        self.reportDelegate = reportDelegate
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -47,16 +59,13 @@ class PeopleInfoViewController: UIViewController {
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
-    func setup() {
+    private func setup() {
         view.backgroundColor = .myWhiteColor()
-        peopleView.animateLikeButton.isHidden = !withLikeButtons
-        peopleView.animateDislikeButton.isHidden = !withLikeButtons
-        peopleView.animateLikeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
-        peopleView.animateDislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
-        peopleView.timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
+        peopleView.animateLikeButton.isHidden = isFriend
+        peopleView.animateDislikeButton.isHidden = isFriend
+    
         peopleView.layoutIfNeeded()
         
-        currentPeople = UserDefaultsService.shared.getMpeople()
     }
     
     func configure() {
@@ -66,7 +75,10 @@ class PeopleInfoViewController: UIViewController {
             case .success(let mPeople):
                 guard let currentPeople = self?.currentPeople else { return }
                 self?.people = mPeople
-                self?.peopleView.configure(with: mPeople, currentPeople: currentPeople, showPrivatePhoto: true) {
+                self?.peopleView.configure(with: mPeople,
+                                           currentPeople: currentPeople,
+                                           showPrivatePhoto: true,
+                                           buttonDelegate: self) {
                     self?.loadingView.hide()
                 }
             case .failure(let error):
@@ -76,34 +88,10 @@ class PeopleInfoViewController: UIViewController {
     }
 }
 
-//MARK: obcj
-extension PeopleInfoViewController {
-    @objc private func likeTapped(sender: Any) {
-        guard let people = people,
-              let button = sender as? LikeDislikePeopleButton else {
-            return
-        }
-        button.play { [weak self] in
-            self?.likePeople(people: people)
-        }
-
-    }
-    
-    @objc private func dislikeTapped(sender: Any) {
-        guard let people = people,
-              let button = sender as? LikeDislikePeopleButton else {
-            return
-        }
-        button.play { [weak self] in
-            self?.dislikePeople(people: people)
-        }
-    }
-    
-}
 
 extension PeopleInfoViewController: PeopleButtonTappedDelegate {
     
-    @objc func timeTapped() {
+    func timeTapped() {
         PopUpService.shared.bottomPopUp(header: "Хочешь видеть время последней активности пользователя?",
                                         text: "Последняя активность, и многое другое с подпиской Flava Premium",
                                         image: nil,
@@ -117,10 +105,11 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
     }
     
      func likePeople(people: MPeople) {
-        guard let currentPeople = currentPeople else { return }
+        
         guard let requestChatsDelegate = requestChatsDelegate else { fatalError("Can't get requestChatsDelegate") }
         guard let peopleDelegate = peopleDelegate else {  fatalError("Can't get peopleDelegate")  }
-      
+        guard let reportDelegate = reportDelegate else {  fatalError("Can't get peopleDelegate")  }
+        
         //save like to firestore
         FirestoreService.shared.likePeople(currentPeople: currentPeople,
                                            likePeople: people,
@@ -141,12 +130,17 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
                 peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
                 
                 if isMatch {
+                    guard let currentPeople = self?.currentPeople else { return }
                     PopUpService.shared.showMatchPopUP(currentPeople: currentPeople,
                                                        chat: likeChat) { messageDelegate, acceptChatDelegate in
                         let chatVC = ChatViewController(people: currentPeople,
                                                         chat: likeChat,
                                                         messageDelegate: messageDelegate,
-                                                        acceptChatDelegate: acceptChatDelegate)
+                                                        acceptChatDelegate: acceptChatDelegate,
+                                                        reportDelegate: reportDelegate,
+                                                        peopleDelegate: peopleDelegate,
+                                                        requestDelegate: requestChatsDelegate)
+                        
                         chatVC.hidesBottomBarWhenPushed = true
                         self?.navigationController?.pushViewController(chatVC, animated: true)
                     }
@@ -158,7 +152,7 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
     }
     
      func dislikePeople(people: MPeople) {
-        guard let currentPeople = currentPeople else { return }
+        
         guard let requestChatsDelegate = requestChatsDelegate else { fatalError("Can't get requestChatsDelegate") }
         guard let peopleDelegate = peopleDelegate else {  fatalError("Can't get peopleDelegate")  }
         //save dislike from firestore
@@ -184,6 +178,18 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
                 fatalError(error.localizedDescription)
             }
         }
+    }
+    
+    func reportTapped(people: MPeople) {
+        print("report \(people.displayName)")
+        let reportVC = ReportViewController(currentUserID: currentPeople.senderId,
+                                            reportUserID: people.senderId,
+                                            isFriend: isFriend,
+                                            reportDelegate: reportDelegate,
+                                            peopleDelegate: peopleDelegate,
+                                            requestDelegate: requestChatsDelegate)
+        
+        navigationController?.pushViewController(reportVC, animated: true)
     }
 }
 

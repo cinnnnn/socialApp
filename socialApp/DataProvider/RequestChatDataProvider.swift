@@ -58,6 +58,7 @@ extension RequestChatDataProvider {
         }
         requestChatCollectionViewDelegate?.reloadData()
     }
+    
 }
 
 extension RequestChatDataProvider {
@@ -82,5 +83,15 @@ extension RequestChatDataProvider {
                 complition(.failure(error))
             }
         }
+    }
+    
+    //delete request
+    func deleteRequest(requestID: String) {
+        let requestIndex = requestChats.firstIndex { currentRequest -> Bool in
+            currentRequest.friendId == requestID
+        }
+        guard let index = requestIndex else { return }
+        requestChats.remove(at: index)
+        requestChatCollectionViewDelegate?.reloadData()
     }
 }

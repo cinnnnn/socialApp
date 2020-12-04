@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol LikeDislikePeopleButton {
+ protocol LikeDislikePeopleButton {
     var actionPeople: MPeople? { get set }
     func play(complition:@escaping()->())
 }

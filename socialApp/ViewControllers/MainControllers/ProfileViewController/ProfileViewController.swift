@@ -15,6 +15,7 @@ class ProfileViewController: UIViewController {
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var acceptChatsDelegate: AcceptChatListenerDelegate?
     weak var requestChatsDelegate: RequestChatListenerDelegate?
+    weak var reportsDelegate: ReportsListnerDelegate?
     
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsProfile, MProfileSettings>?
@@ -25,13 +26,15 @@ class ProfileViewController: UIViewController {
          peopleListnerDelegate: PeopleListenerDelegate?,
          likeDislikeDelegate: LikeDislikeListenerDelegate?,
          acceptChatsDelegate: AcceptChatListenerDelegate?,
-         requestChatsDelegate: RequestChatListenerDelegate?) {
+         requestChatsDelegate: RequestChatListenerDelegate?,
+         reportsDelegate: ReportsListnerDelegate) {
         
         self.currentPeople = currentPeople
         self.peopleListnerDelegate = peopleListnerDelegate
         self.likeDislikeDelegate = likeDislikeDelegate
         self.acceptChatsDelegate = acceptChatsDelegate
         self.requestChatsDelegate = requestChatsDelegate
+        self.reportsDelegate = reportsDelegate
         super.init(nibName: nil, bundle: nil)
         setupNotification()
     }
@@ -269,7 +272,8 @@ extension ProfileViewController: UICollectionViewDelegate {
                 let vc = EditSearchSettingsViewController(currentPeople: currentPeople,
                                                           peopleListnerDelegate: peopleListnerDelegate,
                                                           likeDislikeDelegate: likeDislikeDelegate,
-                                                          acceptChatsDelegate: acceptChatsDelegate)
+                                                          acceptChatsDelegate: acceptChatsDelegate,
+                                                          reportsDelegate: reportsDelegate)
                 vc.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(vc, animated: true)
                 

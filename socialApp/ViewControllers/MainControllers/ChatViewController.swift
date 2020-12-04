@@ -13,18 +13,31 @@ import InputBarAccessoryView
 
 class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
-    private let user:MPeople
+    private let currentPeople:MPeople
     private var chat:MChat
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
     weak var messageDelegate: MessageListenerDelegate?
+    weak var reportDelegate: ReportsListnerDelegate?
+    weak var peopleDelegate: PeopleListenerDelegate?
+    weak var requestDelegate: RequestChatListenerDelegate?
     
     lazy var isInitiateDeleteChat = false
     
-    init(people: MPeople, chat: MChat, messageDelegate: MessageListenerDelegate?, acceptChatDelegate: AcceptChatListenerDelegate?) {
-        self.user = people
+    init(people: MPeople,
+         chat: MChat,
+         messageDelegate: MessageListenerDelegate?,
+         acceptChatDelegate: AcceptChatListenerDelegate?,
+         reportDelegate: ReportsListnerDelegate?,
+         peopleDelegate: PeopleListenerDelegate?,
+         requestDelegate: RequestChatListenerDelegate?) {
+        
+        self.currentPeople = people
         self.chat = chat
         self.messageDelegate = messageDelegate
         self.acceptChatDelegate = acceptChatDelegate
+        self.reportDelegate = reportDelegate
+        self.peopleDelegate = peopleDelegate
+        self.requestDelegate = requestDelegate
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -83,7 +96,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     }
     
     private func readAllMessageInChat() {
-        FirestoreService.shared.readAllMessageInChat(userID: user.senderId, chat: chat) { _ in
+        FirestoreService.shared.readAllMessageInChat(userID: currentPeople.senderId, chat: chat) { _ in
         }
     }
     
@@ -170,7 +183,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     
     //MARK: showTimerPopUp
     private func showTimerPopUp() {
-        let strongUser = user
+        let strongUser = currentPeople
         let strongChat = chat
         var messageText = ""
         var okButtonText = ""
@@ -202,12 +215,12 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     //MARK: sendImage
     private func sendImage(image: UIImage) {
         StorageService.shared.uploadChatImage(image: image,
-                                              currentUserID: user.senderId,
+                                              currentUserID: currentPeople.senderId,
                                               chat: chat) {[weak self] result in
             switch result {
             
             case .success(let url):
-                guard let sender = self?.user else { return }
+                guard let sender = self?.currentPeople else { return }
                 guard let chat = self?.chat else { return }
                 var imageMessage = MMessage(user: sender, image: image)
                 imageMessage.imageURL = url
@@ -248,9 +261,9 @@ extension ChatViewController {
     //MARK: screenshotTaken
     @objc private func screenshotTaken(){
         
-        let text = user.displayName + MLabels.screenshotTaken.rawValue
+        let text = currentPeople.displayName + MLabels.screenshotTaken.rawValue
         
-        FirestoreService.shared.sendAdminMessage(currentUser: user,
+        FirestoreService.shared.sendAdminMessage(currentUser: currentPeople,
                                                  chat: chat,
                                                  text: text) {_ in}
     }
@@ -258,16 +271,21 @@ extension ChatViewController {
     //MARK: screenIsCaptured
     @objc private func screenIsCaptured(){
         
-        let text = user.displayName + MLabels.isCapturedScreen.rawValue
+        let text = currentPeople.displayName + MLabels.isCapturedScreen.rawValue
         
-        FirestoreService.shared.sendAdminMessage(currentUser: user,
+        FirestoreService.shared.sendAdminMessage(currentUser: currentPeople,
                                                  chat: chat,
                                                  text: text) {_ in}
     }
     
     //MARK: profileTapped
     @objc private func profileTapped() {
-        let profileVC = PeopleInfoViewController(peopleID: chat.friendId, withLikeButtons: false)
+        let profileVC = PeopleInfoViewController(currentPeople: currentPeople,
+                                                 peopleID: chat.friendId,
+                                                 isFriend: true,
+                                                 requestChatsDelegate: requestDelegate,
+                                                 peopleDelegate: peopleDelegate,
+                                                 reportDelegate: reportDelegate)
         profileVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(profileVC, animated: true)
     }
@@ -275,8 +293,13 @@ extension ChatViewController {
     //MARK: profileTapped
     @objc private func chatSettingsTapped() {
         
-        let settingsVC = SetupChatMenu(currentUser: user, chat: chat)
-        settingsVC.messageControllerDelegate = self
+        let settingsVC = SetupChatMenu(currentUser: currentPeople,
+                                       chat: chat,
+                                       reportDelegate: reportDelegate,
+                                       peopleDelegate: peopleDelegate,
+                                       requestDelegate: requestDelegate,
+                                       messageControllerDelegate: self)
+        
         settingsVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(settingsVC, animated: true)
     }
@@ -345,7 +368,7 @@ extension ChatViewController: UINavigationControllerDelegate {
 //MARK: MessagesDataSource
 extension ChatViewController: MessagesDataSource {
     func currentSender() -> SenderType {
-        user
+        currentPeople
     }
     
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
@@ -483,12 +506,12 @@ extension ChatViewController: MessageCellDelegate {
 extension ChatViewController: InputBarAccessoryViewDelegate {
     
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-        let sender = MSender(senderId: user.senderId, displayName: user.displayName)
+        let sender = MSender(senderId: currentPeople.senderId, displayName: currentPeople.displayName)
         let message = MMessage(user: sender, content: text)
         let strongChat = chat
-        let strongUser = user
+        let strongUser = currentPeople
         FirestoreService.shared.sendMessage(chat: chat,
-                                            currentUser: user,
+                                            currentUser: currentPeople,
                                             message: message) { result in
             switch result {
             

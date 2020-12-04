@@ -13,10 +13,25 @@ class SetupChatMenu: UniversalTableView {
     let currentUser: MPeople
     var chat: MChat
     weak var messageControllerDelegate: MessageControllerDelegate?
+    weak var reportDelegate: ReportsListnerDelegate?
+    weak var peopleDelegate: PeopleListenerDelegate?
+    weak var requestDelegate: RequestChatListenerDelegate?
     
-    init(currentUser:MPeople, chat: MChat) {
+    init(currentUser:MPeople,
+         chat: MChat,
+         reportDelegate: ReportsListnerDelegate?,
+         peopleDelegate: PeopleListenerDelegate?,
+         requestDelegate: RequestChatListenerDelegate?,
+         messageControllerDelegate: MessageControllerDelegate?
+        ) {
+        
         self.currentUser = currentUser
         self.chat = chat
+        self.reportDelegate = reportDelegate
+        self.peopleDelegate = peopleDelegate
+        self.requestDelegate = requestDelegate
+        self.messageControllerDelegate = messageControllerDelegate
+        
         super.init()
     }
     
@@ -113,7 +128,10 @@ extension SetupChatMenu {
         case .reportUser:
             let reportVC = ReportViewController(currentUserID: currentUser.senderId,
                                                 reportUserID: chat.friendId,
-                                                isFriend: true)
+                                                isFriend: true,
+                                                reportDelegate: reportDelegate,
+                                                peopleDelegate: peopleDelegate,
+                                                requestDelegate: requestDelegate)
             reportVC.messageControllerDelegate = messageControllerDelegate
             navigationController?.pushViewController(reportVC, animated: true)
             tableView.deselectRow(at: indexPath, animated: true)

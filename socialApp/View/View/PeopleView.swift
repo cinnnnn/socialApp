@@ -48,6 +48,10 @@ class PeopleView: UIView {
                                    textColor: .myGrayColor())
     let animateDislikeButton = AnimateDislikeButton()
     let animateLikeButton = AnimateLikeButton()
+    let reportButton = ReportPeopleOneLineButton(info: "Пожаловаться",
+                                                 textColor: .myLabelColor())
+    
+    weak var buttonDelegate: PeopleButtonTappedDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -59,13 +63,57 @@ class PeopleView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: setup
     private func setup() {
         scrollView.updateContentView()
         scrollView.showsVerticalScrollIndicator = false
+        
+        animateLikeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
+        animateDislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
+        timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
+        reportButton.addTarget(self, action: #selector(reportTapped(sender:)), for: .touchUpInside)
     }
     
+    
+    //MARK: objc
+    @objc private func likeTapped(sender: Any) {
+        guard let sender = sender as? LikeDislikePeopleButton else { return }
+        guard let people = sender.actionPeople else { return }
+        
+        sender.play { [weak self] in
+            self?.buttonDelegate?.likePeople(people: people)
+        }
+       
+    }
+    
+    @objc private func dislikeTapped(sender: Any) {
+        guard let sender = sender as? LikeDislikePeopleButton else { return }
+        guard let people = sender.actionPeople else { return }
+        
+        sender.play { [weak self] in
+            self?.buttonDelegate?.dislikePeople(people: people)
+        }
+    }
+    
+    @objc private func timeTapped() {
+        buttonDelegate?.timeTapped()
+    }
+    
+    @objc private func reportTapped(sender: Any) {
+        guard let sender = sender as? ReportPeopleButton else { return }
+        guard let people = sender.people else { return }
+        buttonDelegate?.reportTapped(people: people)
+    }
+  
     //MARK: configure
-    func configure(with value: MPeople, currentPeople: MPeople, showPrivatePhoto: Bool, complition: @escaping()-> Void) {
+    func configure(with value: MPeople,
+                   currentPeople: MPeople,
+                   showPrivatePhoto: Bool,
+                   buttonDelegate: PeopleButtonTappedDelegate?,
+                   complition: @escaping()-> Void) {
+        
+        self.buttonDelegate = buttonDelegate
+        
         peopleName.text = value.displayName
         
         if value.isGoldMember ||  value.isTestUser{
@@ -100,6 +148,7 @@ class PeopleView: UIView {
         //setup LikeDislikePeopleButton
         animateLikeButton.actionPeople = value
         animateDislikeButton.actionPeople = value
+        reportButton.people = value
         
         //setup location
         let locationIndex = value.searchSettings[MSearchSettings.currentLocation.rawValue] ?? MSearchSettings.currentLocation.defaultValue
@@ -140,7 +189,6 @@ class PeopleView: UIView {
         } else {
             desiresLabel.text = value.desires.joined(separator: ", ")
         }
-      
     }
     
     //prepareForRenew
@@ -181,6 +229,7 @@ extension PeopleView {
         scrollView.addSubview(interestLabel)
         scrollView.addSubview(desiresHeader)
         scrollView.addSubview(desiresLabel)
+        scrollView.addSubview(reportButton)
         addSubview(animateLikeButton)
         addSubview(animateDislikeButton)
         
@@ -199,6 +248,7 @@ extension PeopleView {
         interestLabel.translatesAutoresizingMaskIntoConstraints = false
         desiresHeader.translatesAutoresizingMaskIntoConstraints = false
         desiresLabel.translatesAutoresizingMaskIntoConstraints = false
+        reportButton.translatesAutoresizingMaskIntoConstraints = false
         animateLikeButton.translatesAutoresizingMaskIntoConstraints = false
         animateDislikeButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -258,6 +308,9 @@ extension PeopleView {
             desiresLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             desiresLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             desiresLabel.topAnchor.constraint(equalTo: desiresHeader.bottomAnchor, constant: 10),
+            
+            reportButton.leadingAnchor.constraint(equalTo: leadingAnchor),
+            reportButton.topAnchor.constraint(equalTo: desiresLabel.bottomAnchor, constant: 40),
             
             animateLikeButton.trailingAnchor.constraint(equalTo: galleryScrollView.trailingAnchor),
             animateLikeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),

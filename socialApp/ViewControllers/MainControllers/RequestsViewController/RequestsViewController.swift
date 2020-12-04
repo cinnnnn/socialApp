@@ -113,7 +113,8 @@ class RequestsViewController: UIViewController {
         let searchVC = EditSearchSettingsViewController(currentPeople: currentPeople,
                                                         peopleListnerDelegate: peopleDelegate,
                                                         likeDislikeDelegate: likeDislikeDelegate,
-                                                        acceptChatsDelegate: acceptChatDelegate)
+                                                        acceptChatsDelegate: acceptChatDelegate,
+                                                        reportsDelegate: reportDelegate)
         searchVC.hidesBottomBarWhenPushed = true
         searchVC.navigationController?.setNavigationBarHidden(false, animated: true)
         navigationController?.pushViewController(searchVC, animated: true)
@@ -281,9 +282,13 @@ extension RequestsViewController: UICollectionViewDelegate {
         switch section {
         case .requestChats:
             if currentPeople.isGoldMember || currentPeople.isTestUser {
-                let peopleVC = PeopleInfoViewController(peopleID: item.friendId, withLikeButtons: true)
-                peopleVC.requestChatsDelegate = requestChatDelegate
-                peopleVC.peopleDelegate = peopleDelegate
+                let peopleVC = PeopleInfoViewController(currentPeople: currentPeople,
+                                                        peopleID: item.friendId,
+                                                        isFriend: false,
+                                                        requestChatsDelegate: requestChatDelegate,
+                                                        peopleDelegate: peopleDelegate,
+                                                        reportDelegate: reportDelegate)
+            
                 peopleVC.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(peopleVC, animated: true)
             } else {

@@ -26,16 +26,25 @@ class ChatsViewController: UIViewController {
     weak var acceptChatDelegate: AcceptChatListenerDelegate?
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var messageDelegate: MessageListenerDelegate?
+    weak var requestChatsDelegate: RequestChatListenerDelegate?
+    weak var peopleDelegate: PeopleListenerDelegate?
+    weak var reportDelegate: ReportsListnerDelegate?
     
     init(currentPeople: MPeople,
          acceptChatDelegate: AcceptChatListenerDelegate?,
          likeDislikeDelegate: LikeDislikeListenerDelegate?,
-         messageDelegate: MessageListenerDelegate?) {
+         messageDelegate: MessageListenerDelegate?,
+         requestChatsDelegate: RequestChatListenerDelegate?,
+         peopleDelegate: PeopleListenerDelegate?,
+         reportDelegate: ReportsListnerDelegate?) {
         
         self.currentPeople = currentPeople
         self.acceptChatDelegate = acceptChatDelegate
         self.likeDislikeDelegate = likeDislikeDelegate
         self.messageDelegate = messageDelegate
+        self.requestChatsDelegate = requestChatsDelegate
+        self.peopleDelegate = peopleDelegate
+        self.reportDelegate = reportDelegate
         
         super.init(nibName: nil, bundle: nil)
         setupListeners()
@@ -393,7 +402,10 @@ extension ChatsViewController: UICollectionViewDelegate {
             let chatVC = ChatViewController(people: currentPeople,
                                             chat: item,
                                             messageDelegate: messageDelegate,
-                                            acceptChatDelegate: acceptChatDelegate)
+                                            acceptChatDelegate: acceptChatDelegate,
+                                            reportDelegate: reportDelegate,
+                                            peopleDelegate: peopleDelegate,
+                                            requestDelegate: requestChatsDelegate)
             chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
             FirestoreService.shared.updateLastActiveDate(id: currentPeople.senderId)
@@ -403,7 +415,10 @@ extension ChatsViewController: UICollectionViewDelegate {
             let chatVC = ChatViewController(people: currentPeople,
                                             chat: item,
                                             messageDelegate: messageDelegate,
-                                            acceptChatDelegate: acceptChatDelegate)
+                                            acceptChatDelegate: acceptChatDelegate,
+                                            reportDelegate: reportDelegate,
+                                            peopleDelegate: peopleDelegate,
+                                            requestDelegate: requestChatsDelegate)
             chatVC.acceptChatDelegate = acceptChatDelegate
             navigationController?.pushViewController(chatVC, animated: true)
             FirestoreService.shared.updateLastActiveDate(id: currentPeople.senderId)

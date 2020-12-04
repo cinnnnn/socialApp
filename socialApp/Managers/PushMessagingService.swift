@@ -58,7 +58,7 @@ class PushMessagingService: NSObject {
             if let data = data {
                 do {
                     let jsonData = try JSONSerialization.jsonObject(with: data, options: [.allowFragments])
-                    print("Data received \(jsonData)")
+                   // print("Data received \(jsonData)")
                     
                 } catch {
                     print(error.localizedDescription)
@@ -182,7 +182,6 @@ extension PushMessagingService {
                     isMutableContent: "true",
                     data: nil)
     }
-    
 }
 
 

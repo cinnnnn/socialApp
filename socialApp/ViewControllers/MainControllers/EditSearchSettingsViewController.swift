@@ -14,6 +14,7 @@ class EditSearchSettingsViewController: UIViewController {
     weak var peopleListnerDelegate: PeopleListenerDelegate?
     weak var likeDislikeDelegate: LikeDislikeListenerDelegate?
     weak var acceptChatsDelegate: AcceptChatListenerDelegate?
+    weak var reportsDelegate: ReportsListnerDelegate?
     
     let distanceLabel = UILabel(labelText: "Максимальное расстояние поиска:",
                                 textFont: .avenirRegular(size: 16),
@@ -38,11 +39,13 @@ class EditSearchSettingsViewController: UIViewController {
     init(currentPeople: MPeople,
          peopleListnerDelegate: PeopleListenerDelegate?,
          likeDislikeDelegate: LikeDislikeListenerDelegate?,
-         acceptChatsDelegate: AcceptChatListenerDelegate?) {
+         acceptChatsDelegate: AcceptChatListenerDelegate?,
+         reportsDelegate: ReportsListnerDelegate?) {
         
         self.peopleListnerDelegate = peopleListnerDelegate
         self.likeDislikeDelegate = likeDislikeDelegate
         self.acceptChatsDelegate = acceptChatsDelegate
+        self.reportsDelegate = reportsDelegate
         self.currentPeople = currentPeople
         super.init(nibName: nil, bundle: nil)
     }
@@ -159,6 +162,7 @@ class EditSearchSettingsViewController: UIViewController {
         
         guard let strongLikeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
         guard let strongAcceptChatsDelegate = acceptChatsDelegate else { fatalError("Can't get acceptChatsDelegate")}
+        guard let strongReportsDelegate = reportsDelegate else { fatalError("Can't get reportsDelegate")}
         
         LocationService.shared.getCoordinate(userID: currentPeople.senderId,
                                              virtualLocation: virtualLocation) { [weak self] isAllowPermission in
@@ -185,6 +189,7 @@ class EditSearchSettingsViewController: UIViewController {
                 self?.peopleListnerDelegate?.reloadPeople(currentPeople: mPeople,
                                                           likeDislikeDelegate: strongLikeDislikeDelegate,
                                                           acceptChatsDelegate: strongAcceptChatsDelegate,
+                                                          reportsDelegate: strongReportsDelegate,
                                                           complition: { _ in })
             case .failure(let error):
                 fatalError(error.localizedDescription)
