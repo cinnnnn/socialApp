@@ -149,11 +149,6 @@ protocol PeopleListenerDelegate: class {
                    acceptChatsDelegate: AcceptChatListenerDelegate,
                    reportsDelegate: ReportsListnerDelegate,
                    complition: @escaping (Result<[MPeople], Error>) -> Void)
-    func reloadPeople(currentPeople: MPeople,
-                    likeDislikeDelegate: LikeDislikeListenerDelegate,
-                    acceptChatsDelegate: AcceptChatListenerDelegate,
-                    reportsDelegate: ReportsListnerDelegate,
-                    complition: @escaping (Result<[MPeople], Error>) -> Void)
     //work with collectionView
     func updateData()
     func reloadData(reloadSection: Bool, animating: Bool)

@@ -186,11 +186,11 @@ class EditSearchSettingsViewController: UIViewController {
             
             case .success(let mPeople):
                 //reload people
-                self?.peopleListnerDelegate?.reloadPeople(currentPeople: mPeople,
-                                                          likeDislikeDelegate: strongLikeDislikeDelegate,
-                                                          acceptChatsDelegate: strongAcceptChatsDelegate,
-                                                          reportsDelegate: strongReportsDelegate,
-                                                          complition: { _ in })
+                self?.peopleListnerDelegate?.getPeople(currentPeople: mPeople,
+                                                       likeDislikeDelegate: strongLikeDislikeDelegate,
+                                                       acceptChatsDelegate: strongAcceptChatsDelegate,
+                                                       reportsDelegate: strongReportsDelegate,
+                                                       complition: { _ in })
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }

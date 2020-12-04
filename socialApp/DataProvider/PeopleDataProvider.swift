@@ -62,30 +62,6 @@ extension PeopleDataProvider {
         }
     }
     
-    func reloadPeople(currentPeople: MPeople,
-                    likeDislikeDelegate: LikeDislikeListenerDelegate,
-                    acceptChatsDelegate: AcceptChatListenerDelegate,
-                    reportsDelegate: ReportsListnerDelegate,
-                    complition: @escaping (Result<[MPeople], Error>) -> Void) {
-        peopleNearby = []
-        getPeople(currentPeople: currentPeople,
-                  likeDislikeDelegate: likeDislikeDelegate,
-                  acceptChatsDelegate: acceptChatsDelegate,
-                  reportsDelegate: reportsDelegate) {[weak self] result in
-            switch result {
-            
-            case .success(let peoples):
-                self?.peopleNearby = peoples
-                
-                //if peoples count 1, need reload section to correct update collectionView
-                self?.reloadData(reloadSection: peoples.count == 1 ? true : false, animating: false)
-                complition(.success(peoples))
-            case .failure(let error):
-                complition(.failure(error))
-            }
-        }
-    }
-    
     //delete people
     func deletePeople(peopleID: String) {
         let peopleIndex = peopleNearby.firstIndex { currentPeople -> Bool in

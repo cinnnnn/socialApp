@@ -57,7 +57,7 @@ class PushMessagingService: NSObject {
         let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
             if let data = data {
                 do {
-                    let jsonData = try JSONSerialization.jsonObject(with: data, options: [.allowFragments])
+                    let _ = try JSONSerialization.jsonObject(with: data, options: [.allowFragments])
                    // print("Data received \(jsonData)")
                     
                 } catch {
