@@ -17,11 +17,19 @@ extension NotificationCenter {
         NotificationCenter.default.post(name: NSNotification.Name("premiumUpdate"), object: nil)
     }
     
+    static func postSearchSettingsNeedUpdate() {
+        NotificationCenter.default.post(name: NSNotification.Name("searchSettingsUpdate"), object: nil)
+    }
+    
     static func addObsorverToCurrentUser(observer: Any, selector: Selector) {
         NotificationCenter.default.addObserver(observer, selector: selector, name: NSNotification.Name("currentUser"), object: nil)
     }
     
     static func addObsorverToPremiumUpdate(observer: Any, selector: Selector) {
         NotificationCenter.default.addObserver(observer, selector: selector, name: NSNotification.Name("premiumUpdate"), object: nil)
+    }
+    
+    static func addObsorverToSearchSettingsNeedUpdate(observer: Any, selector: Selector) {
+        NotificationCenter.default.addObserver(observer, selector: selector, name: NSNotification.Name("searchSettingsUpdate"), object: nil)
     }
 }

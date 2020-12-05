@@ -24,7 +24,6 @@ class PeopleDataProvider: PeopleListenerDelegate {
         self.userID = userID
     }
     
-    
     //MARK: work with collectionView
     func updateData() {
         peopleCollectionViewDelegate?.updateData()

@@ -111,9 +111,9 @@ extension ProfileViewController {
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                        leading: 25,
+                                                        leading: 20,
                                                         bottom: 0,
-                                                        trailing: 25)
+                                                        trailing: 20)
         
         return section
     }
@@ -130,9 +130,9 @@ extension ProfileViewController {
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                        leading: 25,
+                                                        leading: 20,
                                                         bottom: 25,
-                                                        trailing: 25)
+                                                        trailing: 20)
         
         return section
     }
@@ -150,9 +150,9 @@ extension ProfileViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 10
         section.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                        leading: 25,
+                                                        leading: 20,
                                                         bottom: 0,
-                                                        trailing: 25)
+                                                        trailing: 20)
         
         return section
     }
@@ -221,8 +221,6 @@ extension ProfileViewController {
         snapshot.reloadSections([ .profile, .premium])
         
         dataSource?.apply(snapshot,animatingDifferences: true)
-        
-        print("update profile\(currentPeople.isGoldMember) \(currentPeople.isTestUser)")
     }
     
     //MARK: updateDataSource
@@ -339,7 +337,7 @@ extension ProfileViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)

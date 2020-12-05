@@ -21,7 +21,7 @@ class PeopleView: UIView {
                               textColor: .mySecondSatColor(),
                               aligment: .left,
                               linesCount: 0)
-    private var advertLabel = UILabel(labelText: "",
+    private var advertLabel = UILabel(labelText: " ",
                               textFont: .avenirRegular(size: 16),
                               textColor: .myLabelColor(),
                               aligment: .left,
@@ -36,20 +36,22 @@ class PeopleView: UIView {
     private let desiresHeader = UILabel(labelText: "Желания",
                                 textFont: .avenirRegular(size: 14),
                                 textColor: .myGrayColor())
-    private let interestLabel = UILabel(labelText: "",
+    private let interestLabel = UILabel(labelText: " ",
                                 textFont: .avenirRegular(size: 16),
                                 textColor: .myLabelColor(),
                                 linesCount: 0)
-    private let desiresLabel = UILabel(labelText: "",
+    private let desiresLabel = UILabel(labelText: " ",
                                textFont: .avenirRegular(size: 16),
                                textColor: .myLabelColor(),
                                linesCount: 0)
+    private var reportTopConstraint: NSLayoutConstraint?
     let timeButton = OneLineButton(info: "Последняя активность",
                                    textColor: .myGrayColor())
     let animateDislikeButton = AnimateDislikeButton()
     let animateLikeButton = AnimateLikeButton()
     let reportButton = ReportPeopleOneLineButton(info: "Пожаловаться",
-                                                 textColor: .myLabelColor())
+                                                 textColor: .myLabelColor(),
+                                                 lineColor: .myLabelColor())
     
     weak var buttonDelegate: PeopleButtonTappedDelegate?
     
@@ -65,9 +67,9 @@ class PeopleView: UIView {
     
     //MARK: setup
     private func setup() {
-        scrollView.updateContentView()
-        scrollView.showsVerticalScrollIndicator = false
         
+        scrollView.showsVerticalScrollIndicator = false
+        galleryScrollView.layer.cornerRadius = 0
         animateLikeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
         animateDislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
         timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
@@ -83,7 +85,6 @@ class PeopleView: UIView {
         sender.play { [weak self] in
             self?.buttonDelegate?.likePeople(people: people)
         }
-       
     }
     
     @objc private func dislikeTapped(sender: Any) {
@@ -109,8 +110,14 @@ class PeopleView: UIView {
     func configure(with value: MPeople,
                    currentPeople: MPeople,
                    showPrivatePhoto: Bool,
+                   withStatusBar: Bool = true,
                    buttonDelegate: PeopleButtonTappedDelegate?,
                    complition: @escaping()-> Void) {
+        
+        if !withStatusBar {
+            let statusBarHieght = UIApplication.statusBarHeight
+            scrollView.contentInset = UIEdgeInsets(top: -statusBarHieght, left: 0, bottom: 0, right: 0)
+        }
         
         self.buttonDelegate = buttonDelegate
         
@@ -140,6 +147,7 @@ class PeopleView: UIView {
             .paragraphStyle : paragraph
         ]
         
+        
         advertLabel.attributedText = NSMutableAttributedString(string: value.advert, attributes: attributes)
         
         //setup info
@@ -165,20 +173,22 @@ class PeopleView: UIView {
         //setup last active date
         if currentPeople.isGoldMember || currentPeople.isTestUser {
             if value.lastActiveDate.checkIsToday() {
-                timeButton.infoLabel.text = "Недавняя активность в \(value.lastActiveDate.getFormattedDate(format: "HH:mm", withTime: true))"
+                timeButton.setText(text: "Недавняя активность в \(value.lastActiveDate.getFormattedDate(format: "HH:mm", withTime: true))")
             } else {
-                timeButton.infoLabel.text = "Последняя активность: \(value.lastActiveDate.getShortFormattedDate())"
+                timeButton.setText(text: "Последняя активность: \(value.lastActiveDate.getShortFormattedDate())")
             }
             timeButton.isEnabled = false
         } else {
-            timeButton.infoLabel.text = "Последняя активность"
+            timeButton.setText(text: "Последняя активность")
             timeButton.isEnabled = true
         }
         
         //setup interests
         if value.interests.isEmpty{
             interestsHeader.text = ""
+            interestLabel.text = ""
         } else {
+            interestsHeader.text = "Интересы"
             interestLabel.text = value.interests.joined(separator: ", ")
         }
         
@@ -186,19 +196,22 @@ class PeopleView: UIView {
         //setup desires
         if value.desires.isEmpty {
             desiresHeader.text = ""
+            desiresLabel.text = ""
         } else {
+            desiresHeader.text = "Желания"
             desiresLabel.text = value.desires.joined(separator: ", ")
         }
+       
     }
     
     //prepareForRenew
     func prepareForRenew() {
-        interestsHeader.text = "Интересы"
-        desiresHeader.text = "Желания"
-        interestLabel.text = ""
-        desiresLabel.text = ""
+//        interestsHeader.text = "Интересы"
+//        desiresHeader.text = "Желания"
+//        interestLabel.text = " "
+//        desiresLabel.text = " "
         galleryScrollView.prepareReuseScrollView()
-        advertLabel.text = ""
+ //      advertLabel.text = " "
         animateDislikeButton.setupFirstFrame()
         animateDislikeButton.setupFirstFrame()
     }
@@ -206,7 +219,7 @@ class PeopleView: UIView {
     //layoutSubviews
     override func layoutSubviews() {
         super.layoutSubviews()
-        scrollView.updateContentView(bottomOffset: 60)
+       // scrollView.updateContentView(bottomOffset: 0)
     }
 }
 
@@ -263,15 +276,15 @@ extension PeopleView {
             galleryScrollView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             galleryScrollView.heightAnchor.constraint(equalTo: galleryScrollView.widthAnchor, multiplier: 1.2),
             
-            peopleName.leadingAnchor.constraint(equalTo: leadingAnchor),
-            peopleName.trailingAnchor.constraint(equalTo: trailingAnchor),
+            peopleName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            peopleName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             peopleName.topAnchor.constraint(equalTo: galleryScrollView.bottomAnchor, constant: 10),
             
             infoPremium.topAnchor.constraint(equalTo: peopleName.bottomAnchor),
             infoPremium.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
             infoPremium.trailingAnchor.constraint(equalTo: peopleName.trailingAnchor),
             
-            infoImage.leadingAnchor.constraint(equalTo: leadingAnchor),
+            infoImage.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
             infoImage.topAnchor.constraint(equalTo: infoPremium.bottomAnchor, constant: 10),
             
             infoLabel.leadingAnchor.constraint(equalTo: infoImage.trailingAnchor, constant: 7),
@@ -289,31 +302,32 @@ extension PeopleView {
             timeButton.leadingAnchor.constraint(equalTo: timeImage.trailingAnchor, constant: 7),
             timeButton.topAnchor.constraint(equalTo: distanceLabel.bottomAnchor),
             
-            advertLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            advertLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            advertLabel.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
+            advertLabel.trailingAnchor.constraint(equalTo: peopleName.trailingAnchor),
             advertLabel.topAnchor.constraint(equalTo: timeButton.bottomAnchor, constant: 10),
             
-            interestsHeader.leadingAnchor.constraint(equalTo: leadingAnchor),
-            interestsHeader.trailingAnchor.constraint(equalTo: trailingAnchor),
+            interestsHeader.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
+            interestsHeader.trailingAnchor.constraint(equalTo: peopleName.trailingAnchor),
             interestsHeader.topAnchor.constraint(equalTo: advertLabel.bottomAnchor, constant: 20),
             
-            interestLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            interestLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            interestLabel.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
+            interestLabel.trailingAnchor.constraint(equalTo: peopleName.trailingAnchor),
             interestLabel.topAnchor.constraint(equalTo: interestsHeader.bottomAnchor, constant: 10),
             
-            desiresHeader.leadingAnchor.constraint(equalTo: leadingAnchor),
-            desiresHeader.trailingAnchor.constraint(equalTo: trailingAnchor),
+            desiresHeader.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
+            desiresHeader.trailingAnchor.constraint(equalTo: peopleName.trailingAnchor),
             desiresHeader.topAnchor.constraint(equalTo: interestLabel.bottomAnchor, constant: 20),
             
-            desiresLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            desiresLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            desiresLabel.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
+            desiresLabel.trailingAnchor.constraint(equalTo: peopleName.trailingAnchor),
             desiresLabel.topAnchor.constraint(equalTo: desiresHeader.bottomAnchor, constant: 10),
             
-            reportButton.leadingAnchor.constraint(equalTo: leadingAnchor),
-            reportButton.topAnchor.constraint(equalTo: desiresLabel.bottomAnchor, constant: 40),
+            reportButton.leadingAnchor.constraint(equalTo: peopleName.leadingAnchor),
+            reportButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
-            animateLikeButton.trailingAnchor.constraint(equalTo: galleryScrollView.trailingAnchor),
-            animateLikeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
+            
+            animateLikeButton.trailingAnchor.constraint(equalTo: peopleName.trailingAnchor ),
+            animateLikeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40),
             animateLikeButton.heightAnchor.constraint(equalTo: galleryScrollView.widthAnchor, multiplier: 0.15),
             animateLikeButton.widthAnchor.constraint(equalTo: animateLikeButton.heightAnchor),
             
@@ -322,6 +336,9 @@ extension PeopleView {
             animateDislikeButton.heightAnchor.constraint(equalTo: galleryScrollView.widthAnchor, multiplier: 0.15),
             animateDislikeButton.widthAnchor.constraint(equalTo: animateDislikeButton.heightAnchor),
         ])
+        
+        reportTopConstraint = reportButton.topAnchor.constraint(equalTo: desiresLabel.bottomAnchor, constant: 30)
+        reportTopConstraint?.isActive = true
     }
 }
 

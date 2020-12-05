@@ -156,6 +156,7 @@ class FirestoreService {
                     }
                     UserDefaultsService.shared.saveMpeople(people: people)
                     NotificationCenter.postCurrentUserNeedUpdate()
+                    NotificationCenter.postSearchSettingsNeedUpdate()
                 }
             }
         }
@@ -325,6 +326,7 @@ class FirestoreService {
                                                         people.lastActiveDate = Date()
                                                         UserDefaultsService.shared.saveMpeople(people: people)
                                                         NotificationCenter.postCurrentUserNeedUpdate()
+                                                        NotificationCenter.postSearchSettingsNeedUpdate()
                                                         complition(.success(people))
                                                     } else {
                                                         complition(.failure(UserDefaultsError.cantGetData))

@@ -31,6 +31,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<SectionsPeople, MPeople>?
 
+    
     init(currentPeople: MPeople,
          peopleDelegate: PeopleListenerDelegate?,
          requestChatDelegate: RequestChatListenerDelegate?,
@@ -55,6 +56,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +85,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     private func setupNotification() {
         NotificationCenter.addObsorverToCurrentUser(observer: self, selector: #selector(updateCurrentPeople))
         NotificationCenter.addObsorverToPremiumUpdate(observer: self, selector: #selector(premiumIsUpdated))
+        NotificationCenter.addObsorverToSearchSettingsNeedUpdate(observer: self, selector: #selector(changeSearchSettings))
     }
     
     //MARK: getPeople
@@ -110,13 +113,14 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.bounds,
                                           collectionViewLayout: setupCompositionLayout())
-        
-        collectionView.backgroundColor = nil
+        collectionView.backgroundColor = .myWhiteColor()
         collectionView.delegate = self
         collectionView.isScrollEnabled = false
         collectionView.isPagingEnabled = false
-        collectionView.alwaysBounceVertical = false
+        collectionView.bounces = false
         
+        let statusBarHieght = UIApplication.statusBarHeight
+        collectionView.contentInset = UIEdgeInsets(top: -statusBarHieght, left: 0, bottom: 0, right: 0)
         collectionView.register(PeopleCell.self,
                                 forCellWithReuseIdentifier: PeopleCell.reuseID)
         collectionView.register(SectionHeader.self,
@@ -131,26 +135,23 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9),
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                heightDimension: .fractionalHeight(1))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
-                                                     subitems: [item])
+                                                       subitem: item,
+                                                       count: 1)
         
     
         let section = NSCollectionLayoutSection(group: group)
         
-        section.orthogonalScrollingBehavior = .groupPaging
-        section.interGroupSpacing = 40
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                        leading: 20,
-                                                        bottom: 0,
-                                                        trailing: 20)
-        
-        section.visibleItemsInvalidationHandler = { [weak self] visibleItems, point, environment in
+        section.orthogonalScrollingBehavior = .groupPagingCentered
 
-            self?.setUIForVisibleCells(items: visibleItems, point: point, enviroment: environment)
-            
-        }
+        
+//        section.visibleItemsInvalidationHandler = { [weak self] visibleItems, point, environment in
+//
+//            self?.setUIForVisibleCells(items: visibleItems, point: point, enviroment: environment)
+//            
+//        }
         return section
     }
     
@@ -180,7 +181,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                     if let currentPeople = self?.currentPeople {
                         cell.configure(with: people, currentPeople: currentPeople, buttonDelegate: self)
                         {
-                            cell.setNeedsLayout()
+                           // cell.setNeedsLayout()
                         }
                     }
                     return cell
@@ -216,6 +217,21 @@ extension PeopleViewController {
     //MARK: premiumIsUpdated
     @objc private func premiumIsUpdated() {
         reloadData(reloadSection: true, animating: false)
+    }
+    
+    @objc private func changeSearchSettings() {
+        guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislikeDelegate is nil") }
+        guard let acceptChatDelegate = acceptChatDelegate else { fatalError("acceptChatDelegate is nil") }
+        guard let reportDelegate = reportDelegate else { fatalError("reportDelegate is nil") }
+        
+        if let people = UserDefaultsService.shared.getMpeople() {
+            currentPeople = people
+            peopleDelegate?.getPeople(currentPeople: people,
+                                      likeDislikeDelegate: likeDislikeDelegate,
+                                      acceptChatsDelegate: acceptChatDelegate,
+                                      reportsDelegate: reportDelegate,
+                                      complition: { _ in })
+        }
     }
     
     //MARK: checkPeopleNearbyIsEmpty
@@ -420,17 +436,15 @@ extension PeopleViewController {
         view.addSubview(collectionView)
         view.addSubview(emptyView)
         
-        
-        
         NSLayoutConstraint.activate([
-            emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             emptyView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }

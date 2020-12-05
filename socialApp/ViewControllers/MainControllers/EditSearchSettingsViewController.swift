@@ -160,10 +160,6 @@ class EditSearchSettingsViewController: UIViewController {
         let currentLocationIndex = MVirtualLocation.index(location: newLocation)
         guard let virtualLocation = MVirtualLocation(rawValue: currentLocationIndex) else { return }
         
-        guard let strongLikeDislikeDelegate = likeDislikeDelegate else { fatalError("Can't get likeDislikeDelegate")}
-        guard let strongAcceptChatsDelegate = acceptChatsDelegate else { fatalError("Can't get acceptChatsDelegate")}
-        guard let strongReportsDelegate = reportsDelegate else { fatalError("Can't get reportsDelegate")}
-        
         LocationService.shared.getCoordinate(userID: currentPeople.senderId,
                                              virtualLocation: virtualLocation) { [weak self] isAllowPermission in
            //if permission deniy, open settings
@@ -181,20 +177,7 @@ class EditSearchSettingsViewController: UIViewController {
                                                    maxRange: maxRange,
                                                    currentLocation: currentLocationIndex,
                                                    lookingFor: lookingFor,
-                                                   onlyActive: onlyActive) {[weak self] result in
-            switch result {
-            
-            case .success(let mPeople):
-                //reload people
-                self?.peopleListnerDelegate?.getPeople(currentPeople: mPeople,
-                                                       likeDislikeDelegate: strongLikeDislikeDelegate,
-                                                       acceptChatsDelegate: strongAcceptChatsDelegate,
-                                                       reportsDelegate: strongReportsDelegate,
-                                                       complition: { _ in })
-            case .failure(let error):
-                fatalError(error.localizedDescription)
-            }
-        }
+                                                   onlyActive: onlyActive) { _ in }
     }
 }
 

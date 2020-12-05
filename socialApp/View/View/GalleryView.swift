@@ -117,7 +117,7 @@ class GalleryView: UIView {
         }
         
         scrollView.contentSize.height = frame.height * CGFloat(countOfView)
-        layer.cornerRadius = frame.width / MDefaultLayer.widthMultiplier.rawValue / 2
+        
     }
 }
 

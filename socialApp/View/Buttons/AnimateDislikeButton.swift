@@ -47,12 +47,13 @@ extension AnimateDislikeButton {
     
     private func setup() {
         backgroundColor = UIColor.myLightGrayColor().withAlphaComponent(0.5)
-        clipsToBounds = true
+
         animationImage.isUserInteractionEnabled = false
         animationImage.animation = Animation.named("crossReady")
         animationImage.loopMode = .playOnce
-        animationImage.animationSpeed = 1.5
+        animationImage.animationSpeed = 2
         animationImage.contentMode = .scaleAspectFit
+        
     }
 
     

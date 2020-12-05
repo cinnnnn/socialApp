@@ -82,7 +82,7 @@ class ProfileCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
            
             
-            profileImage.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            profileImage.topAnchor.constraint(equalTo: topAnchor),
             profileImage.leadingAnchor.constraint(equalTo: leadingAnchor),
             profileImage.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.4),
             profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor),

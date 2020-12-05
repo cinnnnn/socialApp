@@ -55,6 +55,12 @@ class PeopleInfoViewController: UIViewController {
         setupNavigationBar()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        peopleView.setNeedsLayout()
+        
+    }
+    
     private func setupNavigationBar() {
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
@@ -64,7 +70,7 @@ class PeopleInfoViewController: UIViewController {
         peopleView.animateLikeButton.isHidden = isFriend
         peopleView.animateDislikeButton.isHidden = isFriend
     
-        peopleView.layoutIfNeeded()
+      
         
     }
     
@@ -80,6 +86,7 @@ class PeopleInfoViewController: UIViewController {
                                            showPrivatePhoto: true,
                                            buttonDelegate: self) {
                     self?.loadingView.hide()
+                    
                 }
             case .failure(let error):
                 fatalError(error.localizedDescription)
@@ -211,9 +218,9 @@ extension PeopleInfoViewController {
             loadingView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            peopleView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            peopleView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            peopleView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: -20),
+            peopleView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            peopleView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            peopleView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             peopleView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }

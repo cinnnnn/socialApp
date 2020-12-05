@@ -10,8 +10,8 @@ import UIKit
 
 class OneLineButton: UIButton {
     
-    let infoLabel  = UILabel(labelText: "", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
-    let bottomLine = UIView(frame: .zero)
+    private let infoLabel  = UILabel(labelText: "", textFont: .avenirRegular(size: 14),textColor: .myGrayColor())
+    private let bottomLine = UIView(frame: .zero)
     
     convenience init(info: String, font: UIFont = .avenirRegular(size: 14), textColor: UIColor = .myLabelColor(), lineColor: UIColor = .myLightGrayColor() ) {
         self.init()
@@ -20,6 +20,10 @@ class OneLineButton: UIButton {
         infoLabel.font = font
         bottomLine.backgroundColor = lineColor
         setupConstraints()
+    }
+    
+    func setText(text: String) {
+        infoLabel.text = text
     }
     
     private func setupConstraints() {

@@ -24,12 +24,12 @@ enum MLabels: String {
     case emptyNearbyPeopleText = "Сейчас нет никого, кто бы подошел под твои настройки поиска"
     case emptyNearbyPeopleButton = "Изменить параметры"
     
-    case emptyAcceptChatHeader = "Тут увидишь чаты с парами"
-    case emptyAcceptChatText = "Сейчас у тебя их нет, продложай лайкать, ведь твои люди тут"
+    case emptyAcceptChatHeader = "Чаты"
+    case emptyAcceptChatText = "Сейчас их нет, продолжай лайкать, ведь твои люди рядом"
     case emptyAcceptChatButton = "Открыть больше людей"
     
-    case emptyRequestChatHeader = "Люди которым ты понравился(ась), появятся тут"
-    case emptyRequestChatText = "Flava это небольшое сообщество. Может занять некоторое время, что бы люди тебя нашли"
+    case emptyRequestChatHeader = "Люди которым ты нравишься, появятся тут"
+    case emptyRequestChatText = "Flava это небольшое сообщество. Может занять некоторое время, что бы тебя нашли"
     case emptyRequestChatButton = "Найстройки поиска"
     
     case requestMessage = "Привет"

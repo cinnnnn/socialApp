@@ -32,10 +32,8 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         peopleView.configure(with: value,
                              currentPeople: currentPeople,
                              showPrivatePhoto: false,
-                             buttonDelegate: buttonDelegate) {[weak self] in
-            self?.setNeedsLayout()
-            complition()
-        }
+                             withStatusBar: false,
+                             buttonDelegate: buttonDelegate) { complition() }
         
         peopleView.buttonDelegate = buttonDelegate
     }
@@ -55,7 +53,6 @@ extension PeopleCell {
     private func setupConstraints() {
         
         addSubview(peopleView)
-        
         peopleView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([

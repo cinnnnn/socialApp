@@ -18,9 +18,13 @@ class EmptyView: UIView {
                                     textColor: .myGrayColor(),
                                     linesCount: 0)
     private var emptyImage = AnimationCustomView(name: "", loopMode: .loop, contentMode: .scaleAspectFit)
-    private var emptyButton = RoundButton(newBackgroundColor: .myLabelColor(),
-                                  title: "",
-                                  titleColor: .myWhiteColor())
+//    private var emptyButton = RoundButton(newBackgroundColor: .myLabelColor(),
+//                                  title: "",
+//                                  titleColor: .myWhiteColor())
+    private var emptyButton = OneLineButton(info: "",
+                                            font: .avenirBold(size: 16),
+                                            textColor: .myLabelColor(),
+                                            lineColor: .myGrayColor())
 
     
     init(imageName: String, header: String, text: String, buttonText: String, delegate: Any?, selector: Selector){
@@ -29,7 +33,7 @@ class EmptyView: UIView {
         emptyImage.setupImage(name: imageName)
         headerLabel.text = header
         textLabel.text = text
-        emptyButton.setTitle(buttonText, for: .normal)
+        emptyButton.setText(text: buttonText)
 
         setupConstraints()
         setupButton(target: delegate, selector: selector)
@@ -80,20 +84,15 @@ extension EmptyView {
             emptyImage.trailingAnchor.constraint(equalTo: trailingAnchor),
             emptyImage.bottomAnchor.constraint(equalTo:centerYAnchor),
             
-            
             headerLabel.topAnchor.constraint(equalTo: emptyImage.bottomAnchor, constant: 10),
             headerLabel.leadingAnchor.constraint(equalTo: emptyImage.leadingAnchor),
             headerLabel.trailingAnchor.constraint(equalTo: emptyImage.trailingAnchor),
-            
             
             textLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
             textLabel.leadingAnchor.constraint(equalTo: emptyImage.leadingAnchor),
             textLabel.trailingAnchor.constraint(equalTo: emptyImage.trailingAnchor),
             
-            
             emptyButton.leadingAnchor.constraint(equalTo: emptyImage.leadingAnchor),
-            emptyButton.trailingAnchor.constraint(equalTo: emptyImage.trailingAnchor),
-            emptyButton.heightAnchor.constraint(equalTo: emptyButton.widthAnchor, multiplier: 1.0/7.28),
             emptyButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
         ])
     }
