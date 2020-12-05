@@ -154,6 +154,7 @@ extension LoginViewController {
                         
                         case .success(let mPeople):
                             if mPeople.userImage == "" {
+                                self?.dismiss(animated: true, completion: nil)
                                 self?.navigationDelegate?.toCompliteRegistration(userID: mPeople.senderId)
                             } else {
                                 let mainVC = MainTabBarController(currentUser: mPeople,

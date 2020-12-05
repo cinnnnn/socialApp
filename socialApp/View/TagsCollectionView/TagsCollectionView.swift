@@ -49,7 +49,6 @@ class TagsCollectionView: UIView {
     private func setup() {
         tagTextField.delegate = self
         tagTextField.addToolBar(target: self, doneSelector: #selector(textFieldDonePressed))
-        tagTextField.backspacePressed = backspacePressed
     }
     
     
@@ -245,11 +244,13 @@ extension TagsCollectionView {
     
     //MARK: updateConstraints
     override func updateConstraints() {
+        
         //don't set 0 size, than contentSize will always be equal 0
         if collectionView?.contentSize.height != 0 {
             guard let size = collectionView?.contentSize.height else { return }
-            hightCollectionViewConstraint?.constant = size
+             hightCollectionViewConstraint?.constant = size
             
+            print("hightIsSetup")
             //set first setup hight is complite for stop update layoutSubvies
             hightIsSetup = true
             tagsDelegate?.tagTextConstraintsDidChange?(tagsCollectionView: self)
@@ -261,7 +262,7 @@ extension TagsCollectionView {
     //MARK: layoutSubviews
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+        print("layoutSubviews")
         if !hightIsSetup {
             //needs to be updated until the height is first set
             setNeedsLayout()
@@ -309,6 +310,7 @@ extension TagsCollectionView: UITextFieldDelegate {
             }
         }
     }
+
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         

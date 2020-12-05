@@ -55,8 +55,13 @@ class PeopleView: UIView {
     
     weak var buttonDelegate: PeopleButtonTappedDelegate?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+     init(withStatusBar: Bool = true) {
+        super.init(frame: .zero)
+        
+        if !withStatusBar {
+            let statusBarHieght = UIApplication.statusBarHeight
+            scrollView.contentInset = UIEdgeInsets(top: -statusBarHieght, left: 0, bottom: 0, right: 0)
+        }
         setup()
         setupConstraints()
     }
@@ -67,9 +72,9 @@ class PeopleView: UIView {
     
     //MARK: setup
     private func setup() {
-        
+        scrollView.backgroundColor = .myWhiteColor()
         scrollView.showsVerticalScrollIndicator = false
-        galleryScrollView.layer.cornerRadius = 0
+        scrollView.alwaysBounceVertical = true
         animateLikeButton.addTarget(self, action: #selector(likeTapped(sender:)), for: .touchUpInside)
         animateDislikeButton.addTarget(self, action: #selector(dislikeTapped(sender:)), for: .touchUpInside)
         timeButton.addTarget(self, action: #selector(timeTapped), for: .touchUpInside)
@@ -110,14 +115,8 @@ class PeopleView: UIView {
     func configure(with value: MPeople,
                    currentPeople: MPeople,
                    showPrivatePhoto: Bool,
-                   withStatusBar: Bool = true,
                    buttonDelegate: PeopleButtonTappedDelegate?,
                    complition: @escaping()-> Void) {
-        
-        if !withStatusBar {
-            let statusBarHieght = UIApplication.statusBarHeight
-            scrollView.contentInset = UIEdgeInsets(top: -statusBarHieght, left: 0, bottom: 0, right: 0)
-        }
         
         self.buttonDelegate = buttonDelegate
         
@@ -136,7 +135,7 @@ class PeopleView: UIView {
                                       showProtectButton: !showPrivatePhoto) {
             complition()
         }
-        galleryScrollView.setNeedsLayout()
+        
         
         //setup advert
         let paragraph = NSMutableParagraphStyle()
@@ -201,7 +200,8 @@ class PeopleView: UIView {
             desiresHeader.text = "Желания"
             desiresLabel.text = value.desires.joined(separator: ", ")
         }
-       
+        
+        galleryScrollView.setNeedsLayout()
     }
     
     //prepareForRenew
@@ -219,6 +219,7 @@ class PeopleView: UIView {
     //layoutSubviews
     override func layoutSubviews() {
         super.layoutSubviews()
+        
        // scrollView.updateContentView(bottomOffset: 0)
     }
 }

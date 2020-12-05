@@ -35,7 +35,6 @@ class TagsCollectionViewCell: UICollectionViewCell {
     func configure(tag: MTag) {
         self.tagText.text = tag.tagText
 
-        setupConstraints()
     }
     
     override func prepareForReuse() {
@@ -53,14 +52,14 @@ class TagsCollectionViewCell: UICollectionViewCell {
 extension TagsCollectionViewCell {
     private func setupConstraints() {
         tagText.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(tagText)
+        addSubview(tagText)
 
         NSLayoutConstraint.activate([
             
-            tagText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
-            tagText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
-            tagText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 10),
-            tagText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
+            tagText.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+            tagText.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
+            tagText.leadingAnchor.constraint(equalTo: leadingAnchor,constant: 10),
+            tagText.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ])
         
     }

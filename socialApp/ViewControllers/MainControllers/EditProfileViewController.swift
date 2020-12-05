@@ -40,8 +40,8 @@ class EditProfileViewController: UIViewController {
     let advertTextView = UITextView(text: "",
                                     isEditable: true)
     
-    let editPhotosButton = RoundButton(newBackgroundColor: .myFirstButtonColor(),
-                                       title: "Редактировать фото",
+    let editPhotosButton = RoundButton(newBackgroundColor: UIColor.myFirstButtonColor().withAlphaComponent(0.5),
+                                       title: "Редактировать",
                                        titleColor: .myFirstButtonLabelColor())
     let incognitoLabel = UILabel(labelText: "Инкогнито",
                                 textFont: .avenirRegular(size: 16),
@@ -107,7 +107,7 @@ class EditProfileViewController: UIViewController {
         interestsTags.tagsDelegate = self
         desireTags.tagsDelegate = self
         
-        gelleryScrollView.clipsToBounds = true
+        gelleryScrollView.layer.cornerRadius = 0
         advertTextView.addDoneButton()
         editPhotosButton.layoutIfNeeded()
         incognitoSwitch.tintColor = .mySecondSatColor()
@@ -156,7 +156,7 @@ extension EditProfileViewController {
         genderButton.infoLabel.text = people.gender
         sexualityButton.infoLabel.text = people.sexuality
         incognitoSwitch.isOn = people.isIncognito
-        
+     //   scrollView.updateContentView(bottomOffset: 0)
     }
     
     //MARK:  savePeopleData
@@ -394,17 +394,16 @@ extension EditProfileViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            gelleryScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            gelleryScrollView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 25),
-            gelleryScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            gelleryScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            gelleryScrollView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            gelleryScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gelleryScrollView.heightAnchor.constraint(equalTo: gelleryScrollView.widthAnchor),
             
-            editPhotosButton.topAnchor.constraint(equalTo: gelleryScrollView.bottomAnchor, constant: 35),
-            editPhotosButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            editPhotosButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            editPhotosButton.bottomAnchor.constraint(equalTo: gelleryScrollView.bottomAnchor, constant: -10),
+            editPhotosButton.centerXAnchor.constraint(equalTo: gelleryScrollView.centerXAnchor),
             editPhotosButton.heightAnchor.constraint(equalTo: editPhotosButton.widthAnchor, multiplier: 1.0/7.28),
             
-            nameLabel.topAnchor.constraint(equalTo: editPhotosButton.bottomAnchor, constant: 35),
+            nameLabel.topAnchor.constraint(equalTo: gelleryScrollView.bottomAnchor, constant: 35),
             nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
             nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
             
@@ -449,6 +448,7 @@ extension EditProfileViewController {
             incognitoAboutLabel.topAnchor.constraint(equalTo: incognitoSwitch.bottomAnchor, constant: 10),
             incognitoAboutLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
             incognitoAboutLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -55),
+            incognitoAboutLabel.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20),
         ])
     }
 }

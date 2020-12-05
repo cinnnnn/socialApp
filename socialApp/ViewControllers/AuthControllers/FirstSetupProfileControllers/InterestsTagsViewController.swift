@@ -45,7 +45,7 @@ class InterestsTagsViewController: UIViewController {
                                                          action: #selector(saveButtonTapped)),
                                          animated: false)
         
-     
+        
     }
 }
 
@@ -90,7 +90,6 @@ extension InterestsTagsViewController {
         view.addSubview(tagsView)
        
         tagsView.translatesAutoresizingMaskIntoConstraints = false
-        
         
         NSLayoutConstraint.activate([
             tagsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

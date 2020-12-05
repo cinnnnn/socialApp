@@ -10,6 +10,7 @@ import Foundation
 
 class PeopleDataProvider: PeopleListenerDelegate {
     
+    
     weak var peopleCollectionViewDelegate: PeopleCollectionViewDelegate?
     
     var peopleNearby: [MPeople] = []
@@ -29,8 +30,8 @@ class PeopleDataProvider: PeopleListenerDelegate {
         peopleCollectionViewDelegate?.updateData()
     }
     
-    func reloadData(reloadSection: Bool, animating: Bool) {
-        peopleCollectionViewDelegate?.reloadData(reloadSection: reloadSection, animating: animating)
+    func reloadData(reloadSection: Bool, animating: Bool, scrollToFirst: Bool) {
+        peopleCollectionViewDelegate?.reloadData(reloadSection: reloadSection, animating: animating, scrollToFirst: scrollToFirst)
     }
 }
 
@@ -41,9 +42,8 @@ extension PeopleDataProvider {
                    acceptChatsDelegate: AcceptChatListenerDelegate,
                    reportsDelegate: ReportsListnerDelegate,
                    complition: @escaping (Result<[MPeople], Error>) -> Void) {
-    
+        
         FirestoreService.shared.getPeople(currentPeople: currentPeople,
-                                          peoples: peopleNearby,
                                           likeChat: likeDislikeDelegate.likePeople,
                                           dislikeChat: likeDislikeDelegate.dislikePeople,
                                           acceptChat: acceptChatsDelegate.acceptChats,
@@ -53,7 +53,7 @@ extension PeopleDataProvider {
             case .success(let peoples):
                 self?.peopleNearby = peoples
                 
-                self?.reloadData(reloadSection: peoples.count == 1 ? true : false, animating: false)
+                self?.reloadData(reloadSection: peoples.count == 1 ? true : false, animating: false, scrollToFirst: true)
                 complition(.success(peoples))
             case .failure(let error):
                 complition(.failure(error))
@@ -68,7 +68,7 @@ extension PeopleDataProvider {
         }
         guard let index = peopleIndex else { return }
         peopleNearby.remove(at: index)
-        reloadData(reloadSection: peopleNearby.count == 1 ? true : false, animating: true)
+        reloadData(reloadSection: peopleNearby.count == 1 ? true : false, animating: true, scrollToFirst: false)
     }
 }
 

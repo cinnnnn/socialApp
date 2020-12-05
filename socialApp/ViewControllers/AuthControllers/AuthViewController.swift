@@ -180,6 +180,7 @@ extension AuthViewController: NavigationDelegate {
     }
     
     func toCompliteRegistration(userID: String){
+        print("111")
         let navController = UINavigationController.init(rootViewController: DateOfBirthViewController(userID: userID))
         let appearance = navController.navigationBar.standardAppearance
         appearance.shadowImage = UIImage()

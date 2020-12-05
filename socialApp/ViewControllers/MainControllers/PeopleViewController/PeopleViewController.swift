@@ -75,6 +75,10 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         updateCurrentPeople()
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
+    
     
     //MARK:  setup VC
     private func setup() {
@@ -277,7 +281,7 @@ extension PeopleViewController: PeopleCollectionViewDelegate {
     
     
     //MARK:  reloadData
-    func reloadData(reloadSection: Bool = false, animating: Bool = true) {
+    func reloadData(reloadSection: Bool = false, animating: Bool = true, scrollToFirst:Bool = false) {
         
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
@@ -290,6 +294,11 @@ extension PeopleViewController: PeopleCollectionViewDelegate {
         dataSource?.apply(snapshot, animatingDifferences: animating)
         
         checkPeopleNearbyIsEmpty()
+        
+        guard !sortedPeopleNearby.isEmpty else { return }
+        if scrollToFirst {
+            collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: false)
+        }
     }
 }
 

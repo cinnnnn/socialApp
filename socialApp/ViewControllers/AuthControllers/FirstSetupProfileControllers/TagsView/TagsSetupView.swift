@@ -18,6 +18,7 @@ class TagsSetupView: UIView {
     init(unselectTags: [String], tagsHeader: String, viewHeader: String){
         super.init(frame: .zero)
         headerLabel.text = viewHeader
+        
         tagsCollectionView = TagsCollectionView(unselectTags: unselectTags,
                                                 selectTags: [],
                                                 headerText: tagsHeader,
@@ -35,8 +36,6 @@ class TagsSetupView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-
     
     private func setup() {
         
@@ -62,6 +61,10 @@ class TagsSetupView: UIView {
     
     func getSelectedTags() -> [String] {
         tagsCollectionView?.getSelectedTags() ?? []
+    }
+    
+    func setupCollection(unselectTags: [String], tagsHeader: String, viewHeader: String) {
+        tagsCollectionView?.configure(unselectTags: unselectTags, selectedTags: [])
     }
     
 }
@@ -170,6 +173,7 @@ extension TagsSetupView {
             tagsCollectionView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
             tagsCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25),
             tagsCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25),
+            tagsCollectionView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20)
         ])
     }
 }

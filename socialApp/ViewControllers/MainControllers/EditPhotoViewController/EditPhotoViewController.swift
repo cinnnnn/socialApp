@@ -93,10 +93,8 @@ class EditPhotoViewController: UIViewController {
     private func setup() {
         addImageButton.backgroundColor = .mySecondButtonColor()
         addImageButton.imageView?.tintColor = .mySecondButtonLabelColor()
-        addImageButton.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         addImageButton.clipsToBounds = true
         profileImage.backgroundColor = .myGrayColor()
-        profileImage.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         profileImage.clipsToBounds = true
         scrollView.showsVerticalScrollIndicator = false
         scrollView.layoutSubviews()
@@ -489,9 +487,9 @@ extension EditPhotoViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            profileImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            profileImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            profileImage.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 25),
+            profileImage.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            profileImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            profileImage.topAnchor.constraint(equalTo: scrollView.topAnchor),
             profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor),
             
             addImageButton.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
@@ -506,7 +504,7 @@ extension EditPhotoViewController {
             
             tipsHeader.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
             tipsHeader.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
-            tipsHeader.topAnchor.constraint(equalTo: addImageButton.bottomAnchor, constant: 25),
+            tipsHeader.topAnchor.constraint(equalTo: addImageButton.bottomAnchor, constant: 20),
             
             tips.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
             tips.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),

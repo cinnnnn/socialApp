@@ -134,7 +134,9 @@ extension PeopleInfoViewController: PeopleButtonTappedDelegate {
                 
                 requestChatsDelegate.reloadData(changeType: .delete)
                 //for correct renew last people, need reload section
-                peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false, animating: false)
+                peopleDelegate.reloadData(reloadSection: self?.peopleDelegate?.peopleNearby.count == 1 ? true : false,
+                                          animating: false,
+                                          scrollToFirst: false)
                 
                 if isMatch {
                     guard let currentPeople = self?.currentPeople else { return }

@@ -37,8 +37,6 @@ class GalleryView: UIView {
         scrollView.delegate = self
         
         backgroundColor = .myWhiteColor()
-        layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
-        clipsToBounds = true
        
         pageControl.numberOfPages = gallery.count
         pageControl.hidesForSinglePage = false

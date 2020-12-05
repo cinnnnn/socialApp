@@ -13,7 +13,7 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
     
     static var reuseID = "PeopleCell"
     
-    private let peopleView = PeopleView()
+    private let peopleView = PeopleView(withStatusBar: false)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,7 +32,6 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         peopleView.configure(with: value,
                              currentPeople: currentPeople,
                              showPrivatePhoto: false,
-                             withStatusBar: false,
                              buttonDelegate: buttonDelegate) { complition() }
         
         peopleView.buttonDelegate = buttonDelegate

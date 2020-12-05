@@ -8,7 +8,7 @@
 import UIKit
 
 enum MDefaultLayer: CGFloat {
-    case bigCornerRadius = 30
-    case smallCornerRadius = 20
+    case bigCornerRadius = 10
+    case smallCornerRadius = 5
     case widthMultiplier = 7.28
 }

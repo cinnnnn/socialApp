@@ -19,9 +19,12 @@ class EditPhotoCell: UICollectionViewCell {
                                  clipsToBounds: true,
                                  contentMode: .scaleAspectFill)
     
+    let dotImage = UIImageView(systemName: "ellipsis.circle.fill",
+                               config: UIImage.SymbolConfiguration(font: .avenirRegular(size: 16)),
+                               tint: .black)
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
         setupConstraints()
     }
     
@@ -31,11 +34,6 @@ class EditPhotoCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         image.image = nil
-    }
-    
-    private func setup() {
-        clipsToBounds = true
-        image.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
     }
     
     func configure(galleryImage: String, isPrivate: Bool, complition:@escaping() -> Void) {
@@ -49,13 +47,18 @@ class EditPhotoCell: UICollectionViewCell {
 extension EditPhotoCell {
     private func setupConstraints() {
         addSubview(image)
+        addSubview(dotImage)
         image.translatesAutoresizingMaskIntoConstraints = false
+        dotImage.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             image.leadingAnchor.constraint(equalTo: leadingAnchor),
             image.trailingAnchor.constraint(equalTo: trailingAnchor),
             image.topAnchor.constraint(equalTo: topAnchor),
-            image.bottomAnchor.constraint(equalTo: bottomAnchor)
+            image.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            dotImage.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            dotImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ])
     }
 }

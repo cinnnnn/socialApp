@@ -11,7 +11,6 @@ import Foundation
 extension FirestoreService {
     //MARK: getPeople
     func getPeople(currentPeople: MPeople,
-                   peoples: [MPeople],
                    likeChat: [MChat],
                    dislikeChat: [MDislike],
                    acceptChat: [MChat],
@@ -29,14 +28,11 @@ extension FirestoreService {
         let acceptChatID = acceptChat.map { chat -> String in
             chat.friendId
         }
-        let peopleID = peoples.map { people -> String in
-            people.senderId
-        }
         let reportsID = reports.map { report -> String in
             report.reportUserID
         }
         
-        var usersID = likeChatID + dislikeChatID + acceptChatID + peopleID + reportsID
+        var usersID = likeChatID + dislikeChatID + acceptChatID + reportsID
         usersID.append(currentPeople.senderId)
         
         

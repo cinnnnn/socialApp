@@ -75,7 +75,7 @@ protocol UniversalCollectionCellModel{
 //MARK: - collection view protocol
 protocol PeopleCollectionViewDelegate: class {
     func updateData()
-    func reloadData(reloadSection: Bool, animating: Bool)
+    func reloadData(reloadSection: Bool, animating: Bool, scrollToFirst: Bool)
 }
 
 protocol RequestChatCollectionViewDelegate: class {
@@ -151,7 +151,7 @@ protocol PeopleListenerDelegate: class {
                    complition: @escaping (Result<[MPeople], Error>) -> Void)
     //work with collectionView
     func updateData()
-    func reloadData(reloadSection: Bool, animating: Bool)
+    func reloadData(reloadSection: Bool, animating: Bool, scrollToFirst: Bool)
     func deletePeople(peopleID: String)
 }
 
