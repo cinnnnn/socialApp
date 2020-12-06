@@ -13,6 +13,7 @@ class PushMessagingService: NSObject {
     static let shared = PushMessagingService()
     let notificationName = "FirebaseMessageToken"
     
+    //for auth when post request
     private let serverKey = "AAAArMXNdi0:APA91bFPWVxZHcPH84GYK6VY9T2aFjzWJpxJI48tLSnDmXDiWSduU7Ih6vW8MeFiuqMwSkHdfUDJIunBBslcINM3N1s2ekIrSj0V-SZxZ9h7NnyLFrnp48LLqDSAEi8CgjY809UGwu1i"
     
     private let sendUrlString = "https://fcm.googleapis.com/fcm/send"
@@ -98,7 +99,6 @@ class PushMessagingService: NSObject {
     
 }
 //MARK: -  subscribe / unsubscribe
-
 extension PushMessagingService {
     
     func subscribeMainTopic(userID: String) {
@@ -184,7 +184,6 @@ extension PushMessagingService {
     }
 }
 
-
 //MARK: - MessagingDelegate
 extension PushMessagingService: MessagingDelegate {
     
@@ -196,5 +195,4 @@ extension PushMessagingService: MessagingDelegate {
                                         object: nil,
                                         userInfo: data)
     }
-    
 }
