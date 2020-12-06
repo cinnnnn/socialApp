@@ -13,6 +13,8 @@ socialApp/GoogleService-Info.plist
 *.xccheckout
 
 ## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
+PushMessagingService.swift
+
 build/
 DerivedData/
 *.moved-aside
@@ -20,6 +22,7 @@ DerivedData/
 !default.pbxuser
 *.mode1v3
 !default.mode1v3
+
 *.mode2v3
 !default.mode2v3
 *.perspectivev3
