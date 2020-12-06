@@ -19,9 +19,9 @@ class EditPhotoCell: UICollectionViewCell {
                                  clipsToBounds: true,
                                  contentMode: .scaleAspectFill)
     
-    let dotImage = UIImageView(systemName: "ellipsis.circle.fill",
+    let dotImage = UIImageView(systemName: "ellipsis",
                                config: UIImage.SymbolConfiguration(font: .avenirRegular(size: 16)),
-                               tint: .black)
+                               tint: .white)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -58,7 +58,7 @@ extension EditPhotoCell {
             image.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             dotImage.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            dotImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+            dotImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10)
         ])
     }
 }

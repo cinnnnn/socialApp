@@ -13,6 +13,8 @@ class TagsCollectionView: UIView {
     private var hightCollectionViewConstraint: NSLayoutConstraint?
     private var unselectTags: [MTag] = []
     private var selectedTags: [MTag] = []
+    private var unselectTagsString: [String] = []
+    private var selectedTagsString: [String] = []
     private var hightIsSetup = false
     private var headerText = ""
     private var headerFont: UIFont = .avenirRegular(size: 16)
@@ -32,14 +34,14 @@ class TagsCollectionView: UIView {
         self.headerText = headerText
         self.headerFont = headerFont
         self.headerColor = headerColor
+        self.unselectTagsString = unselectTags
+        self.selectedTagsString = selectTags
         self.tagTextField.placeholder = textFieldPlaceholder
         
         setup()
         setupCollectioView()
         setupConstraints()
         setupDataSource()
-        configure(unselectTags: unselectTags, selectedTags: selectTags)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -62,7 +64,7 @@ class TagsCollectionView: UIView {
         }) {
             let newMTag = MTag(tagText: newTag, isSelect: true)
             selectedTags.append(newMTag)
-            updateDataSource()
+            updateDataSource(animating: false)
         }
     }
     
@@ -76,6 +78,8 @@ class TagsCollectionView: UIView {
     
     //MARK: configure
     func configure(unselectTags: [String], selectedTags: [String]){
+        self.unselectTagsString = unselectTags
+        self.selectedTagsString = selectedTags
         
         unselectTags.forEach {[weak self] stringTag in
             guard let unselectTags = self?.unselectTags else { return }
@@ -96,10 +100,14 @@ class TagsCollectionView: UIView {
                 self?.selectedTags.append(tag)
             }
         }
+        
         updateDataSource(animating: false)
-        setNeedsLayout()
+      
     }
-
+    
+    func firstSetup() {
+        configure(unselectTags: unselectTagsString, selectedTags: selectedTagsString)
+    }
     
     //MARK: getSelectedTags
     func getSelectedTags() -> [String] {
@@ -229,14 +237,17 @@ extension TagsCollectionView {
     }
     
     //MARK: updateDataSource
-    private func updateDataSource(animating: Bool = true) {
+    func updateDataSource(animating: Bool = true) {
         var snapshot = NSDiffableDataSourceSnapshot<SectionTagsCollectionView,MTag>()
         snapshot.appendSections([.unselectTags, .selectedTags])
         snapshot.appendItems(unselectTags, toSection: .unselectTags)
         snapshot.appendItems(selectedTags, toSection: .selectedTags)
         
         dataSource?.apply(snapshot, animatingDifferences: false, completion: { [weak self] in
-            self?.setNeedsUpdateConstraints()
+            
+                self?.setNeedsUpdateConstraints()
+                self?.setNeedsLayout()
+            
         })
         
         tagsDelegate?.tagTextDidChange?(tagsCollectionView: self)
@@ -250,7 +261,6 @@ extension TagsCollectionView {
             guard let size = collectionView?.contentSize.height else { return }
              hightCollectionViewConstraint?.constant = size
             
-            print("hightIsSetup")
             //set first setup hight is complite for stop update layoutSubvies
             hightIsSetup = true
             tagsDelegate?.tagTextConstraintsDidChange?(tagsCollectionView: self)
@@ -262,7 +272,7 @@ extension TagsCollectionView {
     //MARK: layoutSubviews
     override func layoutSubviews() {
         super.layoutSubviews()
-        print("layoutSubviews")
+        
         if !hightIsSetup {
             //needs to be updated until the height is first set
             setNeedsLayout()
@@ -295,8 +305,6 @@ extension TagsCollectionView: UICollectionViewDelegate {
             updateDataSource()
         }
     }
-    
-    
 }
 
 //MARK: UITextFieldDelegate
@@ -336,7 +344,6 @@ extension TagsCollectionView {
         
         addSubview(collectionView)
         addSubview(tagTextField)
-        
         hightCollectionViewConstraint = collectionView.heightAnchor.constraint(equalToConstant: 100)
         hightCollectionViewConstraint?.isActive = true
         

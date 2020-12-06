@@ -334,7 +334,8 @@ extension PopUpService {
         let style = EKProperty.LabelStyle(
             font: .avenirRegular(size: 14),
             color: .init(.myLabelColor()),
-            alignment: .center
+            alignment: .center,
+            numberOfLines: 2
         )
         let labelContent = EKProperty.LabelContent(
             text: text,

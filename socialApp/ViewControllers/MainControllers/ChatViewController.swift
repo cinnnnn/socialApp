@@ -89,7 +89,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         messageDelegate?.setupListener(chat: chat)
     }
     
-     func chatsCollectionWasUpdate(chat: MChat) {
+    func chatsCollectionWasUpdate(chat: MChat) {
         if chat.friendId == self.chat.friendId {
             self.chat = chat
         }
@@ -130,6 +130,10 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                 self?.screenIsCaptured()
             }
         }
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardNotification(notification:)),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
     }
     
     override func didMove(toParent parent: UIViewController?) {
@@ -252,6 +256,15 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
 
 //MARK: objc
 extension ChatViewController {
+    
+    //MARK: keyboardNotification
+    @objc private func keyboardNotification(notification: Notification) {
+        
+        if notification.name == UIResponder.keyboardWillShowNotification  {
+            
+            messagesCollectionView.scrollToBottom(animated: true)
+        }
+    }
     
     //MARK: tuppedSendImage
     @objc private func tuppedSendImage() {
@@ -508,6 +521,7 @@ extension ChatViewController: MessageCellDelegate {
     func didTapImage(in cell: MessageCollectionViewCell) {
         messageInputBar.inputTextView.resignFirstResponder()
     }
+    
 }
 
 //MARK: InputBarAccessoryViewDelegate

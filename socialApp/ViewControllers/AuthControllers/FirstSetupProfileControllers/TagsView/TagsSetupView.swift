@@ -63,8 +63,8 @@ class TagsSetupView: UIView {
         tagsCollectionView?.getSelectedTags() ?? []
     }
     
-    func setupCollection(unselectTags: [String], tagsHeader: String, viewHeader: String) {
-        tagsCollectionView?.configure(unselectTags: unselectTags, selectedTags: [])
+    func update() {
+        tagsCollectionView?.firstSetup()
     }
     
 }
@@ -93,7 +93,7 @@ extension TagsSetupView {
             let value = tagsCollectionView.frame.maxY
             let scrollValue  = value - size.minY + toolBarHight
             //if view under keyboard
-            if value > size.minY + toolBarHight {
+            if value > size.minY - toolBarHight {
                 let scrollPoint = CGPoint(x: 0, y: scrollValue)
                 scrollView.setContentOffset(scrollPoint, animated: true)
             }
@@ -129,7 +129,7 @@ extension TagsSetupView {
             }
         }
         
-        if scrollValue > 0 {
+        if scrollValue > inset {
             let scrollPoint = CGPoint(x: 0, y: scrollValue)
             scrollView.setContentOffset(scrollPoint, animated: true)
         }
@@ -141,8 +141,9 @@ extension TagsSetupView {
 extension TagsSetupView: TagsCollectionViewDelegate {
 
     func tagTextConstraintsDidChange(tagsCollectionView: TagsCollectionView) {
-        forceUpdateContentOffset(inset: 50)
+        forceUpdateContentOffset(inset: 70)
         scrollView.updateContentView()
+        setNeedsLayout()
     }
 }
 

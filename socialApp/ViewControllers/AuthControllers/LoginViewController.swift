@@ -165,7 +165,7 @@ extension LoginViewController {
                             
                         //error of getUserData
                         case .failure(let error):
-                            fatalError(error.localizedDescription)
+                            PopUpService.shared.showInfo(text: "Ошибка загрузки профиля: \(error.localizedDescription)")
                         }
                     }
                 //error of logIn

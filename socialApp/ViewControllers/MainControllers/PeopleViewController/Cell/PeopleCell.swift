@@ -35,15 +35,11 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
                              buttonDelegate: buttonDelegate) { complition() }
         
         peopleView.buttonDelegate = buttonDelegate
+        peopleView.setNeedsLayout()
     }
     
     override func prepareForReuse() {
         peopleView.prepareForRenew()
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        peopleView.setNeedsLayout()
     }
 }
 

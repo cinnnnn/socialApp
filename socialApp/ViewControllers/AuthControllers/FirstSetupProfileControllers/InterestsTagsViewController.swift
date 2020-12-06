@@ -14,6 +14,7 @@ class InterestsTagsViewController: UIViewController {
     private let tagsView = TagsSetupView(unselectTags: MDefaultInterests.getSortedInterests(),
                                          tagsHeader: "Выбранные интересы",
                                          viewHeader: MLabels.interestsTagsHeader.rawValue)
+
    
     init(userID: String){
         self.userID = userID
@@ -35,6 +36,11 @@ class InterestsTagsViewController: UIViewController {
         tagsView.updateScrollView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tagsView.update()
+    }
+    
     private func setup() {
         
         view.backgroundColor = .myWhiteColor()
@@ -46,6 +52,7 @@ class InterestsTagsViewController: UIViewController {
                                          animated: false)
         
         
+    
     }
 }
 
@@ -88,14 +95,15 @@ extension InterestsTagsViewController {
 extension InterestsTagsViewController {
     private func setupConstraints() {
         view.addSubview(tagsView)
-       
+
         tagsView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             tagsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tagsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tagsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tagsView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
+      
     }
 }

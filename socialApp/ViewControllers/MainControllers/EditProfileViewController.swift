@@ -156,7 +156,6 @@ extension EditProfileViewController {
         genderButton.infoLabel.text = people.gender
         sexualityButton.infoLabel.text = people.sexuality
         incognitoSwitch.isOn = people.isIncognito
-     //   scrollView.updateContentView(bottomOffset: 0)
     }
     
     //MARK:  savePeopleData
