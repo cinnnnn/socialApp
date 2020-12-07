@@ -15,7 +15,7 @@ class PeopleInfoViewController: UIViewController {
     private var currentPeople: MPeople
     private var people: MPeople?
     private let peopleView = PeopleView()
-    private let loadingView = LoadingView(name: "explore", isHidden: false)
+    private let loadingView = LoadingView(name: MAnimamationName.loading.rawValue, isHidden: false)
     
     weak var requestChatsDelegate: RequestChatListenerDelegate?
     weak var peopleDelegate: PeopleListenerDelegate?

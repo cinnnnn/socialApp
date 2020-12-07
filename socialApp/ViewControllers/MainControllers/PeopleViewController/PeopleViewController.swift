@@ -247,6 +247,7 @@ extension PeopleViewController {
         } else {
             emptyView.hide(hidden: true)
         }
+        PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue)
     }
     
     //MARK: changeSearchTapped

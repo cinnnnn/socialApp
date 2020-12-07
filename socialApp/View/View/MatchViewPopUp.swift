@@ -49,8 +49,6 @@ class MatchViewPopUp: UIView {
         backgroundColor = .myWhiteColor()
         layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
-        clipsToBounds = true
-        friendPhoto.layer.cornerRadius = MDefaultLayer.bigCornerRadius.rawValue
         friendPhoto.clipsToBounds = true
         
         if let imageURL = URL(string: chat.friendUserImageString) {

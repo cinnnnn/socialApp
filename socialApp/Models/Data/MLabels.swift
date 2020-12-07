@@ -32,6 +32,9 @@ enum MLabels: String {
     case emptyRequestChatText = "Flava это небольшое сообщество. Может занять некоторое время, что бы тебя нашли"
     case emptyRequestChatButton = "Найстройки поиска"
     
+    case haveRequestShowLabel1 = "Переходи на Flava Premium, что бы увидеть "
+    case haveRequestShowLabel2 = " ты нравишься"
+    
     case requestMessage = "Привет"
     case screenshotTaken = " сделал(а) скриншот чата"
     case isCapturedScreen = " начал(а) запись экрана, но всю информацию мы скрыли"

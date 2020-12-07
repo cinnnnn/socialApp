@@ -67,23 +67,32 @@ extension PopUpService {
         SwiftEntryKit.display(entry: matchPopUpView, using: attributes)
     }
     
+    //MARK: showAnimatateView
     func showAnimateView(name: String) {
-        let view = LoadingView(name: "logo_neverAlone", isHidden: false)
+        let view = LoadingView(name: name, isHidden: false)
         
         var attributes = EKAttributes()
-        attributes.name = "Animation view"
+        attributes.name = name
         attributes.displayMode = .inferred
+        attributes.windowLevel = .custom(level: .normal + 1)
         attributes.statusBar = .inferred
         attributes.displayDuration = .infinity
         attributes.entryInteraction = .absorbTouches
-        attributes.screenInteraction = .dismiss
+        attributes.screenInteraction = .absorbTouches
+        attributes.entranceAnimation = .none
+        attributes.exitAnimation = .init(translate: nil,
+                                         scale: nil,
+                                         fade: .init(from: 1, to: 0, duration: 0.3))
         attributes.screenBackground = .color(color: EKColor.init(UIColor.myLabelColor().withAlphaComponent(0.5)))
         attributes.position = .bottom
-        attributes.hapticFeedbackType = .warning
+        attributes.hapticFeedbackType = .none
+        attributes.positionConstraints = EKAttributes.PositionConstraints.fullScreen
         attributes.positionConstraints.safeArea = .overridden
+      //  SwiftEntryKit.display(entry: view, using: attributes, presentInsideKeyWindow: true, rollbackWindow: .main)
         SwiftEntryKit.display(entry: view, using: attributes)
     }
     
+    //MARK: showViewPopUp
     func showViewPopUp(view: UIView, withAnimation: Bool, name: String){
         var attributes = EKAttributes()
         attributes.name = name
@@ -107,6 +116,10 @@ extension PopUpService {
     
     func dismisPopUp(name: String) {
         SwiftEntryKit.dismiss(.specific(entryName: name))
+    }
+    
+    func dismisAllPopUp() {
+        SwiftEntryKit.dismiss(.all)
     }
     
     //MARK: bottomPopUp
@@ -191,7 +204,6 @@ extension PopUpService {
         attributes.entryBackground = .visualEffect(style: .init(style: .systemMaterial))
         attributes.positionConstraints = .fullWidth
         attributes.positionConstraints.safeArea = .empty(fillSafeArea: true)
-        attributes.roundCorners = .top(radius: 20)
         
         SwiftEntryKit.display(entry: contentView, using: attributes)
     }

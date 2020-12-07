@@ -275,7 +275,7 @@ extension PeopleView {
             galleryScrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             galleryScrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             galleryScrollView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            galleryScrollView.heightAnchor.constraint(equalTo: galleryScrollView.widthAnchor, multiplier: 1.2),
+            galleryScrollView.heightAnchor.constraint(equalTo: galleryScrollView.widthAnchor, multiplier: 1.1),
             
             peopleName.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             peopleName.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),

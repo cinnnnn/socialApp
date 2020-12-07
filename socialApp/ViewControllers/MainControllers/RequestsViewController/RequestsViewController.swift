@@ -27,9 +27,10 @@ class RequestsViewController: UIViewController {
                                       delegate: self,
                                       selector: #selector(emptyButtonTapped))
     
-    
-    var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
-    var currentPeople: MPeople
+    private let haveRequestGetPremiumView = HaveRequestGetPremiumView(onTapped: (target: self,
+                                                                                 selector: #selector(showPurchaseView)))
+    private var dataSource: UICollectionViewDiffableDataSource<SectionsRequests, MChat>?
+    private var currentPeople: MPeople
     
     init(currentPeople: MPeople,
          likeDislikeDelegate: LikeDislikeListenerDelegate,
@@ -88,12 +89,22 @@ class RequestsViewController: UIViewController {
     
     //MARK: checkPeopleNearbyIsEmpty
     private func checkRequestIsEmpty()  {
+        
         if requestChatDelegate.requestChats.isEmpty {
             emptyView.hide(hidden: false)
             collectionView?.isHidden = true
         } else {
             emptyView.hide(hidden: true)
             collectionView?.isHidden = false
+        }
+    }
+    
+    private func configureHaveRequestView() {
+        let countOfPeople = requestChatDelegate.requestChats.count
+        if currentPeople.isGoldMember || currentPeople.isTestUser || countOfPeople == 0 {
+            haveRequestGetPremiumView.configure(countOfPeople: countOfPeople, isHidden: true)
+        } else {
+            haveRequestGetPremiumView.configure(countOfPeople: countOfPeople, isHidden: false)
         }
     }
     
@@ -118,6 +129,12 @@ class RequestsViewController: UIViewController {
         searchVC.hidesBottomBarWhenPushed = true
         searchVC.navigationController?.setNavigationBarHidden(false, animated: true)
         navigationController?.pushViewController(searchVC, animated: true)
+    }
+    
+    @objc private func showPurchaseView() {
+        let purchasVC = PurchasesViewController(currentPeople: currentPeople)
+        purchasVC.modalPresentationStyle = .fullScreen
+        present(purchasVC, animated: true, completion: nil)
     }
     
     private func setupNavigationBar() {
@@ -252,6 +269,7 @@ extension RequestsViewController: RequestChatCollectionViewDelegate {
     //MARK: reloadRequestData
     func reloadData() {
         checkRequestIsEmpty()
+        configureHaveRequestView()
         let sortedRequestChats = requestChatDelegate.sortedRequestChats
         
         if let dataSource = dataSource {
@@ -260,6 +278,7 @@ extension RequestsViewController: RequestChatCollectionViewDelegate {
             snapshot.appendSections([.requestChats])
             snapshot.appendItems(sortedRequestChats, toSection: .requestChats)
             dataSource.apply(snapshot, animatingDifferences: false)
+            
         } else {
             var snapshot = NSDiffableDataSourceSnapshot<SectionsRequests, MChat>()
             snapshot.appendSections([.requestChats])
@@ -318,10 +337,16 @@ extension RequestsViewController: UICollectionViewDelegate {
 extension RequestsViewController {
     private func setupConstraint() {
         emptyView.translatesAutoresizingMaskIntoConstraints = false
+        haveRequestGetPremiumView.translatesAutoresizingMaskIntoConstraints = false
         
+        view.addSubview(haveRequestGetPremiumView)
         view.addSubview(emptyView)
         
         NSLayoutConstraint.activate([
+            haveRequestGetPremiumView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            haveRequestGetPremiumView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            haveRequestGetPremiumView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
             emptyView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             emptyView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             emptyView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),

@@ -257,7 +257,7 @@ extension EditSearchSettingsViewController {
     }
     
     @objc private func switchChanged() {
-        if !PurchasesService.shared.checkActiveSubscribtionWithApphud() {
+        if !PurchasesService.shared.checkActiveSubscribtionWithApphud() && !currentPeople.isTestUser {
             PopUpService.shared.bottomPopUp(header: "Только активные пользователи",
                                             text: "Данный фильтр доступен с подпиской Flava premium",
                                             image: nil,

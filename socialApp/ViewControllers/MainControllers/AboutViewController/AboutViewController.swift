@@ -38,13 +38,17 @@ extension AboutViewController {
     
     @objc private func termsOfServiceTapped() {
         if let url = URL(string: MLinks.termsOfServiceLink.rawValue) {
-            UIApplication.shared.open(url)
+           let webController = WebViewController(urlToOpen: url)
+            webController.modalPresentationStyle = .pageSheet
+            present(webController, animated: true, completion: nil)
         }
     }
     
     @objc private func privacyTapped() {
         if let url = URL(string: MLinks.privacyLink.rawValue) {
-            UIApplication.shared.open(url)
+            let webController = WebViewController(urlToOpen: url)
+            webController.modalPresentationStyle = .pageSheet
+            present(webController, animated: true, completion: nil)
         }
     }
 }

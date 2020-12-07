@@ -14,7 +14,7 @@ class MainTabBarController: UITabBarController{
     
     var currentUser: MPeople
     var isNewLogin: Bool
-    let loadingView = LoadingView(name: "explore", isHidden: false)
+  //  let loadingView = LoadingView(name: "explore", isHidden: false)
     var acceptChatsDelegate: AcceptChatListenerDelegate?
     var requestChatsDelegate: RequestChatListenerDelegate?
     var peopleDelegate: PeopleListenerDelegate?
@@ -37,8 +37,6 @@ class MainTabBarController: UITabBarController{
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupConstraints()
-        loadIsComplite(isComplite: false)
         getPeopleData()
         setupApphud()
     }
@@ -75,9 +73,8 @@ extension MainTabBarController {
     private func loadIsComplite(isComplite: Bool) {
         tabBar.isHidden = !isComplite
         if isComplite {
-            loadingView.hide()
-        } else {
-            loadingView.show()
+            //stop load animation animation
+            PopUpService.shared.dismisAllPopUp()
         }
     }
     
@@ -89,6 +86,10 @@ extension MainTabBarController {
 extension MainTabBarController {
     //MARK: getPeopleData, location
     private func getPeopleData() {
+        //if new login, show animation loading pop up, else we already start show animation in SceneDelegate
+        if isNewLogin {
+            PopUpService.shared.showAnimateView(name: "loading_square")
+        }
         setupDataDelegate { [weak self] in
             guard let currentUser = self?.currentUser else { fatalError("can't get current user") }
             guard let reportDelegate = self?.reportsDelegate else { fatalError("reportDelegate is nil") }
@@ -130,20 +131,19 @@ extension MainTabBarController {
                                                         switch result {
                                                         
                                                         case .success(_):
-                                                            
+                                                            //check active subscribtion
                                                             PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { result in
-                                                                self?.loadIsComplite(isComplite: true)
-                                                                self?.subscribeToPushNotification()
                                                                 
                                                                 switch result {
-                                                                
+                                                                //if check success, load Controllers with status updated people
                                                                 case .success(let updatedPeople):
-                                                                    
                                                                     self?.setupControllers(currentPeople: updatedPeople)
-                                                                   
+                                                                //if check failure, load Controllers with previus premium status people
                                                                 case .failure(_):
                                                                     self?.setupControllers(currentPeople: currentUser)
                                                                 }
+                                                                self?.subscribeToPushNotification()
+                                                                
                                                             }
                                                             
                                                         case .failure(let error):
@@ -247,6 +247,7 @@ extension MainTabBarController {
             generateNavigationController(rootViewController: chatsVC, image: #imageLiteral(resourceName: "chats"), title: nil),
             generateNavigationController(rootViewController: profileVC, image: #imageLiteral(resourceName: "profile"), title: nil, isHidden: true)
         ]
+        
     }
     
     //MARK: generateNavigationController
@@ -309,17 +310,3 @@ extension MainTabBarController {
     }
 }
 
-extension MainTabBarController {
-    private func setupConstraints() {
-        view.addSubview(loadingView)
-        
-        loadingView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            loadingView.topAnchor.constraint(equalTo: view.topAnchor),
-            loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-}

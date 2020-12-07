@@ -14,12 +14,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
         guard let windowScene = scene as? UIWindowScene else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+        
         
         if let user = Auth.auth().currentUser {
             //try reload, to check profile is avalible on server
@@ -40,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 } else {
                     if let userID = user.email {
                         //if user avalible, check correct setup user info
-                        self?.checkProfileInfo(userID: userID) { result in
+                        self?.checkProfileInfo(userID: userID) {[weak self] result in
                             switch result {
                             
                             case .success((let isCompliteSetup, let currentPeople)):
@@ -49,15 +49,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                     self?.window?.rootViewController = MainTabBarController(currentUser: currentPeople,
                                                                                             isNewLogin: false)
                                 } else {
+                                    //stop load animation animation
+                                    PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue)
                                     // if don't have user photo (last step of first setup profile), go setup
                                     let navController = UINavigationController(rootViewController: DateOfBirthViewController(userID: userID))
                                     navController.navigationBar.tintColor = .label
                                     navController.navigationBar.shadowImage = UIImage()
                                     navController.navigationBar.barTintColor = .myWhiteColor()
                                     self?.window?.rootViewController = navController
+                                    
                                     PopUpService.shared.showInfo(text: "Необходимо закончить заполнение профиля")
                                 }
                             case .failure(_):
+                                //stop load animation animation
+                                PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue)
                                 PopUpService.shared.bottomPopUp(header: "Проблема с учетной записью",
                                                                 text: "Не удалось получить информацию для входа",
                                                                 image: nil,
@@ -77,6 +82,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.rootViewController = makeRootVC(viewController: AuthViewController(), withNavContoller: true)
         }
         window?.makeKeyAndVisible()
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -125,6 +131,8 @@ extension SceneDelegate {
     }
     
     private func checkProfileInfo(userID: String, complition:@escaping(Result<(Bool,MPeople),Error>) -> Void){
+        //show animate loadView
+        PopUpService.shared.showAnimateView(name: MAnimamationName.loading.rawValue)
         
         FirestoreService.shared.getUserData(userID: userID) { result in
             switch result {

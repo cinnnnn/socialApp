@@ -282,7 +282,7 @@ extension EditProfileViewController {
     
     //MARK: incognitoSwitchChanged
     @objc private func incognitoSwitchChanged(){
-        if !PurchasesService.shared.checkActiveSubscribtionWithApphud() {
+        if !PurchasesService.shared.checkActiveSubscribtionWithApphud() && !currentPeople.isTestUser {
             PopUpService.shared.bottomPopUp(header: "Режим инкогнито",
                                             text: "Данный режим доступен с подпиской Flava premium",
                                             image: nil,
