@@ -43,7 +43,6 @@ protocol PeopleButtonTappedDelegate: class {
 }
 
 protocol CollectionCellModel {
-    func image() -> UIImage?
     func description() -> String
 }
 
@@ -74,7 +73,7 @@ protocol UniversalCollectionCellModel{
 
 //MARK: - collection view protocol
 protocol PeopleCollectionViewDelegate: class {
-    func updateData()
+    func updateData(item: MPeople, isDelete: Bool, reloadSection: Bool, animating: Bool, needScrollToItem: Bool, indexPathToScroll: IndexPath?)
     func reloadData(reloadSection: Bool, animating: Bool, scrollToFirst: Bool)
 }
 
@@ -150,7 +149,7 @@ protocol PeopleListenerDelegate: class {
                    reportsDelegate: ReportsListnerDelegate,
                    complition: @escaping (Result<[MPeople], Error>) -> Void)
     //work with collectionView
-    func updateData()
+    func updateData(item: MPeople, isDelete: Bool, reloadSection: Bool, animating: Bool, needScrollToItem: Bool, indexPathToScroll: IndexPath?)
     func reloadData(reloadSection: Bool, animating: Bool, scrollToFirst: Bool)
     func deletePeople(peopleID: String)
 }

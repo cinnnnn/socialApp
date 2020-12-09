@@ -79,6 +79,11 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         .lightContent
     }
     
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        collectionView.setNeedsLayout()
+//    }
+    
     
     //MARK:  setup VC
     private func setup() {
@@ -147,9 +152,7 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         
     
         let section = NSCollectionLayoutSection(group: group)
-        
         section.orthogonalScrollingBehavior = .groupPagingCentered
-
         
 //        section.visibleItemsInvalidationHandler = { [weak self] visibleItems, point, environment in
 //
@@ -271,13 +274,32 @@ extension PeopleViewController: PeopleCollectionViewDelegate {
     
     
     //MARK:  updateData
-    func updateData() {
+    func updateData(item: MPeople, isDelete: Bool, reloadSection: Bool, animating: Bool = true, needScrollToItem: Bool, indexPathToScroll: IndexPath?) {
+        
         guard var snapshot = dataSource?.snapshot() else { return }
         guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
-        snapshot.appendItems(sortedPeopleNearby, toSection: .main)
-        dataSource?.apply(snapshot, animatingDifferences: true)
+        
+        if needScrollToItem {
+            guard !sortedPeopleNearby.isEmpty else { return }
+            guard let indexPathToScroll = indexPathToScroll else { return }
+            collectionView.scrollToItem(at: indexPathToScroll, at: .centeredHorizontally, animated: false)
+        }
+        
+        if isDelete {
+            snapshot.deleteItems([item])
+        } else {
+            snapshot.appendItems([item], toSection: .main)
+        }
+        
+        if reloadSection {
+            snapshot.reloadSections([.main])
+        }
+        dataSource?.apply(snapshot, animatingDifferences: animating)
         
         checkPeopleNearbyIsEmpty()
+        
+        
+      
     }
     
     

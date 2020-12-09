@@ -37,12 +37,17 @@ class MainTabBarController: UITabBarController{
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        setup()
         getPeopleData()
         setupApphud()
     }
 }
 
 extension MainTabBarController {
+    private func setup() {
+        view.backgroundColor = .myWhiteColor()
+    }
+    
     private func setupDataDelegate(complition: @escaping ()-> Void) {
         likeDislikeDelegate = LikeDislikeChatDataProvider(userID: currentUser.senderId)
         requestChatsDelegate = RequestChatDataProvider(userID: currentUser.senderId)

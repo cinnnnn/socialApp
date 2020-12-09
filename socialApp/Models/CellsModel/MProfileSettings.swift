@@ -15,25 +15,10 @@ enum MProfileSettings: Int, CollectionCellModel {
     case setupProfile
     case setupSearch
     case appSettings
+    case contacts
+    case aboutInformation
     case adminPanel
     
-    func image() -> UIImage?  {
-        switch self {
-        
-        case .profileInfo:
-            return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
-        case .premiumButton:
-            return nil
-        case .setupProfile:
-            return UIImage(systemName: "person") ?? #imageLiteral(resourceName: "disclouser")
-        case .setupSearch:
-            return UIImage(systemName: "magnifyingglass") ?? #imageLiteral(resourceName: "disclouser")
-        case .appSettings:
-            return UIImage(systemName: "slider.horizontal.3") ?? #imageLiteral(resourceName: "disclouser")
-        case .adminPanel:
-            return UIImage(systemName: "tv.circle") ?? #imageLiteral(resourceName: "disclouser")
-        }
-    }
     
     func description() -> String  {
         switch self {
@@ -48,24 +33,12 @@ enum MProfileSettings: Int, CollectionCellModel {
             return "Параметры поиска"
         case .appSettings:
             return "Настройки"
+        case .contacts:
+            return "Контакты"
+        case .aboutInformation:
+            return "Информация"
         case .adminPanel:
             return "Панель администратора"
-        }
-    }
-    func cellType() -> MCellType {
-        switch self {
-        case .profileInfo:
-            return .infoCell
-        case .premiumButton:
-            return .buttonCell
-        case .setupProfile:
-            return .buttonCell
-        case .setupSearch:
-            return .buttonCell
-        case .appSettings:
-            return .buttonCell
-        case .adminPanel:
-            return .buttonCell
         }
     }
 }

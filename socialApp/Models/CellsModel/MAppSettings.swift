@@ -42,7 +42,7 @@ enum MAppSettings: Int, CaseIterable, CollectionCellModel {
     func cellType() -> MCellType {
         switch self {
         case .about:
-            return .buttonCell
+            return .infoCell
         case .logOut:
             return .buttonCell
         case .terminateAccaunt:

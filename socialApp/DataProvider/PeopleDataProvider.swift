@@ -26,8 +26,13 @@ class PeopleDataProvider: PeopleListenerDelegate {
     }
     
     //MARK: work with collectionView
-    func updateData() {
-        peopleCollectionViewDelegate?.updateData()
+    func updateData(item: MPeople, isDelete: Bool, reloadSection: Bool, animating: Bool, needScrollToItem: Bool, indexPathToScroll: IndexPath?) {
+        peopleCollectionViewDelegate?.updateData(item: item,
+                                                 isDelete: isDelete,
+                                                 reloadSection: reloadSection,
+                                                 animating: animating,
+                                                 needScrollToItem: needScrollToItem,
+                                                 indexPathToScroll: indexPathToScroll)
     }
     
     func reloadData(reloadSection: Bool, animating: Bool, scrollToFirst: Bool) {
@@ -63,12 +68,22 @@ extension PeopleDataProvider {
     
     //delete people
     func deletePeople(peopleID: String) {
-        let peopleIndex = peopleNearby.firstIndex { currentPeople -> Bool in
-            currentPeople.senderId == peopleID
+        let peopleIndex = peopleNearby.firstIndex { mPeople -> Bool in
+            mPeople.senderId == peopleID
         }
         guard let index = peopleIndex else { return }
+        let peopleToRemove = peopleNearby[index]
+        //need scroll only count collection > 1 and elemt last in collection
+        let needScroll = (index != peopleNearby.count - 1) || peopleNearby.count == 1 ? false : true
+        
+        let indexPathToScroll = needScroll ? IndexPath(item: index - 1, section: 0) : nil
         peopleNearby.remove(at: index)
-        reloadData(reloadSection: peopleNearby.count == 1 ? true : false, animating: true, scrollToFirst: false)
+        updateData(item: peopleToRemove,
+                   isDelete: true,
+                   reloadSection: peopleNearby.count == 1 ? true : false,
+                   animating: true,
+                   needScrollToItem: needScroll,
+                   indexPathToScroll: indexPathToScroll)
     }
 }
 

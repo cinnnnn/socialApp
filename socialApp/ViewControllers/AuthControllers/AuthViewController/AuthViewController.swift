@@ -7,53 +7,28 @@
 //
 
 import UIKit
-import SwiftUI
 import FirebaseAuth
 import AuthenticationServices
-import Lottie
 
 class AuthViewController: UIViewController {
-    
-    let loginButton = UIButton(newBackgroundColor: nil,
-                               title: "Войти с Email",
-                               titleColor: .myGrayColor(),
-                               font: .avenirRegular(size: 16))
-    
-    let appleButton = ASAuthorizationAppleIDButton()
-    let logoImage = UIImageView(image: #imageLiteral(resourceName: "Logo"), contentMode: .scaleAspectFit)
-    var animatedLogoImage = AnimationCustomView(name: "communication", loopMode: .loop, contentMode: .scaleAspectFit)
+
+    let authView = AuthView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
         setupVC()
-        setupButtonAction()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    }
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        appleButton.cornerRadius = appleButton.frame.height / 2
-        
     }
     
     //MARK:  setupVC
     private func setupVC() {
-        view.backgroundColor = .myWhiteColor()
-        appleButton.layoutIfNeeded()
-        
-        animatedLogoImage.animationView.play()
+        authView.delegate = self
     }
+}
+
+//MARK:  AuthViewControllerDelegate
+extension AuthViewController: AuthViewControllerDelegate {
     
-    //MARK:  setupButtonAction
-    private func setupButtonAction() {
-        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
-        appleButton.addTarget(self, action: #selector(appleButtonPressed), for: .touchUpInside)
-    }
-    
-    //MARK:  objc func
     @objc func loginButtonPressed() {
         let navController = UINavigationController.init(rootViewController: LoginViewController(navigationDelegate: self))
         let appearance = navController.navigationBar.standardAppearance
@@ -74,6 +49,23 @@ class AuthViewController: UIViewController {
     @objc func appleButtonPressed() {
         AuthService.shared.AppleIDRequest(delegateController: self,
                                           presetationController: self)
+    }
+    
+    @objc func termsOfServicePressed() {
+        print("pressed")
+        if let url = URL(string: MLinks.termsOfServiceLink.rawValue) {
+            let webController = WebViewController(urlToOpen: url)
+            webController.modalPresentationStyle = .pageSheet
+            present(webController, animated: true, completion: nil)
+        }
+    }
+    
+    @objc func privacyPressed() {
+        if let url = URL(string: MLinks.privacyLink.rawValue) {
+            let webController = WebViewController(urlToOpen: url)
+            webController.modalPresentationStyle = .pageSheet
+            present(webController, animated: true, completion: nil)
+        }
     }
 }
 
@@ -200,35 +192,14 @@ extension AuthViewController: NavigationDelegate {
 extension AuthViewController {
     private func setupConstraints(){
       
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
+        authView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(authView)
         
-        view.addSubview(animatedLogoImage)
-        view.addSubview(loginButton)
-        view.addSubview(appleButton)
-        
-        animatedLogoImage.anchor(leading: view.leadingAnchor,
-                         trailing: view.trailingAnchor,
-                         top: view.safeAreaLayoutGuide.topAnchor,
-                         bottom: loginButton.topAnchor,
-                         padding: .init(top: 25, left: 0, bottom: 10, right: 0))
-        
-        appleButton.anchor(leading: view.leadingAnchor,
-                           trailing: view.trailingAnchor,
-                           top: nil,
-                           bottom: view.safeAreaLayoutGuide.bottomAnchor,
-                           height: appleButton.widthAnchor,
-                           multiplier: .init(width: 0, height: 1.0/7.28),
-                           padding: .init(top: 0, left: 25, bottom: 25, right: 25))
-        
-        loginButton.anchor(leading: view.leadingAnchor,
-                           trailing: view.trailingAnchor,
-                           top: nil,
-                           bottom: appleButton.topAnchor,
-                           height: loginButton.widthAnchor,
-                           multiplier: .init(width: 0, height: 1.0/7.28),
-                           padding: .init(top: 0, left: 25, bottom: 10, right: 25))
-        
-       
-        
+        NSLayoutConstraint.activate([
+            authView.topAnchor.constraint(equalTo: view.topAnchor),
+            authView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            authView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            authView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+        ])
     }
 }

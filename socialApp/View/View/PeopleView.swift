@@ -49,9 +49,9 @@ class PeopleView: UIView {
                                    textColor: .myGrayColor())
     let animateDislikeButton = AnimateDislikeButton()
     let animateLikeButton = AnimateLikeButton()
-    let reportButton = ReportPeopleOneLineButton(info: "Пожаловаться",
-                                                 textColor: .myLabelColor(),
-                                                 lineColor: .myLabelColor())
+    let reportButton = ReportPeopleOneLineButton(info: "Пожаловаться и заблокировать",
+                                                 textColor: .myGrayColor(),
+                                                 lineColor: .myLightGrayColor())
     
     weak var buttonDelegate: PeopleButtonTappedDelegate?
     

@@ -220,7 +220,7 @@ class FirestoreService {
                                              MPeople.CodingKeys.gender.rawValue : gender,
                                              MPeople.CodingKeys.lookingFor.rawValue : lookingFor,
                                              MPeople.CodingKeys.sexuality.rawValue : sexuality,
-                                             MPeople.CodingKeys.isActive.rawValue: true,
+                                             MPeople.CodingKeys.isActive.rawValue: false,
                                              MPeople.CodingKeys.isAdmin.rawValue: false,
                                              MPeople.CodingKeys.isBlocked.rawValue: false,
                                              MPeople.CodingKeys.isGoldMember.rawValue: false,
@@ -230,6 +230,21 @@ class FirestoreService {
                                              MPeople.CodingKeys.reportList.rawValue : FieldValue.arrayUnion([reportList])],
                                             merge: true,
                                             completion: { (error) in
+                                                if let error = error {
+                                                    complition(.failure(error))
+                                                } else {
+                                                    complition(.success(()))
+                                                }
+                                            })
+    }
+    
+    //MARK:  saveIsActive
+    func saveIsActive(id: String,
+                      isActive: Bool,
+                      complition: @escaping (Result<Void, Error>) -> Void){
+        usersReference.document(id).setData([MPeople.CodingKeys.isActive.rawValue: isActive],
+                                            merge: true,
+                                            completion: { error in
                                                 if let error = error {
                                                     complition(.failure(error))
                                                 } else {

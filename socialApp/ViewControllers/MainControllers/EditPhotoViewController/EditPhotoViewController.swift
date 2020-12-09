@@ -169,20 +169,31 @@ extension EditPhotoViewController {
         //if image is setup
         if profileImage.image != nil {
             navigationItem.rightBarButtonItem?.isEnabled = false
-            FirestoreService.shared.getUserData(userID: userID) {[weak self] result in
+            FirestoreService.shared.saveIsActive(id: userID,
+                                                 isActive: true) {[unowned self]  result in
+                
                 switch result {
                 
-                case .success(let mPeople):
-                    let mainTabBarVC = MainTabBarController(currentUser: mPeople, isNewLogin: true)
-                    mainTabBarVC.modalPresentationStyle = .fullScreen
-                    self?.navigationController?.dismiss(animated: false, completion: {[weak self] in
-                        self?.navigationController?.removeFromParent()
-                        let vc = UIApplication.getCurrentViewController()
-                        vc?.present(mainTabBarVC, animated: false, completion: nil)
-                    })
-                case .failure(_):
-                    self?.navigationItem.rightBarButtonItem?.isEnabled = true
-                    PopUpService.shared.showInfo(text: "Не удалось загрузить профиль")
+                case .success():
+                    FirestoreService.shared.getUserData(userID: userID) {result in
+                        switch result {
+                        
+                        case .success(let mPeople):
+                            let mainTabBarVC = MainTabBarController(currentUser: mPeople, isNewLogin: true)
+                            mainTabBarVC.modalPresentationStyle = .fullScreen
+                            navigationController?.dismiss(animated: false, completion: {
+                                navigationController?.removeFromParent()
+                                let vc = UIApplication.getCurrentViewController()
+                                vc?.present(mainTabBarVC, animated: false, completion: nil)
+                            })
+                        case .failure(_):
+                            navigationItem.rightBarButtonItem?.isEnabled = true
+                            PopUpService.shared.showInfo(text: "Не удалось загрузить профиль")
+                        }
+                    }
+                case .failure(let error):
+                    navigationItem.rightBarButtonItem?.isEnabled = true
+                    PopUpService.shared.showInfo(text: "Ошибка: \(error.localizedDescription)")
                 }
             }
         } else {

@@ -79,6 +79,7 @@ extension PopUpService {
         attributes.displayDuration = .infinity
         attributes.entryInteraction = .absorbTouches
         attributes.screenInteraction = .absorbTouches
+        attributes.scroll = .disabled
         attributes.entranceAnimation = .none
         attributes.exitAnimation = .init(translate: nil,
                                          scale: nil,

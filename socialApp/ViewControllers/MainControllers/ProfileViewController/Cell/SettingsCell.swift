@@ -12,7 +12,6 @@ class SettingsCell: UICollectionViewCell {
     
     static let reuseID = "SettingsCell"
     
-    let settingsImage = UIImageView()
     let settingslabel = UILabel(labelText: "", textFont: .avenirBold(size: 16),textColor: .myLabelColor())
     
     override init(frame: CGRect) {
@@ -27,8 +26,6 @@ class SettingsCell: UICollectionViewCell {
     }
     
     private func setup() {
-        settingsImage.tintColor = .mySecondButtonLabelColor()
-        
         let selectView = UIView(frame: bounds)
         selectView.backgroundColor = .mySuperLightGrayColor()
         selectedBackgroundView = selectView
@@ -40,9 +37,6 @@ class SettingsCell: UICollectionViewCell {
     
     func configure(settings: CollectionCellModel) {
         settingslabel.text = settings.description()
-        if let image = settings.image() {
-            settingsImage.image = image.withConfiguration(UIImage.SymbolConfiguration(font: .avenirRegular(size: 25), scale: .default))
-        }
     }
     
     override func layoutSubviews() {
@@ -54,15 +48,9 @@ class SettingsCell: UICollectionViewCell {
     private func setupConstraints(){
 
         addSubview(settingslabel)
-//        addSubview(settingsImage)
 
         settingslabel.translatesAutoresizingMaskIntoConstraints = false
-//        settingsImage.translatesAutoresizingMaskIntoConstraints = false
-    
         NSLayoutConstraint.activate([
-//            settingsImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-//            settingsImage.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
             settingslabel.centerYAnchor.constraint(equalTo: centerYAnchor),
             settingslabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             settingslabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 10),

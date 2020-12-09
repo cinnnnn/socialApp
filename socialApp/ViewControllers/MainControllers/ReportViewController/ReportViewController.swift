@@ -44,6 +44,10 @@ class ReportViewController: UIViewController {
         setup()
         setupConstraints()
     }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        reportView.setNeedsLayout()
+    }
 }
 
 extension ReportViewController {

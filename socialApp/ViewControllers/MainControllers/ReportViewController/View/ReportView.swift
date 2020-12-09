@@ -18,6 +18,10 @@ class ReportView: UIView {
                                           textFont: .avenirRegular(size: 16),
                                           textColor: .myGrayColor(),
                                           linesCount: 0)
+    private let reportModeratorInfo = UILabel(labelText: MLabels.reportModeratorInfo.rawValue,
+                                          textFont: .avenirRegular(size: 16),
+                                          textColor: .myGrayColor(),
+                                          linesCount: 0)
     private let selectReportButton = OneLineButtonWithHeader(header: "Тип жалобы", info: MTypeReports.other.rawValue)
     private let textReport = UITextView(text: "", isEditable: true, tag: 1)
     private let sendReportButton = RoundButton(newBackgroundColor: .myLabelColor(), title: "Отправить", titleColor: .myWhiteColor())
@@ -41,7 +45,7 @@ class ReportView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        scrollView.updateContentView(bottomOffset: 0)
+        scrollView.updateContentView(bottomOffset: 200)
     }
     
     func getData() -> (reportType: String, text: String) {
@@ -52,9 +56,8 @@ class ReportView: UIView {
     
     func configure() {
         guard let delegate = delegate else { return }
-        if delegate.reportToFriend() {
-            reportSubHeader.text = MLabels.reportSubHeader.rawValue
-        }
+        reportSubHeader.text = delegate.reportToFriend() ? MLabels.reportSubHeaderFriend.rawValue : MLabels.reportSubHeader.rawValue
+       
     }
     
 }
@@ -98,6 +101,7 @@ extension ReportView {
         selectReportButton.translatesAutoresizingMaskIntoConstraints = false
         textReport.translatesAutoresizingMaskIntoConstraints = false
         sendReportButton.translatesAutoresizingMaskIntoConstraints = false
+        reportModeratorInfo.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(scrollView)
         scrollView.addSubview(reportHeader)
@@ -105,6 +109,7 @@ extension ReportView {
         scrollView.addSubview(selectReportButton)
         scrollView.addSubview(textReport)
         scrollView.addSubview(sendReportButton)
+        scrollView.addSubview(reportModeratorInfo)
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
@@ -133,6 +138,10 @@ extension ReportView {
             sendReportButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             sendReportButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             sendReportButton.heightAnchor.constraint(equalTo: sendReportButton.widthAnchor, multiplier: 1.0/7.28),
+            
+            reportModeratorInfo.topAnchor.constraint(equalTo: sendReportButton.bottomAnchor, constant: 35),
+            reportModeratorInfo.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            reportModeratorInfo.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
         ])
     }
 }

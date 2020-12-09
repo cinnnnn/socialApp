@@ -231,7 +231,9 @@ extension ProfileViewController {
         snapshot.appendItems([MProfileSettings.premiumButton], toSection: .premium)
         snapshot.appendItems([MProfileSettings.setupProfile,
                               MProfileSettings.setupSearch,
-                              MProfileSettings.appSettings],
+                              MProfileSettings.appSettings,
+                              MProfileSettings.contacts,
+                              MProfileSettings.aboutInformation],
                              toSection: .settings)
         if currentPeople.isAdmin {
             snapshot.appendItems([MProfileSettings.adminPanel], toSection: .settings)
@@ -285,7 +287,18 @@ extension ProfileViewController: UICollectionViewDelegate {
                 navigationController?.pushViewController(vc, animated: true)
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
+            case .contacts:
+                let contactsVC = ContactsViewController()
+                contactsVC.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(contactsVC, animated: true)
                 
+                collectionView.deselectItem(at: indexPath, animated: true)
+            case .aboutInformation:
+                let aboutVC = AboutViewController()
+                aboutVC.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(aboutVC, animated: true)
+                
+                collectionView.deselectItem(at: indexPath, animated: true)
             case .adminPanel:
                 break
             default:

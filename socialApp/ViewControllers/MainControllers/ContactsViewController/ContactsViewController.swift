@@ -1,16 +1,16 @@
 //
-//  AboutViewController.swift
+//  ContactsViewController.swift
 //  socialApp
 //
-//  Created by Денис Щиголев on 23.11.2020.
+//  Created by Денис Щиголев on 09.12.2020.
 //  Copyright © 2020 Денис Щиголев. All rights reserved.
 //
 
 import UIKit
 
-class AboutViewController: UIViewController {
+class ContactsViewController: UIViewController {
     
-    let aboutView = AboutView()
+    let contactsView = ContactsView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,16 +19,20 @@ class AboutViewController: UIViewController {
     }
     
     private func setup() {
-        navigationItem.title = "Информация"
+        navigationItem.title = "Контакты"
         navigationController?.setNavigationBarHidden(false, animated: true)
-        aboutView.configure(delegate: self,
-                            termsOfServiceSelector: #selector(termsOfServiceTapped),
-                            privacyButtonSelector: #selector(privacyTapped))
+        contactsView.configure(delegate: self,
+                               emailSelector: #selector(emailTapped))
     }
     
 }
 
-extension AboutViewController {
+extension ContactsViewController {
+    @objc private func emailTapped() {
+        if let url = URL(string: "mailto:\(MLinks.email.rawValue)") {
+            UIApplication.shared.open(url)
+        }
+    }
     
     @objc private func termsOfServiceTapped() {
         if let url = URL(string: MLinks.termsOfServiceLink.rawValue) {
@@ -47,16 +51,16 @@ extension AboutViewController {
     }
 }
 
-extension AboutViewController {
+extension ContactsViewController {
     private func setupConstraints() {
-        aboutView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(aboutView)
+        contactsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(contactsView)
         
         NSLayoutConstraint.activate([
-            aboutView.topAnchor.constraint(equalTo: view.topAnchor),
-            aboutView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            aboutView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            aboutView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            contactsView.topAnchor.constraint(equalTo: view.topAnchor),
+            contactsView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            contactsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contactsView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 }

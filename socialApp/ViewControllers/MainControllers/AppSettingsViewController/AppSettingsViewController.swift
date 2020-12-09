@@ -87,15 +87,16 @@ extension AppSettingsViewController {
         collectionView.delegate = self
         
         collectionView.register(SettingsCell.self, forCellWithReuseIdentifier: SettingsCell.reuseID)
+        collectionView.register(InfoCell.self, forCellWithReuseIdentifier: InfoCell.reuseID)
     }
     
     private func setupAppSettingsSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                              heightDimension: .fractionalHeight(1))
+                                              heightDimension: .estimated(50))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                               heightDimension: .absolute(50))
+                                               heightDimension: .estimated(50))
         
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
@@ -126,19 +127,26 @@ extension AppSettingsViewController {
     private func setupDataSource() {
         dataSource = UICollectionViewDiffableDataSource(
             collectionView: collectionView,
-            cellProvider: { collectionView, indexpath, item -> UICollectionViewCell? in
+            cellProvider: {[unowned self] collectionView, indexpath, item -> UICollectionViewCell? in
                 
-                guard let section = SectionAppSettings(rawValue: indexpath.section) else { fatalError("Unknown section")}
+                guard let cell =  MAppSettings(rawValue: indexpath.item) else { fatalError("Unknown cell")}
                 
-                switch section {
+                switch cell {
                 
-                case .appSettings:
+                case .about:
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InfoCell.reuseID, for: indexpath) as? InfoCell else { fatalError("Can't dequeue cell type SettingsCell")}
+                    
+                    cell.configure(header: "Твой аккаунт", subHeader: currentPeople.senderId)
+                    return cell
+                default:
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SettingsCell.reuseID, for: indexpath) as? SettingsCell else { fatalError("Can't dequeue cell type SettingsCell")}
                     
                     cell.configure(settings: item)
                     cell.layoutIfNeeded()
                     return cell
                 }
+                
+                
             }
         )
     }
@@ -166,10 +174,7 @@ extension AppSettingsViewController: UICollectionViewDelegate {
             switch cell {
             
             case .about:
-                let vc = AboutViewController()
-                navigationController?.pushViewController(vc, animated: true)
-                collectionView.deselectItem(at: indexPath, animated: true)
-                
+                collectionView.deselectItem(at: indexPath, animated: false)
             case .logOut:
                 signOutAlert(pressedIndexPath: indexPath)
             case .terminateAccaunt:

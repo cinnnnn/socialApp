@@ -11,7 +11,7 @@ import Foundation
 enum MTypeReports: String, Codable, CaseIterable{
     case fake = "Фейк"
     case spam = "Спам"
-    case offensive = "Агрессивный"
+    case offensiveContent = "Оскорбительный контент"
     case underage = "Несовершеннолетний"
     case other = "Другое"
     
