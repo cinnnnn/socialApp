@@ -280,9 +280,9 @@ extension PeopleViewController: PeopleCollectionViewDelegate {
         guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
         
         if needScrollToItem {
-            guard !sortedPeopleNearby.isEmpty else { return }
-            guard let indexPathToScroll = indexPathToScroll else { return }
-            collectionView.scrollToItem(at: indexPathToScroll, at: .centeredHorizontally, animated: false)
+            if let indexPathToScroll = indexPathToScroll, !sortedPeopleNearby.isEmpty {
+                collectionView.scrollToItem(at: indexPathToScroll, at: .centeredHorizontally, animated: false)
+            }
         }
         
         if isDelete {
@@ -297,31 +297,30 @@ extension PeopleViewController: PeopleCollectionViewDelegate {
         dataSource?.apply(snapshot, animatingDifferences: animating)
         
         checkPeopleNearbyIsEmpty()
-        
-        
-      
     }
     
     
     //MARK:  reloadData
     func reloadData(reloadSection: Bool = false, animating: Bool = true, scrollToFirst:Bool = false) {
+        guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
+        
+        if scrollToFirst {
+            collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: false)
+        }
         
         var snapshot = NSDiffableDataSourceSnapshot<SectionsPeople,MPeople>()
         snapshot.appendSections([.main])
-        guard let sortedPeopleNearby = peopleDelegate?.sortedPeopleNearby else { fatalError() }
+       
         snapshot.appendItems(sortedPeopleNearby, toSection: .main)
         
         if reloadSection {
             snapshot.reloadSections([.main])
+            dataSource?.apply(snapshot, animatingDifferences: false)
+        } else {
+            dataSource?.apply(snapshot, animatingDifferences: animating)
         }
-        dataSource?.apply(snapshot, animatingDifferences: animating)
         
         checkPeopleNearbyIsEmpty()
-        
-        guard !sortedPeopleNearby.isEmpty else { return }
-        if scrollToFirst {
-            collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .centeredHorizontally, animated: false)
-        }
     }
 }
 

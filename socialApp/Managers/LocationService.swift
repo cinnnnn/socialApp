@@ -34,11 +34,13 @@ class LocationService: UIResponder {
                 complition(true)
                 
             case .notDetermined:
-                complition(true)
                 locationManager.requestWhenInUseAuthorization()
+                complition(true)
+                
             case .restricted:
-                complition(true)
                 locationManager.requestWhenInUseAuthorization()
+                complition(true)
+                
             case .denied:
                 //show alert and go to system settings to change geo settings for app
                 complition(false)

@@ -73,7 +73,12 @@ protocol UniversalCollectionCellModel{
 
 //MARK: - collection view protocol
 protocol PeopleCollectionViewDelegate: class {
-    func updateData(item: MPeople, isDelete: Bool, reloadSection: Bool, animating: Bool, needScrollToItem: Bool, indexPathToScroll: IndexPath?)
+    func updateData(item: MPeople,
+                    isDelete: Bool,
+                    reloadSection: Bool,
+                    animating: Bool,
+                    needScrollToItem: Bool,
+                    indexPathToScroll: IndexPath?)
     func reloadData(reloadSection: Bool, animating: Bool, scrollToFirst: Bool)
 }
 
