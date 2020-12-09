@@ -80,8 +80,12 @@ class PeopleInfoViewController: UIViewController {
             
             case .success(let mPeople):
                 guard let currentPeople = self?.currentPeople else { return }
-                self?.people = mPeople
-                self?.peopleView.configure(with: mPeople,
+                //calculate distance to this people
+                let distance = LocationService.shared.getDistance(currentPeople: currentPeople, newPeople: mPeople)
+                var peopleWithDistanceInfo = mPeople
+                peopleWithDistanceInfo.distance = distance
+                self?.people = peopleWithDistanceInfo
+                self?.peopleView.configure(with: peopleWithDistanceInfo,
                                            currentPeople: currentPeople,
                                            showPrivatePhoto: true,
                                            buttonDelegate: self) {
