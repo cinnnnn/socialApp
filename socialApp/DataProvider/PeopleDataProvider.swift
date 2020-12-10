@@ -13,12 +13,15 @@ class PeopleDataProvider: PeopleListenerDelegate {
     
     weak var peopleCollectionViewDelegate: PeopleCollectionViewDelegate?
     
-    var peopleNearby: [MPeople] = []
-    var sortedPeopleNearby: [MPeople] {
-        peopleNearby.sorted { p1, p2  in
-            p1.distance < p2.distance
+    var peopleNearby: [MPeople] = [] {
+        didSet {
+            sortedPeopleNearby = peopleNearby.sorted { p1, p2  in
+                p1.distance < p2.distance
+            }
         }
     }
+    var sortedPeopleNearby: [MPeople] = []
+    
     var userID: String
     
     init(userID: String) {
@@ -68,19 +71,22 @@ extension PeopleDataProvider {
     
     //delete people
     func deletePeople(peopleID: String) {
-        let peopleIndex = peopleNearby.firstIndex { mPeople -> Bool in
+      
+        let peopleIndex = sortedPeopleNearby.firstIndex { mPeople -> Bool in
             mPeople.senderId == peopleID
         }
         guard let index = peopleIndex else { return }
-        let peopleToRemove = peopleNearby[index]
+        let peopleToRemove = sortedPeopleNearby[index]
+       
         //need scroll only count collection > 1 and elemt last in collection
-        let needScroll = (index != peopleNearby.count - 1) || peopleNearby.count == 1 ? false : true
+        let needScroll = (index != sortedPeopleNearby.count - 1) || sortedPeopleNearby.count == 1 ? false : true
         
         let indexPathToScroll = needScroll ? IndexPath(item: index - 1, section: 0) : nil
-        peopleNearby.remove(at: index)
+        
+        sortedPeopleNearby.remove(at: index)
         updateData(item: peopleToRemove,
                    isDelete: true,
-                   reloadSection: peopleNearby.count == 1 ? true : false,
+                   reloadSection: sortedPeopleNearby.count == 1 ? true : false,
                    animating: true,
                    needScrollToItem: needScroll,
                    indexPathToScroll: indexPathToScroll)
