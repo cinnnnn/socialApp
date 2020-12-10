@@ -99,6 +99,7 @@ extension PopUpService {
         attributes.name = name
         attributes.displayMode = .inferred
         attributes.statusBar = .inferred
+        attributes.windowLevel = .custom(level: .alert + 1)
         attributes.displayDuration = .infinity
         attributes.entryInteraction = .absorbTouches
         attributes.scroll = .disabled
@@ -112,7 +113,8 @@ extension PopUpService {
         attributes.positionConstraints = constraints
         attributes.hapticFeedbackType = .error
         attributes.positionConstraints.safeArea = .overridden
-        SwiftEntryKit.display(entry: view, using: attributes)
+        //SwiftEntryKit.display(entry: view, using: attributes)
+        SwiftEntryKit.display(entry: view, using: attributes, presentInsideKeyWindow: false, rollbackWindow: .main)
     }
     
     func dismisPopUp(name: String) {

@@ -68,11 +68,10 @@ extension MainTabBarController {
     
     private func subscribeToPushNotification() {
         //subscribe to all pushNotification from chats after relogin
-        if isNewLogin {
-            guard let acceptChatsDelegate = acceptChatsDelegate else { return }
-            PushMessagingService.shared.logInSubscribe(currentUserID: currentUser.senderId,
-                                                       acceptChats: acceptChatsDelegate.acceptChats)
-        }
+        guard let acceptChatsDelegate = acceptChatsDelegate else { return }
+        PushMessagingService.shared.logInSubscribe(currentUserID: currentUser.senderId,
+                                                   acceptChats: acceptChatsDelegate.acceptChats)
+        
     }
     
     private func loadIsComplite(isComplite: Bool) {
