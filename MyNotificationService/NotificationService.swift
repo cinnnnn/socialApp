@@ -1,13 +1,12 @@
 //
 //  NotificationService.swift
-//  NotificationService
+//  MyNotificationService
 //
-//  Created by Денис Щиголев on 11.11.2020.
+//  Created by Денис Щиголев on 10.12.2020.
 //  Copyright © 2020 Денис Щиголев. All rights reserved.
 //
 
 import UserNotifications
-import UIKit
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -30,7 +29,7 @@ class NotificationService: UNNotificationServiceExtension {
                 let new = current + badgeCount
 
                 UserDefaults.extensions.badge = new
-                bestAttemptContent.badge = NSNumber(value: 4)
+                bestAttemptContent.badge = NSNumber(value: new)
               }
             }
             contentHandler(bestAttemptContent)
