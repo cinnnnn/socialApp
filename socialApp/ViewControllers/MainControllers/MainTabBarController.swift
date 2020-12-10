@@ -69,8 +69,11 @@ extension MainTabBarController {
     private func subscribeToPushNotification() {
         //subscribe to all pushNotification from chats after relogin
         guard let acceptChatsDelegate = acceptChatsDelegate else { return }
+        guard let likeDislikeDelegate = likeDislikeDelegate else { return }
+        
         PushMessagingService.shared.logInSubscribe(currentUserID: currentUser.senderId,
-                                                   acceptChats: acceptChatsDelegate.acceptChats)
+                                                   acceptChats: acceptChatsDelegate.acceptChats,
+                                                   likeChats: likeDislikeDelegate.likePeople)
         
     }
     

@@ -242,7 +242,11 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                     switch result {
                     
                     case .success():
-                        return
+                        //send notification to friend
+                        PushMessagingService.shared.sendMessageToUser(currentUser: sender,
+                                                                      toUserID: chat,
+                                                                      header: sender.displayName,
+                                                                      text: "Отправил фото")
                     case .failure(let error):
                         fatalError(error.localizedDescription)
                     }
