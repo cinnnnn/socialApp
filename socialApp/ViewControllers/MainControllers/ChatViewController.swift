@@ -160,6 +160,8 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         messageInputBar.setRightStackViewWidthConstant(to: 36, animated: false)
         messageInputBar.rightStackView.axis = .horizontal
         messageInputBar.inputTextView.placeholder = "Сообщение..."
+        messageInputBar.inputTextView.keyboardDismissMode = .interactive
+        messageInputBar.inputTextView.isImagePasteEnabled = false
         messageInputBar.inputTextView.placeholderLabel.font = .avenirRegular(size: 16)
         messageInputBar.inputTextView.textContainerInset = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 36)
         messageInputBar.inputTextView.placeholderLabelInsets = UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 36)
