@@ -294,10 +294,12 @@ extension ProfileViewController: UICollectionViewDelegate {
                 
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .aboutInformation:
+               
+               
                 let aboutVC = AboutViewController()
                 aboutVC.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(aboutVC, animated: true)
-                
+
                 collectionView.deselectItem(at: indexPath, animated: true)
             case .adminPanel:
                 break

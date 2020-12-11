@@ -176,11 +176,11 @@ extension FirestoreService {
         //if have requst chat from dislike user
         if let _ = requestChatFromLikeUser.first {
             
-                //delete from request
-                collectionCurrentRequestRef.document(dislikeForPeopleID).delete()
-                //delete from like in dislike user collection
+            //delete from request
+            collectionCurrentRequestRef.document(dislikeForPeopleID).delete()
+            //delete from like in dislike user collection
             collectionDislikeUserLikeRef.document(currentPeople.senderId).delete()
-          
+            
             if currentPeople.isGoldMember || currentPeople.isTestUser {
                 
             } else {
@@ -307,7 +307,13 @@ extension FirestoreService {
                             }
                             FirestoreService.shared.sendAdminMessage(currentUser: currentUser,
                                                                      chat: chat,
-                                                                     text: messageText) { _ in }
+                                                                     text: messageText) { _ in
+                                //send notification to friend
+                                PushMessagingService.shared.sendMessageToUser(currentUser: currentUser,
+                                                                              toUserID: chat,
+                                                                              header: MAdmin.displayName.rawValue,
+                                                                              text: messageText)
+                            }
                             complition(.success(()))
                         }
                     }
@@ -326,10 +332,17 @@ extension FirestoreService {
                             complition(.failure(error!))
                             return
                         }
+                        let messageText = currentUser.displayName + MLabels.userStopChatTimer.rawValue
                         //send admin message about the current user send request to stop chat
                         FirestoreService.shared.sendAdminMessage(currentUser: currentUser,
                                                                  chat: chat,
-                                                                 text: currentUser.displayName + MLabels.userStopChatTimer.rawValue) { _ in }
+                                                                 text: messageText) { _ in
+                            
+                            PushMessagingService.shared.sendMessageToUser(currentUser: currentUser,
+                                                                          toUserID: chat,
+                                                                          header: MAdmin.displayName.rawValue,
+                                                                          text: messageText)
+                        }
                         complition(.success(()))
                     }
                 }

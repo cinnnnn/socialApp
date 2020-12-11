@@ -246,7 +246,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                         PushMessagingService.shared.sendMessageToUser(currentUser: sender,
                                                                       toUserID: chat,
                                                                       header: sender.displayName,
-                                                                      text: "Отправил фото")
+                                                                      text: "Фото")
                     case .failure(let error):
                         fatalError(error.localizedDescription)
                     }
@@ -290,7 +290,16 @@ extension ChatViewController {
         
         FirestoreService.shared.sendAdminMessage(currentUser: currentPeople,
                                                  chat: chat,
-                                                 text: text) {_ in}
+                                                 text: text) { [weak self] _ in
+            
+            //send notification to friend
+            guard let currentPeople = self?.currentPeople else { return }
+            guard let chat = self?.chat else { return }
+            PushMessagingService.shared.sendMessageToUser(currentUser: currentPeople,
+                                                          toUserID: chat,
+                                                          header: MAdmin.displayName.rawValue,
+                                                          text: text)
+        }
     }
     
     //MARK: screenIsCaptured
@@ -300,7 +309,16 @@ extension ChatViewController {
         
         FirestoreService.shared.sendAdminMessage(currentUser: currentPeople,
                                                  chat: chat,
-                                                 text: text) {_ in}
+                                                 text: text) { [weak self] _ in
+            
+            //send notification to friend
+            guard let currentPeople = self?.currentPeople else { return }
+            guard let chat = self?.chat else { return }
+            PushMessagingService.shared.sendMessageToUser(currentUser: currentPeople,
+                                                          toUserID: chat,
+                                                          header: MAdmin.displayName.rawValue,
+                                                          text: text)
+        }
     }
     
     //MARK: profileTapped

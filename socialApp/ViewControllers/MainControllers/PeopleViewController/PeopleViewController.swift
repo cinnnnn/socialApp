@@ -416,7 +416,6 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
     }
     
     func likePeople(people: MPeople) {
-        print("Like")
         //check like  is avalible
         checkLikeIsAvalible { [weak self] in
             self?.saveLikeToFireStore(people: people)
@@ -424,7 +423,6 @@ extension PeopleViewController: PeopleButtonTappedDelegate {
     }
     
     func dislikePeople(people: MPeople) {
-       print("dislike")
         //save dislike to firestore
         FirestoreService.shared.dislikePeople(currentPeople: currentPeople,
                                               dislikeForPeopleID: people.senderId,

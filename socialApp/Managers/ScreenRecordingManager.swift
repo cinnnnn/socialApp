@@ -25,20 +25,21 @@ class ScreenRecordingManager {
         NotificationCenter.default.removeObserver(self)
     }
     @objc private func captureStart() {
-        let popUpName = "Screen recording"
         
         if UIScreen.main.isCaptured {
             //window?.isHidden = true
             if let isCaptured = isCaptured {
                 isCaptured(true)
             }
-            PopUpService.shared.showViewPopUp(view: ScreenRecordingView(),withAnimation: false, name: popUpName)
+            ScreenProtectorManager.shared.showScreenProtector(viewController: ScreenProtectViewController())
+            //PopUpService.shared.showViewPopUp(view: ScreenProtectView(),withAnimation: false, name: popUpName)
         } else {
            // window?.isHidden = false
             if let isCaptured = isCaptured {
                 isCaptured(false)
             }
-            PopUpService.shared.dismisPopUp(name: popUpName)
+            ScreenProtectorManager.shared.hideScreenProtector()
+           // PopUpService.shared.dismisPopUp(name: popUpName)
         }
     }
 }

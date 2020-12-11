@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ScreenRecordingView: UIView {
+class ScreenProtectView: UIView {
     
     let header = UILabel(labelText: "Мы защищаем конфиденциальность", textFont: .avenirBold(size: 24), linesCount: 0)
     let text = UILabel(labelText: "Cкрыли экран, пока у тебя идет запись",
@@ -19,7 +19,6 @@ class ScreenRecordingView: UIView {
      init(){
         super.init(frame: UIScreen.main.bounds)
         setup()
-        
         setupConsctraints()
     }
     
@@ -32,7 +31,7 @@ class ScreenRecordingView: UIView {
     }
 }
 
-extension ScreenRecordingView {
+extension ScreenProtectView {
     private func setupConsctraints() {
         header.translatesAutoresizingMaskIntoConstraints = false
         text.translatesAutoresizingMaskIntoConstraints = false

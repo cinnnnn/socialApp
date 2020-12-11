@@ -13,13 +13,13 @@ import ApphudSDK
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    private var protectWindow: UIWindow?
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
         guard let windowScene = scene as? UIWindowScene else { return }
-        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
-        window?.windowScene = windowScene
-        
+        window = UIWindow(windowScene: windowScene)
+       // window?.windowScene = windowScene
         
         if let user = Auth.auth().currentUser {
             //try reload, to check profile is avalible on server
@@ -112,10 +112,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-
 }
 
+//MARK: protectWindow
+extension SceneDelegate {
+    
+}
 
 extension SceneDelegate {
     

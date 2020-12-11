@@ -61,7 +61,6 @@ class GenderSelectionViewController: UIViewController {
 extension GenderSelectionViewController {
     
     @objc private func saveButtonTapped() {
-        print("1")
         let id = userID
         let userName = Validators.shared.isFilledUserName(userName: nameTextField.text)
         if userName.isFilled {
@@ -77,11 +76,10 @@ extension GenderSelectionViewController {
                 switch result {
                 
                 case .success():
-                    print("2")
+                    
                     self?.view.endEditing(true)
                     let nextViewController = InterestsTagsViewController(userID: id)
                     self?.navigationController?.pushViewController(nextViewController, animated: true)
-                    print("3")
                 case .failure(let error):
                     fatalError(error.localizedDescription)
                 }

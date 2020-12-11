@@ -155,6 +155,7 @@ class AuthService {
             
             let keyWindow = UIApplication.shared.windows.first { $0.isKeyWindow }
             keyWindow?.rootViewController = AuthViewController()
+            
             complition(.success(true))
         } catch {
             complition(.failure(error))

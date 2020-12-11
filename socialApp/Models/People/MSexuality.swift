@@ -9,7 +9,7 @@
 import Foundation
 
 enum MSexuality: String, CaseIterable {
-    case straight = "Гетеросексуал"
+    case straight = "Гетеро"
     case bisexual = "Бисексуал"
     case pansexual = "Пансексуал"
     case polisexual = "Полисексуал"
@@ -26,6 +26,7 @@ enum MSexuality: String, CaseIterable {
     case objectumsexual = "Объектумсексуал"
     case omnisexual = "Омнисексуал"
     case scoliosexual = "Сколиосексуал"
+    case other = "Другое"
 }
 
 extension MSexuality {
