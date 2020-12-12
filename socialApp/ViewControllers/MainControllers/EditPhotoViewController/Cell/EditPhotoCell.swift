@@ -57,8 +57,8 @@ extension EditPhotoCell {
             image.topAnchor.constraint(equalTo: topAnchor),
             image.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            dotImage.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            dotImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10)
+            dotImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            dotImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
         ])
     }
 }

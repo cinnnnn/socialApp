@@ -128,10 +128,7 @@ class ChatsViewController: UIViewController {
     @objc private func emptyButtonTapped() {
         tabBarController?.selectedIndex = 0
     }
-    
-   
 }
-
 
 extension ChatsViewController {
     
@@ -364,7 +361,7 @@ extension ChatsViewController: AcceptChatCollectionViewDelegate {
         
         switch changeType {
         case .delete:
-        //chat can be deleted only if user unmatch, when user unmatch people it is add to dislike collection
+        //chat can be deleted only if user unmatch or timer to delete, when user unmatch people it is add to dislike collection
         //we need update dislike collection
             likeDislikeDelegate?.getDislike(complition: { _ in })
             fallthrough

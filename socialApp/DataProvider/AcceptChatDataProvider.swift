@@ -100,6 +100,12 @@ extension AcceptChatDataProvider {
                 if !acceptChat.timerOfLifeIsStoped {
                     if acceptChat.createChatDate.checkPeriodIsPassed(periodMinuteCount: periodMinutesOfLifeChat) {
                         FirestoreService.shared.deleteChat(currentUserID: strongUserID, friendID: acceptChat.friendId)
+                        //remove from collection
+                        self?.acceptChats.removeAll(where: { chat -> Bool in
+                            chat.friendId == acceptChat.friendId
+                        })
+                        //reload chats
+                        self?.acceptChatCollectionViewDelegate?.reloadDataSource(changeType: .delete)
                     }
                 }
             }

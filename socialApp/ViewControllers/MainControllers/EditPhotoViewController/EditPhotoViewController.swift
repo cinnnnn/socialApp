@@ -12,36 +12,42 @@ import SDWebImage
 
 class EditPhotoViewController: UIViewController {
     
-    let profileImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
-    let scrollView = UIScrollView()
-    var collectionView: UICollectionView!
-    var dataSource: UICollectionViewDiffableDataSource<SectionEditPhotos, MGallery>?
-    
-    let addImageButton = UIButton(image: UIImage(systemName: "plus",
-                                                 withConfiguration: UIImage.SymbolConfiguration(pointSize: 24,
-                                                                                                weight: .bold,
-                                                                                                scale: .default)) ?? #imageLiteral(resourceName: "plus"))
-    let tipsHeader = UILabel(labelText: "Советы",
-                             textFont: .avenirRegular(size: 16))
-    let tips = UILabel(labelText: MLabels.editPhotoTips.rawValue,
-                       textFont: .avenirRegular(size: 16),
-                       textColor: .myGrayColor(),
-                       linesCount: 0)
-    let privateHeader = UILabel(labelText: "Приватные фото",
-                                textFont: .avenirRegular(size: 16))
-    let privateLabel = UILabel(labelText: MLabels.privatePhotoTips.rawValue,
+    private let profileImage = UIImageView(image: nil, contentMode: .scaleAspectFill)
+    private let scrollView = UIScrollView()
+    private var collectionView: UICollectionView?
+    private var dataSource: UICollectionViewDiffableDataSource<SectionEditPhotos, MGallery>?
+    private let picker = UIImagePickerController()
+    private let addImageButton = UIButton(image: UIImage(systemName: "plus",
+                                                         withConfiguration: UIImage.SymbolConfiguration(pointSize: 24,
+                                                                                                        weight: .bold,
+                                                                                                        scale: .default)) ?? #imageLiteral(resourceName: "plus"))
+    private let editMainPhotoButton = UIButton(image: UIImage(systemName: "ellipsis",
+                                                              withConfiguration: UIImage.SymbolConfiguration(pointSize: 24,
+                                                                                                             weight: .bold,
+                                                                                                             scale: .default)) ?? #imageLiteral(resourceName: "reject"),
+                                               tintColor: .white,
+                                               backgroundColor: .clear)
+    private let tipsHeader = UILabel(labelText: "Советы",
+                                     textFont: .avenirRegular(size: 16))
+    private let tips = UILabel(labelText: MLabels.editPhotoTips.rawValue,
                                textFont: .avenirRegular(size: 16),
                                textColor: .myGrayColor(),
                                linesCount: 0)
-    let legalHeader = UILabel(labelText: "Юридическая информация",
-                              textFont: .avenirRegular(size: 16))
-    let legal = UILabel(labelText: MLabels.editPhotoLegal.rawValue,
-                        textFont: .avenirRegular(size: 16),
-                        textColor: .myGrayColor(),
-                        linesCount: 0)
+    private let privateHeader = UILabel(labelText: "Приватные фото",
+                                        textFont: .avenirRegular(size: 16))
+    private let privateLabel = UILabel(labelText: MLabels.privatePhotoTips.rawValue,
+                                       textFont: .avenirRegular(size: 16),
+                                       textColor: .myGrayColor(),
+                                       linesCount: 0)
+    private let legalHeader = UILabel(labelText: "Юридическая информация",
+                                      textFont: .avenirRegular(size: 16))
+    private let legal = UILabel(labelText: MLabels.editPhotoLegal.rawValue,
+                                textFont: .avenirRegular(size: 16),
+                                textColor: .myGrayColor(),
+                                linesCount: 0)
     
-    var images: [MGallery] = []
-    var currentPeople: MPeople? {
+    private var images: [MGallery] = []
+    private var currentPeople: MPeople? {
         didSet {
             images = []
             guard let currentPeople = currentPeople else { return }
@@ -53,8 +59,9 @@ class EditPhotoViewController: UIViewController {
             images.sort { $0.property.index > $1.property.index }
         }
     }
-    var userID: String
-    var isFirstSetup = false
+    private var isMainPhotoSetup = false
+    private var userID: String
+    private var isFirstSetup = false
     
     init (userID: String, isFirstSetup: Bool) {
         self.userID = userID
@@ -98,11 +105,13 @@ class EditPhotoViewController: UIViewController {
         profileImage.clipsToBounds = true
         scrollView.showsVerticalScrollIndicator = false
         scrollView.layoutSubviews()
+        picker.delegate = self
         
         view.backgroundColor = .myWhiteColor()
         navigationItem.title = "Галерея"
         
         addImageButton.addTarget(self, action: #selector(addImageButtonTap), for: .touchUpInside)
+        editMainPhotoButton.addTarget(self, action: #selector(changeMainPhotoTapped), for: .touchUpInside)
         
         if isFirstSetup {
             navigationItem.setHidesBackButton(true, animated: false)
@@ -117,7 +126,7 @@ class EditPhotoViewController: UIViewController {
     }
     
     //MARK: updateProfileData
-     private func updateProfileData(isRenew: Bool, complition: (()->())?) {
+    private func updateProfileData(isRenew: Bool, complition: (()->())?) {
         
         if isRenew {
             currentPeople = UserDefaultsService.shared.getMpeople()
@@ -144,7 +153,7 @@ class EditPhotoViewController: UIViewController {
         profileImage.sd_setImage(with: imageURL, completed: nil)
         
         updateDataSource(galleryImages: images)
-    
+        
     }
 }
 
@@ -155,13 +164,21 @@ extension EditPhotoViewController {
     }
     
     @objc private func addImageButtonTap() {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        choosePhotoAlert {[weak self] sourceType in
+        
+        choosePhotoAlert {[unowned self] sourceType in
             guard let sourceType = sourceType else { return }
+            isMainPhotoSetup = profileImage.image == nil
             picker.sourceType = sourceType
-            self?.present(picker, animated: true, completion: nil)
-            
+            present(picker, animated: true, completion: nil)
+        }
+    }
+    
+    @objc private func changeMainPhotoTapped() {
+        choosePhotoAlert {[unowned self] sourceType in
+            guard let sourceType = sourceType else { return }
+            isMainPhotoSetup = true
+            picker.sourceType = sourceType
+            present(picker, animated: true, completion: nil)
         }
     }
     
@@ -215,10 +232,10 @@ extension EditPhotoViewController {
     private func setupCollectionView() {
         collectionView = UICollectionView(frame: view.frame,
                                           collectionViewLayout: setupLayout())
-        collectionView.backgroundColor = .myWhiteColor()
-        collectionView.delegate = self
-        collectionView.contentSize.height = 10
-        collectionView.register(EditPhotoCell.self, forCellWithReuseIdentifier: EditPhotoCell.reuseID)
+        collectionView?.backgroundColor = .myWhiteColor()
+        collectionView?.delegate = self
+        collectionView?.contentSize.height = 10
+        collectionView?.register(EditPhotoCell.self, forCellWithReuseIdentifier: EditPhotoCell.reuseID)
     }
     
     private func setupPhotosSection() -> NSCollectionLayoutSection {
@@ -226,17 +243,15 @@ extension EditPhotoViewController {
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-//        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.37),
-//                                               heightDimension: .fractionalWidth(0.37))
-        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(collectionView.frame.height),
-                                               heightDimension: .absolute(collectionView.frame.height))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(collectionView?.frame.height ?? 0),
+                                               heightDimension: .absolute(collectionView?.frame.height ?? 0))
         
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
         section.interGroupSpacing = 10
-    
+        
         section.contentInsets = NSDirectionalEdgeInsets(top: 0,
                                                         leading: 10,
                                                         bottom: 0,
@@ -258,6 +273,7 @@ extension EditPhotoViewController {
     }
     
     private func setupDataSource() {
+        guard let collectionView = collectionView else { return }
         dataSource = UICollectionViewDiffableDataSource(
             collectionView: collectionView,
             cellProvider: { (collectionView, indexPath, element) -> UICollectionViewCell? in
@@ -296,7 +312,7 @@ extension EditPhotoViewController {
 }
 //MARK: - Alerts
 extension EditPhotoViewController {
-
+    
     
     private func editGalleryAlert(galleryImage: MGallery, index: Int, complition:@escaping()->Void) {
         guard let people = currentPeople else { return }
@@ -311,7 +327,7 @@ extension EditPhotoViewController {
         }
         //make profile image
         let makeProfileAction = UIAlertAction(title: "Сделать основной",
-                                         style: .default) { _ in
+                                              style: .default) { _ in
             FirestoreService.shared.updateAvatar(galleryImage: galleryImage,
                                                  currentAvatarURL: people.userImage,
                                                  id: people.senderId) {[weak self] result in
@@ -324,11 +340,11 @@ extension EditPhotoViewController {
                     break
                 }
             }
-                                         }
+                                              }
         
         //make private image
         let privateAction = UIAlertAction(title: privateActionText,
-                                         style: .default) { _ in
+                                          style: .default) { _ in
             if people.isGoldMember || people.isTestUser {
                 FirestoreService.shared.makePhotoPrivate(currentUser: people,
                                                          galleryPhoto: galleryImage) {[weak self] result in
@@ -355,7 +371,7 @@ extension EditPhotoViewController {
         }
         //delete image
         let deleteAction = UIAlertAction(title: "Удалить",
-                                          style: .default) { _ in
+                                         style: .default) { _ in
             FirestoreService.shared.deleteFromGallery(galleryImage: galleryImage,
                                                       id: people.senderId) {[weak self] result in
                 switch result {
@@ -373,7 +389,7 @@ extension EditPhotoViewController {
                     fatalError(errror.localizedDescription)
                 }
             }
-                                          }
+                                         }
         
         let cancelAction = UIAlertAction(title: "Отмена",
                                          style: .default) { _ in }
@@ -437,9 +453,12 @@ extension EditPhotoViewController:UIImagePickerControllerDelegate , UINavigation
         picker.dismiss(animated: true, completion: nil)
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
         guard var people = currentPeople else { return }
-        //if user don't have profile image, set new to profile
-        if people.userImage == "" {
-            FirestoreService.shared.saveAvatar(image: image, id: people.senderId) {[weak self] result in
+        //if isMainPhotoSetup, set new to profile
+        if isMainPhotoSetup {
+            let oldImageString: String? = currentPeople?.userImage != "" ? currentPeople?.userImage : nil
+            FirestoreService.shared.saveAvatar(image: image,
+                                               id: people.senderId,
+                                               oldImageString: oldImageString) {[weak self] result in
                 switch result {
                 case .success(_):
                     
@@ -474,8 +493,11 @@ extension EditPhotoViewController:UIImagePickerControllerDelegate , UINavigation
 //MARK: setupConstraints
 extension EditPhotoViewController {
     private func setupConstraints() {
+        guard let collectionView = collectionView else { return }
+        
         view.addSubview(scrollView)
         scrollView.addSubview(profileImage)
+        scrollView.addSubview(editMainPhotoButton)
         scrollView.addSubview(addImageButton)
         scrollView.addSubview(collectionView)
         scrollView.addSubview(tipsHeader)
@@ -485,6 +507,7 @@ extension EditPhotoViewController {
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         profileImage.translatesAutoresizingMaskIntoConstraints = false
+        editMainPhotoButton.translatesAutoresizingMaskIntoConstraints = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         addImageButton.translatesAutoresizingMaskIntoConstraints = false
         tipsHeader.translatesAutoresizingMaskIntoConstraints = false
@@ -503,6 +526,9 @@ extension EditPhotoViewController {
             profileImage.topAnchor.constraint(equalTo: scrollView.topAnchor),
             profileImage.heightAnchor.constraint(equalTo: profileImage.widthAnchor),
             
+            editMainPhotoButton.bottomAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: -10),
+            editMainPhotoButton.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor, constant: -15),
+            
             addImageButton.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
             addImageButton.topAnchor.constraint(equalTo: profileImage.bottomAnchor, constant: 10),
             addImageButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.25),
@@ -520,7 +546,7 @@ extension EditPhotoViewController {
             tips.leadingAnchor.constraint(equalTo: profileImage.leadingAnchor),
             tips.trailingAnchor.constraint(equalTo: profileImage.trailingAnchor),
             tips.topAnchor.constraint(equalTo: tipsHeader.bottomAnchor, constant: 10),
-
+            
         ])
         
         if isFirstSetup {

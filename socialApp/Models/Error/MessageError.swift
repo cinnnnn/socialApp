@@ -20,7 +20,7 @@ extension MessageError: LocalizedError {
         case .getMessageData:
             return NSLocalizedString("Ошибка получения данных сообщения", comment: "")
         case .deleteChat:
-            return NSLocalizedString("Собеседник удалил тебя из пар", comment: "")
+            return NSLocalizedString("Чат удален", comment: "")
         }
     }
 }

@@ -86,7 +86,6 @@ class PeopleView: UIView {
     @objc private func likeTapped(sender: Any) {
         guard let sender = sender as? LikeDislikePeopleButton else { return }
         guard let people = sender.actionPeople else { return }
-        animateLikeButton.isEnabled = false
         sender.play { [weak self] in
             self?.buttonDelegate?.likePeople(people: people)
         }
@@ -95,7 +94,6 @@ class PeopleView: UIView {
     @objc private func dislikeTapped(sender: Any) {
         guard let sender = sender as? LikeDislikePeopleButton else { return }
         guard let people = sender.actionPeople else { return }
-        animateDislikeButton.isEnabled = false
         sender.play { [weak self] in
             self?.buttonDelegate?.dislikePeople(people: people)
         }
@@ -204,7 +202,7 @@ class PeopleView: UIView {
         galleryScrollView.setNeedsLayout()
     }
     
-    //prepareForRenew
+    //MARK: prepareForRenew
     func prepareForRenew() {
 //        interestsHeader.text = "Интересы"
 //        desiresHeader.text = "Желания"
@@ -214,8 +212,6 @@ class PeopleView: UIView {
  //      advertLabel.text = " "
         animateDislikeButton.setupFirstFrame()
         animateDislikeButton.setupFirstFrame()
-        animateLikeButton.isEnabled = true
-        animateDislikeButton.isEnabled = true
     }
     
     //layoutSubviews

@@ -29,39 +29,52 @@ extension FirestoreService {
     }
     
     //MARK:  saveAvatar
-    func saveAvatar(image: UIImage?, id: String, complition: @escaping (Result<String, Error>) -> Void) {
+    func saveAvatar(image: UIImage?, id: String, oldImageString: String? = nil, complition: @escaping (Result<String, Error>) -> Void) {
         
-        guard let avatar = image else { fatalError("cant get userProfile image") }
-        //if user choose photo, than upload new photo to Storage
-        if  image != #imageLiteral(resourceName: "avatar")  {
-            StorageService.shared.uploadImage(image: avatar) {[weak self] result in
+        guard let avatar = image else { return }
+        
+        //if have old image link, delete from storage
+        if let oldImageString = oldImageString {
+            StorageService.shared.deleteImage(link: oldImageString) { result in
                 switch result {
                 
-                case .success(let url):
-                    let userImageString = url.absoluteString
-                    //save user to FireStore
-                    self?.usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : userImageString,
-                                                               MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
-                                                              merge: true,
-                                                              completion: { error in
-                                                                if let error = error {
-                                                                    complition(.failure(error))
-                                                                } else {
-                                                                    //edit current user from UserDefaults for save request to server
-                                                                    if var people = UserDefaultsService.shared.getMpeople() {
-                                                                        people.userImage = userImageString
-                                                                        people.lastActiveDate = Date()
-                                                                        UserDefaultsService.shared.saveMpeople(people: people)
-                                                                        NotificationCenter.postCurrentUserNeedUpdate()
-                                                                    }
-                                                                    complition(.success(userImageString))
-                                                                }
-                                                              })
-                case .failure(_):
-                    fatalError("Cant upload Image")
+                case .success(_):
+                    break
+                case .failure(let error):
+                    PopUpService.shared.showInfo(text: error.localizedDescription)
                 }
             }
         }
+        
+        //upload new photo to Storage
+        StorageService.shared.uploadImage(image: avatar) {[weak self] result in
+            switch result {
+            
+            case .success(let url):
+                let userImageString = url.absoluteString
+                //save user to FireStore
+                self?.usersReference.document(id).setData([MPeople.CodingKeys.userImage.rawValue : userImageString,
+                                                           MPeople.CodingKeys.lastActiveDate.rawValue : Date()],
+                                                          merge: true,
+                                                          completion: { error in
+                                                            if let error = error {
+                                                                complition(.failure(error))
+                                                            } else {
+                                                                //edit current user from UserDefaults for save request to server
+                                                                if var people = UserDefaultsService.shared.getMpeople() {
+                                                                    people.userImage = userImageString
+                                                                    people.lastActiveDate = Date()
+                                                                    UserDefaultsService.shared.saveMpeople(people: people)
+                                                                    NotificationCenter.postCurrentUserNeedUpdate()
+                                                                }
+                                                                complition(.success(userImageString))
+                                                            }
+                                                          })
+            case .failure(_):
+                fatalError("Cant upload Image")
+            }
+        }
+        
     }
     
     //MARK: updateAvatar

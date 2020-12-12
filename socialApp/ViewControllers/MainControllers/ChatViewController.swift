@@ -47,9 +47,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     }
     
     deinit {
-        messageDelegate?.removeListener()
-        NotificationCenter.default.removeObserver(self)
-        ScreenRecordingManager.shared.removeListner()
+        removeMessageListner()
         acceptChatDelegate?.selectedChat = nil
     }
     
@@ -70,6 +68,7 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
         configureCameraBar()
         
         addMessageListener()
+        addListners()
         readAllMessageInChat()
         showTimerPopUp()
     }
@@ -87,6 +86,10 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
     //MARK: addMessageListener
     private func addMessageListener() {
         messageDelegate?.setupListener(chat: chat)
+    }
+    
+    private func removeMessageListner() {
+        messageDelegate?.removeListener()
     }
     
     func chatsCollectionWasUpdate(chat: MChat) {
@@ -120,6 +123,20 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                                             action: #selector(chatSettingsTapped))
         navigationItem.rightBarButtonItem = barButtonItem
         navigationController?.setNavigationBarHidden(false, animated: true)
+        
+        
+    }
+    
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        
+        if parent == nil {
+            navigationController?.popToRootViewController(animated: true)
+        }
+    }
+    
+    
+    private func addListners() {
         //add screenshot observer
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(screenshotTaken),
@@ -136,12 +153,9 @@ class ChatViewController: MessagesViewController, MessageControllerDelegate  {
                                                name: UIResponder.keyboardWillShowNotification, object: nil)
     }
     
-    override func didMove(toParent parent: UIViewController?) {
-        super.didMove(toParent: parent)
-        
-        if parent == nil {
-            navigationController?.popToRootViewController(animated: true)
-        }
+    private func removeListners() {
+        NotificationCenter.default.removeObserver(self)
+        ScreenRecordingManager.shared.removeListner()
     }
     
     //MARK: configureInputBar
@@ -381,6 +395,9 @@ extension ChatViewController {
     
     //MARK: showDeleteChatAlert
     func showChatAlert(text: String) {
+        //need remove lister, else if user take screenshot, chate recreate with send admin message
+        removeListners()
+        
         let alert = UIAlertController(title: nil,
                                       message: text,
                                       preferredStyle: .alert)
