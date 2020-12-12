@@ -84,6 +84,7 @@ extension PopUpService {
         attributes.exitAnimation = .init(translate: nil,
                                          scale: nil,
                                          fade: .init(from: 1, to: 0, duration: 0.3))
+//        attributes.exitAnimation = .none
         attributes.screenBackground = .color(color: EKColor.init(UIColor.myLabelColor().withAlphaComponent(0.5)))
         attributes.position = .bottom
         attributes.hapticFeedbackType = .none
@@ -117,8 +118,10 @@ extension PopUpService {
         SwiftEntryKit.display(entry: view, using: attributes, presentInsideKeyWindow: false, rollbackWindow: .main)
     }
     
-    func dismisPopUp(name: String) {
-        SwiftEntryKit.dismiss(.specific(entryName: name))
+    func dismisPopUp(name: String, complition:@escaping()->()) {
+        SwiftEntryKit.dismiss(.specific(entryName: name)) {
+            complition()
+        }
     }
     
     func dismisAllPopUp() {

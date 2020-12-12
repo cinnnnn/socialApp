@@ -214,6 +214,8 @@ class PeopleView: UIView {
  //      advertLabel.text = " "
         animateDislikeButton.setupFirstFrame()
         animateDislikeButton.setupFirstFrame()
+        animateLikeButton.isEnabled = true
+        animateDislikeButton.isEnabled = true
     }
     
     //layoutSubviews

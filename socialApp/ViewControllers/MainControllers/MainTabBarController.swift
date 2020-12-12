@@ -77,14 +77,6 @@ extension MainTabBarController {
         
     }
     
-    private func loadIsComplite(isComplite: Bool) {
-        tabBar.isHidden = !isComplite
-        if isComplite {
-            //stop load animation animation
-            PopUpService.shared.dismisAllPopUp()
-        }
-    }
-    
     private func setupApphud() {
         Apphud.start(apiKey: "app_LDXecjNbEuvUBtpd3J9kw75A6cH14n", userID: currentUser.senderId, observerMode: false)
     }
@@ -100,6 +92,8 @@ extension MainTabBarController {
         setupDataDelegate { [weak self] in
             guard let currentUser = self?.currentUser else { fatalError("can't get current user") }
             guard let reportDelegate = self?.reportsDelegate else { fatalError("reportDelegate is nil") }
+            guard let likeDislikeDelegate = self?.likeDislikeDelegate else { fatalError("likeDislikeDelegate is nil") }
+            guard let acceptChatsDelegate = self?.acceptChatsDelegate else { fatalError("acceptChatsDelegate is nil") }
             
             UserDefaultsService.shared.saveMpeople(people: currentUser)
             if let virtualLocation = MVirtualLocation(rawValue: currentUser.searchSettings[MSearchSettings.currentLocation.rawValue] ?? 0) {
@@ -138,20 +132,36 @@ extension MainTabBarController {
                                                         switch result {
                                                         
                                                         case .success(_):
-                                                            //check active subscribtion
-                                                            PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { result in
-                                                                
-                                                                switch result {
-                                                                //if check success, load Controllers with status updated people
-                                                                case .success(let updatedPeople):
-                                                                    self?.setupControllers(currentPeople: updatedPeople)
-                                                                //if check failure, load Controllers with previus premium status people
-                                                                case .failure(_):
-                                                                    self?.setupControllers(currentPeople: currentUser)
-                                                                }
-                                                                self?.subscribeToPushNotification()
-                                                                
-                                                            }
+                                                            
+                                                            
+                                                            self?.peopleDelegate?.getPeople(currentPeople: currentUser,
+                                                                                            likeDislikeDelegate: likeDislikeDelegate,
+                                                                                            acceptChatsDelegate: acceptChatsDelegate,
+                                                                                            reportsDelegate: reportDelegate,
+                                                                                            complition: { result in
+                                                                                                switch result {
+                                                                                                
+                                                                                                case .success(_):
+                                                                                                    //check active subscribtion
+                                                                                                    PurchasesService.shared.checkSubscribtion(currentPeople: currentUser) { result in
+                                                                                                        
+                                                                                                        switch result {
+                                                                                                        //if check success, load Controllers with status updated people
+                                                                                                        case .success(let updatedPeople):
+                                                                                                            self?.setupControllers(currentPeople: updatedPeople)
+                                                                                                        //if check failure, load Controllers with previus premium status people
+                                                                                                        case .failure(_):
+                                                                                                            self?.setupControllers(currentPeople: currentUser)
+                                                                                                        }
+                                                                                                        self?.subscribeToPushNotification()
+                                                                                                        
+                                                                                                    }
+                                                                                                case .failure(let error):
+                                                                                                    self?.showAlert(title: "Ошибка, мы работаем над ней",
+                                                                                                                    text: error.localizedDescription,
+                                                                                                                    buttonText: "Попробую позже")
+                                                                                                }
+                                                                                            })
                                                             
                                                         case .failure(let error):
                                                             self?.showAlert(title: "Ошибка, мы работаем над ней",
@@ -195,66 +205,69 @@ extension MainTabBarController {
 //MARK: setupControllers
 extension MainTabBarController {
     private func setupControllers(currentPeople: MPeople){
-        let appearance = tabBar.standardAppearance.copy()
-        appearance.backgroundImage = UIImage()
-        appearance.shadowImage = UIImage()
-        appearance.shadowColor = .clear
-        appearance.backgroundColor = .myWhiteColor()
-        tabBar.standardAppearance = appearance
-        
-        tabBar.unselectedItemTintColor = .myLightGrayColor()
-        tabBar.tintColor = .myLabelColor()
-        
-        guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislike is nil")}
-        guard let requestChatsDelegate = requestChatsDelegate else { fatalError("requestChatsDelegate is nil")}
-        guard let peopleDelegate = peopleDelegate else { fatalError("peopleDelegate is nil")}
-        guard let acceptChatsDelegate = acceptChatsDelegate else { fatalError("acceptChatsDelegate is nil")}
-        guard let reportsDelegate = reportsDelegate else { fatalError("reportsDelegate is nil")}
-        guard let messageDelegate = messageDelegate else { fatalError("messageDelegate is nil")}
-        
-        let profileVC = ProfileViewController(currentPeople: currentPeople,
-                                              peopleListnerDelegate: peopleDelegate,
-                                              likeDislikeDelegate: likeDislikeDelegate,
-                                              acceptChatsDelegate: acceptChatsDelegate,
-                                              requestChatsDelegate: requestChatsDelegate,
-                                              reportsDelegate: reportsDelegate)
-        
-        let peopleVC = PeopleViewController(currentPeople: currentPeople,
-                                            peopleDelegate: peopleDelegate,
-                                            requestChatDelegate: requestChatsDelegate,
-                                            likeDislikeDelegate: likeDislikeDelegate,
-                                            acceptChatDelegate: acceptChatsDelegate,
-                                            reportDelegate: reportsDelegate)
-        
-        peopleDelegate.peopleCollectionViewDelegate = peopleVC
-        
-        let requsetsVC = RequestsViewController(currentPeople: currentPeople,
-                                                likeDislikeDelegate: likeDislikeDelegate,
+        PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue) { [unowned self] in
+            
+            let appearance = tabBar.standardAppearance.copy()
+            appearance.backgroundImage = UIImage()
+            appearance.shadowImage = UIImage()
+            appearance.shadowColor = .clear
+            appearance.backgroundColor = .myWhiteColor()
+            tabBar.standardAppearance = appearance
+            
+            tabBar.unselectedItemTintColor = .myLightGrayColor()
+            tabBar.tintColor = .myLabelColor()
+            
+            guard let likeDislikeDelegate = likeDislikeDelegate else { fatalError("likeDislike is nil")}
+            guard let requestChatsDelegate = requestChatsDelegate else { fatalError("requestChatsDelegate is nil")}
+            guard let peopleDelegate = peopleDelegate else { fatalError("peopleDelegate is nil")}
+            guard let acceptChatsDelegate = acceptChatsDelegate else { fatalError("acceptChatsDelegate is nil")}
+            guard let reportsDelegate = reportsDelegate else { fatalError("reportsDelegate is nil")}
+            guard let messageDelegate = messageDelegate else { fatalError("messageDelegate is nil")}
+            
+            let profileVC = ProfileViewController(currentPeople: currentPeople,
+                                                  peopleListnerDelegate: peopleDelegate,
+                                                  likeDislikeDelegate: likeDislikeDelegate,
+                                                  acceptChatsDelegate: acceptChatsDelegate,
+                                                  requestChatsDelegate: requestChatsDelegate,
+                                                  reportsDelegate: reportsDelegate)
+            
+            let peopleVC = PeopleViewController(currentPeople: currentPeople,
+                                                peopleDelegate: peopleDelegate,
                                                 requestChatDelegate: requestChatsDelegate,
-                                                peopleNearbyDelegate: peopleDelegate,
+                                                likeDislikeDelegate: likeDislikeDelegate,
                                                 acceptChatDelegate: acceptChatsDelegate,
                                                 reportDelegate: reportsDelegate)
-        
-        requestChatsDelegate.requestChatCollectionViewDelegate = requsetsVC
-        
-        let chatsVC = ChatsViewController(currentPeople: currentPeople,
-                                          acceptChatDelegate: acceptChatsDelegate,
-                                          likeDislikeDelegate: likeDislikeDelegate,
-                                          messageDelegate: messageDelegate,
-                                          requestChatsDelegate: requestChatsDelegate,
-                                          peopleDelegate: peopleDelegate,
-                                          reportDelegate: reportsDelegate)
-        
-        acceptChatsDelegate.acceptChatCollectionViewDelegate = chatsVC
-        
-        
-        viewControllers = [
-            generateNavigationController(rootViewController: peopleVC, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
-            generateNavigationController(rootViewController: requsetsVC, image: #imageLiteral(resourceName: "request"), title: nil, isHidden: true),
-            generateNavigationController(rootViewController: chatsVC, image: #imageLiteral(resourceName: "chats"), title: nil),
-            generateNavigationController(rootViewController: profileVC, image: #imageLiteral(resourceName: "profile"), title: nil, isHidden: true)
-        ]
-        
+            
+            peopleDelegate.peopleCollectionViewDelegate = peopleVC
+            
+            let requsetsVC = RequestsViewController(currentPeople: currentPeople,
+                                                    likeDislikeDelegate: likeDislikeDelegate,
+                                                    requestChatDelegate: requestChatsDelegate,
+                                                    peopleNearbyDelegate: peopleDelegate,
+                                                    acceptChatDelegate: acceptChatsDelegate,
+                                                    reportDelegate: reportsDelegate)
+            
+            requestChatsDelegate.requestChatCollectionViewDelegate = requsetsVC
+            
+            let chatsVC = ChatsViewController(currentPeople: currentPeople,
+                                              acceptChatDelegate: acceptChatsDelegate,
+                                              likeDislikeDelegate: likeDislikeDelegate,
+                                              messageDelegate: messageDelegate,
+                                              requestChatsDelegate: requestChatsDelegate,
+                                              peopleDelegate: peopleDelegate,
+                                              reportDelegate: reportsDelegate)
+            
+            acceptChatsDelegate.acceptChatCollectionViewDelegate = chatsVC
+            
+            
+            viewControllers = [
+                generateNavigationController(rootViewController: peopleVC, image: #imageLiteral(resourceName: "people"), title: nil, isHidden: true),
+                generateNavigationController(rootViewController: requsetsVC, image: #imageLiteral(resourceName: "request"), title: nil, isHidden: true),
+                generateNavigationController(rootViewController: chatsVC, image: #imageLiteral(resourceName: "chats"), title: nil),
+                generateNavigationController(rootViewController: profileVC, image: #imageLiteral(resourceName: "profile"), title: nil, isHidden: true)
+            ]
+            
+        }
     }
     
     //MARK: generateNavigationController

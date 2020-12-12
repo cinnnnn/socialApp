@@ -57,7 +57,10 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         NotificationCenter.default.removeObserver(self)
     }
     
-
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -66,7 +69,8 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         setupConstraints()
         setup()
         setupNotification()
-        getPeople()
+        reloadData()
+       // getPeople()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -75,18 +79,10 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
         updateCurrentPeople()
     }
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .lightContent
-    }
-    
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        collectionView.setNeedsLayout()
-//    }
-    
-    
     //MARK:  setup VC
     private func setup() {
+        
+        setNeedsStatusBarAppearanceUpdate()
         view.backgroundColor = .myWhiteColor()
         navigationItem.backButtonTitle = ""
     }
@@ -116,7 +112,6 @@ class PeopleViewController: UIViewController, UICollectionViewDelegate {
                                     }
                                   })
     }
-    
     
     //MARK: setupCollectionView
     private func setupCollectionView() {
@@ -250,7 +245,7 @@ extension PeopleViewController {
         } else {
             emptyView.hide(hidden: true)
         }
-        PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue)
+        
     }
     
     //MARK: changeSearchTapped

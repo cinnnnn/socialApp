@@ -27,6 +27,7 @@
 		FB21A1BF24E5ADE5000A2E91 /* NewChatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB21A1BE24E5ADE5000A2E91 /* NewChatsCell.swift */; };
 		FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */; };
 		FB28FEA0258418410011DC3A /* ScreenProtectorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB28FE9F258418410011DC3A /* ScreenProtectorManager.swift */; };
+		FB28FEA42584E85C0011DC3A /* FirstLoadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB28FEA32584E85C0011DC3A /* FirstLoadService.swift */; };
 		FB3351AD256694AE007AFDDF /* FirestoreServiceExtensionImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351AC256694AE007AFDDF /* FirestoreServiceExtensionImage.swift */; };
 		FB3351B1256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */; };
 		FB3351B92566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */; };
@@ -262,6 +263,7 @@
 		FB21A1BE24E5ADE5000A2E91 /* NewChatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatsCell.swift; sourceTree = "<group>"; };
 		FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
 		FB28FE9F258418410011DC3A /* ScreenProtectorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenProtectorManager.swift; sourceTree = "<group>"; };
+		FB28FEA32584E85C0011DC3A /* FirstLoadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLoadService.swift; sourceTree = "<group>"; };
 		FB3351AC256694AE007AFDDF /* FirestoreServiceExtensionImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionImage.swift; sourceTree = "<group>"; };
 		FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionDeleteData.swift; sourceTree = "<group>"; };
 		FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionGetData.swift; sourceTree = "<group>"; };
@@ -859,6 +861,7 @@
 				FB79DA6A252C834C00A7AA56 /* LocationService.swift */,
 				FBB33FC5256BD80900A597BF /* ScreenRecordingManager.swift */,
 				FB28FE9F258418410011DC3A /* ScreenProtectorManager.swift */,
+				FB28FEA32584E85C0011DC3A /* FirstLoadService.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -1451,6 +1454,7 @@
 				FBB340452571311000A597BF /* MDefaultsDesires.swift in Sources */,
 				FB66288124A93ADC00650820 /* RegisterEmailViewController.swift in Sources */,
 				FB61B53E24FAB785002761ED /* UIViewExtension.swift in Sources */,
+				FB28FEA42584E85C0011DC3A /* FirstLoadService.swift in Sources */,
 				FB8C3D7D253606EE00184FB5 /* LocaleExtension.swift in Sources */,
 				FBA2AA3C255300C200A471F6 /* UniversallSwitchCell.swift in Sources */,
 				FBB33FC6256BD80900A597BF /* ScreenRecordingManager.swift in Sources */,

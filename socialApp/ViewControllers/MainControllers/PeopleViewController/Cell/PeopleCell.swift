@@ -38,6 +38,11 @@ class PeopleCell: UICollectionViewCell, PeopleConfigurationCell {
         peopleView.setNeedsLayout()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        peopleView.setNeedsLayout()
+    }
+    
     override func prepareForReuse() {
         peopleView.prepareForRenew()
     }

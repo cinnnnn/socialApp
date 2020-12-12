@@ -50,7 +50,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                                                                             isNewLogin: false)
                                 } else {
                                     //stop load animation animation
-                                    PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue)
+                                    PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue) {}
                                     // if don't have user photo (last step of first setup profile), go setup
                                     let navController = UINavigationController(rootViewController: DateOfBirthViewController(userID: userID))
                                     navController.navigationBar.tintColor = .label
@@ -62,7 +62,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                 }
                             case .failure(_):
                                 //stop load animation animation
-                                PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue)
+                                PopUpService.shared.dismisPopUp(name: MAnimamationName.loading.rawValue) {}
                                 PopUpService.shared.bottomPopUp(header: "Проблема с учетной записью",
                                                                 text: "Не удалось получить информацию для входа",
                                                                 image: nil,
