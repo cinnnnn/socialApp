@@ -56,13 +56,13 @@ class TagsCollectionView: UIView {
     
     //MARK: addTag
     private func addTag(text: String) {
-        let newTag = text.replacingOccurrences(of: " ", with: "")
-        guard newTag != "" else { return }
+    
+        guard text != "" else { return }
         
         if !selectedTags.contains(where: { mTag -> Bool in
-            mTag.tagText.lowercased() == newTag.lowercased()
+            mTag.tagText.lowercased() == text.lowercased()
         }) {
-            let newMTag = MTag(tagText: newTag, isSelect: true)
+            let newMTag = MTag(tagText: text, isSelect: true)
             selectedTags.append(newMTag)
             updateDataSource(animating: false)
         }
@@ -327,6 +327,17 @@ extension TagsCollectionView: UITextFieldDelegate {
         textField.text = ""
         tagsDelegate?.tagTextFiledShouldReturn?(tagsCollectionView: self, text: newTag)
         return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let maxLengthTags = 25
+        guard let textFieldText = textField.text,
+              let rangeOfTextToReplace = Range(range, in: textFieldText) else {
+            return false
+        }
+        let substringToReplace = textFieldText[rangeOfTextToReplace]
+        let count = textFieldText.count - substringToReplace.count + string.count
+        return count <= maxLengthTags
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {

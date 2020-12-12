@@ -63,7 +63,7 @@ extension UITextView {
         toolBar.tintColor = .label
         toolBar.items = [
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil),
-            UIBarButtonItem(title: "Готово", style: .done, target: self, action: onDone.action)
+            UIBarButtonItem(title: "Готово", style: .done, target: onDone.target, action: onDone.action)
         ]
         toolBar.sizeToFit()
         

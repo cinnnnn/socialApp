@@ -186,7 +186,7 @@ class FirestoreService {
                                                                 merge: true)
         
         if var people = UserDefaultsService.shared.getMpeople() {
-            people.likeCount = currentLikeCount == 0 ? 0 : currentLikeCount + 1
+            people.likeCount = currentLikeCount
             people.lastLikeDate = Date()
             people.lastActiveDate = Date()
             UserDefaultsService.shared.saveMpeople(people: people)

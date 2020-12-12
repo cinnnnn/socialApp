@@ -69,7 +69,7 @@ extension DesiresTagsViewController {
             
             case .success(_):
                 let nextViewController = InterestsSelectionViewController(userID: id)
-                self?.navigationController?.pushViewController(nextViewController, animated: true)
+                self?.navigationController?.setViewControllers([nextViewController], animated: true)
             case .failure(let error):
                 self?.navigationItem.rightBarButtonItem?.isEnabled = true
                 PopUpService.shared.showInfo(text: "Ошибка: \(error)")

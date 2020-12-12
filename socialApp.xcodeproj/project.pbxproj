@@ -28,6 +28,7 @@
 		FB2346E624F69B2B00FEE1EF /* PeopleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */; };
 		FB28FEA0258418410011DC3A /* ScreenProtectorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB28FE9F258418410011DC3A /* ScreenProtectorManager.swift */; };
 		FB28FEA42584E85C0011DC3A /* FirstLoadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB28FEA32584E85C0011DC3A /* FirstLoadService.swift */; };
+		FB28FEAA258507D00011DC3A /* InterestsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB28FEA9258507D00011DC3A /* InterestsSelectionView.swift */; };
 		FB3351AD256694AE007AFDDF /* FirestoreServiceExtensionImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351AC256694AE007AFDDF /* FirestoreServiceExtensionImage.swift */; };
 		FB3351B1256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */; };
 		FB3351B92566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */; };
@@ -264,6 +265,7 @@
 		FB2346E524F69B2B00FEE1EF /* PeopleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleCell.swift; sourceTree = "<group>"; };
 		FB28FE9F258418410011DC3A /* ScreenProtectorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenProtectorManager.swift; sourceTree = "<group>"; };
 		FB28FEA32584E85C0011DC3A /* FirstLoadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLoadService.swift; sourceTree = "<group>"; };
+		FB28FEA9258507D00011DC3A /* InterestsSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestsSelectionView.swift; sourceTree = "<group>"; };
 		FB3351AC256694AE007AFDDF /* FirestoreServiceExtensionImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionImage.swift; sourceTree = "<group>"; };
 		FB3351B0256694FF007AFDDF /* FirestoreServiceExtensionDeleteData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionDeleteData.swift; sourceTree = "<group>"; };
 		FB3351B82566A0DC007AFDDF /* FirestoreServiceExtensionGetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreServiceExtensionGetData.swift; sourceTree = "<group>"; };
@@ -752,8 +754,9 @@
 				FB8C3D3E25339DE200184FB5 /* GenderSelectionViewController.swift */,
 				FBB340362571089800A597BF /* InterestsTagsViewController.swift */,
 				FBB340482571497E00A597BF /* DesiresTagsViewController.swift */,
-				FBB3405225714A8A00A597BF /* TagsView */,
 				FB8C3D692535D71B00184FB5 /* InterestsSelectionViewController.swift */,
+				FB28FEA9258507D00011DC3A /* InterestsSelectionView.swift */,
+				FBB3405225714A8A00A597BF /* TagsView */,
 			);
 			path = FirstSetupProfileControllers;
 			sourceTree = "<group>";
@@ -1428,6 +1431,7 @@
 				FBA2AA322552D9BB00A471F6 /* SectionsChatSettings.swift in Sources */,
 				FB78FEDC2577B3ED004DA53E /* MDislike.swift in Sources */,
 				FB3C5BD3253B399100CD44E6 /* MFirestorCollection.swift in Sources */,
+				FB28FEAA258507D00011DC3A /* InterestsSelectionView.swift in Sources */,
 				FB1062E024B20CE60012C4D4 /* UISegmentedControlExtension.swift in Sources */,
 				FBB4F3582511526C00ACFE90 /* CryptoService.swift in Sources */,
 				FB79DA42252209E100A7AA56 /* MTypeOfListenerChanges.swift in Sources */,

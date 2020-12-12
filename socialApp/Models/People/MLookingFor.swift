@@ -31,7 +31,7 @@ enum MLookingFor: String, CaseIterable {
     case nonBinary = "Non-Binary"
     case pagender = "Pagender"
     case twoSpirit = "Two-spirit"
-    case other = "Other"
+    case other = "Другое"
 }
 extension MLookingFor {
     //for correct compare female = woman, male = man

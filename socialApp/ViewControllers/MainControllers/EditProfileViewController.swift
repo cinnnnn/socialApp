@@ -202,7 +202,6 @@ extension EditProfileViewController {
         NotificationCenter.addObsorverToPremiumUpdate(observer: self,
                                                       selector: #selector(premiumIsUpdated))
     }
-    
 }
 
 //MARK: objc extension
@@ -328,7 +327,6 @@ extension EditProfileViewController:UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        print(textView.frame.maxY)
         selectedVisibleYValue = textView.frame.maxY
         let textViewToolBarHight:CGFloat = 20
         forceUpdateContentOffset(inset: textViewToolBarHight)

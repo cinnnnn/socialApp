@@ -10,13 +10,8 @@ import UIKit
 
 class InterestsSelectionViewController: UIViewController {
     
-    var userID: String
-    let headerLabel = UILabel(labelText: MLabels.aboutSelectionHeader.rawValue, textFont: .avenirBold(size: 24),linesCount: 0)
-    let subHeaderLabel = UILabel(labelText: MLabels.interestSelectionSubHeader.rawValue,
-                                 textFont: .avenirRegular(size: 16),
-                                 textColor: .myGrayColor(),
-                                 linesCount: 0)
-    var aboutTextView = UITextView(text: "", isEditable: true)
+    private let userID: String
+    private let interestsView = InterestsSelectionView()
     
     init(userID: String){
         self.userID = userID
@@ -42,12 +37,6 @@ class InterestsSelectionViewController: UIViewController {
                                                          target: self,
                                                          action: #selector(saveButtonTapped)),
                                          animated: false)
-        
-        aboutTextView.addDoneButton()
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.endEditing(true)
     }
 }
 
@@ -55,12 +44,14 @@ extension InterestsSelectionViewController {
     @objc private func saveButtonTapped() {
         
         let id = userID
-        FirestoreService.shared.saveAdvert(id: id, advert: aboutTextView.text ?? "") {[weak self] result in
+        let interestText = interestsView.getInterestsText()
+        
+        FirestoreService.shared.saveAdvert(id: id, advert: interestText) {[weak self] result in
             switch result {
             
             case .success():
                 let nextViewController = EditPhotoViewController(userID: id, isFirstSetup: true)
-                self?.navigationController?.pushViewController(nextViewController, animated: true)
+                self?.navigationController?.setViewControllers([nextViewController], animated: true)
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
@@ -71,26 +62,15 @@ extension InterestsSelectionViewController {
 extension InterestsSelectionViewController {
     
     private func setupConstraints() {
-        view.addSubview(headerLabel)
-        view.addSubview(subHeaderLabel)
-        view.addSubview(aboutTextView)
         
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        subHeaderLabel.translatesAutoresizingMaskIntoConstraints = false
-        aboutTextView.translatesAutoresizingMaskIntoConstraints = false
+        interestsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(interestsView)
         
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25),
-            headerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            headerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            
-            subHeaderLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
-            subHeaderLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            subHeaderLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
-            
-            aboutTextView.topAnchor.constraint(equalTo: subHeaderLabel.bottomAnchor, constant: 25),
-            aboutTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25),
-            aboutTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25),
+            interestsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            interestsView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            interestsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            interestsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
 }

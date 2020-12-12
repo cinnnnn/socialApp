@@ -49,7 +49,6 @@ class OneLineTextField: UITextField {
             textFieldButton.setTitle(buttonText, for: .normal)
             textFieldButton.setTitleColor(.label, for: .normal)
 
-            
             rightView = textFieldButton
             rightViewMode = .always
             rightView?.frame = CGRect(x: 0, y: 0, width: 8 , height: 8)

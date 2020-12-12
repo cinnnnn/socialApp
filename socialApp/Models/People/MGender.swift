@@ -31,7 +31,7 @@ enum MGender: String, CaseIterable {
     case nonBinary = "Non-Binary"
     case pagender = "Pagender"
     case twoSpirit = "Two-spirit"
-    case other = "Other"
+    case other = "Другое"
 }
 
 extension MGender {

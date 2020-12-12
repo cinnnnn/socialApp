@@ -54,7 +54,7 @@ extension  DateOfBirthViewController {
             
             case .success():
                 let nextViewController = GenderSelectionViewController(userID: id)
-                self?.navigationController?.pushViewController(nextViewController, animated: true)
+                self?.navigationController?.setViewControllers([nextViewController], animated: true)
             case .failure(let error):
                 fatalError(error.localizedDescription)
             }
